@@ -38,8 +38,8 @@ button {cursor: pointer; border: none; border-radius: 4px; padding: 10px 15px; f
 .btn-cancelar:hover {background: #c0392b;}
 .btn-ver {background: #9b59b6; color: white; padding: 6px 10px; font-size: 11px; margin-right: 5px;}
 .btn-ver:hover {background: #8e44ad;}
-.btn-editar-cotizacion {background: #f39c12; color: white; padding: 6px 10px; font-size: 11px;}
-.btn-editar-cotizacion:hover {background: #e67e22;}
+.btn-editar-cot {background: #f39c12; color: white; padding: 6px 10px; font-size: 11px;}
+.btn-editar-cot:hover {background: #e67e22;}
 .formulario-cliente, .formulario-producto, .formulario-editar-articulo {display: none; animation: fadeIn 0.3s;}
 .formulario-cliente.activo, .formulario-producto.activo, .formulario-editar-articulo.activo {display: block;}
 @keyframes fadeIn {from {opacity: 0;} to {opacity: 1;}}
@@ -88,6 +88,11 @@ button {cursor: pointer; border: none; border-radius: 4px; padding: 10px 15px; f
 .resumen-linea.total {font-size: 16px; color: #2c3e50;}
 .formulario-editar-articulo {background: #fff3cd; padding: 15px; border-radius: 4px; border-left: 4px solid #f39c12; margin-bottom: 20px;}
 .formulario-editar-articulo h4 {text-transform: uppercase; color: #856404; margin-bottom: 15px;}
+.tabla-cotizaciones {width: 100%; border-collapse: collapse; background: white;}
+.tabla-cotizaciones th {background: #34495e; color: white; padding: 12px; text-align: left; text-transform: uppercase; font-weight: bold;}
+.tabla-cotizaciones td {border: 1px solid #ddd; padding: 12px; text-transform: uppercase;}
+.tabla-cotizaciones tr:nth-child(even) {background: #f9f9f9;}
+.tabla-cotizaciones tr:hover {background: #f0f0f0;}
 </style>
 </head>
 <body>
@@ -178,7 +183,7 @@ button {cursor: pointer; border: none; border-radius: 4px; padding: 10px 15px; f
 
   <div id="modalCotizaciones">
     <div>
-      <button onclick="cerrarCotizaciones()" style="position:absolute;top:15px;right:20px;background:#e74c3c;color:white;border:none;border-radius:4px;padding:5px 10px;cursor:pointer;font-size:18px;">×</button>
+      <button onclick="cerrarCotizaciones()" style="position:absolute;top:15px;right:20px;background:#e74c3c;color:white;border:none;border-radius:4px;padding:5px 10px;cursor:pointer;font-size:18px;font-weight:bold;">×</button>
       <h2 style="margin-bottom:15px;text-transform:uppercase;">COTIZACIONES EMITIDAS</h2>
       <div id="listaCotizaciones"></div>
     </div>
@@ -585,7 +590,7 @@ function eliminarArticulo(codigo) {
   }
 }
 
-// PDF Y COTIZACIONES - MEJORADO
+// PDF Y COTIZACIONES - COMPLETAMENTE REVISADO
 function generarPDF() {
   if (!clienteActual) {alert('INGRESE CLIENTE'); return;}
   if (productosEnCotizacion.length === 0) {alert('AGREGUE PRODUCTOS'); return;}
@@ -597,8 +602,8 @@ function generarPDF() {
     razonSocial: clienteActual.razonSocial,
     neto: net.toFixed(2),
     fecha: new Date().toISOString(),
-    cliente: {...clienteActual},
-    productos: [...productosEnCotizacion]
+    cliente: JSON.parse(JSON.stringify(clienteActual)),
+    productos: JSON.parse(JSON.stringify(productosEnCotizacion))
   };
   
   cotizacionesEmitidas.push(cotizacion);
@@ -613,174 +618,134 @@ function generarPDFDocumento(cotizacion) {
   const doc = new jsPDF();
   const net = parseFloat(cotizacion.neto);
   
-  // Encabezado principal
+  // ENCABEZADO
   doc.setFillColor(44, 62, 80);
-  doc.rect(0, 0, 210, 35, 'F');
+  doc.rect(0, 0, 210, 40, 'F');
+  
   doc.setTextColor(255, 255, 255);
-  doc.setFontSize(24);
+  doc.setFontSize(26);
   doc.setFont(undefined, 'bold');
-  doc.text('COTIZACIÓN', 14, 15);
-  doc.setFontSize(14);
-  doc.setFont(undefined, 'normal');
-  doc.text('EMPRESA CUNDO', 14, 23);
-  doc.setFontSize(16);
-  doc.setFont(undefined, 'bold');
-  doc.text(`N° ${cotizacion.numero}`, 160, 20);
-  
-  // Fecha
-  doc.setFontSize(9);
-  doc.setFont(undefined, 'normal');
-  const fecha = new Date(cotizacion.fecha);
-  doc.text(`Fecha: ${fecha.toLocaleDateString('es-CL')}`, 160, 28);
-  
-  // Recuadro datos del cliente
-  doc.setTextColor(0, 0, 0);
-  doc.setFillColor(236, 240, 241);
-  doc.roundedRect(14, 42, 182, 50, 2, 2, 'F');
-  doc.setDrawColor(52, 152, 219);
-  doc.setLineWidth(0.5);
-  doc.roundedRect(14, 42, 182, 50, 2, 2);
+  doc.text('COTIZACIÓN', 15, 18);
   
   doc.setFontSize(12);
-  doc.setFont(undefined, 'bold');
-  doc.setTextColor(44, 62, 80);
-  doc.text('DATOS DEL CLIENTE', 18, 50);
-  
-  // Datos del cliente en formato tabla limpia
-  doc.setFontSize(9);
   doc.setFont(undefined, 'normal');
+  doc.text('EMPRESA CUNDO', 15, 28);
+  
+  doc.setFontSize(14);
+  doc.setFont(undefined, 'bold');
+  doc.setTextColor(52, 152, 219);
+  doc.text(`N° ${cotizacion.numero}`, 180, 18, {align: 'right'});
+  
+  doc.setTextColor(200, 200, 200);
+  doc.setFontSize(8);
+  const fecha = new Date(cotizacion.fecha).toLocaleDateString('es-CL');
+  doc.text(`Fecha: ${fecha}`, 180, 28, {align: 'right'});
+  
+  // DATOS CLIENTE
   doc.setTextColor(0, 0, 0);
-  
-  let yCliente = 58;
-  const lineHeight = 6;
-  
-  // Columna izquierda
-  doc.setFont(undefined, 'bold');
-  doc.text('RUT:', 18, yCliente);
-  doc.setFont(undefined, 'normal');
-  doc.text(cotizacion.cliente.rut, 50, yCliente);
-  
-  yCliente += lineHeight;
-  doc.setFont(undefined, 'bold');
-  doc.text('Razón Social:', 18, yCliente);
-  doc.setFont(undefined, 'normal');
-  doc.text(cotizacion.cliente.razonSocial, 50, yCliente);
-  
-  yCliente += lineHeight;
-  doc.setFont(undefined, 'bold');
-  doc.text('Giro:', 18, yCliente);
-  doc.setFont(undefined, 'normal');
-  doc.text(cotizacion.cliente.giro, 50, yCliente);
-  
-  yCliente += lineHeight;
-  doc.setFont(undefined, 'bold');
-  doc.text('Dirección:', 18, yCliente);
-  doc.setFont(undefined, 'normal');
-  doc.text(cotizacion.cliente.direccion, 50, yCliente);
-  
-  // Columna derecha
-  yCliente = 58;
-  doc.setFont(undefined, 'bold');
-  doc.text('Contacto:', 110, yCliente);
-  doc.setFont(undefined, 'normal');
-  doc.text(cotizacion.cliente.nombreContacto, 135, yCliente);
-  
-  yCliente += lineHeight;
-  doc.setFont(undefined, 'bold');
-  doc.text('Celular:', 110, yCliente);
-  doc.setFont(undefined, 'normal');
-  doc.text(cotizacion.cliente.celular, 135, yCliente);
-  
-  yCliente += lineHeight;
-  doc.setFont(undefined, 'bold');
-  doc.text('Mail:', 110, yCliente);
-  doc.setFont(undefined, 'normal');
-  doc.text(cotizacion.cliente.mail, 135, yCliente);
-  
-  // Título productos con línea decorativa
-  let yProductos = 100;
-  doc.setDrawColor(52, 152, 219);
-  doc.setLineWidth(1);
-  doc.line(14, yProductos, 196, yProductos);
   doc.setFontSize(11);
   doc.setFont(undefined, 'bold');
-  doc.setTextColor(44, 62, 80);
-  doc.text('Productos y Servicios', 14, yProductos + 5);
+  doc.text('DATOS DEL CLIENTE', 15, 50);
   
-  // Tabla de productos más compacta
+  doc.setDrawColor(52, 152, 219);
+  doc.setLineWidth(0.3);
+  doc.line(15, 52, 195, 52);
+  
+  doc.setFontSize(9);
+  doc.setFont(undefined, 'normal');
+  
+  const clienteData = [
+    ['RUT:', cotizacion.cliente.rut, 'CONTACTO:', cotizacion.cliente.nombreContacto],
+    ['RAZÓN SOCIAL:', cotizacion.cliente.razonSocial, 'CELULAR:', cotizacion.cliente.celular],
+    ['GIRO:', cotizacion.cliente.giro, 'MAIL:', cotizacion.cliente.mail],
+    ['DIRECCIÓN:', cotizacion.cliente.direccion, '', '']
+  ];
+  
+  let yPos = 58;
+  clienteData.forEach(row => {
+    doc.setFont(undefined, 'bold');
+    doc.text(row[0], 15, yPos);
+    doc.setFont(undefined, 'normal');
+    doc.text(row[1], 40, yPos);
+    
+    if (row[2]) {
+      doc.setFont(undefined, 'bold');
+      doc.text(row[2], 110, yPos);
+      doc.setFont(undefined, 'normal');
+      doc.text(row[3], 135, yPos);
+    }
+    yPos += 6;
+  });
+  
+  // LÍNEA DIVISORIA
+  doc.setDrawColor(52, 152, 219);
+  doc.setLineWidth(0.5);
+  doc.line(15, yPos + 2, 195, yPos + 2);
+  
+  // TABLA PRODUCTOS
+  yPos += 8;
+  doc.setFont(undefined, 'bold');
+  doc.setFontSize(9);
+  doc.text('PRODUCTOS Y SERVICIOS', 15, yPos);
+  yPos += 5;
+  
   doc.autoTable({
-    startY: yProductos + 8,
+    startY: yPos,
     head: [['Código', 'Descripción', 'Cant.', 'Valor Neto', 'Total']],
     body: cotizacion.productos.map(p => [
-      p.codigo, 
-      p.descripcion, 
-      p.cantidad.toString(), 
-      `$${parseFloat(p.valorNeto).toLocaleString('es-CL', {minimumFractionDigits: 2})}`, 
+      p.codigo,
+      p.descripcion,
+      p.cantidad.toString(),
+      `$${parseFloat(p.valorNeto).toLocaleString('es-CL', {minimumFractionDigits: 2})}`,
       `$${parseFloat(p.total).toLocaleString('es-CL', {minimumFractionDigits: 2})}`
     ]),
     theme: 'striped',
-    styles: {
-      fontSize: 8,
-      cellPadding: 3,
-      lineColor: [189, 195, 199],
-      lineWidth: 0.1
-    },
-    headStyles: {
-      fillColor: [52, 73, 94],
-      textColor: 255,
-      fontSize: 9,
-      fontStyle: 'bold',
-      halign: 'center'
-    },
+    styles: {fontSize: 8, cellPadding: 3},
+    headStyles: {fillColor: [52, 73, 94], textColor: 255, fontStyle: 'bold'},
     columnStyles: {
-      0: { cellWidth: 25, halign: 'center' },
-      1: { cellWidth: 80 },
-      2: { cellWidth: 20, halign: 'center' },
-      3: { cellWidth: 30, halign: 'right' },
-      4: { cellWidth: 30, halign: 'right' }
+      0: {cellWidth: 20},
+      1: {cellWidth: 90},
+      2: {cellWidth: 15, halign: 'center'},
+      3: {cellWidth: 30, halign: 'right'},
+      4: {cellWidth: 30, halign: 'right'}
     },
-    alternateRowStyles: {
-      fillColor: [245, 245, 245]
-    }
+    margin: {left: 15, right: 15}
   });
   
-  // Resumen financiero en recuadro
-  let finalY = doc.lastAutoTable.finalY + 10;
+  // RESUMEN FINANCIERO
+  const finalY = doc.lastAutoTable.finalY + 5;
   
   doc.setFillColor(236, 240, 241);
-  doc.roundedRect(130, finalY, 66, 28, 2, 2, 'F');
+  doc.rect(120, finalY, 75, 25);
   doc.setDrawColor(52, 152, 219);
   doc.setLineWidth(0.5);
-  doc.roundedRect(130, finalY, 66, 28, 2, 2);
+  doc.rect(120, finalY, 75, 25);
   
   const iva = +(net * 0.19).toFixed(2);
   const tot = +(net + iva).toFixed(2);
   
-  doc.setFontSize(10);
+  doc.setFontSize(9);
   doc.setFont(undefined, 'bold');
   doc.setTextColor(0, 0, 0);
   
-  // Neto
-  doc.text('Neto:', 135, finalY + 8);
-  doc.text(`$${net.toLocaleString('es-CL', {minimumFractionDigits: 2})}`, 190, finalY + 8, {align: 'right'});
+  doc.text('Neto:', 125, finalY + 5);
+  doc.text(`$${net.toLocaleString('es-CL', {minimumFractionDigits: 2})}`, 190, finalY + 5, {align: 'right'});
   
-  // IVA
-  doc.text('IVA (19%):', 135, finalY + 15);
-  doc.text(`$${iva.toLocaleString('es-CL', {minimumFractionDigits: 2})}`, 190, finalY + 15, {align: 'right'});
+  doc.text('IVA (19%):', 125, finalY + 11);
+  doc.text(`$${iva.toLocaleString('es-CL', {minimumFractionDigits: 2})}`, 190, finalY + 11, {align: 'right'});
   
-  // Total con fondo destacado
   doc.setFillColor(52, 152, 219);
-  doc.roundedRect(130, finalY + 18, 66, 8, 1, 1, 'F');
+  doc.rect(120, finalY + 15, 75, 7);
   doc.setTextColor(255, 255, 255);
-  doc.setFontSize(11);
-  doc.text('TOTAL:', 135, finalY + 24);
-  doc.text(`$${tot.toLocaleString('es-CL', {minimumFractionDigits: 2})}`, 190, finalY + 24, {align: 'right'});
+  doc.setFontSize(10);
+  doc.text('TOTAL:', 125, finalY + 19);
+  doc.text(`$${tot.toLocaleString('es-CL', {minimumFractionDigits: 2})}`, 190, finalY + 19, {align: 'right'});
   
-  // Pie de página
+  // PIE
   doc.setTextColor(150, 150, 150);
   doc.setFontSize(8);
   doc.setFont(undefined, 'italic');
-  doc.text('Gracias por su preferencia', 105, 285, {align: 'center'});
+  doc.text('Gracias por su preferencia', 105, 280, {align: 'center'});
   
   doc.save(`Cotizacion_${cotizacion.numero}.pdf`);
 }
@@ -788,38 +753,75 @@ function generarPDFDocumento(cotizacion) {
 function mostrarCotizaciones() {
   const modal = document.getElementById('modalCotizaciones');
   const cont = document.getElementById('listaCotizaciones');
+  
   if (cotizacionesEmitidas.length === 0) {
-    cont.innerHTML = '<p style="text-transform:uppercase; text-align:center;">NO HAY COTIZACIONES EMITIDAS</p>';
+    cont.innerHTML = '<p style="text-transform:uppercase; text-align:center; padding: 20px;">NO HAY COTIZACIONES EMITIDAS</p>';
   } else {
-    let html = '<table style="width:100%; border-collapse: collapse;"><thead><tr><th style="border:1px solid #ddd; padding:10px;">N° COTIZACIÓN</th><th style="border:1px solid #ddd; padding:10px;">RAZÓN SOCIAL</th><th style="border:1px solid #ddd; padding:10px; text-align:right;">MONTO NETO</th><th style="border:1px solid #ddd; padding:10px; text-align:center;">ACCIONES</th></tr></thead><tbody>';
+    let html = '<table class="tabla-cotizaciones"><thead><tr><th>N° COTIZACIÓN</th><th>RAZÓN SOCIAL</th><th style="text-align:right;">MONTO NETO</th><th style="text-align:center;">ACCIONES</th></tr></thead><tbody>';
+    
     cotizacionesEmitidas.forEach((c, index) => {
-      html += `<tr><td style="border:1px solid #ddd; padding:10px;">${c.numero}</td><td style="border:1px solid #ddd; padding:10px;">${c.razonSocial}</td><td style="border:1px solid #ddd; padding:10px; text-align:right;">$${parseFloat(c.neto).toLocaleString('es-CL', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td><td style="border:1px solid #ddd; padding:10px; text-align:center;"><button class="btn-ver" onclick="verCotizacion(${index})">VER</button><button class="btn-editar-cotizacion" onclick="editarCotizacionGuardada(${index})">EDITAR</button></td></tr>`;
+      html += `<tr>
+        <td>${c.numero}</td>
+        <td>${c.razonSocial}</td>
+        <td style="text-align:right;">$${parseFloat(c.neto).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td>
+        <td style="text-align:center;">
+          <button class="btn-ver" onclick="verCotizacion(${index})">VER PDF</button>
+          <button class="btn-editar-cot" onclick="editarCotizacionGuardada(${index})">EDITAR</button>
+        </td>
+      </tr>`;
     });
+    
     html += '</tbody></table>';
     cont.innerHTML = html;
   }
+  
   modal.style.display = 'block';
 }
 
 function verCotizacion(index) {
+  console.log('Índice VER:', index);
+  console.log('Total cotizaciones:', cotizacionesEmitidas.length);
+  console.log('Cotización:', cotizacionesEmitidas[index]);
+  
+  if (index < 0 || index >= cotizacionesEmitidas.length) {
+    alert('ERROR: COTIZACIÓN NO ENCONTRADA');
+    return;
+  }
+  
   const cotizacion = cotizacionesEmitidas[index];
-  if (!cotizacion) {alert('COTIZACIÓN NO ENCONTRADA'); return;}
+  if (!cotizacion) {
+    alert('ERROR: COTIZACIÓN VACÍA');
+    return;
+  }
+  
   generarPDFDocumento(cotizacion);
 }
 
 function editarCotizacionGuardada(index) {
-  const cotizacion = cotizacionesEmitidas[index];
-  if (!cotizacion) {alert('COTIZACIÓN NO ENCONTRADA'); return;}
+  console.log('Índice EDITAR:', index);
+  console.log('Total cotizaciones:', cotizacionesEmitidas.length);
+  console.log('Cotización:', cotizacionesEmitidas[index]);
   
-  clienteActual = {...cotizacion.cliente};
+  if (index < 0 || index >= cotizacionesEmitidas.length) {
+    alert('ERROR: COTIZACIÓN NO ENCONTRADA');
+    return;
+  }
+  
+  const cotizacion = cotizacionesEmitidas[index];
+  if (!cotizacion) {
+    alert('ERROR: COTIZACIÓN VACÍA');
+    return;
+  }
+  
+  clienteActual = JSON.parse(JSON.stringify(cotizacion.cliente));
+  productosEnCotizacion = JSON.parse(JSON.stringify(cotizacion.productos));
+  
   mostrarResumenCliente(clienteActual);
   document.getElementById('formularioCliente').classList.remove('activo');
-  
-  productosEnCotizacion = cotizacion.productos.map(p => ({...p}));
   actualizarTablaProductos();
   
   cerrarCotizaciones();
-  mostrarMensaje('COTIZACIÓN CARGADA PARA EDICIÓN', 'info');
+  mostrarMensaje(`COTIZACIÓN ${cotizacion.numero} CARGADA PARA EDICIÓN`, 'info');
   alert('COTIZACIÓN CARGADA. PUEDE MODIFICAR CLIENTE Y/O PRODUCTOS.');
 }
 
