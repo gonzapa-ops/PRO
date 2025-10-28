@@ -43,7 +43,7 @@ button {cursor: pointer; border: none; border-radius: 4px; font-weight: bold; te
 .formulario-cliente, .formulario-producto, .formulario-editar-articulo {display: none; animation: fadeIn 0.3s;}
 .formulario-cliente.activo, .formulario-producto.activo, .formulario-editar-articulo.activo {display: block;}
 @keyframes fadeIn {from {opacity: 0;} to {opacity: 1;}}
-.campo-grupo {margin-bottom: 15px;}
+.campo-grupo {margin-bottom: 15px; position: relative;}
 .campo-grupo label {display: block; font-weight: bold; color: #2c3e50; margin-bottom: 5px; font-size: 13px; text-transform: uppercase;}
 .campo-grupo input {width: 100%; padding: 10px; font-size: 13px; border: 2px solid #ddd; border-radius: 4px; transition: border-color 0.3s; text-transform: uppercase;}
 .campo-grupo input:focus {outline: none; border-color: #3498db;}
@@ -67,8 +67,15 @@ button {cursor: pointer; border: none; border-radius: 4px; font-weight: bold; te
 .busqueda-rut input:focus {outline: none; border-color: #3498db;}
 .seccion-productos {margin-bottom: 30px; border: 1px solid #ddd; border-radius: 5px; padding: 20px; background-color: #fafafa;}
 .busqueda-producto {display: flex; gap: 10px; margin-bottom: 20px; align-items: center;}
+.busqueda-producto {position: relative;}
 .busqueda-producto input {flex: 1; padding: 10px; font-size: 13px; border: 2px solid #ddd; border-radius: 4px; text-transform: uppercase;}
 .busqueda-producto input:focus {outline: none; border-color: #3498db;}
+.autocomplete-list {display: none; position: absolute; top: 100%; left: 0; right: 70px; background: white; border: 1px solid #ddd; border-top: none; max-height: 200px; overflow-y: auto; z-index: 1000; border-radius: 0 0 4px 4px;}
+.autocomplete-list.activo {display: block;}
+.autocomplete-item {padding: 10px; cursor: pointer; background: white; font-size: 12px; text-transform: uppercase; border-bottom: 1px solid #eee;}
+.autocomplete-item:hover {background: #3498db; color: white;}
+.autocomplete-item strong {font-weight: bold; color: #2c3e50;}
+.autocomplete-item:hover strong {color: white;}
 .formulario-producto {background: #fff3cd; padding: 15px; border-radius: 4px; border-left: 4px solid #f39c12; margin-bottom: 20px;}
 .formulario-producto h4 {text-transform: uppercase; color: #856404; margin-bottom: 15px;}
 .fila-campos-producto {display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;}
@@ -141,7 +148,8 @@ button {cursor: pointer; border: none; border-radius: 4px; font-weight: bold; te
     <section class="seccion-productos">
       <h2 class="seccion-titulo">PRODUCTOS Y/O SERVICIOS</h2>
       <div class="busqueda-producto">
-        <input type="text" id="inputCodigoProducto" placeholder="INGRESE CÓDIGO DEL PRODUCTO O SERVICIO" maxlength="20" />
+        <input type="text" id="inputCodigoProducto" placeholder="INGRESE CÓDIGO O DESCRIPCIÓN DEL PRODUCTO" maxlength="50" />
+        <div id="autocompleteLista" class="autocomplete-list"></div>
         <button class="btn btn-buscar" onclick="buscarProducto()">BUSCAR</button>
       </div>
       <div id="mensajeProducto"></div>
@@ -224,6 +232,13 @@ class GestorProductos {
   actualizarProducto(codigo, datos) {this.productos[codigo] = datos; this.guardarProductos();}
   obtenerTodos() {return this.productos;}
   eliminarProducto(codigo) {delete this.productos[codigo]; this.guardarProductos();}
+  buscarPorCodigoODescripcion(termino) {
+    termino = termino.toUpperCase().trim();
+    const todos = this.obtenerTodos();
+    return Object.values(todos).filter(prod => 
+      prod.codigo.includes(termino) || prod.descripcion.includes(termino)
+    ).slice(0, 10);
+  }
 }
 
 const gestorCotizaciones = new GestorCotizaciones();
@@ -240,6 +255,54 @@ document.getElementById('inputRut').addEventListener('input', function(e) {
   let v = e.target.value.replace(/[^0-9kK]/g, '');
   if (v.length > 1) v = v.slice(0, -1) + '-' + v.slice(-1);
   e.target.value = v.toUpperCase();
+});
+
+document.getElementById('inputCodigoProducto').addEventListener('input', function(e) {
+  e.target.value = e.target.value.toUpperCase();
+  mostrarAutocomplete();
+});
+
+document.getElementById('inputCodigoProducto').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') buscarProducto();
+});
+
+function mostrarAutocomplete() {
+  const input = document.getElementById('inputCodigoProducto').value.trim();
+  const lista = document.getElementById('autocompleteLista');
+  
+  if (!input || input.length < 1) {
+    lista.classList.remove('activo');
+    return;
+  }
+  
+  const resultados = gestorProductos.buscarPorCodigoODescripcion(input);
+  
+  if (resultados.length === 0) {
+    lista.classList.remove('activo');
+    return;
+  }
+  
+  let html = '';
+  resultados.forEach(prod => {
+    html += `<div class="autocomplete-item" onclick="seleccionarProductoAutocomplete('${prod.codigo}')">
+      <strong>${prod.codigo}</strong> - ${prod.descripcion}
+    </div>`;
+  });
+  
+  lista.innerHTML = html;
+  lista.classList.add('activo');
+}
+
+function seleccionarProductoAutocomplete(codigo) {
+  document.getElementById('inputCodigoProducto').value = codigo;
+  document.getElementById('autocompleteLista').classList.remove('activo');
+  buscarProducto();
+}
+
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.busqueda-producto')) {
+    document.getElementById('autocompleteLista').classList.remove('activo');
+  }
 });
 
 function buscarCliente() {
@@ -347,7 +410,6 @@ function limpiarCamposFormulario() {
   document.getElementById('mail').value = '';
 }
 
-document.getElementById('inputCodigoProducto').addEventListener('input', function(e) {e.target.value = e.target.value.toUpperCase();});
 document.getElementById('costoProducto').addEventListener('change', calcularValorNeto);
 document.getElementById('porcentajeProducto').addEventListener('change', calcularValorNeto);
 
@@ -360,7 +422,7 @@ function calcularValorNeto() {
 
 function buscarProducto() {
   const cod = document.getElementById('inputCodigoProducto').value.trim();
-  if (!cod) return mostrarMensajeProducto('INGRESE UN CÓDIGO', 'error');
+  if (!cod) return mostrarMensajeProducto('INGRESE UN CÓDIGO O DESCRIPCIÓN', 'error');
   const prod = gestorProductos.buscarPorCodigo(cod);
   if (prod) {
     mostrarMensajeProducto('PRODUCTO ENCONTRADO', 'exito');
@@ -477,7 +539,6 @@ function actualizarResumenTotales() {
   document.getElementById('totalGeneral').textContent = '$' + tot.toLocaleString('es-CL', {minimumFractionDigits: 2, maximumFractionDigits: 2});
   document.getElementById('resumenTotales').style.display = 'block';
   
-  // CALCULAR Y MOSTRAR UTILIDAD (CON DESCUENTO APLICADO)
   let htmlUtilidad = '<div class="resumen-utilidad"><h4>📊 UTILIDAD (INTERNO)</h4>';
   let utilidadTotal = 0;
   productosEnCotizacion.forEach(p => {
