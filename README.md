@@ -36,6 +36,10 @@ button {cursor: pointer; border: none; border-radius: 4px; padding: 10px 15px; f
 .btn-editar:hover {background: #e67e22;}
 .btn-cancelar {background: #e74c3c; color: white; padding: 8px 12px; font-size: 12px;}
 .btn-cancelar:hover {background: #c0392b;}
+.btn-ver {background: #9b59b6; color: white; padding: 6px 10px; font-size: 11px; margin-right: 5px;}
+.btn-ver:hover {background: #8e44ad;}
+.btn-editar-cotizacion {background: #f39c12; color: white; padding: 6px 10px; font-size: 11px;}
+.btn-editar-cotizacion:hover {background: #e67e22;}
 .formulario-cliente, .formulario-producto, .formulario-editar-articulo {display: none; animation: fadeIn 0.3s;}
 .formulario-cliente.activo, .formulario-producto.activo, .formulario-editar-articulo.activo {display: block;}
 @keyframes fadeIn {from {opacity: 0;} to {opacity: 1;}}
@@ -78,7 +82,7 @@ button {cursor: pointer; border: none; border-radius: 4px; padding: 10px 15px; f
 .btn-cerrar-modal {position: absolute; top: 14px; right: 25px; background: #e74c3c; color: white; font-size: 18px; border: none; border-radius: 4px; cursor: pointer; padding: 4px 10px;}
 .botones-superiores {display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;}
 #modalCotizaciones {display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.5); z-index: 10000; overflow: auto;}
-#modalCotizaciones > div {background: white; max-width: 700px; margin: 40px auto; padding: 20px; border-radius: 8px; position: relative;}
+#modalCotizaciones > div {background: white; max-width: 900px; margin: 40px auto; padding: 20px; border-radius: 8px; position: relative;}
 .resumen-totales {max-width: 400px; margin-left: auto; border-top: 3px solid #3498db; padding-top: 15px; text-transform: uppercase;}
 .resumen-linea {display: flex; justify-content: space-between; margin: 5px 0; font-weight: bold; font-size: 13px;}
 .resumen-linea.total {font-size: 16px; color: #2c3e50;}
@@ -587,32 +591,51 @@ function generarPDF() {
   if (productosEnCotizacion.length === 0) {alert('AGREGUE PRODUCTOS'); return;}
   const numCot = gestorCotizaciones.siguienteCotizacion();
   const net = productosEnCotizacion.reduce((acc, p) => acc + parseFloat(p.total), 0);
-  cotizacionesEmitidas.push({numero: numCot, razonSocial: clienteActual.razonSocial, neto: net.toFixed(2), fecha: new Date().toISOString()});
+  
+  // Guardamos la cotización con todos los datos (cliente y productos)
+  const cotizacion = {
+    numero: numCot,
+    razonSocial: clienteActual.razonSocial,
+    neto: net.toFixed(2),
+    fecha: new Date().toISOString(),
+    cliente: {...clienteActual},
+    productos: [...productosEnCotizacion]
+  };
+  
+  cotizacionesEmitidas.push(cotizacion);
   localStorage.setItem('cotizacionesEmitidas', JSON.stringify(cotizacionesEmitidas));
+  
+  generarPDFDocumento(cotizacion);
+  alert('PDF GENERADO Y COTIZACIÓN ACTUALIZADA');
+}
+
+function generarPDFDocumento(cotizacion) {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF();
+  const net = parseFloat(cotizacion.neto);
+  
   doc.setFontSize(18);
   doc.text('COTIZACION', 14, 15);
   doc.setFontSize(12);
   doc.text(`EMPRESA CUNDO`, 14, 25);
-  doc.text(`N°: ${numCot}`, 160, 25);
+  doc.text(`N°: ${cotizacion.numero}`, 160, 25);
   doc.setFontSize(14);
   doc.text('Datos del cliente', 14, 35);
   let y = 40;
   doc.setFontSize(10);
-  doc.text(`RUT: ${clienteActual.rut}`, 14, y); y += 6;
-  doc.text(`Razón Social: ${clienteActual.razonSocial}`, 14, y); y += 6;
-  doc.text(`Giro: ${clienteActual.giro}`, 14, y); y += 6;
-  doc.text(`Dirección: ${clienteActual.direccion}`, 14, y); y += 6;
-  doc.text(`Contacto: ${clienteActual.nombreContacto}`, 14, y); y += 6;
-  doc.text(`Celular: ${clienteActual.celular}`, 14, y); y += 6;
-  doc.text(`Mail: ${clienteActual.mail}`, 14, y); y += 10;
+  doc.text(`RUT: ${cotizacion.cliente.rut}`, 14, y); y += 6;
+  doc.text(`Razón Social: ${cotizacion.cliente.razonSocial}`, 14, y); y += 6;
+  doc.text(`Giro: ${cotizacion.cliente.giro}`, 14, y); y += 6;
+  doc.text(`Dirección: ${cotizacion.cliente.direccion}`, 14, y); y += 6;
+  doc.text(`Contacto: ${cotizacion.cliente.nombreContacto}`, 14, y); y += 6;
+  doc.text(`Celular: ${cotizacion.cliente.celular}`, 14, y); y += 6;
+  doc.text(`Mail: ${cotizacion.cliente.mail}`, 14, y); y += 10;
   doc.setFontSize(14);
   doc.text('Productos y Servicios', 14, y); y += 6;
   doc.autoTable({
     startY: y,
     head: [['CÓDIGO', 'DESCRIPCIÓN', 'CANTIDAD', 'VALOR NETO', 'TOTAL']],
-    body: productosEnCotizacion.map(p => [p.codigo, p.descripcion, p.cantidad.toString(), `$${p.valorNeto.toFixed(2)}`, `$${p.total}`]),
+    body: cotizacion.productos.map(p => [p.codigo, p.descripcion, p.cantidad.toString(), `$${p.valorNeto.toFixed(2)}`, `$${p.total}`]),
     theme: 'grid',
     styles: {fontSize: 9, cellPadding: 2},
     headStyles: {fillColor: [52, 73, 94]}
@@ -630,8 +653,7 @@ function generarPDF() {
   doc.text(ivaStr, 190, finalY + 6, {align: 'right'});
   doc.text('Total:', 140, finalY + 12);
   doc.text(totStr, 190, finalY + 12, {align: 'right'});
-  doc.save(`Cotizacion_${numCot}.pdf`);
-  alert('PDF GENERADO Y COTIZACIÓN ACTUALIZADA');
+  doc.save(`Cotizacion_${cotizacion.numero}.pdf`);
 }
 
 function mostrarCotizaciones() {
@@ -640,14 +662,41 @@ function mostrarCotizaciones() {
   if (cotizacionesEmitidas.length === 0) {
     cont.innerHTML = '<p style="text-transform:uppercase; text-align:center;">NO HAY COTIZACIONES EMITIDAS</p>';
   } else {
-    let html = '<table style="width:100%; border-collapse: collapse;"><thead><tr><th style="border:1px solid #ddd; padding:10px;">N° COTIZACIÓN</th><th style="border:1px solid #ddd; padding:10px;">RAZÓN SOCIAL</th><th style="border:1px solid #ddd; padding:10px; text-align:right;">MONTO NETO</th></tr></thead><tbody>';
-    cotizacionesEmitidas.forEach(c => {
-      html += `<tr><td style="border:1px solid #ddd; padding:10px;">${c.numero}</td><td style="border:1px solid #ddd; padding:10px;">${c.razonSocial}</td><td style="border:1px solid #ddd; padding:10px; text-align:right;">$${parseFloat(c.neto).toLocaleString('es-CL', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td></tr>`;
+    let html = '<table style="width:100%; border-collapse: collapse;"><thead><tr><th style="border:1px solid #ddd; padding:10px;">N° COTIZACIÓN</th><th style="border:1px solid #ddd; padding:10px;">RAZÓN SOCIAL</th><th style="border:1px solid #ddd; padding:10px; text-align:right;">MONTO NETO</th><th style="border:1px solid #ddd; padding:10px; text-align:center;">ACCIONES</th></tr></thead><tbody>';
+    cotizacionesEmitidas.forEach((c, index) => {
+      html += `<tr><td style="border:1px solid #ddd; padding:10px;">${c.numero}</td><td style="border:1px solid #ddd; padding:10px;">${c.razonSocial}</td><td style="border:1px solid #ddd; padding:10px; text-align:right;">$${parseFloat(c.neto).toLocaleString('es-CL', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td><td style="border:1px solid #ddd; padding:10px; text-align:center;"><button class="btn-ver" onclick="verCotizacion(${index})">VER</button><button class="btn-editar-cotizacion" onclick="editarCotizacionGuardada(${index})">EDITAR</button></td></tr>`;
     });
     html += '</tbody></table>';
     cont.innerHTML = html;
   }
   modal.style.display = 'block';
+}
+
+function verCotizacion(index) {
+  const cotizacion = cotizacionesEmitidas[index];
+  if (!cotizacion) {alert('COTIZACIÓN NO ENCONTRADA'); return;}
+  generarPDFDocumento(cotizacion);
+}
+
+function editarCotizacionGuardada(index) {
+  const cotizacion = cotizacionesEmitidas[index];
+  if (!cotizacion) {alert('COTIZACIÓN NO ENCONTRADA'); return;}
+  
+  // Cargar cliente
+  clienteActual = {...cotizacion.cliente};
+  mostrarResumenCliente(clienteActual);
+  document.getElementById('formularioCliente').classList.remove('activo');
+  
+  // Cargar productos
+  productosEnCotizacion = cotizacion.productos.map(p => ({...p}));
+  actualizarTablaProductos();
+  
+  // Cerrar modal de cotizaciones
+  cerrarCotizaciones();
+  
+  // Mostrar mensaje
+  mostrarMensaje('COTIZACIÓN CARGADA PARA EDICIÓN', 'info');
+  alert('COTIZACIÓN CARGADA. PUEDE MODIFICAR CLIENTE Y/O PRODUCTOS.');
 }
 
 function cerrarCotizaciones() {
