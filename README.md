@@ -66,8 +66,7 @@ button {cursor: pointer; border: none; border-radius: 4px; font-weight: bold; te
 .busqueda-rut input {flex: 1; padding: 10px; font-size: 13px; border: 2px solid #ddd; border-radius: 4px; text-transform: uppercase;}
 .busqueda-rut input:focus {outline: none; border-color: #3498db;}
 .seccion-productos {margin-bottom: 30px; border: 1px solid #ddd; border-radius: 5px; padding: 20px; background-color: #fafafa;}
-.busqueda-producto {display: flex; gap: 10px; margin-bottom: 20px; align-items: center;}
-.busqueda-producto {position: relative;}
+.busqueda-producto {display: flex; gap: 10px; margin-bottom: 20px; align-items: center; position: relative;}
 .busqueda-producto input {flex: 1; padding: 10px; font-size: 13px; border: 2px solid #ddd; border-radius: 4px; text-transform: uppercase;}
 .busqueda-producto input:focus {outline: none; border-color: #3498db;}
 .autocomplete-list {display: none; position: absolute; top: 100%; left: 0; right: 70px; background: white; border: 1px solid #ddd; border-top: none; max-height: 200px; overflow-y: auto; z-index: 1000; border-radius: 0 0 4px 4px;}
@@ -735,6 +734,14 @@ function generarPDFDocumento(cotizacion) {
   doc.setFont(undefined, 'bold');
   doc.text("TOTAL:", resumenX, resumenY + 14);
   doc.text(`$${Math.round(tot).toLocaleString('es-CL')}`, 185, resumenY + 14, {align: 'right'});
+
+  // DATOS EMPRESA VENDEDORA - LETRA PEQUEÑA AL PIE
+  doc.setFontSize(7);
+  doc.setFont(undefined, 'normal');
+  doc.setTextColor(100, 100, 100);
+  let empresaY = 268;
+  doc.text('RUT: 78000256-0 | Razón social: Empresa Servicios SPA | Dirección: Los Pepinos 287, Las Condes.', 15, empresaY);
+  doc.text('Mail: contacto@servicios.cl | Teléfono: 56 22 5510365', 15, empresaY + 4);
 
   doc.setTextColor(150, 150, 150);
   doc.setFontSize(8);
