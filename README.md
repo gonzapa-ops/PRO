@@ -18,7 +18,7 @@
         }
 
         .cotizador-container {
-            max-width: 1000px;
+            max-width: 1200px;
             margin: 0 auto;
             background-color: white;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
@@ -151,6 +151,28 @@
             background-color: #c0392b;
         }
 
+        .btn-agregar {
+            background-color: #27ae60;
+            color: white;
+            padding: 8px 15px;
+            font-size: 13px;
+        }
+
+        .btn-agregar:hover {
+            background-color: #229954;
+        }
+
+        .btn-eliminar {
+            background-color: #e74c3c;
+            color: white;
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+
+        .btn-eliminar:hover {
+            background-color: #c0392b;
+        }
+
         .formulario-cliente {
             display: none;
             animation: fadeIn 0.3s;
@@ -272,6 +294,151 @@
             gap: 10px;
             margin-top: 10px;
         }
+
+        /* ESTILOS PARA PRODUCTOS Y SERVICIOS */
+        .seccion-productos {
+            margin-bottom: 30px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 20px;
+            background-color: #fafafa;
+        }
+
+        .busqueda-producto {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            align-items: center;
+        }
+
+        .busqueda-producto input {
+            flex: 1;
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            transition: border-color 0.3s;
+            text-transform: uppercase;
+        }
+
+        .busqueda-producto input:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        .tabla-productos {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        .tabla-productos thead {
+            background-color: #34495e;
+            color: white;
+        }
+
+        .tabla-productos th {
+            padding: 12px;
+            text-align: left;
+            font-weight: bold;
+            text-transform: uppercase;
+            border: 1px solid #ddd;
+        }
+
+        .tabla-productos td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-transform: uppercase;
+        }
+
+        .tabla-productos tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .tabla-productos tbody tr:hover {
+            background-color: #f0f0f0;
+        }
+
+        .tabla-productos input {
+            width: 100%;
+            padding: 6px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            text-transform: uppercase;
+            font-size: 13px;
+        }
+
+        .tabla-productos input:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+        }
+
+        .tabla-productos input[type="number"] {
+            text-align: right;
+        }
+
+        .valor-numerico {
+            text-align: right;
+            font-weight: bold;
+        }
+
+        .celda-acciones {
+            text-align: center;
+        }
+
+        .btn-pequeno {
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+
+        .formulario-producto {
+            display: none;
+            background-color: #fff3cd;
+            padding: 15px;
+            border-radius: 4px;
+            border-left: 4px solid #f39c12;
+            margin-bottom: 20px;
+            animation: fadeIn 0.3s;
+        }
+
+        .formulario-producto.activo {
+            display: block;
+        }
+
+        .formulario-producto h4 {
+            text-transform: uppercase;
+            color: #856404;
+            margin-bottom: 15px;
+        }
+
+        .fila-campos-producto {
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+
+        .fila-campos-producto .campo-grupo {
+            margin-bottom: 0;
+        }
+
+        .botones-producto {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .alerta-sin-productos {
+            background-color: #e8f4f8;
+            padding: 15px;
+            border-radius: 4px;
+            border-left: 4px solid #3498db;
+            text-align: center;
+            color: #2c3e50;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -285,6 +452,7 @@
         </header>
 
         <main class="cotizador-contenido">
+            <!-- SECCIÓN DATOS DEL CLIENTE -->
             <section class="seccion-cliente">
                 <h2 class="seccion-titulo">DATOS DEL CLIENTE</h2>
                 
@@ -347,6 +515,48 @@
                             CANCELAR
                         </button>
                     </div>
+                </div>
+
+            </section>
+
+            <!-- SECCIÓN PRODUCTOS Y SERVICIOS -->
+            <section class="seccion-productos">
+                <h2 class="seccion-titulo">PRODUCTOS Y/O SERVICIOS</h2>
+
+                <div class="busqueda-producto">
+                    <input type="text" 
+                           id="inputCodigoProducto" 
+                           placeholder="INGRESE CÓDIGO DEL PRODUCTO O SERVICIO" 
+                           maxlength="20">
+                    <button class="btn btn-buscar" onclick="buscarProducto()">BUSCAR</button>
+                </div>
+
+                <div id="mensajeProducto"></div>
+
+                <div id="formularioProducto" class="formulario-producto">
+                    <h4>CREAR NUEVO PRODUCTO/SERVICIO</h4>
+                    <div class="fila-campos-producto">
+                        <div class="campo-grupo">
+                            <label for="codigoProducto">CÓDIGO *</label>
+                            <input type="text" id="codigoProducto" disabled>
+                        </div>
+                        <div class="campo-grupo">
+                            <label for="descripcionProducto">DESCRIPCIÓN *</label>
+                            <input type="text" id="descripcionProducto" required>
+                        </div>
+                        <div class="campo-grupo">
+                            <label for="valorNetoProducto">VALOR NETO *</label>
+                            <input type="number" id="valorNetoProducto" min="0" step="0.01" required>
+                        </div>
+                    </div>
+                    <div class="botones-producto">
+                        <button class="btn btn-agregar" onclick="guardarProducto()">GUARDAR PRODUCTO</button>
+                        <button class="btn btn-cancelar btn-pequeno" onclick="cancelarProducto()">CANCELAR</button>
+                    </div>
+                </div>
+
+                <div id="tablaProductosContenedor">
+                    <div class="alerta-sin-productos">NO HAY PRODUCTOS AÑADIDOS A LA COTIZACIÓN</div>
                 </div>
 
             </section>
@@ -418,11 +628,43 @@
             }
         }
 
+        class GestorProductos {
+            constructor() {
+                this.productos = this.cargarProductos();
+            }
+
+            cargarProductos() {
+                const productosGuardados = localStorage.getItem('productos');
+                return productosGuardados ? JSON.parse(productosGuardados) : {};
+            }
+
+            guardarProductos() {
+                localStorage.setItem('productos', JSON.stringify(this.productos));
+            }
+
+            buscarPorCodigo(codigo) {
+                return this.productos[codigo] || null;
+            }
+
+            agregarProducto(codigo, datos) {
+                this.productos[codigo] = datos;
+                this.guardarProductos();
+            }
+
+            obtenerTodos() {
+                return this.productos;
+            }
+        }
+
         const gestorCotizaciones = new GestorCotizaciones();
         const gestorClientes = new GestorClientes();
+        const gestorProductos = new GestorProductos();
         let clienteActual = null;
         let modoEdicion = false;
+        let productosEnCotizacion = [];
+        let codigoProductoActual = null;
 
+        // FUNCIONES CLIENTE
         document.getElementById('inputRut').addEventListener('input', function(e) {
             let valor = e.target.value.replace(/[^0-9kK]/g, '');
             if (valor.length > 1) {
@@ -597,10 +839,176 @@
             document.getElementById('mail').value = '';
         }
 
+        // FUNCIONES PRODUCTOS
+        document.getElementById('inputCodigoProducto').addEventListener('input', function(e) {
+            e.target.value = e.target.value.toUpperCase();
+        });
+
+        function buscarProducto() {
+            const codigo = document.getElementById('inputCodigoProducto').value.trim();
+            const mensajeProducto = document.getElementById('mensajeProducto');
+            const formularioProducto = document.getElementById('formularioProducto');
+
+            if (!codigo) {
+                mostrarMensajeProducto('POR FAVOR INGRESE UN CÓDIGO', 'error');
+                return;
+            }
+
+            const producto = gestorProductos.buscarPorCodigo(codigo);
+
+            if (producto) {
+                codigoProductoActual = codigo;
+                mostrarMensajeProducto('PRODUCTO ENCONTRADO. AGREGUE CANTIDAD.', 'exito');
+                formularioProducto.classList.remove('activo');
+                agregarProductoACotizacion(codigo, producto);
+                document.getElementById('inputCodigoProducto').value = '';
+            } else {
+                mostrarMensajeProducto('PRODUCTO NO ENCONTRADO. POR FAVOR COMPLETE LOS DATOS PARA CREAR EL PRODUCTO.', 'info');
+                codigoProductoActual = codigo;
+                formularioProducto.classList.add('activo');
+                document.getElementById('codigoProducto').value = codigo;
+                document.getElementById('descripcionProducto').value = '';
+                document.getElementById('valorNetoProducto').value = '';
+            }
+        }
+
+        function mostrarMensajeProducto(texto, tipo) {
+            const mensaje = document.getElementById('mensajeProducto');
+            mensaje.className = `mensaje mensaje-${tipo}`;
+            mensaje.textContent = texto;
+            mensaje.style.display = 'block';
+        }
+
+        function guardarProducto() {
+            const codigo = document.getElementById('codigoProducto').value.trim();
+            const descripcion = document.getElementById('descripcionProducto').value.trim();
+            const valorNeto = parseFloat(document.getElementById('valorNetoProducto').value);
+
+            if (!codigo || !descripcion || isNaN(valorNeto) || valorNeto <= 0) {
+                mostrarMensajeProducto('POR FAVOR COMPLETE TODOS LOS CAMPOS CORRECTAMENTE', 'error');
+                return;
+            }
+
+            const producto = {
+                codigo,
+                descripcion: descripcion.toUpperCase(),
+                valorNeto: parseFloat(valorNeto.toFixed(2))
+            };
+
+            gestorProductos.agregarProducto(codigo, producto);
+            mostrarMensajeProducto('PRODUCTO GUARDADO EXITOSAMENTE', 'exito');
+            cancelarProducto();
+            agregarProductoACotizacion(codigo, producto);
+        }
+
+        function cancelarProducto() {
+            document.getElementById('formularioProducto').classList.remove('activo');
+            document.getElementById('codigoProducto').value = '';
+            document.getElementById('descripcionProducto').value = '';
+            document.getElementById('valorNetoProducto').value = '';
+            document.getElementById('inputCodigoProducto').value = '';
+            document.getElementById('mensajeProducto').style.display = 'none';
+        }
+
+        function agregarProductoACotizacion(codigo, producto) {
+            const productoExistente = productosEnCotizacion.find(p => p.codigo === codigo);
+
+            if (productoExistente) {
+                productoExistente.cantidad += 1;
+                productoExistente.total = (productoExistente.cantidad * productoExistente.valorNeto).toFixed(2);
+            } else {
+                productosEnCotizacion.push({
+                    codigo: producto.codigo,
+                    descripcion: producto.descripcion,
+                    cantidad: 1,
+                    valorNeto: producto.valorNeto,
+                    total: producto.valorNeto.toFixed(2)
+                });
+            }
+
+            actualizarTablaProductos();
+        }
+
+        function actualizarTablaProductos() {
+            const contenedor = document.getElementById('tablaProductosContenedor');
+
+            if (productosEnCotizacion.length === 0) {
+                contenedor.innerHTML = '<div class="alerta-sin-productos">NO HAY PRODUCTOS AÑADIDOS A LA COTIZACIÓN</div>';
+                return;
+            }
+
+            let html = `
+                <table class="tabla-productos">
+                    <thead>
+                        <tr>
+                            <th>CÓDIGO</th>
+                            <th>DESCRIPCIÓN</th>
+                            <th style="width: 80px;">CANTIDAD</th>
+                            <th style="width: 100px;">VALOR NETO</th>
+                            <th style="width: 100px;">TOTAL</th>
+                            <th style="width: 60px;">ACCIÓN</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            productosEnCotizacion.forEach((producto, index) => {
+                html += `
+                    <tr>
+                        <td>${producto.codigo}</td>
+                        <td>${producto.descripcion}</td>
+                        <td>
+                            <input type="number" 
+                                   value="${producto.cantidad}" 
+                                   min="1" 
+                                   onchange="actualizarCantidad(${index}, this.value)">
+                        </td>
+                        <td class="valor-numerico">$${parseFloat(producto.valorNeto).toLocaleString('es-CL', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                        <td class="valor-numerico">$${parseFloat(producto.total).toLocaleString('es-CL', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                        <td class="celda-acciones">
+                            <button class="btn btn-eliminar btn-pequeno" onclick="eliminarProducto(${index})">ELIMINAR</button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            html += `
+                    </tbody>
+                </table>
+            `;
+
+            contenedor.innerHTML = html;
+        }
+
+        function actualizarCantidad(index, cantidad) {
+            const cantidadNum = parseInt(cantidad);
+
+            if (cantidadNum <= 0) {
+                mostrarMensajeProducto('LA CANTIDAD DEBE SER MAYOR A 0', 'error');
+                actualizarTablaProductos();
+                return;
+            }
+
+            productosEnCotizacion[index].cantidad = cantidadNum;
+            productosEnCotizacion[index].total = (cantidadNum * productosEnCotizacion[index].valorNeto).toFixed(2);
+            actualizarTablaProductos();
+        }
+
+        function eliminarProducto(index) {
+            productosEnCotizacion.splice(index, 1);
+            actualizarTablaProductos();
+            mostrarMensajeProducto('PRODUCTO ELIMINADO CORRECTAMENTE', 'exito');
+            setTimeout(() => {
+                document.getElementById('mensajeProducto').style.display = 'none';
+            }, 3000);
+        }
+
         function nuevaCotizacion() {
             const nuevoNumero = gestorCotizaciones.siguienteCotizacion();
             console.log('Nueva cotización creada:', nuevoNumero);
             limpiarFormulario();
+            productosEnCotizacion = [];
+            actualizarTablaProductos();
         }
     </script>
 </body>
