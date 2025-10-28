@@ -421,9 +421,9 @@ function agregarProductoACotizacion(cod, prod) {
   const ex = productosEnCotizacion.find(p => p.codigo === cod);
   if (ex) {
     ex.cantidad++;
-    ex.total = +(ex.cantidad * ex.valorNeto).toFixed(2);
+    ex.total = +(ex.cantidad * ex.valorNetaConDescuento).toFixed(2);
   } else {
-    productosEnCotizacion.push({codigo: prod.codigo, descripcion: prod.descripcion, cantidad: 1, valorNeto: prod.valorNeto, costo: prod.costo, total: prod.valorNeto.toFixed(2)});
+    productosEnCotizacion.push({codigo: prod.codigo, descripcion: prod.descripcion, cantidad: 1, valorNeto: prod.valorNeto, costo: prod.costo, descuento: 0, valorNetaConDescuento: prod.valorNeto, total: prod.valorNeto.toFixed(2)});
   }
   actualizarTablaProductos();
 }
@@ -436,9 +436,9 @@ function actualizarTablaProductos() {
     document.getElementById('utilidadResumen').style.display = 'none';
     return;
   }
-  let html = '<table><thead><tr><th>CÓDIGO</th><th>DESCRIPCIÓN</th><th style="width:70px;">CANTIDAD</th><th style="width:100px;">VALOR NETO</th><th style="width:100px;">TOTAL</th><th style="width:60px;">ACCIÓN</th></tr></thead><tbody>';
+  let html = '<table><thead><tr><th>CÓDIGO</th><th>DESCRIPCIÓN</th><th style="width:70px;">CANTIDAD</th><th style="width:80px;">VALOR NETO</th><th style="width:80px;">DESCUENTO (%)</th><th style="width:80px;">V. NETO DESC.</th><th style="width:100px;">TOTAL</th><th style="width:60px;">ACCIÓN</th></tr></thead><tbody>';
   productosEnCotizacion.forEach((p, i) => {
-    html += `<tr><td>${p.codigo}</td><td>${p.descripcion}</td><td><input type="number" min="1" value="${p.cantidad}" onchange="actualizarCantidad(${i}, this.value)"></td><td class="valor-numerico">$${parseFloat(p.valorNeto).toLocaleString('es-CL', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td><td class="valor-numerico">$${parseFloat(p.total).toLocaleString('es-CL', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td><td class="celda-acciones"><button class="btn-eliminar" onclick="eliminarProducto(${i})">ELIMINAR</button></td></tr>`;
+    html += `<tr><td>${p.codigo}</td><td>${p.descripcion}</td><td><input type="number" min="1" value="${p.cantidad}" onchange="actualizarCantidad(${i}, this.value)"></td><td class="valor-numerico">$${parseFloat(p.valorNeto).toLocaleString('es-CL', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td><td><input type="number" min="0" max="100" step="0.01" value="${p.descuento}" style="width:100%;padding:5px;" onchange="actualizarDescuento(${i}, this.value)"></td><td class="valor-numerico">$${parseFloat(p.valorNetaConDescuento).toLocaleString('es-CL', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td><td class="valor-numerico">$${parseFloat(p.total).toLocaleString('es-CL', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td><td class="celda-acciones"><button class="btn-eliminar" onclick="eliminarProducto(${i})">ELIMINAR</button></td></tr>`;
   });
   html += '</tbody></table>';
   cont.innerHTML = html;
@@ -449,7 +449,17 @@ function actualizarCantidad(i, cant) {
   cant = parseInt(cant);
   if (isNaN(cant) || cant < 1) {alert('CANTIDAD INVÁLIDA'); actualizarTablaProductos(); return;}
   productosEnCotizacion[i].cantidad = cant;
-  productosEnCotizacion[i].total = +(productosEnCotizacion[i].valorNeto * cant).toFixed(2);
+  productosEnCotizacion[i].total = +(productosEnCotizacion[i].valorNetaConDescuento * cant).toFixed(2);
+  actualizarTablaProductos();
+}
+
+function actualizarDescuento(i, desc) {
+  desc = parseFloat(desc) || 0;
+  if (desc < 0 || desc > 100) {alert('DESCUENTO ENTRE 0-100'); actualizarTablaProductos(); return;}
+  productosEnCotizacion[i].descuento = desc;
+  const valorConDesc = productosEnCotizacion[i].valorNeto - (productosEnCotizacion[i].valorNeto * (desc / 100));
+  productosEnCotizacion[i].valorNetaConDescuento = parseFloat(valorConDesc.toFixed(2));
+  productosEnCotizacion[i].total = +(productosEnCotizacion[i].valorNetaConDescuento * productosEnCotizacion[i].cantidad).toFixed(2);
   actualizarTablaProductos();
 }
 
@@ -467,7 +477,7 @@ function actualizarResumenTotales() {
   document.getElementById('totalGeneral').textContent = '$' + tot.toLocaleString('es-CL', {minimumFractionDigits: 2, maximumFractionDigits: 2});
   document.getElementById('resumenTotales').style.display = 'block';
   
-  // CALCULAR Y MOSTRAR UTILIDAD
+  // CALCULAR Y MOSTRAR UTILIDAD (CON DESCUENTO APLICADO)
   let htmlUtilidad = '<div class="resumen-utilidad"><h4>📊 UTILIDAD (INTERNO)</h4>';
   let utilidadTotal = 0;
   productosEnCotizacion.forEach(p => {
@@ -636,7 +646,7 @@ function generarPDFDocumento(cotizacion) {
       p.codigo,
       p.descripcion,
       p.cantidad.toString(),
-      `$${Math.round(parseFloat(p.valorNeto)).toLocaleString('es-CL')}`,
+      `$${Math.round(parseFloat(p.valorNetaConDescuento)).toLocaleString('es-CL')}`,
       `$${Math.round(parseFloat(p.total)).toLocaleString('es-CL')}`
     ]),
     theme: 'striped',
