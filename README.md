@@ -19,26 +19,26 @@ tr:nth-child(even) {background: #f9f9f9;}
 tr:hover {background: #f0f0f0;}
 .valor-numerico {text-align: right; font-weight: bold;}
 .celda-acciones {text-align: center;}
-button {cursor: pointer; border: none; border-radius: 4px; padding: 10px 15px; font-weight: bold; text-transform: uppercase; font-size: 13px; transition: background-color 0.3s;}
-.btn-buscar {background: #3498db; color: white;}
+button {cursor: pointer; border: none; border-radius: 4px; font-weight: bold; text-transform: uppercase; transition: background-color 0.3s;}
+.btn-buscar {background: #3498db; color: white; padding: 8px 12px; font-size: 12px;}
 .btn-buscar:hover {background: #2980b9;}
-.btn-limpiar {background: #95a5a6; color: white;}
+.btn-limpiar {background: #95a5a6; color: white; padding: 8px 12px; font-size: 12px;}
 .btn-limpiar:hover {background: #7f8c8d;}
 .btn-eliminar {background: #e74c3c; color: white; font-size: 11px; padding: 5px 10px;}
 .btn-eliminar:hover {background: #c0392b;}
-.btn-articulos {background: #16a085; color: white; margin-bottom: 10px;}
+.btn-articulos {background: #16a085; color: white; padding: 8px 12px; font-size: 12px;}
 .btn-articulos:hover {background: #138d75;}
-.btn-pdf {background: #d35400; color: white; margin-bottom: 10px;}
+.btn-pdf {background: #d35400; color: white; padding: 8px 12px; font-size: 12px;}
 .btn-pdf:hover {background: #e67e22;}
-.btn-agregar {background: #27ae60; color: white;}
+.btn-agregar {background: #27ae60; color: white; padding: 8px 12px; font-size: 12px;}
 .btn-agregar:hover {background: #229954;}
 .btn-editar {background: #f39c12; color: white; padding: 8px 12px; font-size: 12px;}
 .btn-editar:hover {background: #e67e22;}
 .btn-cancelar {background: #e74c3c; color: white; padding: 8px 12px; font-size: 12px;}
 .btn-cancelar:hover {background: #c0392b;}
-.btn-ver {background: #9b59b6; color: white; padding: 6px 10px; font-size: 11px; margin-right: 5px;}
+.btn-ver {background: #9b59b6; color: white; padding: 5px 8px; font-size: 10px; margin-right: 3px;}
 .btn-ver:hover {background: #8e44ad;}
-.btn-editar-cot {background: #f39c12; color: white; padding: 6px 10px; font-size: 11px; margin-right: 5px;}
+.btn-editar-cot {background: #f39c12; color: white; padding: 5px 8px; font-size: 10px; margin-right: 3px;}
 .btn-editar-cot:hover {background: #e67e22;}
 .formulario-cliente, .formulario-producto, .formulario-editar-articulo {display: none; animation: fadeIn 0.3s;}
 .formulario-cliente.activo, .formulario-producto.activo, .formulario-editar-articulo.activo {display: block;}
@@ -80,7 +80,7 @@ button {cursor: pointer; border: none; border-radius: 4px; padding: 10px 15px; f
 .articulos-content {background: white; border-radius: 8px; margin: 40px auto; padding: 25px; max-width: 1000px; position: relative;}
 .modal-titulo {font-size: 22px; font-weight: bold; margin-bottom: 20px; text-transform: uppercase;}
 .btn-cerrar-modal {position: absolute; top: 14px; right: 25px; background: #e74c3c; color: white; font-size: 18px; border: none; border-radius: 4px; cursor: pointer; padding: 4px 10px;}
-.botones-superiores {display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;}
+.botones-superiores {display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; align-items: center;}
 #modalCotizaciones {display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.5); z-index: 10000; overflow: auto;}
 #modalCotizaciones > div {background: white; max-width: 900px; margin: 40px auto; padding: 20px; border-radius: 8px; position: relative;}
 .resumen-totales {max-width: 400px; margin-left: auto; border-top: 3px solid #3498db; padding-top: 15px; text-transform: uppercase;}
@@ -606,10 +606,10 @@ function generarPDFDocumento(cotizacion) {
   doc.autoTable({startY: yPos, head: [['Código', 'Descripción', 'Cant.', 'Valor Neto', 'Total']], body: cotizacion.productos.map(p => [p.codigo, p.descripcion, p.cantidad.toString(), `$${parseFloat(p.valorNeto).toLocaleString('es-CL', {minimumFractionDigits: 2})}`, `$${parseFloat(p.total).toLocaleString('es-CL', {minimumFractionDigits: 2})}`]), theme: 'striped', styles: {fontSize: 8, cellPadding: 3}, headStyles: {fillColor: [52, 73, 94], textColor: 255, fontStyle: 'bold'}, columnStyles: {0: {cellWidth: 20}, 1: {cellWidth: 90}, 2: {cellWidth: 15, halign: 'center'}, 3: {cellWidth: 30, halign: 'right'}, 4: {cellWidth: 30, halign: 'right'}}, margin: {left: 15, right: 15}});
   const finalY = doc.lastAutoTable.finalY + 5;
   doc.setFillColor(236, 240, 241);
-  doc.rect(120, finalY, 75, 25);
+  doc.rect(120, finalY, 75, 32);
   doc.setDrawColor(52, 152, 219);
   doc.setLineWidth(0.5);
-  doc.rect(120, finalY, 75, 25);
+  doc.rect(120, finalY, 75, 32);
   const iva = +(net * 0.19).toFixed(2);
   const tot = +(net + iva).toFixed(2);
   doc.setFontSize(9);
@@ -620,11 +620,12 @@ function generarPDFDocumento(cotizacion) {
   doc.text('IVA (19%):', 125, finalY + 11);
   doc.text(`$${iva.toLocaleString('es-CL', {minimumFractionDigits: 2})}`, 190, finalY + 11, {align: 'right'});
   doc.setFillColor(52, 152, 219);
-  doc.rect(120, finalY + 15, 75, 7);
+  doc.rect(120, finalY + 17, 75, 7);
   doc.setTextColor(255, 255, 255);
   doc.setFontSize(10);
-  doc.text('TOTAL:', 125, finalY + 19);
-  doc.text(`$${tot.toLocaleString('es-CL', {minimumFractionDigits: 2})}`, 190, finalY + 19, {align: 'right'});
+  doc.setFont(undefined, 'bold');
+  doc.text('TOTAL:', 125, finalY + 21);
+  doc.text(`$${tot.toLocaleString('es-CL', {minimumFractionDigits: 2})}`, 190, finalY + 21, {align: 'right'});
   doc.setTextColor(150, 150, 150);
   doc.setFontSize(8);
   doc.setFont(undefined, 'italic');
@@ -640,7 +641,7 @@ function mostrarCotizaciones() {
   } else {
     let html = '<table class="tabla-cotizaciones"><thead><tr><th>N° COTIZACIÓN</th><th>RAZÓN SOCIAL</th><th style="text-align:right;">MONTO NETO</th><th style="text-align:center;">ACCIONES</th></tr></thead><tbody>';
     cotizacionesEmitidas.forEach((c, index) => {
-      html += `<tr><td>${c.numero}</td><td>${c.razonSocial}</td><td style="text-align:right;">$${parseFloat(c.neto).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td style="text-align:center;"><button class="btn-ver" onclick="verCotizacion(${index})">VER PDF</button><button class="btn-editar-cot" onclick="editarCotizacionGuardada(${index})">EDITAR</button><button class="btn-eliminar" onclick="borrarCotizacion(${index})">BORRAR</button></td></tr>`;
+      html += `<tr><td>${c.numero}</td><td>${c.razonSocial}</td><td style="text-align:right;">$${parseFloat(c.neto).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td style="text-align:center;"><button class="btn-ver" onclick="verCotizacion(${index})">VER</button><button class="btn-editar-cot" onclick="editarCotizacionGuardada(${index})">EDITAR</button><button class="btn-eliminar" onclick="borrarCotizacion(${index})">BORRAR</button></td></tr>`;
     });
     html += '</tbody></table>';
     cont.innerHTML = html;
