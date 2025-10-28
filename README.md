@@ -330,6 +330,7 @@
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 20px;
+            font-size: 13px;
         }
 
         .tabla-productos thead {
@@ -338,7 +339,7 @@
         }
 
         .tabla-productos th {
-            padding: 12px;
+            padding: 10px;
             text-align: left;
             font-weight: bold;
             text-transform: uppercase;
@@ -346,7 +347,7 @@
         }
 
         .tabla-productos td {
-            padding: 12px;
+            padding: 10px;
             border: 1px solid #ddd;
             text-transform: uppercase;
         }
@@ -365,7 +366,7 @@
             border: 1px solid #ddd;
             border-radius: 3px;
             text-transform: uppercase;
-            font-size: 13px;
+            font-size: 12px;
         }
 
         .tabla-productos input:focus {
@@ -395,7 +396,7 @@
         .formulario-producto {
             display: none;
             background-color: #fff3cd;
-            padding: 15px;
+            padding: 20px;
             border-radius: 4px;
             border-left: 4px solid #f39c12;
             margin-bottom: 20px;
@@ -414,12 +415,20 @@
 
         .fila-campos-producto {
             display: grid;
-            grid-template-columns: 1fr 2fr 1fr;
+            grid-template-columns: 1fr 1fr;
             gap: 15px;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
         }
 
-        .fila-campos-producto .campo-grupo {
+        .fila-campos-producto-tres {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .fila-campos-producto .campo-grupo,
+        .fila-campos-producto-tres .campo-grupo {
             margin-bottom: 0;
         }
 
@@ -535,6 +544,7 @@
 
                 <div id="formularioProducto" class="formulario-producto">
                     <h4>CREAR NUEVO PRODUCTO/SERVICIO</h4>
+                    
                     <div class="fila-campos-producto">
                         <div class="campo-grupo">
                             <label for="codigoProducto">CÓDIGO *</label>
@@ -544,11 +554,34 @@
                             <label for="descripcionProducto">DESCRIPCIÓN *</label>
                             <input type="text" id="descripcionProducto" required>
                         </div>
+                    </div>
+
+                    <div class="fila-campos-producto-tres">
                         <div class="campo-grupo">
-                            <label for="valorNetoProducto">VALOR NETO *</label>
-                            <input type="number" id="valorNetoProducto" min="0" step="0.01" required>
+                            <label for="costoProducto">COSTO *</label>
+                            <input type="number" id="costoProducto" min="0" step="0.01" required>
+                        </div>
+                        <div class="campo-grupo">
+                            <label for="porcentajeProducto">PORCENTAJE (%) *</label>
+                            <input type="number" id="porcentajeProducto" min="0" step="0.01" value="0" required>
+                        </div>
+                        <div class="campo-grupo">
+                            <label for="valorNetoProducto">VALOR NETO (AUTOCALCULADO)</label>
+                            <input type="number" id="valorNetoProducto" disabled>
                         </div>
                     </div>
+
+                    <div class="fila-campos-producto">
+                        <div class="campo-grupo">
+                            <label for="proveedorProducto">PROVEEDOR *</label>
+                            <input type="text" id="proveedorProducto" required>
+                        </div>
+                        <div class="campo-grupo">
+                            <label for="linkProducto">LINK *</label>
+                            <input type="text" id="linkProducto" required>
+                        </div>
+                    </div>
+
                     <div class="botones-producto">
                         <button class="btn btn-agregar" onclick="guardarProducto()">GUARDAR PRODUCTO</button>
                         <button class="btn btn-cancelar btn-pequeno" onclick="cancelarProducto()">CANCELAR</button>
@@ -844,6 +877,18 @@
             e.target.value = e.target.value.toUpperCase();
         });
 
+        // Calcular valor neto automáticamente
+        document.getElementById('costoProducto').addEventListener('change', calcularValorNeto);
+        document.getElementById('porcentajeProducto').addEventListener('change', calcularValorNeto);
+
+        function calcularValorNeto() {
+            const costo = parseFloat(document.getElementById('costoProducto').value) || 0;
+            const porcentaje = parseFloat(document.getElementById('porcentajeProducto').value) || 0;
+            
+            const valorNeto = costo + (costo * (porcentaje / 100));
+            document.getElementById('valorNetoProducto').value = valorNeto.toFixed(2);
+        }
+
         function buscarProducto() {
             const codigo = document.getElementById('inputCodigoProducto').value.trim();
             const mensajeProducto = document.getElementById('mensajeProducto');
@@ -868,7 +913,11 @@
                 formularioProducto.classList.add('activo');
                 document.getElementById('codigoProducto').value = codigo;
                 document.getElementById('descripcionProducto').value = '';
+                document.getElementById('costoProducto').value = '';
+                document.getElementById('porcentajeProducto').value = '0';
                 document.getElementById('valorNetoProducto').value = '';
+                document.getElementById('proveedorProducto').value = '';
+                document.getElementById('linkProducto').value = '';
             }
         }
 
@@ -882,17 +931,30 @@
         function guardarProducto() {
             const codigo = document.getElementById('codigoProducto').value.trim();
             const descripcion = document.getElementById('descripcionProducto').value.trim();
+            const costo = parseFloat(document.getElementById('costoProducto').value);
+            const porcentaje = parseFloat(document.getElementById('porcentajeProducto').value) || 0;
             const valorNeto = parseFloat(document.getElementById('valorNetoProducto').value);
+            const proveedor = document.getElementById('proveedorProducto').value.trim();
+            const link = document.getElementById('linkProducto').value.trim();
 
-            if (!codigo || !descripcion || isNaN(valorNeto) || valorNeto <= 0) {
-                mostrarMensajeProducto('POR FAVOR COMPLETE TODOS LOS CAMPOS CORRECTAMENTE', 'error');
+            if (!codigo || !descripcion || isNaN(costo) || costo <= 0 || !proveedor || !link) {
+                mostrarMensajeProducto('POR FAVOR COMPLETE TODOS LOS CAMPOS OBLIGATORIOS (*)', 'error');
+                return;
+            }
+
+            if (isNaN(valorNeto) || valorNeto <= 0) {
+                mostrarMensajeProducto('EL VALOR NETO DEBE SER MAYOR A 0', 'error');
                 return;
             }
 
             const producto = {
                 codigo,
                 descripcion: descripcion.toUpperCase(),
-                valorNeto: parseFloat(valorNeto.toFixed(2))
+                costo: parseFloat(costo.toFixed(2)),
+                porcentaje: parseFloat(porcentaje.toFixed(2)),
+                valorNeto: parseFloat(valorNeto.toFixed(2)),
+                proveedor: proveedor.toUpperCase(),
+                link: link.toUpperCase()
             };
 
             gestorProductos.agregarProducto(codigo, producto);
@@ -905,7 +967,11 @@
             document.getElementById('formularioProducto').classList.remove('activo');
             document.getElementById('codigoProducto').value = '';
             document.getElementById('descripcionProducto').value = '';
+            document.getElementById('costoProducto').value = '';
+            document.getElementById('porcentajeProducto').value = '0';
             document.getElementById('valorNetoProducto').value = '';
+            document.getElementById('proveedorProducto').value = '';
+            document.getElementById('linkProducto').value = '';
             document.getElementById('inputCodigoProducto').value = '';
             document.getElementById('mensajeProducto').style.display = 'none';
         }
@@ -943,9 +1009,9 @@
                         <tr>
                             <th>CÓDIGO</th>
                             <th>DESCRIPCIÓN</th>
-                            <th style="width: 80px;">CANTIDAD</th>
-                            <th style="width: 100px;">VALOR NETO</th>
-                            <th style="width: 100px;">TOTAL</th>
+                            <th style="width: 70px;">CANTIDAD</th>
+                            <th style="width: 90px;">VALOR NETO</th>
+                            <th style="width: 90px;">TOTAL</th>
                             <th style="width: 60px;">ACCIÓN</th>
                         </tr>
                     </thead>
