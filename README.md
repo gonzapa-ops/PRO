@@ -585,14 +585,13 @@ function eliminarArticulo(codigo) {
   }
 }
 
-// PDF Y COTIZACIONES
+// PDF Y COTIZACIONES - MEJORADO
 function generarPDF() {
   if (!clienteActual) {alert('INGRESE CLIENTE'); return;}
   if (productosEnCotizacion.length === 0) {alert('AGREGUE PRODUCTOS'); return;}
   const numCot = gestorCotizaciones.siguienteCotizacion();
   const net = productosEnCotizacion.reduce((acc, p) => acc + parseFloat(p.total), 0);
   
-  // Guardamos la cotización con todos los datos (cliente y productos)
   const cotizacion = {
     numero: numCot,
     razonSocial: clienteActual.razonSocial,
@@ -614,45 +613,175 @@ function generarPDFDocumento(cotizacion) {
   const doc = new jsPDF();
   const net = parseFloat(cotizacion.neto);
   
-  doc.setFontSize(18);
-  doc.text('COTIZACION', 14, 15);
+  // Encabezado principal
+  doc.setFillColor(44, 62, 80);
+  doc.rect(0, 0, 210, 35, 'F');
+  doc.setTextColor(255, 255, 255);
+  doc.setFontSize(24);
+  doc.setFont(undefined, 'bold');
+  doc.text('COTIZACIÓN', 14, 15);
+  doc.setFontSize(14);
+  doc.setFont(undefined, 'normal');
+  doc.text('EMPRESA CUNDO', 14, 23);
+  doc.setFontSize(16);
+  doc.setFont(undefined, 'bold');
+  doc.text(`N° ${cotizacion.numero}`, 160, 20);
+  
+  // Fecha
+  doc.setFontSize(9);
+  doc.setFont(undefined, 'normal');
+  const fecha = new Date(cotizacion.fecha);
+  doc.text(`Fecha: ${fecha.toLocaleDateString('es-CL')}`, 160, 28);
+  
+  // Recuadro datos del cliente
+  doc.setTextColor(0, 0, 0);
+  doc.setFillColor(236, 240, 241);
+  doc.roundedRect(14, 42, 182, 50, 2, 2, 'F');
+  doc.setDrawColor(52, 152, 219);
+  doc.setLineWidth(0.5);
+  doc.roundedRect(14, 42, 182, 50, 2, 2);
+  
   doc.setFontSize(12);
-  doc.text(`EMPRESA CUNDO`, 14, 25);
-  doc.text(`N°: ${cotizacion.numero}`, 160, 25);
-  doc.setFontSize(14);
-  doc.text('Datos del cliente', 14, 35);
-  let y = 40;
-  doc.setFontSize(10);
-  doc.text(`RUT: ${cotizacion.cliente.rut}`, 14, y); y += 6;
-  doc.text(`Razón Social: ${cotizacion.cliente.razonSocial}`, 14, y); y += 6;
-  doc.text(`Giro: ${cotizacion.cliente.giro}`, 14, y); y += 6;
-  doc.text(`Dirección: ${cotizacion.cliente.direccion}`, 14, y); y += 6;
-  doc.text(`Contacto: ${cotizacion.cliente.nombreContacto}`, 14, y); y += 6;
-  doc.text(`Celular: ${cotizacion.cliente.celular}`, 14, y); y += 6;
-  doc.text(`Mail: ${cotizacion.cliente.mail}`, 14, y); y += 10;
-  doc.setFontSize(14);
-  doc.text('Productos y Servicios', 14, y); y += 6;
-  doc.autoTable({
-    startY: y,
-    head: [['CÓDIGO', 'DESCRIPCIÓN', 'CANTIDAD', 'VALOR NETO', 'TOTAL']],
-    body: cotizacion.productos.map(p => [p.codigo, p.descripcion, p.cantidad.toString(), `$${p.valorNeto.toFixed(2)}`, `$${p.total}`]),
-    theme: 'grid',
-    styles: {fontSize: 9, cellPadding: 2},
-    headStyles: {fillColor: [52, 73, 94]}
-  });
-  let finalY = doc.lastAutoTable.finalY + 10;
-  const netStr = `$${net.toLocaleString('es-CL', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
-  const iva = +(net * 0.19).toFixed(2);
-  const ivaStr = `$${iva.toLocaleString('es-CL', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
-  const tot = +(net + iva).toFixed(2);
-  const totStr = `$${tot.toLocaleString('es-CL', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+  doc.setFont(undefined, 'bold');
+  doc.setTextColor(44, 62, 80);
+  doc.text('DATOS DEL CLIENTE', 18, 50);
+  
+  // Datos del cliente en formato tabla limpia
+  doc.setFontSize(9);
+  doc.setFont(undefined, 'normal');
+  doc.setTextColor(0, 0, 0);
+  
+  let yCliente = 58;
+  const lineHeight = 6;
+  
+  // Columna izquierda
+  doc.setFont(undefined, 'bold');
+  doc.text('RUT:', 18, yCliente);
+  doc.setFont(undefined, 'normal');
+  doc.text(cotizacion.cliente.rut, 50, yCliente);
+  
+  yCliente += lineHeight;
+  doc.setFont(undefined, 'bold');
+  doc.text('Razón Social:', 18, yCliente);
+  doc.setFont(undefined, 'normal');
+  doc.text(cotizacion.cliente.razonSocial, 50, yCliente);
+  
+  yCliente += lineHeight;
+  doc.setFont(undefined, 'bold');
+  doc.text('Giro:', 18, yCliente);
+  doc.setFont(undefined, 'normal');
+  doc.text(cotizacion.cliente.giro, 50, yCliente);
+  
+  yCliente += lineHeight;
+  doc.setFont(undefined, 'bold');
+  doc.text('Dirección:', 18, yCliente);
+  doc.setFont(undefined, 'normal');
+  doc.text(cotizacion.cliente.direccion, 50, yCliente);
+  
+  // Columna derecha
+  yCliente = 58;
+  doc.setFont(undefined, 'bold');
+  doc.text('Contacto:', 110, yCliente);
+  doc.setFont(undefined, 'normal');
+  doc.text(cotizacion.cliente.nombreContacto, 135, yCliente);
+  
+  yCliente += lineHeight;
+  doc.setFont(undefined, 'bold');
+  doc.text('Celular:', 110, yCliente);
+  doc.setFont(undefined, 'normal');
+  doc.text(cotizacion.cliente.celular, 135, yCliente);
+  
+  yCliente += lineHeight;
+  doc.setFont(undefined, 'bold');
+  doc.text('Mail:', 110, yCliente);
+  doc.setFont(undefined, 'normal');
+  doc.text(cotizacion.cliente.mail, 135, yCliente);
+  
+  // Título productos con línea decorativa
+  let yProductos = 100;
+  doc.setDrawColor(52, 152, 219);
+  doc.setLineWidth(1);
+  doc.line(14, yProductos, 196, yProductos);
   doc.setFontSize(11);
-  doc.text('Neto:', 140, finalY);
-  doc.text(netStr, 190, finalY, {align: 'right'});
-  doc.text('IVA (19%):', 140, finalY + 6);
-  doc.text(ivaStr, 190, finalY + 6, {align: 'right'});
-  doc.text('Total:', 140, finalY + 12);
-  doc.text(totStr, 190, finalY + 12, {align: 'right'});
+  doc.setFont(undefined, 'bold');
+  doc.setTextColor(44, 62, 80);
+  doc.text('Productos y Servicios', 14, yProductos + 5);
+  
+  // Tabla de productos más compacta
+  doc.autoTable({
+    startY: yProductos + 8,
+    head: [['Código', 'Descripción', 'Cant.', 'Valor Neto', 'Total']],
+    body: cotizacion.productos.map(p => [
+      p.codigo, 
+      p.descripcion, 
+      p.cantidad.toString(), 
+      `$${parseFloat(p.valorNeto).toLocaleString('es-CL', {minimumFractionDigits: 2})}`, 
+      `$${parseFloat(p.total).toLocaleString('es-CL', {minimumFractionDigits: 2})}`
+    ]),
+    theme: 'striped',
+    styles: {
+      fontSize: 8,
+      cellPadding: 3,
+      lineColor: [189, 195, 199],
+      lineWidth: 0.1
+    },
+    headStyles: {
+      fillColor: [52, 73, 94],
+      textColor: 255,
+      fontSize: 9,
+      fontStyle: 'bold',
+      halign: 'center'
+    },
+    columnStyles: {
+      0: { cellWidth: 25, halign: 'center' },
+      1: { cellWidth: 80 },
+      2: { cellWidth: 20, halign: 'center' },
+      3: { cellWidth: 30, halign: 'right' },
+      4: { cellWidth: 30, halign: 'right' }
+    },
+    alternateRowStyles: {
+      fillColor: [245, 245, 245]
+    }
+  });
+  
+  // Resumen financiero en recuadro
+  let finalY = doc.lastAutoTable.finalY + 10;
+  
+  doc.setFillColor(236, 240, 241);
+  doc.roundedRect(130, finalY, 66, 28, 2, 2, 'F');
+  doc.setDrawColor(52, 152, 219);
+  doc.setLineWidth(0.5);
+  doc.roundedRect(130, finalY, 66, 28, 2, 2);
+  
+  const iva = +(net * 0.19).toFixed(2);
+  const tot = +(net + iva).toFixed(2);
+  
+  doc.setFontSize(10);
+  doc.setFont(undefined, 'bold');
+  doc.setTextColor(0, 0, 0);
+  
+  // Neto
+  doc.text('Neto:', 135, finalY + 8);
+  doc.text(`$${net.toLocaleString('es-CL', {minimumFractionDigits: 2})}`, 190, finalY + 8, {align: 'right'});
+  
+  // IVA
+  doc.text('IVA (19%):', 135, finalY + 15);
+  doc.text(`$${iva.toLocaleString('es-CL', {minimumFractionDigits: 2})}`, 190, finalY + 15, {align: 'right'});
+  
+  // Total con fondo destacado
+  doc.setFillColor(52, 152, 219);
+  doc.roundedRect(130, finalY + 18, 66, 8, 1, 1, 'F');
+  doc.setTextColor(255, 255, 255);
+  doc.setFontSize(11);
+  doc.text('TOTAL:', 135, finalY + 24);
+  doc.text(`$${tot.toLocaleString('es-CL', {minimumFractionDigits: 2})}`, 190, finalY + 24, {align: 'right'});
+  
+  // Pie de página
+  doc.setTextColor(150, 150, 150);
+  doc.setFontSize(8);
+  doc.setFont(undefined, 'italic');
+  doc.text('Gracias por su preferencia', 105, 285, {align: 'center'});
+  
   doc.save(`Cotizacion_${cotizacion.numero}.pdf`);
 }
 
@@ -682,19 +811,14 @@ function editarCotizacionGuardada(index) {
   const cotizacion = cotizacionesEmitidas[index];
   if (!cotizacion) {alert('COTIZACIÓN NO ENCONTRADA'); return;}
   
-  // Cargar cliente
   clienteActual = {...cotizacion.cliente};
   mostrarResumenCliente(clienteActual);
   document.getElementById('formularioCliente').classList.remove('activo');
   
-  // Cargar productos
   productosEnCotizacion = cotizacion.productos.map(p => ({...p}));
   actualizarTablaProductos();
   
-  // Cerrar modal de cotizaciones
   cerrarCotizaciones();
-  
-  // Mostrar mensaje
   mostrarMensaje('COTIZACIÓN CARGADA PARA EDICIÓN', 'info');
   alert('COTIZACIÓN CARGADA. PUEDE MODIFICAR CLIENTE Y/O PRODUCTOS.');
 }
