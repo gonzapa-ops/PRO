@@ -554,6 +554,10 @@ function generarPDFDocumento(cotizacion) {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF();
   const net = parseFloat(cotizacion.neto);
+  const iva = +(net * 0.19).toFixed(2);
+  const tot = +(net + iva).toFixed(2);
+  
+  // ENCABEZADO
   doc.setFillColor(44, 62, 80);
   doc.rect(0, 0, 210, 40, 'F');
   doc.setTextColor(255, 255, 255);
@@ -571,6 +575,8 @@ function generarPDFDocumento(cotizacion) {
   doc.setFontSize(8);
   const fecha = new Date(cotizacion.fecha).toLocaleDateString('es-CL');
   doc.text(`Fecha: ${fecha}`, 180, 28, {align: 'right'});
+  
+  // DATOS CLIENTE
   doc.setTextColor(0, 0, 0);
   doc.setFontSize(11);
   doc.setFont(undefined, 'bold');
@@ -595,41 +601,59 @@ function generarPDFDocumento(cotizacion) {
     }
     yPos += 6;
   });
+  
+  // LÍNEA DIVISORIA
   doc.setDrawColor(52, 152, 219);
   doc.setLineWidth(0.5);
   doc.line(15, yPos + 2, 195, yPos + 2);
+  
+  // TABLA PRODUCTOS
   yPos += 8;
   doc.setFont(undefined, 'bold');
   doc.setFontSize(9);
   doc.text('PRODUCTOS Y SERVICIOS', 15, yPos);
   yPos += 5;
-  doc.autoTable({startY: yPos, head: [['Código', 'Descripción', 'Cant.', 'Valor Neto', 'Total']], body: cotizacion.productos.map(p => [p.codigo, p.descripcion, p.cantidad.toString(), `$${parseFloat(p.valorNeto).toLocaleString('es-CL', {minimumFractionDigits: 2})}`, `$${parseFloat(p.total).toLocaleString('es-CL', {minimumFractionDigits: 2})}`]), theme: 'striped', styles: {fontSize: 8, cellPadding: 3}, headStyles: {fillColor: [52, 73, 94], textColor: 255, fontStyle: 'bold'}, columnStyles: {0: {cellWidth: 20}, 1: {cellWidth: 90}, 2: {cellWidth: 15, halign: 'center'}, 3: {cellWidth: 30, halign: 'right'}, 4: {cellWidth: 30, halign: 'right'}}, margin: {left: 15, right: 15}});
-  const finalY = doc.lastAutoTable.finalY + 5;
-  doc.setFillColor(236, 240, 241);
-  doc.rect(120, finalY, 75, 32);
-  doc.setDrawColor(52, 152, 219);
-  doc.setLineWidth(0.5);
-  doc.rect(120, finalY, 75, 32);
-  const iva = +(net * 0.19).toFixed(2);
-  const tot = +(net + iva).toFixed(2);
-  doc.setFontSize(9);
-  doc.setFont(undefined, 'bold');
-  doc.setTextColor(0, 0, 0);
-  doc.text('Neto:', 125, finalY + 5);
-  doc.text(`$${net.toLocaleString('es-CL', {minimumFractionDigits: 2})}`, 190, finalY + 5, {align: 'right'});
-  doc.text('IVA (19%):', 125, finalY + 11);
-  doc.text(`$${iva.toLocaleString('es-CL', {minimumFractionDigits: 2})}`, 190, finalY + 11, {align: 'right'});
+  
+  doc.autoTable({
+    startY: yPos,
+    head: [['Código', 'Descripción', 'Cant.', 'Valor Neto', 'Total']],
+    body: cotizacion.productos.map(p => [p.codigo, p.descripcion, p.cantidad.toString(), `$${parseFloat(p.valorNeto).toLocaleString('es-CL', {minimumFractionDigits: 2})}`, `$${parseFloat(p.total).toLocaleString('es-CL', {minimumFractionDigits: 2})}`]),
+    theme: 'striped',
+    styles: {fontSize: 8, cellPadding: 3},
+    headStyles: {fillColor: [52, 73, 94], textColor: 255, fontStyle: 'bold'},
+    columnStyles: {0: {cellWidth: 20}, 1: {cellWidth: 90}, 2: {cellWidth: 15, halign: 'center'}, 3: {cellWidth: 30, halign: 'right'}, 4: {cellWidth: 30, halign: 'right'}},
+    margin: {left: 15, right: 15}
+  });
+  
+  // RESUMEN EN UN SOLO CUADRO LIMPIO
+  const finalY = doc.lastAutoTable.finalY + 8;
+  
   doc.setFillColor(52, 152, 219);
-  doc.rect(120, finalY + 17, 75, 7);
+  doc.rect(120, finalY, 75, 28, 'F');
+  
   doc.setTextColor(255, 255, 255);
   doc.setFontSize(10);
   doc.setFont(undefined, 'bold');
-  doc.text('TOTAL:', 125, finalY + 21);
-  doc.text(`$${tot.toLocaleString('es-CL', {minimumFractionDigits: 2})}`, 190, finalY + 21, {align: 'right'});
+  doc.text('RESUMEN DE VENTA', 125, finalY + 5);
+  
+  doc.setFontSize(9);
+  doc.setTextColor(255, 255, 255);
+  doc.text(`NETO: $${net.toLocaleString('es-CL', {minimumFractionDigits: 2})}`, 125, finalY + 11);
+  doc.text(`IVA 19%: $${iva.toLocaleString('es-CL', {minimumFractionDigits: 2})}`, 125, finalY + 16);
+  
+  doc.setFillColor(255, 255, 255);
+  doc.rect(120, finalY + 20, 75, 7);
+  doc.setTextColor(52, 152, 219);
+  doc.setFont(undefined, 'bold');
+  doc.setFontSize(11);
+  doc.text(`TOTAL: $${tot.toLocaleString('es-CL', {minimumFractionDigits: 2})}`, 125, finalY + 25);
+  
+  // PIE
   doc.setTextColor(150, 150, 150);
   doc.setFontSize(8);
   doc.setFont(undefined, 'italic');
   doc.text('Gracias por su preferencia', 105, 280, {align: 'center'});
+  
   doc.save(`Cotizacion_${cotizacion.numero}.pdf`);
 }
 
