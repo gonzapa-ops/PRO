@@ -83,9 +83,13 @@ button {cursor: pointer; border: none; border-radius: 4px; font-weight: bold; te
 .botones-superiores {display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; align-items: center;}
 #modalCotizaciones {display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.5); z-index: 10000; overflow: auto;}
 #modalCotizaciones > div {background: white; max-width: 900px; margin: 40px auto; padding: 20px; border-radius: 8px; position: relative;}
-.resumen-totales {max-width: 400px; margin-left: auto; border-top: 3px solid #3498db; padding-top: 15px; text-transform: uppercase;}
+.resumen-totales {max-width: 400px; margin-left: auto; border-top: 3px solid #3498db; padding-top: 15px; text-transform: uppercase; margin-bottom: 20px;}
 .resumen-linea {display: flex; justify-content: space-between; margin: 5px 0; font-weight: bold; font-size: 13px;}
 .resumen-linea.total {font-size: 16px; color: #2c3e50;}
+.resumen-utilidad {background-color: #fff3cd; padding: 15px; border-radius: 4px; border-left: 4px solid #f39c12; margin-top: 20px;}
+.resumen-utilidad h4 {color: #856404; text-transform: uppercase; margin-bottom: 10px; font-size: 14px;}
+.utilidad-item {display: flex; justify-content: space-between; margin: 8px 0; font-size: 13px; color: #333;}
+.utilidad-item strong {color: #2c3e50;}
 .formulario-editar-articulo {background: #fff3cd; padding: 15px; border-radius: 4px; border-left: 4px solid #f39c12; margin-bottom: 20px;}
 .formulario-editar-articulo h4 {text-transform: uppercase; color: #856404; margin-bottom: 15px;}
 .tabla-cotizaciones {width: 100%; border-collapse: collapse; background: white;}
@@ -169,6 +173,7 @@ button {cursor: pointer; border: none; border-radius: 4px; font-weight: bold; te
         <div class="resumen-linea"><div>IVA (19%)</div><div id="totalIva">$0.00</div></div>
         <div class="resumen-linea total"><div>TOTAL</div><div id="totalGeneral">$0.00</div></div>
       </div>
+      <div id="utilidadResumen" style="display:none;"></div>
     </section>
   </div>
 
@@ -418,7 +423,7 @@ function agregarProductoACotizacion(cod, prod) {
     ex.cantidad++;
     ex.total = +(ex.cantidad * ex.valorNeto).toFixed(2);
   } else {
-    productosEnCotizacion.push({codigo: prod.codigo, descripcion: prod.descripcion, cantidad: 1, valorNeto: prod.valorNeto, total: prod.valorNeto.toFixed(2)});
+    productosEnCotizacion.push({codigo: prod.codigo, descripcion: prod.descripcion, cantidad: 1, valorNeto: prod.valorNeto, costo: prod.costo, total: prod.valorNeto.toFixed(2)});
   }
   actualizarTablaProductos();
 }
@@ -428,6 +433,7 @@ function actualizarTablaProductos() {
   if (productosEnCotizacion.length === 0) {
     cont.innerHTML = '<div class="alerta-sin-productos">NO HAY PRODUCTOS AÑADIDOS</div>';
     document.getElementById('resumenTotales').style.display = 'none';
+    document.getElementById('utilidadResumen').style.display = 'none';
     return;
   }
   let html = '<table><thead><tr><th>CÓDIGO</th><th>DESCRIPCIÓN</th><th style="width:70px;">CANTIDAD</th><th style="width:100px;">VALOR NETO</th><th style="width:100px;">TOTAL</th><th style="width:60px;">ACCIÓN</th></tr></thead><tbody>';
@@ -460,6 +466,19 @@ function actualizarResumenTotales() {
   document.getElementById('totalIva').textContent = '$' + iva.toLocaleString('es-CL', {minimumFractionDigits: 2, maximumFractionDigits: 2});
   document.getElementById('totalGeneral').textContent = '$' + tot.toLocaleString('es-CL', {minimumFractionDigits: 2, maximumFractionDigits: 2});
   document.getElementById('resumenTotales').style.display = 'block';
+  
+  // CALCULAR Y MOSTRAR UTILIDAD
+  let htmlUtilidad = '<div class="resumen-utilidad"><h4>📊 UTILIDAD (INTERNO)</h4>';
+  let utilidadTotal = 0;
+  productosEnCotizacion.forEach(p => {
+    const utilidad = (parseFloat(p.total) - (parseFloat(p.costo) * p.cantidad));
+    utilidadTotal += utilidad;
+    htmlUtilidad += `<div class="utilidad-item"><strong>${p.codigo}:</strong> $${Math.round(utilidad).toLocaleString('es-CL')}</div>`;
+  });
+  htmlUtilidad += `<div class="utilidad-item" style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #f39c12;"><strong>UTILIDAD TOTAL:</strong> $${Math.round(utilidadTotal).toLocaleString('es-CL')}</div>`;
+  htmlUtilidad += '</div>';
+  document.getElementById('utilidadResumen').innerHTML = htmlUtilidad;
+  document.getElementById('utilidadResumen').style.display = 'block';
 }
 
 function abrirArticulos() {
@@ -617,8 +636,8 @@ function generarPDFDocumento(cotizacion) {
       p.codigo,
       p.descripcion,
       p.cantidad.toString(),
-      `$${parseFloat(p.valorNeto).toLocaleString('es-CL', {minimumFractionDigits: 2})}`,
-      `$${parseFloat(p.total).toLocaleString('es-CL', {minimumFractionDigits: 2})}`
+      `$${Math.round(parseFloat(p.valorNeto)).toLocaleString('es-CL')}`,
+      `$${Math.round(parseFloat(p.total)).toLocaleString('es-CL')}`
     ]),
     theme: 'striped',
     styles: {fontSize: 8, cellPadding: 3},
@@ -639,12 +658,12 @@ function generarPDFDocumento(cotizacion) {
   doc.setTextColor(0, 0, 0);
   doc.setFontSize(10);
   doc.text("Neto:", resumenX, resumenY);
-  doc.text(`$${net.toLocaleString('es-CL', {minimumFractionDigits: 2})}`, 185, resumenY, {align: 'right'});
+  doc.text(`$${Math.round(net).toLocaleString('es-CL')}`, 185, resumenY, {align: 'right'});
   doc.text("IVA (19%):", resumenX, resumenY + 7);
-  doc.text(`$${iva.toLocaleString('es-CL', {minimumFractionDigits: 2})}`, 185, resumenY + 7, {align: 'right'});
+  doc.text(`$${Math.round(iva).toLocaleString('es-CL')}`, 185, resumenY + 7, {align: 'right'});
   doc.setFont(undefined, 'bold');
   doc.text("TOTAL:", resumenX, resumenY + 14);
-  doc.text(`$${tot.toLocaleString('es-CL', {minimumFractionDigits: 2})}`, 185, resumenY + 14, {align: 'right'});
+  doc.text(`$${Math.round(tot).toLocaleString('es-CL')}`, 185, resumenY + 14, {align: 'right'});
 
   doc.setTextColor(150, 150, 150);
   doc.setFontSize(8);
