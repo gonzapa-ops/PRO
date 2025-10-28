@@ -92,6 +92,7 @@
             border: 2px solid #ddd;
             border-radius: 4px;
             transition: border-color 0.3s;
+            text-transform: uppercase;
         }
 
         .busqueda-rut input:focus {
@@ -125,6 +126,29 @@
 
         .btn-limpiar:hover {
             background-color: #7f8c8d;
+        }
+
+        .btn-editar {
+            background-color: #f39c12;
+            color: white;
+            padding: 8px 15px;
+            font-size: 13px;
+        }
+
+        .btn-editar:hover {
+            background-color: #e67e22;
+        }
+
+        .btn-cancelar {
+            background-color: #e74c3c;
+            color: white;
+            padding: 8px 15px;
+            font-size: 13px;
+            margin-left: 10px;
+        }
+
+        .btn-cancelar:hover {
+            background-color: #c0392b;
         }
 
         /* Formulario de datos del cliente */
@@ -161,6 +185,11 @@
             border: 2px solid #ddd;
             border-radius: 4px;
             transition: border-color 0.3s;
+            text-transform: uppercase;
+        }
+
+        .campo-grupo input[type="email"] {
+            text-transform: lowercase;
         }
 
         .campo-grupo input:focus {
@@ -210,6 +239,7 @@
             padding: 15px;
             border-radius: 4px;
             border-left: 4px solid #4caf50;
+            position: relative;
         }
 
         .resumen-cliente.activo {
@@ -229,6 +259,23 @@
 
         .resumen-cliente strong {
             color: #2c3e50;
+        }
+
+        .botones-resumen {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .modo-edicion {
+            background-color: #fff3cd;
+            border-left: 4px solid #f39c12;
+        }
+
+        .botones-formulario {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
         }
     </style>
 </head>
@@ -254,7 +301,7 @@
                 <div class="busqueda-rut">
                     <input type="text" 
                            id="inputRut" 
-                           placeholder="Ingrese RUT (ej: 78070615-7)" 
+                           placeholder="INGRESE RUT (EJ: 78070615-7)" 
                            maxlength="12">
                     <button class="btn btn-buscar" onclick="buscarCliente()">Buscar</button>
                     <button class="btn btn-limpiar" onclick="limpiarFormulario()">Limpiar</button>
@@ -296,7 +343,7 @@
 
                         <div class="campo-grupo">
                             <label for="celular">CELULAR *</label>
-                            <input type="tel" id="celular" placeholder="ej: +56912345678" required>
+                            <input type="tel" id="celular" placeholder="+56912345678" required>
                         </div>
                     </div>
 
@@ -305,9 +352,14 @@
                         <input type="email" id="mail" required>
                     </div>
 
-                    <button class="btn btn-buscar" onclick="guardarCliente()" style="margin-top: 10px;">
-                        Guardar Cliente
-                    </button>
+                    <div class="botones-formulario">
+                        <button class="btn btn-buscar" onclick="guardarCliente()">
+                            <span id="textoBotonGuardar">Guardar Cliente</span>
+                        </button>
+                        <button class="btn btn-cancelar" id="btnCancelarEdicion" onclick="cancelarEdicion()" style="display: none;">
+                            Cancelar
+                        </button>
+                    </div>
                 </div>
 
             </section>
@@ -374,12 +426,18 @@
                 this.clientes[rut] = datos;
                 this.guardarClientes();
             }
+
+            actualizarCliente(rut, datos) {
+                this.clientes[rut] = datos;
+                this.guardarClientes();
+            }
         }
 
         // Inicializar gestores
         const gestorCotizaciones = new GestorCotizaciones();
         const gestorClientes = new GestorClientes();
         let clienteActual = null;
+        let modoEdicion = false;
 
         // Formatear RUT mientras se escribe
         document.getElementById('inputRut').addEventListener('input', function(e) {
@@ -387,7 +445,7 @@
             if (valor.length > 1) {
                 valor = valor.slice(0, -1) + '-' + valor.slice(-1);
             }
-            e.target.value = valor;
+            e.target.value = valor.toUpperCase();
         });
 
         // Buscar cliente por RUT
@@ -412,6 +470,7 @@
             if (cliente) {
                 // Cliente encontrado
                 clienteActual = cliente;
+                modoEdicion = false;
                 mostrarMensaje('Cliente encontrado en la base de datos', 'exito');
                 mostrarResumenCliente(cliente);
                 formulario.classList.remove('activo');
@@ -421,7 +480,10 @@
                 resumen.classList.remove('activo');
                 formulario.classList.add('activo');
                 document.getElementById('rut').value = rut;
+                document.getElementById('textoBotonGuardar').textContent = 'Guardar Cliente';
+                document.getElementById('btnCancelarEdicion').style.display = 'none';
                 limpiarCamposFormulario();
+                modoEdicion = false;
             }
         }
 
@@ -442,6 +504,7 @@
         // Mostrar resumen del cliente encontrado
         function mostrarResumenCliente(cliente) {
             const resumen = document.getElementById('resumenCliente');
+            resumen.className = 'resumen-cliente activo';
             resumen.innerHTML = `
                 <h4>✓ Cliente Registrado</h4>
                 <p><strong>RUT:</strong> ${cliente.rut}</p>
@@ -451,11 +514,49 @@
                 <p><strong>Contacto:</strong> ${cliente.nombreContacto}</p>
                 <p><strong>Celular:</strong> ${cliente.celular}</p>
                 <p><strong>Mail:</strong> ${cliente.mail}</p>
+                <div class="botones-resumen">
+                    <button class="btn btn-editar" onclick="editarCliente()">✏️ Editar Datos</button>
+                </div>
             `;
-            resumen.classList.add('activo');
         }
 
-        // Guardar nuevo cliente
+        // Editar cliente existente
+        function editarCliente() {
+            if (!clienteActual) return;
+
+            modoEdicion = true;
+            const formulario = document.getElementById('formularioCliente');
+            const resumen = document.getElementById('resumenCliente');
+
+            // Llenar el formulario con los datos actuales
+            document.getElementById('rut').value = clienteActual.rut;
+            document.getElementById('razonSocial').value = clienteActual.razonSocial;
+            document.getElementById('giro').value = clienteActual.giro;
+            document.getElementById('direccion').value = clienteActual.direccion;
+            document.getElementById('nombreContacto').value = clienteActual.nombreContacto;
+            document.getElementById('celular').value = clienteActual.celular;
+            document.getElementById('mail').value = clienteActual.mail;
+
+            // Mostrar formulario en modo edición
+            resumen.classList.remove('activo');
+            formulario.classList.add('activo');
+            document.getElementById('textoBotonGuardar').textContent = 'Guardar Cambios';
+            document.getElementById('btnCancelarEdicion').style.display = 'inline-block';
+
+            mostrarMensaje('Modo de edición activado. Modifique los campos necesarios.', 'info');
+        }
+
+        // Cancelar edición
+        function cancelarEdicion() {
+            if (!clienteActual) return;
+
+            modoEdicion = false;
+            document.getElementById('formularioCliente').classList.remove('activo');
+            mostrarMensaje('Cliente encontrado en la base de datos', 'exito');
+            mostrarResumenCliente(clienteActual);
+        }
+
+        // Guardar nuevo cliente o actualizar existente
         function guardarCliente() {
             const rut = document.getElementById('rut').value;
             const razonSocial = document.getElementById('razonSocial').value.trim();
@@ -477,18 +578,26 @@
 
             const cliente = {
                 rut,
-                razonSocial,
-                giro,
-                direccion,
-                nombreContacto,
+                razonSocial: razonSocial.toUpperCase(),
+                giro: giro.toUpperCase(),
+                direccion: direccion.toUpperCase(),
+                nombreContacto: nombreContacto.toUpperCase(),
                 celular,
-                mail
+                mail: mail.toLowerCase()
             };
 
-            gestorClientes.agregarCliente(rut, cliente);
-            clienteActual = cliente;
+            if (modoEdicion) {
+                // Actualizar cliente existente
+                gestorClientes.actualizarCliente(rut, cliente);
+                mostrarMensaje('Datos del cliente actualizados exitosamente', 'exito');
+            } else {
+                // Agregar nuevo cliente
+                gestorClientes.agregarCliente(rut, cliente);
+                mostrarMensaje('Cliente guardado exitosamente', 'exito');
+            }
 
-            mostrarMensaje('Cliente guardado exitosamente', 'exito');
+            clienteActual = cliente;
+            modoEdicion = false;
             mostrarResumenCliente(cliente);
             document.getElementById('formularioCliente').classList.remove('activo');
         }
@@ -505,8 +614,10 @@
             document.getElementById('mensaje').style.display = 'none';
             document.getElementById('resumenCliente').classList.remove('activo');
             document.getElementById('formularioCliente').classList.remove('activo');
+            document.getElementById('btnCancelarEdicion').style.display = 'none';
             limpiarCamposFormulario();
             clienteActual = null;
+            modoEdicion = false;
         }
 
         // Limpiar campos del formulario
