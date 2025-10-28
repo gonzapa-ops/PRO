@@ -556,26 +556,21 @@ function generarPDFDocumento(cotizacion) {
   const iva = +(net * 0.19).toFixed(2);
   const tot = +(net + iva).toFixed(2);
 
-  // ENCABEZADO
   doc.setFillColor(44, 62, 80);
   doc.rect(0, 0, 210, 40, 'F');
   doc.setTextColor(255, 255, 255);
   doc.setFontSize(26);
   doc.setFont(undefined, 'bold');
   doc.text('COTIZACIÓN', 15, 18);
-  doc.setFontSize(12);
-  doc.setFont(undefined, 'normal');
-  doc.text('EMPRESA CUNDO', 15, 28);
   doc.setFontSize(14);
   doc.setFont(undefined, 'bold');
   doc.setTextColor(52, 152, 219);
-  doc.text(`N° ${cotizacion.numero}`, 180, 18, { align: 'right' });
+  doc.text(`N° ${cotizacion.numero}`, 180, 18, {align: 'right'});
   doc.setTextColor(200, 200, 200);
   doc.setFontSize(8);
   const fecha = new Date(cotizacion.fecha).toLocaleDateString('es-CL');
-  doc.text(`Fecha: ${fecha}`, 180, 28, { align: 'right' });
+  doc.text(`Fecha: ${fecha}`, 180, 28, {align: 'right'});
 
-  // DATOS CLIENTE
   doc.setTextColor(0, 0, 0);
   doc.setFontSize(11);
   doc.setFont(undefined, 'bold');
@@ -606,12 +601,10 @@ function generarPDFDocumento(cotizacion) {
     yPos += 6;
   });
 
-  // LÍNEA DIVISORIA
   doc.setDrawColor(52, 152, 219);
   doc.setLineWidth(0.5);
   doc.line(15, yPos + 2, 195, yPos + 2);
 
-  // TABLA PRODUCTOS
   yPos += 8;
   doc.setFont(undefined, 'bold');
   doc.setFontSize(9);
@@ -624,40 +617,39 @@ function generarPDFDocumento(cotizacion) {
       p.codigo,
       p.descripcion,
       p.cantidad.toString(),
-      `$${parseFloat(p.valorNeto).toLocaleString('es-CL', { minimumFractionDigits: 2 })}`,
-      `$${parseFloat(p.total).toLocaleString('es-CL', { minimumFractionDigits: 2 })}`
+      `$${parseFloat(p.valorNeto).toLocaleString('es-CL', {minimumFractionDigits: 2})}`,
+      `$${parseFloat(p.total).toLocaleString('es-CL', {minimumFractionDigits: 2})}`
     ]),
     theme: 'striped',
-    styles: { fontSize: 8, cellPadding: 3 },
-    headStyles: { fillColor: [52, 73, 94], textColor: 255, fontStyle: 'bold' },
+    styles: {fontSize: 8, cellPadding: 3},
+    headStyles: {fillColor: [52, 73, 94], textColor: 255, fontStyle: 'bold'},
     columnStyles: {
-      0: { cellWidth: 20 },
-      1: { cellWidth: 90 },
-      2: { cellWidth: 15, halign: 'center' },
-      3: { cellWidth: 30, halign: 'right' },
-      4: { cellWidth: 30, halign: 'right' }
+      0: {cellWidth: 20},
+      1: {cellWidth: 90},
+      2: {cellWidth: 15, halign: 'center'},
+      3: {cellWidth: 30, halign: 'right'},
+      4: {cellWidth: 30, halign: 'right'}
     },
-    margin: { left: 15, right: 15 }
+    margin: {left: 15, right: 15}
   });
 
-  // RESUMEN SIMPLE Y LIMPIO
-  const finalY = doc.lastAutoTable.finalY + 8;
-  doc.setFillColor(230, 230, 230);
-  doc.rect(130, finalY, 65, 28, 'F');
+  const resumenY = doc.lastAutoTable.finalY + 15;
+  const resumenX = 120;
+  doc.setFont(undefined, 'normal');
   doc.setTextColor(0, 0, 0);
   doc.setFontSize(10);
-  doc.setFont(undefined, 'normal');
-  doc.text(`Neto: $${net.toLocaleString('es-CL', { minimumFractionDigits: 2 })}`, 135, finalY + 8);
-  doc.text(`IVA 19%: $${iva.toLocaleString('es-CL', { minimumFractionDigits: 2 })}`, 135, finalY + 15);
+  doc.text("Neto:", resumenX, resumenY);
+  doc.text(`$${net.toLocaleString('es-CL', {minimumFractionDigits: 2})}`, 185, resumenY, {align: 'right'});
+  doc.text("IVA (19%):", resumenX, resumenY + 7);
+  doc.text(`$${iva.toLocaleString('es-CL', {minimumFractionDigits: 2})}`, 185, resumenY + 7, {align: 'right'});
   doc.setFont(undefined, 'bold');
-  doc.text(`TOTAL: $${tot.toLocaleString('es-CL', { minimumFractionDigits: 2 })}`, 135, finalY + 24);
+  doc.text("TOTAL:", resumenX, resumenY + 14);
+  doc.text(`$${tot.toLocaleString('es-CL', {minimumFractionDigits: 2})}`, 185, resumenY + 14, {align: 'right'});
 
-  // PIE
   doc.setTextColor(150, 150, 150);
   doc.setFontSize(8);
   doc.setFont(undefined, 'italic');
-  doc.text('Gracias por su preferencia', 105, 280, { align: 'center' });
-
+  doc.text('Gracias por su preferencia', 105, 280, {align: 'center'});
   doc.save(`Cotizacion_${cotizacion.numero}.pdf`);
 }
 
