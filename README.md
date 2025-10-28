@@ -8,9 +8,9 @@
 * {margin: 0; padding: 0; box-sizing: border-box;}
 body {font-family: 'Arial', sans-serif; background: #f5f5f5; padding: 20px;}
 .cotizador-container {max-width: 1200px; margin: auto; background: #fff; box-shadow: 0 0 10px rgba(0,0,0,0.1); padding: 30px;}
-.cotizador-header {background: #2c3e50; color: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #3498db; margin-bottom: 20px;}
-.empresa-nombre {font-weight: bold; font-size: 20px; letter-spacing: 1px;}
-.numero-cotizacion {font-weight: bold; color: #3498db;}
+.cotizador-header {background: #2c3e50; color: white; padding: 8px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #3498db; margin-bottom: 20px;}
+.empresa-nombre {font-weight: bold; font-size: 16px; letter-spacing: 1px;}
+.numero-cotizacion {font-weight: bold; color: #3498db; font-size: 13px;}
 .seccion-titulo {font-weight: bold; font-size: 18px; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #3498db; text-transform: uppercase;}
 table {width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 13px;}
 th, td {border: 1px solid #ddd; padding: 8px; text-transform: uppercase;}
@@ -646,27 +646,23 @@ function generarPDFDocumento(cotizacion) {
   const tot = +(net + iva).toFixed(2);
 
   doc.setFillColor(44, 62, 80);
-  doc.rect(0, 0, 210, 40, 'F');
+  doc.rect(0, 0, 210, 25, 'F');
   doc.setTextColor(255, 255, 255);
-  doc.setFontSize(26);
+  doc.setFontSize(22);
   doc.setFont(undefined, 'bold');
-  doc.text('COTIZACIÓN', 15, 18);
-  doc.setFontSize(14);
+  doc.text('COTIZACIÓN', 15, 12);
+  doc.setFontSize(12);
   doc.setFont(undefined, 'bold');
   doc.setTextColor(52, 152, 219);
-  doc.text(`N° ${cotizacion.numero}`, 180, 18, {align: 'right'});
-  doc.setTextColor(200, 200, 200);
-  doc.setFontSize(8);
-  const fecha = new Date(cotizacion.fecha).toLocaleDateString('es-CL');
-  doc.text(`Fecha: ${fecha}`, 180, 28, {align: 'right'});
+  doc.text(`N° ${cotizacion.numero}`, 180, 12, {align: 'right'});
 
   doc.setTextColor(0, 0, 0);
   doc.setFontSize(11);
   doc.setFont(undefined, 'bold');
-  doc.text('DATOS DEL CLIENTE', 15, 50);
+  doc.text('DATOS DEL CLIENTE', 15, 40);
   doc.setDrawColor(52, 152, 219);
   doc.setLineWidth(0.3);
-  doc.line(15, 52, 195, 52);
+  doc.line(15, 42, 195, 42);
   doc.setFontSize(9);
   doc.setFont(undefined, 'normal');
   const clienteData = [
@@ -675,7 +671,7 @@ function generarPDFDocumento(cotizacion) {
     ['GIRO:', cotizacion.cliente.giro, 'MAIL:', cotizacion.cliente.mail],
     ['DIRECCIÓN:', cotizacion.cliente.direccion, '', '']
   ];
-  let yPos = 58;
+  let yPos = 48;
   clienteData.forEach(row => {
     doc.setFont(undefined, 'bold');
     doc.text(row[0], 15, yPos);
@@ -735,7 +731,6 @@ function generarPDFDocumento(cotizacion) {
   doc.text("TOTAL:", resumenX, resumenY + 14);
   doc.text(`$${Math.round(tot).toLocaleString('es-CL')}`, 185, resumenY + 14, {align: 'right'});
 
-  // DATOS EMPRESA VENDEDORA - LETRA PEQUEÑA AL PIE
   doc.setFontSize(7);
   doc.setFont(undefined, 'normal');
   doc.setTextColor(100, 100, 100);
