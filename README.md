@@ -6,103 +6,103 @@
 <title>Cotizador - EMPRESA CUNDO</title>
 <style>
 * {margin: 0; padding: 0; box-sizing: border-box;}
-body {font-family: 'Arial', sans-serif; background: #f5f5f5; padding: 20px;}
-.cotizador-container {max-width: 1200px; margin: auto; background: #fff; box-shadow: 0 0 10px rgba(0,0,0,0.1); padding: 30px;}
-.cotizador-header {background: #2c3e50; color: white; padding: 8px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #3498db; margin-bottom: 20px;}
-.empresa-nombre {font-weight: bold; font-size: 16px; letter-spacing: 1px;}
-.numero-cotizacion {font-weight: bold; color: #3498db; font-size: 13px;}
-.seccion-titulo {font-weight: bold; font-size: 18px; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #3498db; text-transform: uppercase;}
+body {font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f8f9fa; padding: 20px;}
+.cotizador-container {max-width: 1200px; margin: auto; background: #ffffff; box-shadow: 0 2px 8px rgba(0,0,0,0.08); padding: 30px; border-radius: 8px;}
+.cotizador-header {background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); color: white; padding: 8px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #ff6b35; margin-bottom: 20px; border-radius: 6px;}
+.empresa-nombre {font-weight: 700; font-size: 16px; letter-spacing: 1px;}
+.numero-cotizacion {font-weight: 600; color: #ff6b35; font-size: 13px;}
+.seccion-titulo {font-weight: 700; font-size: 18px; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #ff6b35; text-transform: uppercase; color: #1a1a2e;}
 table {width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 13px;}
-th, td {border: 1px solid #ddd; padding: 8px; text-transform: uppercase;}
-th {background: #34495e; color: white; font-weight: bold;}
-tr:nth-child(even) {background: #f9f9f9;}
-tr:hover {background: #f0f0f0;}
-.valor-numerico {text-align: right; font-weight: bold;}
+th, td {border: 1px solid #e0e0e0; padding: 8px; text-transform: uppercase;}
+th {background: #1a1a2e; color: white; font-weight: 700;}
+tr:nth-child(even) {background: #f5f5f5;}
+tr:hover {background: #ffe8d6;}
+.valor-numerico {text-align: right; font-weight: 700; color: #1a1a2e;}
 .celda-acciones {text-align: center;}
-button {cursor: pointer; border: none; border-radius: 4px; font-weight: bold; text-transform: uppercase; transition: background-color 0.3s;}
-.btn-buscar {background: #3498db; color: white; padding: 8px 12px; font-size: 12px;}
-.btn-buscar:hover {background: #2980b9;}
-.btn-limpiar {background: #95a5a6; color: white; padding: 8px 12px; font-size: 12px;}
-.btn-limpiar:hover {background: #7f8c8d;}
-.btn-eliminar {background: #e74c3c; color: white; font-size: 11px; padding: 5px 10px;}
-.btn-eliminar:hover {background: #c0392b;}
-.btn-articulos {background: #16a085; color: white; padding: 8px 12px; font-size: 12px;}
-.btn-articulos:hover {background: #138d75;}
-.btn-pdf {background: #d35400; color: white; padding: 8px 12px; font-size: 12px;}
-.btn-pdf:hover {background: #e67e22;}
-.btn-agregar {background: #27ae60; color: white; padding: 8px 12px; font-size: 12px;}
-.btn-agregar:hover {background: #229954;}
-.btn-editar {background: #f39c12; color: white; padding: 8px 12px; font-size: 12px;}
-.btn-editar:hover {background: #e67e22;}
-.btn-cancelar {background: #e74c3c; color: white; padding: 8px 12px; font-size: 12px;}
-.btn-cancelar:hover {background: #c0392b;}
-.btn-ver {background: #9b59b6; color: white; padding: 5px 8px; font-size: 10px; margin-right: 3px;}
-.btn-ver:hover {background: #8e44ad;}
-.btn-editar-cot {background: #f39c12; color: white; padding: 5px 8px; font-size: 10px; margin-right: 3px;}
-.btn-editar-cot:hover {background: #e67e22;}
+button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; text-transform: uppercase; transition: all 0.3s ease;}
+.btn-buscar {background: #ff6b35; color: white; padding: 8px 14px; font-size: 12px; box-shadow: 0 2px 4px rgba(255, 107, 53, 0.2);}
+.btn-buscar:hover {background: #e55a24; box-shadow: 0 4px 8px rgba(255, 107, 53, 0.3);}
+.btn-limpiar {background: #b0b0b0; color: white; padding: 8px 14px; font-size: 12px;}
+.btn-limpiar:hover {background: #999999;}
+.btn-eliminar {background: #d32f2f; color: white; font-size: 11px; padding: 5px 10px;}
+.btn-eliminar:hover {background: #b71c1c;}
+.btn-articulos {background: #00897b; color: white; padding: 8px 14px; font-size: 12px; box-shadow: 0 2px 4px rgba(0, 137, 123, 0.2);}
+.btn-articulos:hover {background: #00695c; box-shadow: 0 4px 8px rgba(0, 137, 123, 0.3);}
+.btn-pdf {background: #ff6b35; color: white; padding: 8px 14px; font-size: 12px; box-shadow: 0 2px 4px rgba(255, 107, 53, 0.2);}
+.btn-pdf:hover {background: #e55a24; box-shadow: 0 4px 8px rgba(255, 107, 53, 0.3);}
+.btn-agregar {background: #1b5e20; color: white; padding: 8px 14px; font-size: 12px;}
+.btn-agregar:hover {background: #0d3817;}
+.btn-editar {background: #f57f17; color: white; padding: 8px 14px; font-size: 12px;}
+.btn-editar:hover {background: #e65100;}
+.btn-cancelar {background: #d32f2f; color: white; padding: 8px 14px; font-size: 12px;}
+.btn-cancelar:hover {background: #b71c1c;}
+.btn-ver {background: #673ab7; color: white; padding: 5px 8px; font-size: 10px; margin-right: 3px;}
+.btn-ver:hover {background: #512da8;}
+.btn-editar-cot {background: #f57f17; color: white; padding: 5px 8px; font-size: 10px; margin-right: 3px;}
+.btn-editar-cot:hover {background: #e65100;}
 .formulario-cliente, .formulario-producto, .formulario-editar-articulo {display: none; animation: fadeIn 0.3s;}
 .formulario-cliente.activo, .formulario-producto.activo, .formulario-editar-articulo.activo {display: block;}
 @keyframes fadeIn {from {opacity: 0;} to {opacity: 1;}}
 .campo-grupo {margin-bottom: 15px; position: relative;}
-.campo-grupo label {display: block; font-weight: bold; color: #2c3e50; margin-bottom: 5px; font-size: 13px; text-transform: uppercase;}
-.campo-grupo input {width: 100%; padding: 10px; font-size: 13px; border: 2px solid #ddd; border-radius: 4px; transition: border-color 0.3s; text-transform: uppercase;}
-.campo-grupo input:focus {outline: none; border-color: #3498db;}
-.campo-grupo input:disabled {background-color: #ecf0f1; cursor: not-allowed;}
+.campo-grupo label {display: block; font-weight: 700; color: #1a1a2e; margin-bottom: 5px; font-size: 13px; text-transform: uppercase;}
+.campo-grupo input {width: 100%; padding: 10px; font-size: 13px; border: 2px solid #e0e0e0; border-radius: 5px; transition: border-color 0.3s; text-transform: uppercase;}
+.campo-grupo input:focus {outline: none; border-color: #ff6b35;}
+.campo-grupo input:disabled {background-color: #f5f5f5; cursor: not-allowed; color: #999;}
 .campo-grupo input.link-articulo, #linkProducto {text-transform: lowercase;}
 .fila-campos {display: grid; grid-template-columns: 1fr 1fr; gap: 15px;}
-.mensaje {padding: 10px 15px; border-radius: 4px; margin-bottom: 15px; font-size: 12px; text-transform: uppercase;}
-.mensaje-exito {background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb;}
-.mensaje-error {background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb;}
-.mensaje-info {background-color: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb;}
-.resumen-cliente {display: none; background-color: #e8f5e9; padding: 15px; border-radius: 4px; border-left: 4px solid #4caf50;}
+.mensaje {padding: 12px 15px; border-radius: 5px; margin-bottom: 15px; font-size: 12px; text-transform: uppercase; font-weight: 600;}
+.mensaje-exito {background-color: #c8e6c9; color: #1b5e20; border: 1px solid #81c784;}
+.mensaje-error {background-color: #ffcdd2; color: #b71c1c; border: 1px solid #ef5350;}
+.mensaje-info {background-color: #b3e5fc; color: #01579b; border: 1px solid #4fc3f7;}
+.resumen-cliente {display: none; background-color: #e8f5e9; padding: 15px; border-radius: 5px; border-left: 5px solid #00897b;}
 .resumen-cliente.activo {display: block;}
-.resumen-cliente h4 {color: #2c3e50; margin-bottom: 10px; text-transform: uppercase;}
-.resumen-cliente p {margin: 5px 0; font-size: 13px; color: #555; text-transform: uppercase;}
-.resumen-cliente strong {color: #2c3e50;}
+.resumen-cliente h4 {color: #1a1a2e; margin-bottom: 10px; text-transform: uppercase; font-weight: 700;}
+.resumen-cliente p {margin: 5px 0; font-size: 13px; color: #333; text-transform: uppercase;}
+.resumen-cliente strong {color: #1a1a2e;}
 .botones-resumen {margin-top: 15px; display: flex; gap: 10px;}
 .botones-formulario {display: flex; gap: 10px; margin-top: 10px;}
-.seccion-cliente {margin-bottom: 30px; border: 1px solid #ddd; border-radius: 5px; padding: 20px; background-color: #fafafa;}
+.seccion-cliente {margin-bottom: 30px; border: 1px solid #e0e0e0; border-radius: 6px; padding: 20px; background-color: #fafafa;}
 .busqueda-rut {display: flex; gap: 10px; margin-bottom: 20px; align-items: center;}
-.busqueda-rut input {flex: 1; padding: 10px; font-size: 13px; border: 2px solid #ddd; border-radius: 4px; text-transform: uppercase;}
-.busqueda-rut input:focus {outline: none; border-color: #3498db;}
-.seccion-productos {margin-bottom: 30px; border: 1px solid #ddd; border-radius: 5px; padding: 20px; background-color: #fafafa;}
+.busqueda-rut input {flex: 1; padding: 10px; font-size: 13px; border: 2px solid #e0e0e0; border-radius: 5px; text-transform: uppercase;}
+.busqueda-rut input:focus {outline: none; border-color: #ff6b35;}
+.seccion-productos {margin-bottom: 30px; border: 1px solid #e0e0e0; border-radius: 6px; padding: 20px; background-color: #fafafa;}
 .busqueda-producto {display: flex; gap: 10px; margin-bottom: 20px; align-items: center; position: relative;}
-.busqueda-producto input {flex: 1; padding: 10px; font-size: 13px; border: 2px solid #ddd; border-radius: 4px; text-transform: uppercase;}
-.busqueda-producto input:focus {outline: none; border-color: #3498db;}
-.autocomplete-list {display: none; position: absolute; top: 100%; left: 0; right: 70px; background: white; border: 1px solid #ddd; border-top: none; max-height: 200px; overflow-y: auto; z-index: 1000; border-radius: 0 0 4px 4px;}
+.busqueda-producto input {flex: 1; padding: 10px; font-size: 13px; border: 2px solid #e0e0e0; border-radius: 5px; text-transform: uppercase;}
+.busqueda-producto input:focus {outline: none; border-color: #ff6b35;}
+.autocomplete-list {display: none; position: absolute; top: 100%; left: 0; right: 70px; background: white; border: 1px solid #e0e0e0; border-top: none; max-height: 200px; overflow-y: auto; z-index: 1000; border-radius: 0 0 5px 5px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);}
 .autocomplete-list.activo {display: block;}
-.autocomplete-item {padding: 10px; cursor: pointer; background: white; font-size: 12px; text-transform: uppercase; border-bottom: 1px solid #eee;}
-.autocomplete-item:hover {background: #3498db; color: white;}
-.autocomplete-item strong {font-weight: bold; color: #2c3e50;}
-.autocomplete-item:hover strong {color: white;}
-.formulario-producto {background: #fff3cd; padding: 15px; border-radius: 4px; border-left: 4px solid #f39c12; margin-bottom: 20px;}
-.formulario-producto h4 {text-transform: uppercase; color: #856404; margin-bottom: 15px;}
+.autocomplete-item {padding: 10px; cursor: pointer; background: white; font-size: 12px; text-transform: uppercase; border-bottom: 1px solid #eee; transition: background 0.2s;}
+.autocomplete-item:hover {background: #fff3e0; border-left: 3px solid #ff6b35;}
+.autocomplete-item strong {font-weight: 700; color: #1a1a2e;}
+.autocomplete-item:hover strong {color: #ff6b35;}
+.formulario-producto {background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%); padding: 15px; border-radius: 5px; border-left: 5px solid #ff6b35; margin-bottom: 20px;}
+.formulario-producto h4 {text-transform: uppercase; color: #e65100; margin-bottom: 15px; font-weight: 700;}
 .fila-campos-producto {display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;}
 .fila-campos-producto-tres {display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-bottom: 15px;}
 .fila-campos-producto .campo-grupo, .fila-campos-producto-tres .campo-grupo {margin-bottom: 0;}
 .botones-producto {display: flex; gap: 10px; margin-top: 10px;}
-.alerta-sin-productos {background-color: #e8f4f8; padding: 15px; border-radius: 4px; border-left: 4px solid #3498db; text-align: center; color: #2c3e50; text-transform: uppercase; font-weight: bold;}
-#modalArticulos {display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.5); z-index: 9999; overflow: auto;}
-.articulos-content {background: white; border-radius: 8px; margin: 40px auto; padding: 25px; max-width: 1000px; position: relative;}
-.modal-titulo {font-size: 22px; font-weight: bold; margin-bottom: 20px; text-transform: uppercase;}
-.btn-cerrar-modal {position: absolute; top: 14px; right: 25px; background: #e74c3c; color: white; font-size: 18px; border: none; border-radius: 4px; cursor: pointer; padding: 4px 10px;}
+.alerta-sin-productos {background-color: #e3f2fd; padding: 15px; border-radius: 5px; border-left: 5px solid #1976d2; text-align: center; color: #1a1a2e; text-transform: uppercase; font-weight: 700;}
+#modalArticulos {display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6); z-index: 9999; overflow: auto;}
+.articulos-content {background: white; border-radius: 8px; margin: 40px auto; padding: 25px; max-width: 1000px; position: relative; box-shadow: 0 8px 16px rgba(0,0,0,0.2);}
+.modal-titulo {font-size: 22px; font-weight: 700; margin-bottom: 20px; text-transform: uppercase; color: #1a1a2e;}
+.btn-cerrar-modal {position: absolute; top: 14px; right: 25px; background: #d32f2f; color: white; font-size: 18px; border: none; border-radius: 4px; cursor: pointer; padding: 4px 10px; font-weight: 700;}
 .botones-superiores {display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; align-items: center;}
-#modalCotizaciones {display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.5); z-index: 10000; overflow: auto;}
-#modalCotizaciones > div {background: white; max-width: 900px; margin: 40px auto; padding: 20px; border-radius: 8px; position: relative;}
-.resumen-totales {max-width: 400px; margin-left: auto; border-top: 3px solid #3498db; padding-top: 15px; text-transform: uppercase; margin-bottom: 20px;}
-.resumen-linea {display: flex; justify-content: space-between; margin: 5px 0; font-weight: bold; font-size: 13px;}
-.resumen-linea.total {font-size: 16px; color: #2c3e50;}
-.resumen-utilidad {background-color: #fff3cd; padding: 15px; border-radius: 4px; border-left: 4px solid #f39c12; margin-top: 20px;}
-.resumen-utilidad h4 {color: #856404; text-transform: uppercase; margin-bottom: 10px; font-size: 14px;}
-.utilidad-item {display: flex; justify-content: space-between; margin: 8px 0; font-size: 13px; color: #333;}
-.utilidad-item strong {color: #2c3e50;}
-.formulario-editar-articulo {background: #fff3cd; padding: 15px; border-radius: 4px; border-left: 4px solid #f39c12; margin-bottom: 20px;}
-.formulario-editar-articulo h4 {text-transform: uppercase; color: #856404; margin-bottom: 15px;}
+#modalCotizaciones {display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6); z-index: 10000; overflow: auto;}
+#modalCotizaciones > div {background: white; max-width: 900px; margin: 40px auto; padding: 20px; border-radius: 8px; position: relative; box-shadow: 0 8px 16px rgba(0,0,0,0.2);}
+.resumen-totales {max-width: 400px; margin-left: auto; border-top: 3px solid #ff6b35; padding-top: 15px; text-transform: uppercase; margin-bottom: 20px;}
+.resumen-linea {display: flex; justify-content: space-between; margin: 5px 0; font-weight: 700; font-size: 13px; color: #1a1a2e;}
+.resumen-linea.total {font-size: 16px; color: #ff6b35;}
+.resumen-utilidad {background: linear-gradient(135deg, #ffe0b2 0%, #ffcc80 100%); padding: 15px; border-radius: 5px; border-left: 5px solid #f57f17; margin-top: 20px;}
+.resumen-utilidad h4 {color: #e65100; text-transform: uppercase; margin-bottom: 10px; font-size: 14px; font-weight: 700;}
+.utilidad-item {display: flex; justify-content: space-between; margin: 8px 0; font-size: 13px; color: #1a1a2e;}
+.utilidad-item strong {color: #ff6b35; font-weight: 700;}
+.formulario-editar-articulo {background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%); padding: 15px; border-radius: 5px; border-left: 5px solid #ff6b35; margin-bottom: 20px;}
+.formulario-editar-articulo h4 {text-transform: uppercase; color: #e65100; margin-bottom: 15px; font-weight: 700;}
 .tabla-cotizaciones {width: 100%; border-collapse: collapse; background: white;}
-.tabla-cotizaciones th {background: #34495e; color: white; padding: 12px; text-align: left; text-transform: uppercase; font-weight: bold;}
-.tabla-cotizaciones td {border: 1px solid #ddd; padding: 12px; text-transform: uppercase;}
-.tabla-cotizaciones tr:nth-child(even) {background: #f9f9f9;}
-.tabla-cotizaciones tr:hover {background: #f0f0f0;}
+.tabla-cotizaciones th {background: #1a1a2e; color: white; padding: 12px; text-align: left; text-transform: uppercase; font-weight: 700;}
+.tabla-cotizaciones td {border: 1px solid #e0e0e0; padding: 12px; text-transform: uppercase;}
+.tabla-cotizaciones tr:nth-child(even) {background: #f5f5f5;}
+.tabla-cotizaciones tr:hover {background: #ffe8d6;}
 </style>
 </head>
 <body>
@@ -195,8 +195,8 @@ button {cursor: pointer; border: none; border-radius: 4px; font-weight: bold; te
 
   <div id="modalCotizaciones">
     <div>
-      <button onclick="cerrarCotizaciones()" style="position:absolute;top:15px;right:20px;background:#e74c3c;color:white;border:none;border-radius:4px;padding:5px 10px;cursor:pointer;font-size:18px;font-weight:bold;">×</button>
-      <h2 style="margin-bottom:15px;text-transform:uppercase;">COTIZACIONES EMITIDAS</h2>
+      <button onclick="cerrarCotizaciones()" style="position:absolute;top:15px;right:20px;background:#d32f2f;color:white;border:none;border-radius:4px;padding:5px 10px;cursor:pointer;font-size:18px;font-weight:bold;">×</button>
+      <h2 style="margin-bottom:15px;text-transform:uppercase;color:#1a1a2e;">COTIZACIONES EMITIDAS</h2>
       <div id="listaCotizaciones"></div>
     </div>
   </div>
@@ -545,7 +545,7 @@ function actualizarResumenTotales() {
     utilidadTotal += utilidad;
     htmlUtilidad += `<div class="utilidad-item"><strong>${p.codigo}:</strong> $${Math.round(utilidad).toLocaleString('es-CL')}</div>`;
   });
-  htmlUtilidad += `<div class="utilidad-item" style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #f39c12;"><strong>UTILIDAD TOTAL:</strong> $${Math.round(utilidadTotal).toLocaleString('es-CL')}</div>`;
+  htmlUtilidad += `<div class="utilidad-item" style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #f57f17;"><strong>UTILIDAD TOTAL:</strong> $${Math.round(utilidadTotal).toLocaleString('es-CL')}</div>`;
   htmlUtilidad += '</div>';
   document.getElementById('utilidadResumen').innerHTML = htmlUtilidad;
   document.getElementById('utilidadResumen').style.display = 'block';
@@ -645,7 +645,7 @@ function generarPDFDocumento(cotizacion) {
   const iva = +(net * 0.19).toFixed(2);
   const tot = +(net + iva).toFixed(2);
 
-  doc.setFillColor(44, 62, 80);
+  doc.setFillColor(26, 26, 46);
   doc.rect(0, 0, 210, 25, 'F');
   doc.setTextColor(255, 255, 255);
   doc.setFontSize(22);
@@ -653,14 +653,14 @@ function generarPDFDocumento(cotizacion) {
   doc.text('COTIZACIÓN', 15, 12);
   doc.setFontSize(12);
   doc.setFont(undefined, 'bold');
-  doc.setTextColor(52, 152, 219);
+  doc.setTextColor(255, 107, 53);
   doc.text(`N° ${cotizacion.numero}`, 180, 12, {align: 'right'});
 
   doc.setTextColor(0, 0, 0);
   doc.setFontSize(11);
   doc.setFont(undefined, 'bold');
   doc.text('DATOS DEL CLIENTE', 15, 40);
-  doc.setDrawColor(52, 152, 219);
+  doc.setDrawColor(255, 107, 53);
   doc.setLineWidth(0.3);
   doc.line(15, 42, 195, 42);
   doc.setFontSize(9);
@@ -686,7 +686,7 @@ function generarPDFDocumento(cotizacion) {
     yPos += 6;
   });
 
-  doc.setDrawColor(52, 152, 219);
+  doc.setDrawColor(255, 107, 53);
   doc.setLineWidth(0.5);
   doc.line(15, yPos + 2, 195, yPos + 2);
 
@@ -707,7 +707,7 @@ function generarPDFDocumento(cotizacion) {
     ]),
     theme: 'striped',
     styles: {fontSize: 8, cellPadding: 3},
-    headStyles: {fillColor: [52, 73, 94], textColor: 255, fontStyle: 'bold'},
+    headStyles: {fillColor: [26, 26, 46], textColor: 255, fontStyle: 'bold'},
     columnStyles: {
       0: {cellWidth: 20},
       1: {cellWidth: 90},
@@ -728,6 +728,7 @@ function generarPDFDocumento(cotizacion) {
   doc.text("IVA (19%):", resumenX, resumenY + 7);
   doc.text(`$${Math.round(iva).toLocaleString('es-CL')}`, 185, resumenY + 7, {align: 'right'});
   doc.setFont(undefined, 'bold');
+  doc.setTextColor(255, 107, 53);
   doc.text("TOTAL:", resumenX, resumenY + 14);
   doc.text(`$${Math.round(tot).toLocaleString('es-CL')}`, 185, resumenY + 14, {align: 'right'});
 
