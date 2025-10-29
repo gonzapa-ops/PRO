@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Cotizador - EMPRESA CUNDO</title>
 <style>
+/* Estilos generales */
 * {margin: 0; padding: 0; box-sizing: border-box;}
 body {font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #F5F5F5; padding: 20px; color: #3B3B3B;}
 .cotizador-container {max-width: 1200px; margin: auto; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.1); padding: 30px; border-radius: 8px;}
@@ -103,6 +104,22 @@ button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; tex
 .tabla-cotizaciones td {border: 1px solid #ddd; padding: 12px; text-transform: uppercase; color: #3B3B3B;}
 .tabla-cotizaciones tr:nth-child(even) {background: #E9F0EA;}
 .tabla-cotizaciones tr:hover {background: #FDE6D0;}
+
+/* ESTILOS PARA BOTONES EN COTIZACIONES */
+#listaCotizaciones button {
+  width: 90px;
+  margin: 0 8px;
+  padding: 7px 0;
+  font-size: 11px;
+  border-radius: 6px;
+  display: inline-block;
+  box-sizing: border-box;
+  text-align: center;
+}
+#listaCotizaciones button:not(:last-child) {
+  margin-right: 16px;
+}
+
 </style>
 </head>
 <body>
