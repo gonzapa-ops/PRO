@@ -50,6 +50,9 @@ button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; tex
 .campo-grupo input:focus {outline: none; border-color: #F25C05;}
 .campo-grupo input:disabled {background-color: #F5F5F5; cursor: not-allowed; color: #777;}
 .campo-grupo input.link-articulo, #linkProducto {text-transform: lowercase;}
+.campo-grupo select {width: 100%; padding: 10px; font-size: 13px; border: 2px solid #ddd; border-radius: 5px; transition: border-color 0.3s; text-transform: uppercase; background-color: white; cursor: pointer;}
+.campo-grupo select:focus {outline: none; border-color: #F25C05;}
+.campo-grupo select option {text-transform: uppercase; background-color: white; color: #3B3B3B;}
 .fila-campos {display: grid; grid-template-columns: 1fr 1fr; gap: 15px;}
 .mensaje {padding: 12px 15px; border-radius: 5px; margin-bottom: 15px; font-size: 12px; text-transform: uppercase; font-weight: 700;}
 .mensaje-exito {background-color: #d0e8d0; color: #385525; border: 1px solid #8bb76f;}
@@ -154,6 +157,7 @@ button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; tex
           <div class="campo-grupo"><label>CELULAR *</label><input type="tel" id="celular" placeholder="+56912345678" /></div>
         </div>
         <div class="campo-grupo"><label>MAIL *</label><input type="email" id="mail" /></div>
+        <div class="campo-grupo"><label>MEDIO DE PAGO *</label><select id="medioPago"><option value="">SELECCIONE MEDIO DE PAGO</option><option value="TRANSFERENCIA">TRANSFERENCIA</option><option value="WEBPAY">WEBPAY</option><option value="CHEQUE 30 DÍAS">CHEQUE 30 DÍAS</option><option value="OC 30 DÍAS">OC 30 DÍAS</option><option value="EFECTIVO">EFECTIVO</option></select></div>
         <div class="botones-formulario">
           <button class="btn btn-buscar" onclick="guardarCliente()"><span id="textoBotonGuardar">GUARDAR CLIENTE</span></button>
           <button class="btn btn-cancelar" id="btnCancelarEdicion" onclick="cancelarEdicion()" style="display: none;">CANCELAR</button>
@@ -356,7 +360,7 @@ function mostrarMensaje(texto, tipo) {
 function mostrarResumenCliente(cliente) {
   const r = document.getElementById('resumenCliente');
   r.className = 'resumen-cliente activo';
-  r.innerHTML = `<h4>✓ CLIENTE REGISTRADO</h4><p><strong>RUT:</strong> ${cliente.rut}</p><p><strong>RAZÓN SOCIAL:</strong> ${cliente.razonSocial}</p><p><strong>GIRO:</strong> ${cliente.giro}</p><p><strong>DIRECCIÓN:</strong> ${cliente.direccion}</p><p><strong>CONTACTO:</strong> ${cliente.nombreContacto}</p><p><strong>CELULAR:</strong> ${cliente.celular}</p><p><strong>MAIL:</strong> ${cliente.mail}</p><div class="botones-resumen"><button class="btn btn-editar" onclick="editarCliente()">✏️ EDITAR DATOS</button></div>`;
+  r.innerHTML = `<h4>✓ CLIENTE REGISTRADO</h4><p><strong>RUT:</strong> ${cliente.rut}</p><p><strong>RAZÓN SOCIAL:</strong> ${cliente.razonSocial}</p><p><strong>GIRO:</strong> ${cliente.giro}</p><p><strong>DIRECCIÓN:</strong> ${cliente.direccion}</p><p><strong>CONTACTO:</strong> ${cliente.nombreContacto}</p><p><strong>CELULAR:</strong> ${cliente.celular}</p><p><strong>MAIL:</strong> ${cliente.mail}</p><p><strong>MEDIO DE PAGO:</strong> ${cliente.medioPago}</p><div class="botones-resumen"><button class="btn btn-editar" onclick="editarCliente()">✏️ EDITAR DATOS</button></div>`;
 }
 
 function editarCliente() {
@@ -369,6 +373,7 @@ function editarCliente() {
   document.getElementById('nombreContacto').value = clienteActual.nombreContacto;
   document.getElementById('celular').value = clienteActual.celular;
   document.getElementById('mail').value = clienteActual.mail;
+  document.getElementById('medioPago').value = clienteActual.medioPago || '';
   document.getElementById('resumenCliente').classList.remove('activo');
   document.getElementById('formularioCliente').classList.add('activo');
   document.getElementById('textoBotonGuardar').textContent = 'GUARDAR CAMBIOS';
@@ -392,9 +397,10 @@ function guardarCliente() {
   const nc = document.getElementById('nombreContacto').value.trim();
   const ce = document.getElementById('celular').value.trim();
   const ma = document.getElementById('mail').value.trim();
-  if (!rs || !gi || !di || !nc || !ce || !ma) return mostrarMensaje('COMPLETE TODOS LOS CAMPOS', 'error');
+  const mp = document.getElementById('medioPago').value;
+  if (!rs || !gi || !di || !nc || !ce || !ma || !mp) return mostrarMensaje('COMPLETE TODOS LOS CAMPOS', 'error');
   if (!validarEmail(ma)) return mostrarMensaje('EMAIL INVÁLIDO', 'error');
-  const cliente = {rut, razonSocial: rs.toUpperCase(), giro: gi.toUpperCase(), direccion: di.toUpperCase(), nombreContacto: nc.toUpperCase(), celular: ce, mail: ma.toUpperCase()};
+  const cliente = {rut, razonSocial: rs.toUpperCase(), giro: gi.toUpperCase(), direccion: di.toUpperCase(), nombreContacto: nc.toUpperCase(), celular: ce, mail: ma.toUpperCase(), medioPago: mp};
   if (modoEdicion) gestorClientes.actualizarCliente(rut, cliente);
   else gestorClientes.agregarCliente(rut, cliente);
   mostrarMensaje(modoEdicion ? 'CLIENTE ACTUALIZADO' : 'CLIENTE GUARDADO', 'exito');
@@ -424,6 +430,7 @@ function limpiarCamposFormulario() {
   document.getElementById('nombreContacto').value = '';
   document.getElementById('celular').value = '';
   document.getElementById('mail').value = '';
+  document.getElementById('medioPago').value = '';
 }
 
 document.getElementById('costoProducto').addEventListener('change', calcularValorNeto);
@@ -686,7 +693,7 @@ function generarPDFDocumento(cotizacion) {
     ['RUT:', cotizacion.cliente.rut, 'CONTACTO:', cotizacion.cliente.nombreContacto],
     ['RAZÓN SOCIAL:', cotizacion.cliente.razonSocial, 'CELULAR:', cotizacion.cliente.celular],
     ['GIRO:', cotizacion.cliente.giro, 'MAIL:', cotizacion.cliente.mail],
-    ['DIRECCIÓN:', cotizacion.cliente.direccion, '', '']
+    ['DIRECCIÓN:', cotizacion.cliente.direccion, 'MEDIO PAGO:', cotizacion.cliente.medioPago]
   ];
   let yPos = 48;
   clienteData.forEach(row => {
