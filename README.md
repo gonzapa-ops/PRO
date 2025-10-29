@@ -96,10 +96,10 @@ button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; tex
 .resumen-totales {max-width: 400px; margin-left: auto; border-top: 3px solid #F25C05; padding-top: 15px; text-transform: uppercase; margin-bottom: 20px;}
 .resumen-linea {display: flex; justify-content: space-between; margin: 5px 0; font-weight: 700; font-size: 13px; color: #3B3B3B;}
 .resumen-linea.total {font-size: 18px; color: #000; font-weight: 900;}
-.resumen-utilidad {background: linear-gradient(135deg, #f7dba1 0%, #f18a00 100%); padding: 15px; border-radius: 6px; border-left: 5px solid #D9822B; margin-top: 20px;}
-.resumen-utilidad h4 {color: #b35304; text-transform: uppercase; margin-bottom: 10px; font-size: 14px; font-weight: 700;}
+.resumen-utilidad {background-color: #E8E8E8; padding: 20px; border-radius: 8px; border: 2px solid #999999; border-top: 4px solid #1F6F8B; border-bottom: 4px solid #1F6F8B; margin-top: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);}
+.resumen-utilidad h4 {color: #1F6F8B; text-transform: uppercase; margin-bottom: 12px; font-size: 14px; font-weight: 700;}
 .utilidad-item {display: flex; justify-content: space-between; margin: 8px 0; font-size: 13px; color: #3B3B3B;}
-.utilidad-item strong {color: #F25C05; font-weight: 700;}
+.utilidad-item strong {color: #1F6F8B; font-weight: 700;}
 .formulario-editar-articulo {background: linear-gradient(135deg, #f9ead4 0%, #f7dba1 100%); padding: 15px; border-radius: 6px; border-left: 5px solid #F25C05; margin-bottom: 20px;}
 .formulario-editar-articulo h4 {text-transform: uppercase; color: #b35304; margin-bottom: 15px; font-weight: 700;}
 .tabla-cotizaciones {width: 100%; border-collapse: collapse; background: white;}
@@ -569,7 +569,7 @@ function actualizarResumenTotales() {
     utilidadTotal += utilidad;
     htmlUtilidad += `<div class="utilidad-item"><strong>${p.codigo}:</strong> $${Math.round(utilidad).toLocaleString('es-CL')}</div>`;
   });
-  htmlUtilidad += `<div class="utilidad-item" style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #F25C05;"><strong>UTILIDAD TOTAL:</strong> $${Math.round(utilidadTotal).toLocaleString('es-CL')}</div>`;
+  htmlUtilidad += `<div class="utilidad-item" style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #999999;"><strong>UTILIDAD TOTAL:</strong> $${Math.round(utilidadTotal).toLocaleString('es-CL')}</div>`;
   htmlUtilidad += '</div>';
   document.getElementById('utilidadResumen').innerHTML = htmlUtilidad;
   document.getElementById('utilidadResumen').style.display = 'block';
