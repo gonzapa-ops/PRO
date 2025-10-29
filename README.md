@@ -11,7 +11,7 @@ body {font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: 
 .cotizador-container {max-width: 1200px; margin: auto; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.1); padding: 30px; border-radius: 8px;}
 .cotizador-header {background: #1F6F8B; color: white; padding: 8px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #F25C05; border-radius: 6px; margin-bottom: 20px;}
 .empresa-nombre {font-weight: 700; font-size: 16px; letter-spacing: 1px;}
-.numero-cotizacion {font-weight: 700; color: #F25C05; font-size: 13px;}
+.numero-cotizacion {font-weight: 900; color: #000; font-size: 15px;}
 .seccion-titulo {font-weight: 700; font-size: 18px; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #F25C05; text-transform: uppercase; color: #1F6F8B;}
 table {width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 13px;}
 th, td {border: 1px solid #ddd; padding: 8px; text-transform: uppercase; color: #3B3B3B;}
@@ -92,7 +92,7 @@ button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; tex
 #modalCotizaciones > div {background: white; max-width: 900px; margin: 40px auto; padding: 20px; border-radius: 8px; position: relative; box-shadow: 0 8px 16px rgba(0,0,0,0.15);}
 .resumen-totales {max-width: 400px; margin-left: auto; border-top: 3px solid #F25C05; padding-top: 15px; text-transform: uppercase; margin-bottom: 20px;}
 .resumen-linea {display: flex; justify-content: space-between; margin: 5px 0; font-weight: 700; font-size: 13px; color: #3B3B3B;}
-.resumen-linea.total {font-size: 16px; color: #F25C05;}
+.resumen-linea.total {font-size: 18px; color: #000; font-weight: 900;}
 .resumen-utilidad {background: linear-gradient(135deg, #f7dba1 0%, #f18a00 100%); padding: 15px; border-radius: 6px; border-left: 5px solid #D9822B; margin-top: 20px;}
 .resumen-utilidad h4 {color: #b35304; text-transform: uppercase; margin-bottom: 10px; font-size: 14px; font-weight: 700;}
 .utilidad-item {display: flex; justify-content: space-between; margin: 8px 0; font-size: 13px; color: #3B3B3B;}
@@ -670,7 +670,7 @@ function generarPDFDocumento(cotizacion) {
   doc.text('COTIZACIÓN', 15, 12);
   doc.setFontSize(12);
   doc.setFont(undefined, 'bold');
-  doc.setTextColor(242, 92, 5);
+  doc.setTextColor(0, 0, 0);
   doc.text(`N° ${cotizacion.numero}`, 180, 12, {align: 'right'});
 
   doc.setTextColor(0, 0, 0);
@@ -745,7 +745,7 @@ function generarPDFDocumento(cotizacion) {
   doc.text("IVA (19%):", resumenX, resumenY + 7);
   doc.text(`$${Math.round(iva).toLocaleString('es-CL')}`, 185, resumenY + 7, {align: 'right'});
   doc.setFont(undefined, 'bold');
-  doc.setTextColor(242, 92, 5);
+  doc.setTextColor(0, 0, 0);
   doc.text("TOTAL:", resumenX, resumenY + 14);
   doc.text(`$${Math.round(tot).toLocaleString('es-CL')}`, 185, resumenY + 14, {align: 'right'});
 
