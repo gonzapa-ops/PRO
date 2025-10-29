@@ -23,14 +23,18 @@ tr:hover {background: #FDE6D0;}
 button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; text-transform: uppercase; transition: all 0.3s ease;}
 .btn-buscar {background: #F25C05; color: white; padding: 8px 14px; font-size: 12px; box-shadow: 0 2px 4px rgba(242, 92, 5, 0.3);}
 .btn-buscar:hover {background: #cb4a04; box-shadow: 0 4px 8px rgba(242, 92, 5, 0.5);}
+.btn-buscar:disabled {background: #a0a0a0; cursor: not-allowed; box-shadow: none;}
 .btn-limpiar {background: #7A8C52; color: white; padding: 8px 14px; font-size: 12px;}
 .btn-limpiar:hover {background: #5a6b37;}
+.btn-limpiar:disabled {background: #a0a0a0; cursor: not-allowed;}
 .btn-eliminar {background: #9B2E00; color: white; font-size: 11px; padding: 5px 10px;}
 .btn-eliminar:hover {background: #7a2300;}
 .btn-articulos {background: #4B732E; color: white; padding: 8px 14px; font-size: 12px; box-shadow: 0 2px 4px rgba(75, 115, 46, 0.3);}
 .btn-articulos:hover {background: #385525; box-shadow: 0 4px 8px rgba(75, 115, 46, 0.5);}
+.btn-articulos:disabled {background: #a0a0a0; cursor: not-allowed; box-shadow: none;}
 .btn-pdf {background: #F25C05; color: white; padding: 8px 14px; font-size: 12px; box-shadow: 0 2px 4px rgba(242, 92, 5, 0.3);}
 .btn-pdf:hover {background: #cb4a04; box-shadow: 0 4px 8px rgba(242, 92, 5, 0.5);}
+.btn-pdf:disabled {background: #a0a0a0; cursor: not-allowed; box-shadow: none;}
 .btn-agregar {background: #385525; color: white; padding: 8px 14px; font-size: 12px;}
 .btn-agregar:hover {background: #274015;}
 .btn-editar {background: #D9822B; color: white; padding: 8px 14px; font-size: 12px;}
@@ -143,13 +147,16 @@ button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; tex
 
 /* ESTILOS PARA DATOS DE CIERRE */
 .seccion-cierre {margin-top: 30px; border: 1px solid #ddd; border-radius: 6px; padding: 20px; background-color: #fafafa;}
-.botones-cierre {display: flex; gap: 15px; margin-top: 15px;}
+.botones-cierre {display: flex; gap: 15px; margin-top: 15px; flex-wrap: wrap;}
 .btn-aceptado {background: #4B732E; color: white; padding: 12px 30px; font-size: 14px; box-shadow: 0 2px 6px rgba(75, 115, 46, 0.3);}
 .btn-aceptado:hover {background: #385525; box-shadow: 0 4px 10px rgba(75, 115, 46, 0.5);}
 .btn-aceptado:disabled {background: #a0a0a0; cursor: not-allowed; box-shadow: none;}
 .btn-rechazado {background: #9B2E00; color: white; padding: 12px 30px; font-size: 14px; box-shadow: 0 2px 6px rgba(155, 46, 0, 0.3);}
 .btn-rechazado:hover {background: #7a2300; box-shadow: 0 4px 10px rgba(155, 46, 0, 0.5);}
 .btn-rechazado:disabled {background: #a0a0a0; cursor: not-allowed; box-shadow: none;}
+.btn-limpiar-cot {background: #556B2F; color: white; padding: 12px 30px; font-size: 14px; box-shadow: 0 2px 6px rgba(85, 107, 47, 0.3);}
+.btn-limpiar-cot:hover {background: #3f4f20; box-shadow: 0 4px 10px rgba(85, 107, 47, 0.5);}
+.btn-limpiar-cot:disabled {background: #a0a0a0; cursor: not-allowed; box-shadow: none;}
 
 /* ESTILOS PARA MODAL DE ACEPTADO */
 #modalAceptado {display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.4); z-index: 10001; overflow: auto;}
@@ -199,23 +206,23 @@ button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; tex
       <div class="busqueda-rut">
         <input type="text" id="inputRut" placeholder="INGRESE RUT (EJ: 78070615-7)" maxlength="12" />
         <button class="btn btn-buscar" onclick="buscarCliente()" id="btnBuscarCliente">BUSCAR</button>
-        <button class="btn btn-limpiar" onclick="limpiarFormulario()" id="btnLimpiarCliente">LIMPIAR</button>
+        <button class="btn btn-limpiar" onclick="limpiarCotizacion()" id="btnLimpiarCliente">LIMPIAR</button>
       </div>
       <div id="mensaje"></div>
       <div id="resumenCliente" class="resumen-cliente"></div>
       <div id="formularioCliente" class="formulario-cliente">
         <div class="campo-grupo"><label>RUT *</label><input type="text" id="rut" disabled /></div>
-        <div class="campo-grupo"><label>RAZÓN SOCIAL *</label><input type="text" id="razonSocial" /></div>
-        <div class="campo-grupo"><label>GIRO *</label><input type="text" id="giro" /></div>
-        <div class="campo-grupo"><label>DIRECCIÓN DE FACTURACIÓN *</label><input type="text" id="direccion" /></div>
+        <div class="campo-grupo"><label>RAZÓN SOCIAL *</label><input type="text" id="razonSocial" disabled /></div>
+        <div class="campo-grupo"><label>GIRO *</label><input type="text" id="giro" disabled /></div>
+        <div class="campo-grupo"><label>DIRECCIÓN DE FACTURACIÓN *</label><input type="text" id="direccion" disabled /></div>
         <div class="fila-campos">
-          <div class="campo-grupo"><label>NOMBRE DE CONTACTO *</label><input type="text" id="nombreContacto" /></div>
-          <div class="campo-grupo"><label>CELULAR *</label><input type="tel" id="celular" placeholder="+56912345678" /></div>
+          <div class="campo-grupo"><label>NOMBRE DE CONTACTO *</label><input type="text" id="nombreContacto" disabled /></div>
+          <div class="campo-grupo"><label>CELULAR *</label><input type="tel" id="celular" placeholder="+56912345678" disabled /></div>
         </div>
-        <div class="campo-grupo"><label>MAIL *</label><input type="email" id="mail" /></div>
-        <div class="campo-grupo"><label>MEDIO DE PAGO *</label><select id="medioPago"><option value="">SELECCIONE MEDIO DE PAGO</option><option value="TRANSFERENCIA">TRANSFERENCIA</option><option value="WEBPAY">WEBPAY</option><option value="CHEQUE 30 DÍAS">CHEQUE 30 DÍAS</option><option value="OC 30 DÍAS">OC 30 DÍAS</option><option value="EFECTIVO">EFECTIVO</option></select></div>
+        <div class="campo-grupo"><label>MAIL *</label><input type="email" id="mail" disabled /></div>
+        <div class="campo-grupo"><label>MEDIO DE PAGO *</label><select id="medioPago" disabled><option value="">SELECCIONE MEDIO DE PAGO</option><option value="TRANSFERENCIA">TRANSFERENCIA</option><option value="WEBPAY">WEBPAY</option><option value="CHEQUE 30 DÍAS">CHEQUE 30 DÍAS</option><option value="OC 30 DÍAS">OC 30 DÍAS</option><option value="EFECTIVO">EFECTIVO</option></select></div>
         <div class="botones-formulario">
-          <button class="btn btn-buscar" onclick="guardarCliente()"><span id="textoBotonGuardar">GUARDAR CLIENTE</span></button>
+          <button class="btn btn-buscar" onclick="guardarCliente()" id="btnGuardarCliente" style="display:none;"><span id="textoBotonGuardar">GUARDAR CLIENTE</span></button>
           <button class="btn btn-cancelar" id="btnCancelarEdicion" onclick="cancelarEdicion()" style="display: none;">CANCELAR</button>
         </div>
       </div>
@@ -224,9 +231,9 @@ button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; tex
     <section class="seccion-productos">
       <h2 class="seccion-titulo">PRODUCTOS Y/O SERVICIOS</h2>
       <div class="busqueda-producto">
-        <input type="text" id="inputCodigoProducto" placeholder="INGRESE CÓDIGO O DESCRIPCIÓN DEL PRODUCTO" maxlength="50" />
+        <input type="text" id="inputCodigoProducto" placeholder="INGRESE CÓDIGO O DESCRIPCIÓN DEL PRODUCTO" maxlength="50" disabled />
         <div id="autocompleteLista" class="autocomplete-list"></div>
-        <button class="btn btn-buscar" onclick="buscarProducto()" id="btnBuscarProducto">BUSCAR</button>
+        <button class="btn btn-buscar" onclick="buscarProducto()" id="btnBuscarProducto" disabled>BUSCAR</button>
       </div>
       <div id="mensajeProducto"></div>
       <div id="formularioProducto" class="formulario-producto" style="display: none;">
@@ -266,6 +273,7 @@ button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; tex
       <div class="botones-cierre">
         <button class="btn-aceptado" onclick="marcarAceptado()" id="btnAceptado">ACEPTADO</button>
         <button class="btn-rechazado" onclick="marcarRechazado()" id="btnRechazado">RECHAZADO</button>
+        <button class="btn-limpiar-cot" onclick="limpiarCotizacion()" id="btnLimpiarCotizacion" style="display:none;">LIMPIAR</button>
       </div>
     </section>
   </div>
@@ -450,30 +458,36 @@ document.addEventListener('click', function(e) {
 });
 
 function buscarCliente() {
-  if (cotizacionGuardada) {
-    alert('COTIZACIÓN YA GUARDADA. LIMPIE PARA COMENZAR UNA NUEVA.');
-    return;
-  }
   const rut = document.getElementById('inputRut').value.trim();
   if (!rut) return mostrarMensaje('POR FAVOR INGRESE UN RUT', 'error');
   if (!validarRut(rut)) return mostrarMensaje('EL FORMATO DEL RUT NO ES VÁLIDO', 'error');
   const cliente = gestorClientes.buscarPorRut(rut);
   if (cliente) {
     clienteActual = cliente;
-    modoEdicion = false;
     mostrarMensaje('CLIENTE ENCONTRADO EN LA BASE DE DATOS', 'exito');
     mostrarResumenCliente(cliente);
     document.getElementById('formularioCliente').classList.remove('activo');
+    habilitarProductos();
   } else {
     mostrarMensaje('CLIENTE NO ENCONTRADO. COMPLETE LOS DATOS PARA CREAR.', 'info');
-    document.getElementById('resumenCliente').classList.remove('activo');
-    document.getElementById('formularioCliente').classList.add('activo');
-    document.getElementById('rut').value = rut;
-    document.getElementById('textoBotonGuardar').textContent = 'GUARDAR CLIENTE';
-    document.getElementById('btnCancelarEdicion').style.display = 'none';
-    limpiarCamposFormulario();
-    modoEdicion = false;
+    mostrarFormularioClienteNuevo(rut);
   }
+}
+
+function mostrarFormularioClienteNuevo(rut) {
+  document.getElementById('resumenCliente').classList.remove('activo');
+  document.getElementById('formularioCliente').classList.add('activo');
+  document.getElementById('rut').value = rut;
+  document.getElementById('rut').disabled = true;
+  document.getElementById('razonSocial').disabled = false;
+  document.getElementById('giro').disabled = false;
+  document.getElementById('direccion').disabled = false;
+  document.getElementById('nombreContacto').disabled = false;
+  document.getElementById('celular').disabled = false;
+  document.getElementById('mail').disabled = false;
+  document.getElementById('medioPago').disabled = false;
+  document.getElementById('btnGuardarCliente').style.display = 'inline-block';
+  document.getElementById('textoBotonGuardar').textContent = 'GUARDAR CLIENTE';
 }
 
 function validarRut(rut) {return /^[0-9]{7,8}-[0-9kK]$/.test(rut);}
@@ -488,26 +502,32 @@ function mostrarMensaje(texto, tipo) {
 function mostrarResumenCliente(cliente) {
   const r = document.getElementById('resumenCliente');
   r.className = 'resumen-cliente activo';
-  r.innerHTML = `<h4>✓ CLIENTE REGISTRADO</h4><p><strong>RUT:</strong> ${cliente.rut}</p><p><strong>RAZÓN SOCIAL:</strong> ${cliente.razonSocial}</p><p><strong>GIRO:</strong> ${cliente.giro}</p><p><strong>DIRECCIÓN:</strong> ${cliente.direccion}</p><p><strong>CONTACTO:</strong> ${cliente.nombreContacto}</p><p><strong>CELULAR:</strong> ${cliente.celular}</p><p><strong>MAIL:</strong> ${cliente.mail}</p><p><strong>MEDIO DE PAGO:</strong> ${cliente.medioPago}</p><div class="botones-resumen"><button class="btn btn-editar" onclick="editarCliente()">✏️ EDITAR DATOS</button></div>`;
+  r.innerHTML = `<h4>✓ CLIENTE REGISTRADO</h4><p><strong>RUT:</strong> ${cliente.rut}</p><p><strong>RAZÓN SOCIAL:</strong> ${cliente.razonSocial}</p><p><strong>GIRO:</strong> ${cliente.giro}</p><p><strong>DIRECCIÓN:</strong> ${cliente.direccion}</p><p><strong>CONTACTO:</strong> ${cliente.nombreContacto}</p><p><strong>CELULAR:</strong> ${cliente.celular}</p><p><strong>MAIL:</strong> ${cliente.mail}</p><p><strong>MEDIO DE PAGO:</strong> ${cliente.medioPago}</p><div class="botones-resumen"><button class="btn btn-editar" onclick="editarCliente()" ${cotizacionGuardada ? 'disabled' : ''}>✏️ EDITAR DATOS</button></div>`;
 }
 
 function editarCliente() {
-  if (cotizacionGuardada) {
-    alert('COTIZACIÓN YA GUARDADA. NO SE PUEDE EDITAR EL CLIENTE.');
-    return;
-  }
+  if (cotizacionGuardada) return;
   if (!clienteActual) return;
   modoEdicion = true;
   document.getElementById('rut').value = clienteActual.rut;
+  document.getElementById('rut').disabled = true;
   document.getElementById('razonSocial').value = clienteActual.razonSocial;
+  document.getElementById('razonSocial').disabled = false;
   document.getElementById('giro').value = clienteActual.giro;
+  document.getElementById('giro').disabled = false;
   document.getElementById('direccion').value = clienteActual.direccion;
+  document.getElementById('direccion').disabled = false;
   document.getElementById('nombreContacto').value = clienteActual.nombreContacto;
+  document.getElementById('nombreContacto').disabled = false;
   document.getElementById('celular').value = clienteActual.celular;
+  document.getElementById('celular').disabled = false;
   document.getElementById('mail').value = clienteActual.mail;
+  document.getElementById('mail').disabled = false;
   document.getElementById('medioPago').value = clienteActual.medioPago || '';
+  document.getElementById('medioPago').disabled = false;
   document.getElementById('resumenCliente').classList.remove('activo');
   document.getElementById('formularioCliente').classList.add('activo');
+  document.getElementById('btnGuardarCliente').style.display = 'inline-block';
   document.getElementById('textoBotonGuardar').textContent = 'GUARDAR CAMBIOS';
   document.getElementById('btnCancelarEdicion').style.display = 'inline-block';
   mostrarMensaje('MODO EDICIÓN. MODIFIQUE LOS CAMPOS.', 'info');
@@ -517,6 +537,15 @@ function cancelarEdicion() {
   if (!clienteActual) return;
   modoEdicion = false;
   document.getElementById('formularioCliente').classList.remove('activo');
+  document.getElementById('razonSocial').disabled = true;
+  document.getElementById('giro').disabled = true;
+  document.getElementById('direccion').disabled = true;
+  document.getElementById('nombreContacto').disabled = true;
+  document.getElementById('celular').disabled = true;
+  document.getElementById('mail').disabled = true;
+  document.getElementById('medioPago').disabled = true;
+  document.getElementById('btnGuardarCliente').style.display = 'none';
+  document.getElementById('btnCancelarEdicion').style.display = 'none';
   mostrarMensaje('CLIENTE ENCONTRADO EN LA BASE DE DATOS', 'exito');
   mostrarResumenCliente(clienteActual);
 }
@@ -538,19 +567,49 @@ function guardarCliente() {
   mostrarMensaje(modoEdicion ? 'CLIENTE ACTUALIZADO' : 'CLIENTE GUARDADO', 'exito');
   clienteActual = cliente;
   modoEdicion = false;
-  mostrarResumenCliente(cliente);
   document.getElementById('formularioCliente').classList.remove('activo');
+  document.getElementById('razonSocial').disabled = true;
+  document.getElementById('giro').disabled = true;
+  document.getElementById('direccion').disabled = true;
+  document.getElementById('nombreContacto').disabled = true;
+  document.getElementById('celular').disabled = true;
+  document.getElementById('mail').disabled = true;
+  document.getElementById('medioPago').disabled = true;
+  document.getElementById('btnGuardarCliente').style.display = 'none';
+  document.getElementById('btnCancelarEdicion').style.display = 'none';
+  mostrarResumenCliente(cliente);
+  habilitarProductos();
 }
 
 function validarEmail(e) {return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);}
 
-function limpiarFormulario() {
+function habilitarProductos() {
+  document.getElementById('inputCodigoProducto').disabled = false;
+  document.getElementById('btnBuscarProducto').disabled = false;
+}
+
+function deshabilitarProductos() {
+  document.getElementById('inputCodigoProducto').disabled = true;
+  document.getElementById('inputCodigoProducto').value = '';
+  document.getElementById('btnBuscarProducto').disabled = true;
+}
+
+function limpiarCotizacion() {
   document.getElementById('inputRut').value = '';
   document.getElementById('mensaje').style.display = 'none';
   document.getElementById('resumenCliente').classList.remove('activo');
   document.getElementById('formularioCliente').classList.remove('activo');
+  document.getElementById('rut').value = '';
+  document.getElementById('razonSocial').value = '';
+  document.getElementById('giro').value = '';
+  document.getElementById('direccion').value = '';
+  document.getElementById('nombreContacto').value = '';
+  document.getElementById('celular').value = '';
+  document.getElementById('mail').value = '';
+  document.getElementById('medioPago').value = '';
+  document.getElementById('btnGuardarCliente').style.display = 'none';
   document.getElementById('btnCancelarEdicion').style.display = 'none';
-  limpiarCamposFormulario();
+  
   clienteActual = null;
   modoEdicion = false;
   productosEnCotizacion = [];
@@ -561,20 +620,14 @@ function limpiarFormulario() {
   document.getElementById('btnAceptado').disabled = false;
   document.getElementById('btnRechazado').disabled = false;
   document.getElementById('btnArticulos').disabled = false;
-  document.getElementById('btnBuscarProducto').disabled = false;
+  document.getElementById('btnPDF').disabled = false;
+  document.getElementById('btnCotizaciones').disabled = false;
   document.getElementById('btnBuscarCliente').disabled = false;
+  document.getElementById('btnLimpiarCotizacion').style.display = 'none';
+  
+  deshabilitarProductos();
   actualizarTablaProductos();
   document.getElementById('inputRut').focus();
-}
-
-function limpiarCamposFormulario() {
-  document.getElementById('razonSocial').value = '';
-  document.getElementById('giro').value = '';
-  document.getElementById('direccion').value = '';
-  document.getElementById('nombreContacto').value = '';
-  document.getElementById('celular').value = '';
-  document.getElementById('mail').value = '';
-  document.getElementById('medioPago').value = '';
 }
 
 document.getElementById('costoProducto').addEventListener('change', calcularValorNeto);
@@ -1112,6 +1165,7 @@ function confirmarAceptacion() {
     localStorage.setItem('cotizacionesEmitidas', JSON.stringify(cotizacionesEmitidas));
   }
   
+  document.getElementById('btnLimpiarCotizacion').style.display = 'inline-block';
   alert('COTIZACIÓN ACEPTADA Y GUARDADA CORRECTAMENTE');
 }
 
@@ -1135,6 +1189,11 @@ function bloquearEdicion() {
   document.getElementById('btnAceptado').disabled = true;
   document.getElementById('btnRechazado').disabled = true;
   document.getElementById('btnBuscarCliente').disabled = true;
+  document.getElementById('btnLimpiarCliente').disabled = true;
+  document.getElementById('btnPDF').disabled = true;
+  document.getElementById('btnCotizaciones').disabled = true;
+  document.getElementById('inputCodigoProducto').disabled = true;
+  deshabilitarProductos();
 }
 
 function marcarRechazado() {
@@ -1150,6 +1209,7 @@ function marcarRechazado() {
   
   cotizacionGuardada = true;
   bloquearEdicion();
+  document.getElementById('btnLimpiarCotizacion').style.display = 'inline-block';
   alert('COTIZACIÓN RECHAZADA Y GUARDADA');
 }
 
