@@ -98,12 +98,13 @@ button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; tex
 .resumen-linea.total {font-size: 18px; color: #000; font-weight: 900;}
 .resumen-utilidad {background-color: #E8E8E8; padding: 20px; border-radius: 8px; border: 2px solid #999999; border-top: 4px solid #1F6F8B; border-bottom: 4px solid #1F6F8B; margin-top: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);}
 .resumen-utilidad h4 {color: #1F6F8B; text-transform: uppercase; margin-bottom: 12px; font-size: 14px; font-weight: 700;}
-.utilidad-item {display: flex; justify-content: space-between; align-items: center; margin: 10px 0; font-size: 13px; color: #3B3B3B;}
-.utilidad-item-valor {display: flex; gap: 15px; align-items: center;}
-.utilidad-item strong {color: #1F6F8B; font-weight: 700;}
+.utilidad-item {display: flex; justify-content: space-between; align-items: center; margin: 10px 0; font-size: 13px; color: #3B3B3B; flex-wrap: wrap; gap: 10px;}
+.utilidad-item-valor {display: flex; gap: 8px; align-items: center; flex-wrap: wrap;}
+.utilidad-item strong {color: #1F6F8B; font-weight: 700; min-width: 150px;}
 .utilidad-porcentaje {color: #F25C05; font-weight: 700; font-size: 12px; background-color: #fff; padding: 2px 8px; border-radius: 3px; border: 1px solid #F25C05;}
-.utilidad-item-total {display: flex; justify-content: space-between; align-items: center; margin-top: 15px; padding-top: 10px; border-top: 1px solid #999999; font-size: 14px;}
-.utilidad-item-total strong {font-size: 15px;}
+.utilidad-costo {color: #555; font-weight: 600; font-size: 12px; background-color: #fff; padding: 2px 8px; border-radius: 3px; border: 1px solid #999;}
+.utilidad-item-total {display: flex; justify-content: space-between; align-items: center; margin-top: 15px; padding-top: 10px; border-top: 1px solid #999999; font-size: 14px; flex-wrap: wrap; gap: 10px;}
+.utilidad-item-total strong {font-size: 15px; min-width: auto;}
 .formulario-editar-articulo {background: linear-gradient(135deg, #f9ead4 0%, #f7dba1 100%); padding: 15px; border-radius: 6px; border-left: 5px solid #F25C05; margin-bottom: 20px;}
 .formulario-editar-articulo h4 {text-transform: uppercase; color: #b35304; margin-bottom: 15px; font-weight: 700;}
 .tabla-cotizaciones {width: 100%; border-collapse: collapse; background: white;}
@@ -569,16 +570,19 @@ function actualizarResumenTotales() {
   let htmlUtilidad = '<div class="resumen-utilidad"><h4>📊 UTILIDAD (INTERNO)</h4>';
   let utilidadTotal = 0;
   let ventaTotal = 0;
+  let costoTotal = 0;
   productosEnCotizacion.forEach(p => {
-    const utilidad = (parseFloat(p.total) - (parseFloat(p.costo) * p.cantidad));
+    const costoProducto = parseFloat(p.costo) * p.cantidad;
+    const utilidad = (parseFloat(p.total) - costoProducto);
     const venta = parseFloat(p.total);
     const porcentajeUtilidad = venta > 0 ? ((utilidad / venta) * 100).toFixed(2) : 0;
     utilidadTotal += utilidad;
     ventaTotal += venta;
-    htmlUtilidad += `<div class="utilidad-item"><strong>${p.codigo}:</strong><div class="utilidad-item-valor"><span>$${Math.round(utilidad).toLocaleString('es-CL')}</span><span class="utilidad-porcentaje">${porcentajeUtilidad}%</span></div></div>`;
+    costoTotal += costoProducto;
+    htmlUtilidad += `<div class="utilidad-item"><strong>${p.codigo}:</strong><div class="utilidad-item-valor"><span>$${Math.round(utilidad).toLocaleString('es-CL')}</span><span class="utilidad-porcentaje">${porcentajeUtilidad}%</span><span class="utilidad-costo">Costo: $${Math.round(costoProducto).toLocaleString('es-CL')}</span></div></div>`;
   });
   const porcentajeUtilidadTotal = ventaTotal > 0 ? ((utilidadTotal / ventaTotal) * 100).toFixed(2) : 0;
-  htmlUtilidad += `<div class="utilidad-item-total"><strong>UTILIDAD TOTAL:</strong><div style="display: flex; gap: 15px; align-items: center;"><span>$${Math.round(utilidadTotal).toLocaleString('es-CL')}</span><span class="utilidad-porcentaje">${porcentajeUtilidadTotal}%</span></div></div>`;
+  htmlUtilidad += `<div class="utilidad-item-total"><strong>UTILIDAD TOTAL:</strong><div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;"><span>$${Math.round(utilidadTotal).toLocaleString('es-CL')}</span><span class="utilidad-porcentaje">${porcentajeUtilidadTotal}%</span><span class="utilidad-costo">Costo Total: $${Math.round(costoTotal).toLocaleString('es-CL')}</span></div></div>`;
   htmlUtilidad += '</div>';
   document.getElementById('utilidadResumen').innerHTML = htmlUtilidad;
   document.getElementById('utilidadResumen').style.display = 'block';
