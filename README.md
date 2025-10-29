@@ -117,6 +117,15 @@ button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; tex
 .tabla-cotizaciones tr:nth-child(even) {background: #E9F0EA;}
 .tabla-cotizaciones tr:hover {background: #FDE6D0;}
 
+/* ESTILOS ESTADO COTIZACIONES */
+.tabla-cotizaciones tr.estado-aceptado {background-color: #D4EDDA !important;}
+.tabla-cotizaciones tr.estado-aceptado:hover {background-color: #C3E6CB !important;}
+.tabla-cotizaciones tr.estado-aceptado td {background-color: #D4EDDA;}
+
+.tabla-cotizaciones tr.estado-rechazado {background-color: #F8D7DA !important;}
+.tabla-cotizaciones tr.estado-rechazado:hover {background-color: #F5C6CB !important;}
+.tabla-cotizaciones tr.estado-rechazado td {background-color: #F8D7DA;}
+
 /* ESTILOS PARA BOTONES EN COTIZACIONES */
 #listaCotizaciones button {
   width: 90px;
@@ -802,7 +811,7 @@ function generarPDF() {
   if (productosEnCotizacion.length === 0) {alert('AGREGUE PRODUCTOS'); return;}
   const numCot = gestorCotizaciones.siguienteCotizacion();
   const net = productosEnCotizacion.reduce((acc, p) => acc + parseFloat(p.total), 0);
-  const cotizacion = {numero: numCot, razonSocial: clienteActual.razonSocial, neto: net.toFixed(2), fecha: new Date().toISOString(), cliente: JSON.parse(JSON.stringify(clienteActual)), productos: JSON.parse(JSON.stringify(productosEnCotizacion))};
+  const cotizacion = {numero: numCot, razonSocial: clienteActual.razonSocial, neto: net.toFixed(2), fecha: new Date().toISOString(), cliente: JSON.parse(JSON.stringify(clienteActual)), productos: JSON.parse(JSON.stringify(productosEnCotizacion)), estado: datosDespacho ? 'aceptado' : 'pendiente', despacho: datosDespacho || null};
   cotizacionesEmitidas.push(cotizacion);
   localStorage.setItem('cotizacionesEmitidas', JSON.stringify(cotizacionesEmitidas));
   generarPDFDocumento(cotizacion);
@@ -935,7 +944,8 @@ function mostrarCotizaciones() {
   } else {
     let html = '<table class="tabla-cotizaciones"><thead><tr><th>N° COTIZACIÓN</th><th>RAZÓN SOCIAL</th><th style="text-align:right;">MONTO NETO</th><th style="text-align:center;">ACCIONES</th></tr></thead><tbody>';
     cotizacionesEmitidas.forEach((c, index) => {
-      html += `<tr><td>${c.numero}</td><td>${c.razonSocial}</td><td style="text-align:right;">$${parseFloat(c.neto).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td style="text-align:center;"><button class="btn-ver" onclick="verCotizacion(${index})">VER</button><button class="btn-editar-cot" onclick="editarCotizacionGuardada(${index})">EDITAR</button><button class="btn-eliminar" onclick="borrarCotizacion(${index})">BORRAR</button></td></tr>`;
+      const claseEstado = c.estado === 'aceptado' ? 'estado-aceptado' : (c.estado === 'rechazado' ? 'estado-rechazado' : '');
+      html += `<tr class="${claseEstado}"><td>${c.numero}</td><td>${c.razonSocial}</td><td style="text-align:right;">$${parseFloat(c.neto).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td style="text-align:center;"><button class="btn-ver" onclick="verCotizacion(${index})">VER</button><button class="btn-editar-cot" onclick="editarCotizacionGuardada(${index})">EDITAR</button><button class="btn-eliminar" onclick="borrarCotizacion(${index})">BORRAR</button></td></tr>`;
     });
     html += '</tbody></table>';
     cont.innerHTML = html;
@@ -956,9 +966,15 @@ function editarCotizacionGuardada(index) {
   if (!cotizacion) { alert('ERROR: COTIZACIÓN VACÍA'); return; }
   clienteActual = JSON.parse(JSON.stringify(cotizacion.cliente));
   productosEnCotizacion = JSON.parse(JSON.stringify(cotizacion.productos));
+  datosDespacho = cotizacion.despacho;
   mostrarResumenCliente(clienteActual);
   document.getElementById('formularioCliente').classList.remove('activo');
   actualizarTablaProductos();
+  if (datosDespacho) {
+    mostrarResumenDespacho();
+    cotizacionGuardada = true;
+    bloquearEdicion();
+  }
   cerrarCotizaciones();
   mostrarMensaje(`COTIZACIÓN ${cotizacion.numero} CARGADA PARA EDICIÓN`, 'info');
   alert('COTIZACIÓN CARGADA. PUEDE MODIFICAR CLIENTE Y/O PRODUCTOS.');
@@ -1116,7 +1132,18 @@ function marcarRechazado() {
     alert('DEBE SELECCIONAR UN CLIENTE PRIMERO');
     return;
   }
+  
+  const rut = clienteActual.rut;
+  const indice = cotizacionesEmitidas.findIndex(c => c.cliente.rut === rut && !c.estado);
+  
+  if (indice !== -1) {
+    cotizacionesEmitidas[indice].estado = 'rechazado';
+    localStorage.setItem('cotizacionesEmitidas', JSON.stringify(cotizacionesEmitidas));
+  }
+  
   alert('COTIZACIÓN RECHAZADA');
+  cotizacionGuardada = true;
+  bloquearEdicion();
 }
 
 </script>
