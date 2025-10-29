@@ -682,6 +682,10 @@ function generarPDFDocumento(cotizacion) {
   const iva = +(net * 0.19).toFixed(2);
   const tot = +(net + iva).toFixed(2);
 
+  // Fecha de emisión
+  const fechaEmision = new Date(cotizacion.fecha);
+  const fechaFormateada = `${fechaEmision.getDate().toString().padStart(2, '0')}/${(fechaEmision.getMonth() + 1).toString().padStart(2, '0')}/${fechaEmision.getFullYear()}`;
+
   doc.setFillColor(31, 111, 139);
   doc.rect(0, 0, 210, 25, 'F');
   doc.setTextColor(255, 255, 255);
@@ -692,6 +696,8 @@ function generarPDFDocumento(cotizacion) {
   doc.setFont(undefined, 'bold');
   doc.setTextColor(0, 0, 0);
   doc.text(`N° ${cotizacion.numero}`, 180, 12, {align: 'right'});
+  doc.setFontSize(10);
+  doc.text(`Fecha: ${fechaFormateada}`, 180, 18, {align: 'right'});
 
   doc.setTextColor(0, 0, 0);
   doc.setFontSize(11);
@@ -768,6 +774,12 @@ function generarPDFDocumento(cotizacion) {
   doc.setTextColor(0, 0, 0);
   doc.text("TOTAL:", resumenX, resumenY + 14);
   doc.text(`$${Math.round(tot).toLocaleString('es-CL')}`, 185, resumenY + 14, {align: 'right'});
+
+  // Validez de cotización
+  doc.setFontSize(8);
+  doc.setFont(undefined, 'bold');
+  doc.setTextColor(50, 50, 50);
+  doc.text('Validez de la cotización: 5 días hábiles desde la emisión de este documento.', 15, 260);
 
   doc.setFontSize(7);
   doc.setFont(undefined, 'normal');
