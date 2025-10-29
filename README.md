@@ -53,6 +53,8 @@ button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; tex
 .campo-grupo select {width: 100%; padding: 10px; font-size: 13px; border: 2px solid #ddd; border-radius: 5px; transition: border-color 0.3s; text-transform: uppercase; background-color: white; cursor: pointer;}
 .campo-grupo select:focus {outline: none; border-color: #F25C05;}
 .campo-grupo select option {text-transform: uppercase; background-color: white; color: #3B3B3B;}
+.campo-grupo textarea {width: 100%; padding: 10px; font-size: 13px; border: 2px solid #ddd; border-radius: 5px; transition: border-color 0.3s; text-transform: uppercase; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; resize: vertical; min-height: 80px;}
+.campo-grupo textarea:focus {outline: none; border-color: #F25C05;}
 .fila-campos {display: grid; grid-template-columns: 1fr 1fr; gap: 15px;}
 .mensaje {padding: 12px 15px; border-radius: 5px; margin-bottom: 15px; font-size: 12px; text-transform: uppercase; font-weight: 700;}
 .mensaje-exito {background-color: #d0e8d0; color: #385525; border: 1px solid #8bb76f;}
@@ -135,6 +137,27 @@ button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; tex
 .btn-aceptado:hover {background: #385525; box-shadow: 0 4px 10px rgba(75, 115, 46, 0.5);}
 .btn-rechazado {background: #9B2E00; color: white; padding: 12px 30px; font-size: 14px; box-shadow: 0 2px 6px rgba(155, 46, 0, 0.3);}
 .btn-rechazado:hover {background: #7a2300; box-shadow: 0 4px 10px rgba(155, 46, 0, 0.5);}
+
+/* ESTILOS PARA MODAL DE ACEPTADO */
+#modalAceptado {display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.4); z-index: 10001; overflow: auto;}
+.modal-aceptado-content {background: white; max-width: 600px; margin: 40px auto; padding: 25px; border-radius: 8px; position: relative; box-shadow: 0 8px 16px rgba(0,0,0,0.15);}
+.modal-aceptado-titulo {font-size: 22px; font-weight: 700; margin-bottom: 20px; text-transform: uppercase; color: #3B3B3B; border-bottom: 3px solid #4B732E; padding-bottom: 10px;}
+.btn-cerrar-aceptado {position: absolute; top: 15px; right: 20px; background: #9B2E00; color: white; font-size: 18px; border: none; border-radius: 6px; cursor: pointer; padding: 4px 10px; font-weight: 700;}
+.botones-archivo {display: flex; gap: 10px; align-items: center; margin-bottom: 15px;}
+.btn-adjuntar {background: #F25C05; color: white; padding: 10px 20px; font-size: 12px; box-shadow: 0 2px 4px rgba(242, 92, 5, 0.3);}
+.btn-adjuntar:hover {background: #cb4a04; box-shadow: 0 4px 8px rgba(242, 92, 5, 0.5);}
+#inputArchivo {display: none;}
+.archivo-info {font-size: 12px; color: #4B732E; font-weight: 600; text-transform: uppercase;}
+.seccion-adjuntos {margin-top: 15px; padding: 15px; background-color: #e9f6ec; border-radius: 6px; border-left: 5px solid #4B732E;}
+.seccion-adjuntos h4 {color: #4B732E; margin-bottom: 10px; font-weight: 700; text-transform: uppercase;}
+.lista-adjuntos {list-style: none;}
+.item-adjunto {display: flex; justify-content: space-between; align-items: center; padding: 8px; background: white; margin: 5px 0; border-radius: 4px; border-left: 3px solid #4B732E;}
+.nombre-archivo {font-size: 12px; color: #3B3B3B; font-weight: 600; text-transform: uppercase;}
+.btn-eliminar-archivo {background: #9B2E00; color: white; padding: 4px 8px; font-size: 10px;}
+.btn-eliminar-archivo:hover {background: #7a2300;}
+.botones-modal-aceptado {display: flex; gap: 10px; margin-top: 20px; justify-content: flex-end;}
+.btn-confirmar {background: #4B732E; color: white; padding: 10px 20px; font-size: 12px; box-shadow: 0 2px 4px rgba(75, 115, 46, 0.3);}
+.btn-confirmar:hover {background: #385525; box-shadow: 0 4px 8px rgba(75, 115, 46, 0.5);}
 
 </style>
 </head>
@@ -243,6 +266,50 @@ button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; tex
     </div>
   </div>
 
+  <div id="modalAceptado">
+    <div class="modal-aceptado-content">
+      <button class="btn-cerrar-aceptado" onclick="cerrarModalAceptado()">×</button>
+      <h2 class="modal-aceptado-titulo">ACEPTACIÓN DE COTIZACIÓN</h2>
+      
+      <div class="campo-grupo">
+        <label>TIPO DE ENTREGA *</label>
+        <select id="tipoEntrega">
+          <option value="">SELECCIONE TIPO DE ENTREGA</option>
+          <option value="RETIRO">RETIRO</option>
+          <option value="DESPACHO RM">DESPACHO RM</option>
+          <option value="STARKEN">STARKEN</option>
+          <option value="CHILEXPRESS">CHILEXPRESS</option>
+          <option value="PDQ">PDQ</option>
+          <option value="BLUEXPRESS">BLUEXPRESS</option>
+          <option value="OTRO">OTRO</option>
+        </select>
+      </div>
+
+      <div class="campo-grupo">
+        <label>DIRECCIÓN DE DESPACHO O INSTRUCCIONES *</label>
+        <textarea id="direccionDespacho" placeholder="INGRESE DIRECCIÓN DE DESPACHO O INSTRUCCIONES ESPECIALES"></textarea>
+      </div>
+
+      <div class="campo-grupo">
+        <label>ADJUNTO</label>
+        <div class="botones-archivo">
+          <button class="btn-adjuntar" onclick="abrirSelectorArchivos()">📎 SELECCIONAR ARCHIVO</button>
+          <input type="file" id="inputArchivo" onchange="agregarArchivo(event)" />
+          <span class="archivo-info" id="infoArchivo"></span>
+        </div>
+        <div id="adjuntosContainer" class="seccion-adjuntos" style="display: none;">
+          <h4>ARCHIVOS ADJUNTOS</h4>
+          <ul class="lista-adjuntos" id="listaAdjuntos"></ul>
+        </div>
+      </div>
+
+      <div class="botones-modal-aceptado">
+        <button class="btn btn-cancelar" onclick="cerrarModalAceptado()">CANCELAR</button>
+        <button class="btn-confirmar" onclick="confirmarAceptacion()">CONFIRMAR ACEPTACIÓN</button>
+      </div>
+    </div>
+  </div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
 
@@ -291,6 +358,7 @@ let modoEdicion = false;
 let productosEnCotizacion = [];
 let cotizacionesEmitidas = JSON.parse(localStorage.getItem('cotizacionesEmitidas') || '[]');
 let articuloEdicion = null;
+let archivosAdjuntos = [];
 
 document.getElementById('inputRut').addEventListener('input', function(e) {
   let v = e.target.value.replace(/[^0-9kK]/g, '');
@@ -857,15 +925,102 @@ function cerrarCotizaciones() {
   document.getElementById('modalCotizaciones').style.display = 'none';
 }
 
-// Funciones para datos de cierre (por ahora no hacen nada)
+// Funciones para ACEPTADO
 function marcarAceptado() {
-  // Funcionalidad a implementar
-  console.log('Cotización marcada como ACEPTADA');
+  if (!clienteActual) {
+    alert('DEBE SELECCIONAR UN CLIENTE PRIMERO');
+    return;
+  }
+  if (productosEnCotizacion.length === 0) {
+    alert('DEBE AGREGAR PRODUCTOS A LA COTIZACIÓN');
+    return;
+  }
+  archivosAdjuntos = [];
+  document.getElementById('tipoEntrega').value = '';
+  document.getElementById('direccionDespacho').value = '';
+  document.getElementById('infoArchivo').textContent = '';
+  document.getElementById('adjuntosContainer').style.display = 'none';
+  document.getElementById('listaAdjuntos').innerHTML = '';
+  document.getElementById('modalAceptado').style.display = 'block';
+}
+
+function cerrarModalAceptado() {
+  document.getElementById('modalAceptado').style.display = 'none';
+  archivosAdjuntos = [];
+}
+
+function abrirSelectorArchivos() {
+  document.getElementById('inputArchivo').click();
+}
+
+function agregarArchivo(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  
+  const nuevoArchivo = {
+    nombre: file.name,
+    tamaño: (file.size / 1024).toFixed(2),
+    tipo: file.type,
+    archivo: file
+  };
+  
+  archivosAdjuntos.push(nuevoArchivo);
+  actualizarListaAdjuntos();
+  document.getElementById('inputArchivo').value = '';
+  document.getElementById('infoArchivo').textContent = `${archivosAdjuntos.length} archivo(s) adjunto(s)`;
+}
+
+function actualizarListaAdjuntos() {
+  const container = document.getElementById('adjuntosContainer');
+  const lista = document.getElementById('listaAdjuntos');
+  
+  if (archivosAdjuntos.length === 0) {
+    container.style.display = 'none';
+    return;
+  }
+  
+  container.style.display = 'block';
+  lista.innerHTML = '';
+  
+  archivosAdjuntos.forEach((archivo, index) => {
+    const li = document.createElement('li');
+    li.className = 'item-adjunto';
+    li.innerHTML = `<span class="nombre-archivo">${archivo.nombre} (${archivo.tamaño} KB)</span><button class="btn-eliminar-archivo" onclick="eliminarArchivo(${index})">ELIMINAR</button>`;
+    lista.appendChild(li);
+  });
+}
+
+function eliminarArchivo(index) {
+  archivosAdjuntos.splice(index, 1);
+  actualizarListaAdjuntos();
+  document.getElementById('infoArchivo').textContent = archivosAdjuntos.length > 0 ? `${archivosAdjuntos.length} archivo(s) adjunto(s)` : '';
+}
+
+function confirmarAceptacion() {
+  const tipoEntrega = document.getElementById('tipoEntrega').value;
+  const direccion = document.getElementById('direccionDespacho').value.trim();
+  
+  if (!tipoEntrega) {
+    alert('DEBE SELECCIONAR UN TIPO DE ENTREGA');
+    return;
+  }
+  
+  if (!direccion) {
+    alert('DEBE INGRESAR DIRECCIÓN O INSTRUCCIONES DE DESPACHO');
+    return;
+  }
+  
+  const resumen = `COTIZACIÓN ACEPTADA\n\nTipo de Entrega: ${tipoEntrega}\nDirección/Instrucciones: ${direccion}\nArchivos adjuntos: ${archivosAdjuntos.length}`;
+  alert(resumen);
+  cerrarModalAceptado();
 }
 
 function marcarRechazado() {
-  // Funcionalidad a implementar
-  console.log('Cotización marcada como RECHAZADA');
+  if (!clienteActual) {
+    alert('DEBE SELECCIONAR UN CLIENTE PRIMERO');
+    return;
+  }
+  alert('COTIZACIÓN RECHAZADA');
 }
 
 </script>
