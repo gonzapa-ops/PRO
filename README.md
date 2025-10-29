@@ -128,6 +128,14 @@ button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; tex
   margin-right: 16px;
 }
 
+/* ESTILOS PARA DATOS DE CIERRE */
+.seccion-cierre {margin-top: 30px; border: 1px solid #ddd; border-radius: 6px; padding: 20px; background-color: #fafafa;}
+.botones-cierre {display: flex; gap: 15px; margin-top: 15px;}
+.btn-aceptado {background: #4B732E; color: white; padding: 12px 30px; font-size: 14px; box-shadow: 0 2px 6px rgba(75, 115, 46, 0.3);}
+.btn-aceptado:hover {background: #385525; box-shadow: 0 4px 10px rgba(75, 115, 46, 0.5);}
+.btn-rechazado {background: #9B2E00; color: white; padding: 12px 30px; font-size: 14px; box-shadow: 0 2px 6px rgba(155, 46, 0, 0.3);}
+.btn-rechazado:hover {background: #7a2300; box-shadow: 0 4px 10px rgba(155, 46, 0, 0.5);}
+
 </style>
 </head>
 <body>
@@ -207,6 +215,14 @@ button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; tex
         <div class="resumen-linea total"><div>TOTAL</div><div id="totalGeneral">$0.00</div></div>
       </div>
       <div id="utilidadResumen" style="display:none;"></div>
+    </section>
+
+    <section class="seccion-cierre">
+      <h2 class="seccion-titulo">DATOS DE CIERRE</h2>
+      <div class="botones-cierre">
+        <button class="btn-aceptado" onclick="marcarAceptado()">ACEPTADO</button>
+        <button class="btn-rechazado" onclick="marcarRechazado()">RECHAZADO</button>
+      </div>
     </section>
   </div>
 
@@ -682,7 +698,6 @@ function generarPDFDocumento(cotizacion) {
   const iva = +(net * 0.19).toFixed(2);
   const tot = +(net + iva).toFixed(2);
 
-  // Fecha de emisión
   const fechaEmision = new Date(cotizacion.fecha);
   const fechaFormateada = `${fechaEmision.getDate().toString().padStart(2, '0')}/${(fechaEmision.getMonth() + 1).toString().padStart(2, '0')}/${fechaEmision.getFullYear()}`;
 
@@ -775,7 +790,6 @@ function generarPDFDocumento(cotizacion) {
   doc.text("TOTAL:", resumenX, resumenY + 14);
   doc.text(`$${Math.round(tot).toLocaleString('es-CL')}`, 185, resumenY + 14, {align: 'right'});
 
-  // Validez de cotización
   doc.setFontSize(8);
   doc.setFont(undefined, 'bold');
   doc.setTextColor(50, 50, 50);
@@ -841,6 +855,17 @@ function borrarCotizacion(index) {
 
 function cerrarCotizaciones() {
   document.getElementById('modalCotizaciones').style.display = 'none';
+}
+
+// Funciones para datos de cierre (por ahora no hacen nada)
+function marcarAceptado() {
+  // Funcionalidad a implementar
+  console.log('Cotización marcada como ACEPTADA');
+}
+
+function marcarRechazado() {
+  // Funcionalidad a implementar
+  console.log('Cotización marcada como RECHAZADA');
 }
 
 </script>
