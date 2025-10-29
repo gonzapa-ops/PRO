@@ -114,17 +114,17 @@ button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; tex
 .tabla-cotizaciones {width: 100%; border-collapse: collapse; background: white;}
 .tabla-cotizaciones th {background: #1F6F8B; color: white; padding: 12px; text-align: left; text-transform: uppercase; font-weight: 700;}
 .tabla-cotizaciones td {border: 1px solid #ddd; padding: 12px; text-transform: uppercase; color: #3B3B3B;}
-.tabla-cotizaciones tr:nth-child(even) {background: #E9F0EA;}
-.tabla-cotizaciones tr:hover {background: #FDE6D0;}
 
-/* ESTILOS ESTADO COTIZACIONES */
-.tabla-cotizaciones tr.estado-aceptado {background-color: #D4EDDA !important;}
-.tabla-cotizaciones tr.estado-aceptado:hover {background-color: #C3E6CB !important;}
-.tabla-cotizaciones tr.estado-aceptado td {background-color: #D4EDDA;}
+/* COLORES DE ESTADO - COTIZACIONES */
+.tabla-cotizaciones tr.cot-aceptado {background-color: #C8E6C9 !important;}
+.tabla-cotizaciones tr.cot-aceptado td {background-color: #C8E6C9 !important; color: #2E7D32;}
+.tabla-cotizaciones tr.cot-aceptado:hover {background-color: #A5D6A7 !important;}
+.tabla-cotizaciones tr.cot-aceptado:hover td {background-color: #A5D6A7 !important;}
 
-.tabla-cotizaciones tr.estado-rechazado {background-color: #F8D7DA !important;}
-.tabla-cotizaciones tr.estado-rechazado:hover {background-color: #F5C6CB !important;}
-.tabla-cotizaciones tr.estado-rechazado td {background-color: #F8D7DA;}
+.tabla-cotizaciones tr.cot-rechazado {background-color: #FFCDD2 !important;}
+.tabla-cotizaciones tr.cot-rechazado td {background-color: #FFCDD2 !important; color: #C62828;}
+.tabla-cotizaciones tr.cot-rechazado:hover {background-color: #EF9A9A !important;}
+.tabla-cotizaciones tr.cot-rechazado:hover td {background-color: #EF9A9A !important;}
 
 /* ESTILOS PARA BOTONES EN COTIZACIONES */
 #listaCotizaciones button {
@@ -393,6 +393,7 @@ let articuloEdicion = null;
 let archivosAdjuntos = [];
 let cotizacionGuardada = false;
 let datosDespacho = null;
+let cotizacionActualIndex = null;
 
 document.getElementById('inputRut').addEventListener('input', function(e) {
   let v = e.target.value.replace(/[^0-9kK]/g, '');
@@ -555,11 +556,13 @@ function limpiarFormulario() {
   productosEnCotizacion = [];
   cotizacionGuardada = false;
   datosDespacho = null;
+  cotizacionActualIndex = null;
   document.getElementById('resumenDespacho').classList.remove('activo');
   document.getElementById('btnAceptado').disabled = false;
   document.getElementById('btnRechazado').disabled = false;
   document.getElementById('btnArticulos').disabled = false;
   document.getElementById('btnBuscarProducto').disabled = false;
+  document.getElementById('btnBuscarCliente').disabled = false;
   actualizarTablaProductos();
   document.getElementById('inputRut').focus();
 }
@@ -811,7 +814,8 @@ function generarPDF() {
   if (productosEnCotizacion.length === 0) {alert('AGREGUE PRODUCTOS'); return;}
   const numCot = gestorCotizaciones.siguienteCotizacion();
   const net = productosEnCotizacion.reduce((acc, p) => acc + parseFloat(p.total), 0);
-  const cotizacion = {numero: numCot, razonSocial: clienteActual.razonSocial, neto: net.toFixed(2), fecha: new Date().toISOString(), cliente: JSON.parse(JSON.stringify(clienteActual)), productos: JSON.parse(JSON.stringify(productosEnCotizacion)), estado: datosDespacho ? 'aceptado' : 'pendiente', despacho: datosDespacho || null};
+  const estado = datosDespacho ? 'aceptado' : 'pendiente';
+  const cotizacion = {numero: numCot, razonSocial: clienteActual.razonSocial, neto: net.toFixed(2), fecha: new Date().toISOString(), cliente: JSON.parse(JSON.stringify(clienteActual)), productos: JSON.parse(JSON.stringify(productosEnCotizacion)), estado: estado, despacho: datosDespacho || null};
   cotizacionesEmitidas.push(cotizacion);
   localStorage.setItem('cotizacionesEmitidas', JSON.stringify(cotizacionesEmitidas));
   generarPDFDocumento(cotizacion);
@@ -944,7 +948,7 @@ function mostrarCotizaciones() {
   } else {
     let html = '<table class="tabla-cotizaciones"><thead><tr><th>N° COTIZACIÓN</th><th>RAZÓN SOCIAL</th><th style="text-align:right;">MONTO NETO</th><th style="text-align:center;">ACCIONES</th></tr></thead><tbody>';
     cotizacionesEmitidas.forEach((c, index) => {
-      const claseEstado = c.estado === 'aceptado' ? 'estado-aceptado' : (c.estado === 'rechazado' ? 'estado-rechazado' : '');
+      const claseEstado = c.estado === 'aceptado' ? 'cot-aceptado' : (c.estado === 'rechazado' ? 'cot-rechazado' : '');
       html += `<tr class="${claseEstado}"><td>${c.numero}</td><td>${c.razonSocial}</td><td style="text-align:right;">$${parseFloat(c.neto).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td style="text-align:center;"><button class="btn-ver" onclick="verCotizacion(${index})">VER</button><button class="btn-editar-cot" onclick="editarCotizacionGuardada(${index})">EDITAR</button><button class="btn-eliminar" onclick="borrarCotizacion(${index})">BORRAR</button></td></tr>`;
     });
     html += '</tbody></table>';
@@ -967,6 +971,7 @@ function editarCotizacionGuardada(index) {
   clienteActual = JSON.parse(JSON.stringify(cotizacion.cliente));
   productosEnCotizacion = JSON.parse(JSON.stringify(cotizacion.productos));
   datosDespacho = cotizacion.despacho;
+  cotizacionActualIndex = index;
   mostrarResumenCliente(clienteActual);
   document.getElementById('formularioCliente').classList.remove('activo');
   actualizarTablaProductos();
@@ -976,8 +981,7 @@ function editarCotizacionGuardada(index) {
     bloquearEdicion();
   }
   cerrarCotizaciones();
-  mostrarMensaje(`COTIZACIÓN ${cotizacion.numero} CARGADA PARA EDICIÓN`, 'info');
-  alert('COTIZACIÓN CARGADA. PUEDE MODIFICAR CLIENTE Y/O PRODUCTOS.');
+  mostrarMensaje(`COTIZACIÓN ${cotizacion.numero} CARGADA`, 'info');
 }
 
 function borrarCotizacion(index) {
@@ -991,7 +995,6 @@ function cerrarCotizaciones() {
   document.getElementById('modalCotizaciones').style.display = 'none';
 }
 
-// Funciones para ACEPTADO
 function marcarAceptado() {
   if (!clienteActual) {
     alert('DEBE SELECCIONAR UN CLIENTE PRIMERO');
@@ -1102,6 +1105,13 @@ function confirmarAceptacion() {
   mostrarResumenDespacho();
   cerrarModalAceptado();
   bloquearEdicion();
+  
+  if (cotizacionActualIndex !== null) {
+    cotizacionesEmitidas[cotizacionActualIndex].estado = 'aceptado';
+    cotizacionesEmitidas[cotizacionActualIndex].despacho = datosDespacho;
+    localStorage.setItem('cotizacionesEmitidas', JSON.stringify(cotizacionesEmitidas));
+  }
+  
   alert('COTIZACIÓN ACEPTADA Y GUARDADA CORRECTAMENTE');
 }
 
@@ -1133,17 +1143,14 @@ function marcarRechazado() {
     return;
   }
   
-  const rut = clienteActual.rut;
-  const indice = cotizacionesEmitidas.findIndex(c => c.cliente.rut === rut && !c.estado);
-  
-  if (indice !== -1) {
-    cotizacionesEmitidas[indice].estado = 'rechazado';
+  if (cotizacionActualIndex !== null) {
+    cotizacionesEmitidas[cotizacionActualIndex].estado = 'rechazado';
     localStorage.setItem('cotizacionesEmitidas', JSON.stringify(cotizacionesEmitidas));
   }
   
-  alert('COTIZACIÓN RECHAZADA');
   cotizacionGuardada = true;
   bloquearEdicion();
+  alert('COTIZACIÓN RECHAZADA Y GUARDADA');
 }
 
 </script>
