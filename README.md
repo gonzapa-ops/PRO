@@ -109,8 +109,10 @@ button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; tex
 .btn-rechazado {background: #9B2E00; color: white; padding: 12px 30px; font-size: 14px;}
 .btn-rechazado:hover {background: #7a2300;}
 .btn-rechazado:disabled {background: #a0a0a0; cursor: not-allowed;}
-.btn-limpiar-cot {background: #556B2F; color: white; padding: 12px 30px; font-size: 14px; display: none;}
+.btn-limpiar-cot {background: #556B2F; color: white; padding: 12px 30px; font-size: 14px;}
 .btn-limpiar-cot:hover {background: #3f4f20;}
+.btn-archivo {background: #D9822B; color: white; padding: 12px 30px; font-size: 14px; display: none;}
+.btn-archivo:hover {background: #b36e1e;}
 #modalAceptado {display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.4); z-index: 10001; overflow: auto;}
 .modal-aceptado-content {background: white; max-width: 600px; margin: 40px auto; padding: 25px; border-radius: 8px; position: relative; box-shadow: 0 8px 16px rgba(0,0,0,0.15);}
 .modal-aceptado-titulo {font-size: 22px; font-weight: 700; margin-bottom: 20px; text-transform: uppercase; color: #3B3B3B; border-bottom: 3px solid #4B732E; padding-bottom: 10px;}
@@ -134,6 +136,10 @@ button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; tex
 .resumen-despacho.activo {display: block;}
 .resumen-despacho h4 {color: #3B3B3B; margin-bottom: 10px; text-transform: uppercase; font-weight: 700;}
 .resumen-despacho p {margin: 5px 0; font-size: 13px; color: #4B732E; text-transform: uppercase;}
+#modalArchivos {display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.4); z-index: 10002; overflow: auto;}
+.modal-archivos-content {background: white; max-width: 600px; margin: 40px auto; padding: 25px; border-radius: 8px; position: relative; box-shadow: 0 8px 16px rgba(0,0,0,0.15);}
+.modal-archivos-titulo {font-size: 22px; font-weight: 700; margin-bottom: 20px; text-transform: uppercase; color: #3B3B3B; border-bottom: 3px solid #4B732E; padding-bottom: 10px;}
+.btn-cerrar-archivos {position: absolute; top: 15px; right: 20px; background: #9B2E00; color: white; font-size: 18px; border: none; border-radius: 6px; cursor: pointer; padding: 4px 10px; font-weight: 700;}
 </style>
 </head>
 <body>
@@ -222,6 +228,7 @@ button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; tex
         <button class="btn-aceptado" onclick="marcarAceptado()" id="btnAceptado">ACEPTADO</button>
         <button class="btn-rechazado" onclick="marcarRechazado()" id="btnRechazado">RECHAZADO</button>
         <button class="btn-limpiar-cot" onclick="limpiarCotizacion()" id="btnLimpiarCotizacion">LIMPIAR</button>
+        <button class="btn-archivo" onclick="verArchivos()" id="btnVerArchivos">ARCHIVOS</button>
       </div>
     </section>
   </div>
@@ -295,6 +302,14 @@ button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; tex
         <button class="btn btn-cancelar" onclick="cerrarModalAceptado()">CANCELAR</button>
         <button class="btn-confirmar" onclick="confirmarAceptacion()">GUARDAR</button>
       </div>
+    </div>
+  </div>
+
+  <div id="modalArchivos">
+    <div class="modal-archivos-content">
+      <button class="btn-cerrar-archivos" onclick="cerrarModalArchivos()">×</button>
+      <h2 class="modal-archivos-titulo">ARCHIVOS ADJUNTOS</h2>
+      <div id="listaArchivosModal"></div>
     </div>
   </div>
 
@@ -544,6 +559,7 @@ function limpiarCotizacion() {
   cotizacionGuardada = false;
   datosDespacho = null;
   cotizacionActualIndex = null;
+  archivosAdjuntos = [];
   document.getElementById('resumenDespacho').classList.remove('activo');
   document.getElementById('btnAceptado').disabled = false;
   document.getElementById('btnRechazado').disabled = false;
@@ -552,7 +568,7 @@ function limpiarCotizacion() {
   document.getElementById('btnCotizaciones').disabled = false;
   document.getElementById('btnBuscarCliente').disabled = false;
   document.getElementById('btnLimpiarCliente').disabled = false;
-  document.getElementById('btnLimpiarCotizacion').style.display = 'none';
+  document.getElementById('btnVerArchivos').style.display = 'none';
   
   deshabilitarProductos();
   actualizarTablaProductos();
@@ -929,13 +945,25 @@ function editarCotizacionGuardada(index) {
   productosEnCotizacion = JSON.parse(JSON.stringify(cotizacion.productos));
   datosDespacho = cotizacion.despacho;
   cotizacionActualIndex = index;
+  
+  if (cotizacion.estado === 'rechazado' || cotizacion.estado === 'aceptado') {
+    cotizacionGuardada = true;
+  } else {
+    cotizacionGuardada = false;
+  }
+  
   mostrarResumenCliente(clienteActual);
   actualizarTablaProductos();
+  
   if (datosDespacho) {
     mostrarResumenDespacho();
-    cotizacionGuardada = true;
+    document.getElementById('btnVerArchivos').style.display = 'inline-block';
+  }
+  
+  if (cotizacionGuardada) {
     bloquearEdicion();
   }
+  
   cerrarCotizaciones();
   mostrarMensaje(`COTIZACIÓN ${cotizacion.numero} CARGADA`, 'info');
 }
@@ -967,7 +995,6 @@ function marcarAceptado() {
 
 function cerrarModalAceptado() {
   document.getElementById('modalAceptado').style.display = 'none';
-  archivosAdjuntos = [];
 }
 
 function abrirSelectorArchivos() {
@@ -977,7 +1004,7 @@ function abrirSelectorArchivos() {
 function agregarArchivo(event) {
   const file = event.target.files[0];
   if (!file) return;
-  const nuevoArchivo = { nombre: file.name, tamaño: (file.size / 1024).toFixed(2), tipo: file.type, archivo: file };
+  const nuevoArchivo = { nombre: file.name, tamaño: (file.size / 1024).toFixed(2), tipo: file.type };
   archivosAdjuntos.push(nuevoArchivo);
   actualizarListaAdjuntos();
   document.getElementById('inputArchivo').value = '';
@@ -1023,7 +1050,7 @@ function confirmarAceptacion() {
     direccion: direccion.toUpperCase(),
     contacto: contacto.toUpperCase(),
     celular: celular,
-    archivos: archivosAdjuntos.length
+    archivos: JSON.parse(JSON.stringify(archivosAdjuntos))
   };
 
   cotizacionGuardada = true;
@@ -1037,7 +1064,7 @@ function confirmarAceptacion() {
     localStorage.setItem('cotizacionesEmitidas', JSON.stringify(cotizacionesEmitidas));
   }
   
-  document.getElementById('btnLimpiarCotizacion').style.display = 'inline-block';
+  document.getElementById('btnVerArchivos').style.display = 'inline-block';
   alert('COTIZACIÓN ACEPTADA Y GUARDADA CORRECTAMENTE');
 }
 
@@ -1045,7 +1072,7 @@ function mostrarResumenDespacho() {
   if (!datosDespacho) return;
   const resumen = document.getElementById('resumenDespacho');
   resumen.className = 'resumen-despacho activo';
-  resumen.innerHTML = `<h4>✓ COTIZACIÓN ACEPTADA</h4><p><strong>TIPO ENTREGA:</strong> ${datosDespacho.tipoEntrega}</p><p><strong>DIRECCIÓN/INSTRUCCIONES:</strong> ${datosDespacho.direccion}</p><p><strong>CONTACTO DESPACHO:</strong> ${datosDespacho.contacto}</p><p><strong>CELULAR CONTACTO:</strong> ${datosDespacho.celular}</p><p><strong>ARCHIVOS ADJUNTOS:</strong> ${datosDespacho.archivos}</p>`;
+  resumen.innerHTML = `<h4>✓ COTIZACIÓN ACEPTADA</h4><p><strong>TIPO ENTREGA:</strong> ${datosDespacho.tipoEntrega}</p><p><strong>DIRECCIÓN/INSTRUCCIONES:</strong> ${datosDespacho.direccion}</p><p><strong>CONTACTO DESPACHO:</strong> ${datosDespacho.contacto}</p><p><strong>CELULAR CONTACTO:</strong> ${datosDespacho.celular}</p><p><strong>ARCHIVOS ADJUNTOS:</strong> ${datosDespacho.archivos.length}</p>`;
 }
 
 function bloquearEdicion() {
@@ -1071,8 +1098,28 @@ function marcarRechazado() {
   
   cotizacionGuardada = true;
   bloquearEdicion();
-  document.getElementById('btnLimpiarCotizacion').style.display = 'inline-block';
   alert('COTIZACIÓN RECHAZADA Y GUARDADA');
+}
+
+function verArchivos() {
+  if (!datosDespacho || !datosDespacho.archivos || datosDespacho.archivos.length === 0) {
+    alert('NO HAY ARCHIVOS ADJUNTOS');
+    return;
+  }
+  
+  const modal = document.getElementById('modalArchivos');
+  const lista = document.getElementById('listaArchivosModal');
+  let html = '<div class="seccion-adjuntos" style="display:block;"><ul class="lista-adjuntos">';
+  datosDespacho.archivos.forEach((archivo, index) => {
+    html += `<li class="item-adjunto"><span class="nombre-archivo">${archivo.nombre} (${archivo.tamaño} KB)</span></li>`;
+  });
+  html += '</ul></div>';
+  lista.innerHTML = html;
+  modal.style.display = 'block';
+}
+
+function cerrarModalArchivos() {
+  document.getElementById('modalArchivos').style.display = 'none';
 }
 </script>
 </body>
