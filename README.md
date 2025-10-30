@@ -43,6 +43,7 @@ button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; tex
 .btn-ver:hover {background: #3f4f20;}
 .btn-editar-cot {background: #D9822B; color: white; padding: 5px 8px; font-size: 10px; margin-right: 3px;}
 .btn-editar-cot:hover {background: #b36e1e;}
+.btn-editar-cot:disabled {background: #a0a0a0; cursor: not-allowed;}
 .btn-ver-archivo {background: #4B732E; color: white; padding: 5px 8px; font-size: 10px; margin-right: 3px;}
 .btn-ver-archivo:hover {background: #385525;}
 .formulario-cliente, .formulario-producto, .formulario-editar-articulo {display: none;}
@@ -58,6 +59,7 @@ button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; tex
 .mensaje-exito {background-color: #d0e8d0; color: #385525; border: 1px solid #8bb76f;}
 .mensaje-error {background-color: #fbd7d2; color: #9b2e00; border: 1px solid #e4827b;}
 .mensaje-info {background-color: #e2f0ec; color: #4b732e; border: 1px solid #a7c3a1;}
+.mensaje-bloqueado {background-color: #fff3cd; color: #856404; border: 1px solid #ffeaa7;}
 .resumen-cliente {display: none; background-color: #e8f0e4; padding: 15px; border-radius: 5px; border-left: 5px solid #4B732E;}
 .resumen-cliente.activo {display: block;}
 .resumen-cliente h4 {color: #3B3B3B; margin-bottom: 10px; text-transform: uppercase; font-weight: 700;}
@@ -104,6 +106,8 @@ button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; tex
 .tabla-cotizaciones tr.cot-aceptado td {background-color: #C8E6C9 !important; color: #2E7D32;}
 .tabla-cotizaciones tr.cot-rechazado {background-color: #FFCDD2 !important;}
 .tabla-cotizaciones tr.cot-rechazado td {background-color: #FFCDD2 !important; color: #C62828;}
+.tabla-cotizaciones tr.cot-pendiente {background-color: #FFF9C4 !important;}
+.tabla-cotizaciones tr.cot-pendiente td {background-color: #FFF9C4 !important; color: #F57F17;}
 .seccion-cierre {margin-top: 30px; border: 1px solid #ddd; border-radius: 6px; padding: 20px; background-color: #fafafa; display: none;}
 .seccion-cierre.activo {display: block;}
 .botones-cierre {display: flex; gap: 15px; margin-top: 15px; flex-wrap: wrap;}
@@ -175,6 +179,10 @@ button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; tex
 .btn-cerrar-pdf:hover {background: #7a2300;}
 .pdf-viewer {flex: 1; width: 100%; background: white; overflow: auto; display: flex; justify-content: center; align-items: flex-start; padding: 20px;}
 .pdf-viewer iframe {width: 100%; height: 100%; border: none; min-height: 100vh;}
+.seccion-bloqueada {background-color: #fff3cd; padding: 15px; border-radius: 6px; border-left: 5px solid #FFA500; margin-bottom: 20px; display: none;}
+.seccion-bloqueada.activa {display: block;}
+.seccion-bloqueada h4 {color: #856404; text-transform: uppercase; font-weight: 700; margin-bottom: 5px;}
+.seccion-bloqueada p {color: #856404; font-size: 12px; text-transform: uppercase;}
 </style>
 </head>
 <body>
@@ -187,6 +195,11 @@ button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; tex
     <div class="botones-superiores">
       <button class="btn btn-articulos" onclick="abrirArticulos()" id="btnArticulos">ARTÍCULOS</button>
       <button class="btn btn-buscar" onclick="mostrarCotizaciones()" id="btnCotizaciones">COTIZACIONES</button>
+    </div>
+
+    <div id="seccionBloqueada" class="seccion-bloqueada">
+      <h4>🔒 COTIZACIÓN BLOQUEADA</h4>
+      <p>Esta cotización ha sido ACEPTADA o RECHAZADA. No se pueden realizar modificaciones.</p>
     </div>
 
     <section class="seccion-cliente">
@@ -438,6 +451,7 @@ let pdfEmitido = false;
 let esEdicionCotizacion = false;
 let pdfActualDoc = null;
 let numeroCotizacionActual = null;
+let estadoCotizacionActual = 'pendiente';
 
 document.getElementById('inputRut').addEventListener('input', function(e) {
   let v = e.target.value.replace(/[^0-9kK]/g, '');
@@ -487,8 +501,8 @@ document.addEventListener('click', function(e) {
 });
 
 function buscarCliente() {
-  if (cotizacionGuardada && !esEdicionCotizacion) {
-    alert('COTIZACIÓN YA GUARDADA. LIMPIE PARA COMENZAR UNA NUEVA.');
+  if (cotizacionGuardada && (estadoCotizacionActual === 'aceptado' || estadoCotizacionActual === 'rechazado')) {
+    mostrarMensaje('COTIZACIÓN BLOQUEADA. NO SE PUEDEN HACER MODIFICACIONES.', 'bloqueado');
     return;
   }
   const rut = document.getElementById('inputRut').value.trim();
@@ -533,12 +547,16 @@ function mostrarMensaje(texto, tipo) {
 
 function mostrarResumenCliente(cliente) {
   const r = document.getElementById('resumenCliente');
+  const btnEditarDisabled = (estadoCotizacionActual === 'aceptado' || estadoCotizacionActual === 'rechazado') ? 'disabled' : '';
   r.className = 'resumen-cliente activo';
-  r.innerHTML = `<h4>✓ CLIENTE REGISTRADO</h4><p><strong>RUT:</strong> ${cliente.rut}</p><p><strong>RAZÓN SOCIAL:</strong> ${cliente.razonSocial}</p><p><strong>GIRO:</strong> ${cliente.giro}</p><p><strong>DIRECCIÓN:</strong> ${cliente.direccion}</p><p><strong>CONTACTO:</strong> ${cliente.nombreContacto}</p><p><strong>CELULAR:</strong> ${cliente.celular}</p><p><strong>MAIL:</strong> ${cliente.mail}</p><p><strong>MEDIO DE PAGO:</strong> ${cliente.medioPago}</p><div class="botones-resumen"><button class="btn btn-editar" onclick="editarCliente()" ${cotizacionGuardada ? 'disabled' : ''}>✏️ EDITAR</button></div>`;
+  r.innerHTML = `<h4>✓ CLIENTE REGISTRADO</h4><p><strong>RUT:</strong> ${cliente.rut}</p><p><strong>RAZÓN SOCIAL:</strong> ${cliente.razonSocial}</p><p><strong>GIRO:</strong> ${cliente.giro}</p><p><strong>DIRECCIÓN:</strong> ${cliente.direccion}</p><p><strong>CONTACTO:</strong> ${cliente.nombreContacto}</p><p><strong>CELULAR:</strong> ${cliente.celular}</p><p><strong>MAIL:</strong> ${cliente.mail}</p><p><strong>MEDIO DE PAGO:</strong> ${cliente.medioPago}</p><div class="botones-resumen"><button class="btn btn-editar" onclick="editarCliente()" ${btnEditarDisabled}>✏️ EDITAR</button></div>`;
 }
 
 function editarCliente() {
-  if (cotizacionGuardada && !esEdicionCotizacion) return;
+  if (estadoCotizacionActual === 'aceptado' || estadoCotizacionActual === 'rechazado') {
+    mostrarMensaje('COTIZACIÓN BLOQUEADA. NO SE PUEDEN HACER MODIFICACIONES.', 'bloqueado');
+    return;
+  }
   if (!clienteActual) return;
   modoEdicion = true;
   document.getElementById('formularioCliente').classList.add('activo');
@@ -567,6 +585,10 @@ function cancelarEdicion() {
 }
 
 function guardarCliente() {
+  if (estadoCotizacionActual === 'aceptado' || estadoCotizacionActual === 'rechazado') {
+    mostrarMensaje('COTIZACIÓN BLOQUEADA. NO SE PUEDEN HACER MODIFICACIONES.', 'bloqueado');
+    return;
+  }
   const rut = document.getElementById('rut').value;
   const rs = document.getElementById('razonSocial').value.trim();
   const gi = document.getElementById('giro').value.trim();
@@ -593,6 +615,11 @@ function guardarCliente() {
 function validarEmail(e) {return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);}
 
 function habilitarProductos() {
+  if (estadoCotizacionActual === 'aceptado' || estadoCotizacionActual === 'rechazado') {
+    document.getElementById('inputCodigoProducto').disabled = true;
+    document.getElementById('btnBuscarProducto').disabled = true;
+    return;
+  }
   document.getElementById('inputCodigoProducto').disabled = false;
   document.getElementById('btnBuscarProducto').disabled = false;
 }
@@ -606,6 +633,7 @@ function deshabilitarProductos() {
 function limpiarCotizacion() {
   document.getElementById('inputRut').value = '';
   document.getElementById('mensaje').style.display = 'none';
+  document.getElementById('seccionBloqueada').classList.remove('activa');
   document.getElementById('resumenCliente').classList.remove('activo');
   document.getElementById('formularioCliente').classList.remove('activo');
   document.getElementById('btnGuardarCliente').style.display = 'none';
@@ -630,6 +658,7 @@ function limpiarCotizacion() {
   esEdicionCotizacion = false;
   pdfActualDoc = null;
   numeroCotizacionActual = null;
+  estadoCotizacionActual = 'pendiente';
   document.getElementById('resumenDespacho').classList.remove('activo');
   document.getElementById('resumenCompra').classList.remove('activo');
   document.getElementById('seccionCierre').classList.remove('activo');
@@ -658,8 +687,8 @@ function calcularValorNeto() {
 }
 
 function buscarProducto() {
-  if (cotizacionGuardada && !esEdicionCotizacion) {
-    alert('COTIZACIÓN YA GUARDADA. NO SE PUEDEN AGREGAR MÁS PRODUCTOS.');
+  if (estadoCotizacionActual === 'aceptado' || estadoCotizacionActual === 'rechazado') {
+    mostrarMensaje('COTIZACIÓN BLOQUEADA. NO SE PUEDEN AGREGAR PRODUCTOS.', 'bloqueado');
     return;
   }
   const cod = document.getElementById('inputCodigoProducto').value.trim();
@@ -721,6 +750,10 @@ function cancelarProducto() {
 }
 
 function agregarProductoACotizacion(cod, prod) {
+  if (estadoCotizacionActual === 'aceptado' || estadoCotizacionActual === 'rechazado') {
+    mostrarMensaje('COTIZACIÓN BLOQUEADA. NO SE PUEDEN AGREGAR PRODUCTOS.', 'bloqueado');
+    return;
+  }
   const ex = productosEnCotizacion.find(p => p.codigo === cod);
   if (ex) {
     ex.cantidad++;
@@ -741,9 +774,10 @@ function actualizarTablaProductos() {
   }
   let html = '<table><thead><tr><th>CÓDIGO</th><th>DESCRIPCIÓN</th><th style="width:70px;">CANTIDAD</th><th style="width:80px;">VALOR NETO</th><th style="width:80px;">DESCUENTO (%)</th><th style="width:80px;">V. NETO DESC.</th><th style="width:100px;">TOTAL</th><th style="width:60px;">ACCIÓN</th></tr></thead><tbody>';
   productosEnCotizacion.forEach((p, i) => {
-    const inputQuantityDisabled = cotizacionGuardada && !esEdicionCotizacion ? 'disabled' : '';
-    const inputDescuentoDisabled = cotizacionGuardada && !esEdicionCotizacion ? 'disabled' : '';
-    const btnEliminarDisplay = cotizacionGuardada && !esEdicionCotizacion ? 'none' : 'block';
+    const bloqueado = estadoCotizacionActual === 'aceptado' || estadoCotizacionActual === 'rechazado';
+    const inputQuantityDisabled = bloqueado ? 'disabled' : '';
+    const inputDescuentoDisabled = bloqueado ? 'disabled' : '';
+    const btnEliminarDisplay = bloqueado ? 'none' : 'block';
     html += `<tr><td>${p.codigo}</td><td>${p.descripcion}</td><td><input type="number" min="1" value="${p.cantidad}" onchange="actualizarCantidad(${i}, this.value)" ${inputQuantityDisabled} style="width:100%;"></td><td class="valor-numerico">$${parseFloat(p.valorNeto).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td><input type="number" min="0" max="100" step="0.01" value="${p.descuento}" style="width:100%;padding:5px;" onchange="actualizarDescuento(${i}, this.value)" ${inputDescuentoDisabled}></td><td class="valor-numerico">$${parseFloat(p.valorNetaConDescuento).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td class="valor-numerico">$${parseFloat(p.total).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td><button class="btn-eliminar" onclick="eliminarProducto(${i})" style="display:${btnEliminarDisplay}">ELIMINAR</button></td></tr>`;
   });
   html += '</tbody></table>';
@@ -770,6 +804,10 @@ function actualizarDescuento(i, desc) {
 }
 
 function eliminarProducto(i) {
+  if (estadoCotizacionActual === 'aceptado' || estadoCotizacionActual === 'rechazado') {
+    mostrarMensaje('COTIZACIÓN BLOQUEADA. NO SE PUEDEN ELIMINAR PRODUCTOS.', 'bloqueado');
+    return;
+  }
   productosEnCotizacion.splice(i, 1);
   actualizarTablaProductos();
 }
@@ -877,6 +915,10 @@ function eliminarArticulo(codigo) {
 function generarPDF() {
   if (!clienteActual) {alert('INGRESE CLIENTE'); return;}
   if (productosEnCotizacion.length === 0) {alert('AGREGUE PRODUCTOS'); return;}
+  if (estadoCotizacionActual === 'aceptado' || estadoCotizacionActual === 'rechazado') {
+    mostrarMensaje('COTIZACIÓN BLOQUEADA. NO SE PUEDE REGENERAR PDF.', 'bloqueado');
+    return;
+  }
   
   let numCot;
   if (esEdicionCotizacion && cotizacionActualIndex !== null) {
@@ -1032,11 +1074,12 @@ function mostrarCotizaciones() {
   } else {
     let html = '<table class="tabla-cotizaciones"><thead><tr><th>N° COTIZACIÓN</th><th>RAZÓN SOCIAL</th><th style="text-align:right;">MONTO NETO</th><th>FECHA EMISIÓN</th><th>ESTADO</th><th style="text-align:center;">ACCIONES</th></tr></thead><tbody>';
     cotizacionesEmitidas.forEach((c, index) => {
-      const claseEstado = c.estado === 'aceptado' ? 'cot-aceptado' : (c.estado === 'rechazado' ? 'cot-rechazado' : '');
+      const claseEstado = c.estado === 'aceptado' ? 'cot-aceptado' : (c.estado === 'rechazado' ? 'cot-rechazado' : 'cot-pendiente');
       const fechaEmision = new Date(c.fecha);
       const fechaFormateada = `${fechaEmision.getDate().toString().padStart(2, '0')}/${(fechaEmision.getMonth() + 1).toString().padStart(2, '0')}/${fechaEmision.getFullYear()}`;
       const badgeClase = c.estado === 'aceptado' ? 'badge-aceptado' : (c.estado === 'rechazado' ? 'badge-rechazado' : 'badge-pendiente');
-      html += `<tr class="${claseEstado}"><td>${c.numero}</td><td>${c.razonSocial}</td><td style="text-align:right;">$${parseFloat(c.neto).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td>${fechaFormateada}</td><td><span class="badge-estado ${badgeClase}">${c.estado}</span></td><td style="text-align:center;"><button class="btn-ver" onclick="verCotizacion(${index})">VER</button><button class="btn-editar-cot" onclick="editarCotizacionGuardada(${index})">EDITAR</button><button class="btn-eliminar" onclick="borrarCotizacion(${index})">BORRAR</button></td></tr>`;
+      const btnEditarDisabled = (c.estado === 'aceptado' || c.estado === 'rechazado') ? 'disabled' : '';
+      html += `<tr class="${claseEstado}"><td>${c.numero}</td><td>${c.razonSocial}</td><td style="text-align:right;">$${parseFloat(c.neto).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td>${fechaFormateada}</td><td><span class="badge-estado ${badgeClase}">${c.estado}</span></td><td style="text-align:center;"><button class="btn-ver" onclick="verCotizacion(${index})">VER</button><button class="btn-editar-cot" onclick="editarCotizacionGuardada(${index})" ${btnEditarDisabled}>EDITAR</button></td></tr>`;
     });
     html += '</tbody></table>';
     cont.innerHTML = html;
@@ -1052,12 +1095,19 @@ function verCotizacion(index) {
 function editarCotizacionGuardada(index) {
   if (index < 0 || index >= cotizacionesEmitidas.length) { alert('ERROR: COTIZACIÓN NO ENCONTRADA'); return; }
   const cotizacion = cotizacionesEmitidas[index];
+  
+  if (cotizacion.estado === 'aceptado' || cotizacion.estado === 'rechazado') {
+    mostrarMensaje('COTIZACIÓN BLOQUEADA. NO SE PUEDE EDITAR.', 'bloqueado');
+    return;
+  }
+  
   clienteActual = JSON.parse(JSON.stringify(cotizacion.cliente));
   productosEnCotizacion = JSON.parse(JSON.stringify(cotizacion.productos));
   datosDespacho = cotizacion.despacho;
   cotizacionActualIndex = index;
   pdfEmitido = true;
   esEdicionCotizacion = true;
+  estadoCotizacionActual = cotizacion.estado;
   
   gestorCotizaciones.establecerNumero(cotizacion.numero);
   
@@ -1065,12 +1115,15 @@ function editarCotizacionGuardada(index) {
   
   if (cotizacion.estado === 'rechazado' || cotizacion.estado === 'aceptado') {
     cotizacionGuardada = true;
+    document.getElementById('seccionBloqueada').classList.add('activa');
   } else {
     cotizacionGuardada = false;
+    document.getElementById('seccionBloqueada').classList.remove('activa');
   }
   
   mostrarResumenCliente(clienteActual);
   actualizarTablaProductos();
+  habilitarProductos();
   
   if (datosDespacho) {
     mostrarResumenDespacho();
@@ -1080,13 +1133,6 @@ function editarCotizacionGuardada(index) {
   
   cerrarCotizaciones();
   mostrarMensaje(`COTIZACIÓN ${cotizacion.numero} CARGADA PARA EDITAR`, 'info');
-}
-
-function borrarCotizacion(index) {
-  if (!confirm('¿Está seguro que desea borrar esta cotización?')) return;
-  cotizacionesEmitidas.splice(index, 1);
-  localStorage.setItem('cotizacionesEmitidas', JSON.stringify(cotizacionesEmitidas));
-  mostrarCotizaciones();
 }
 
 function cerrarCotizaciones() {
@@ -1201,10 +1247,12 @@ function confirmarAceptacion() {
   };
 
   cotizacionGuardada = true;
+  estadoCotizacionActual = 'aceptado';
   mostrarResumenDespacho();
   mostrarResumenCompra();
   cerrarModalAceptado();
   bloquearEdicion();
+  document.getElementById('seccionBloqueada').classList.add('activa');
   
   if (cotizacionActualIndex !== null) {
     cotizacionesEmitidas[cotizacionActualIndex].estado = 'aceptado';
@@ -1225,14 +1273,15 @@ function mostrarResumenDespacho() {
 
 function bloquearEdicion() {
   document.getElementById('btnArticulos').disabled = true;
-  document.getElementById('btnBuscarProducto').disabled = false;
+  document.getElementById('btnBuscarProducto').disabled = true;
   document.getElementById('btnAceptado').disabled = true;
   document.getElementById('btnRechazado').disabled = true;
-  document.getElementById('btnBuscarCliente').disabled = false;
+  document.getElementById('btnBuscarCliente').disabled = true;
   document.getElementById('btnLimpiarCliente').disabled = false;
   document.getElementById('btnPDF').disabled = true;
   document.getElementById('btnCotizaciones').disabled = false;
-  document.getElementById('inputCodigoProducto').disabled = false;
+  document.getElementById('inputCodigoProducto').disabled = true;
+  document.getElementById('inputRut').disabled = true;
   actualizarTablaProductos();
 }
 
@@ -1240,13 +1289,16 @@ function marcarRechazado() {
   if (!clienteActual) { alert('DEBE SELECCIONAR UN CLIENTE PRIMERO'); return; }
   if (!pdfEmitido) { alert('DEBE GENERAR PDF PRIMERO'); return; }
   
+  cotizacionGuardada = true;
+  estadoCotizacionActual = 'rechazado';
+  bloquearEdicion();
+  document.getElementById('seccionBloqueada').classList.add('activa');
+  
   if (cotizacionActualIndex !== null) {
     cotizacionesEmitidas[cotizacionActualIndex].estado = 'rechazado';
     localStorage.setItem('cotizacionesEmitidas', JSON.stringify(cotizacionesEmitidas));
   }
   
-  cotizacionGuardada = true;
-  bloquearEdicion();
   alert('COTIZACIÓN RECHAZADA Y GUARDADA');
 }
 
