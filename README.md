@@ -43,6 +43,8 @@ button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; tex
 .btn-ver:hover {background: #3f4f20;}
 .btn-editar-cot {background: #D9822B; color: white; padding: 5px 8px; font-size: 10px; margin-right: 3px;}
 .btn-editar-cot:hover {background: #b36e1e;}
+.btn-descargar {background: #4B732E; color: white; padding: 5px 8px; font-size: 10px; margin-right: 3px;}
+.btn-descargar:hover {background: #385525;}
 .formulario-cliente, .formulario-producto, .formulario-editar-articulo {display: none;}
 .formulario-cliente.activo, .formulario-producto.activo, .formulario-editar-articulo.activo {display: block;}
 .campo-grupo {margin-bottom: 15px;}
@@ -114,7 +116,7 @@ button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; tex
 .btn-archivo {background: #D9822B; color: white; padding: 12px 30px; font-size: 14px; display: none;}
 .btn-archivo:hover {background: #b36e1e;}
 #modalAceptado {display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.4); z-index: 10001; overflow: auto;}
-.modal-aceptado-content {background: white; max-width: 600px; margin: 40px auto; padding: 25px; border-radius: 8px; position: relative; box-shadow: 0 8px 16px rgba(0,0,0,0.15);}
+.modal-aceptado-content {background: white; max-width: 700px; margin: 40px auto; padding: 25px; border-radius: 8px; position: relative; box-shadow: 0 8px 16px rgba(0,0,0,0.15); max-height: 90vh; overflow-y: auto;}
 .modal-aceptado-titulo {font-size: 22px; font-weight: 700; margin-bottom: 20px; text-transform: uppercase; color: #3B3B3B; border-bottom: 3px solid #4B732E; padding-bottom: 10px;}
 .btn-cerrar-aceptado {position: absolute; top: 15px; right: 20px; background: #9B2E00; color: white; font-size: 18px; border: none; border-radius: 6px; cursor: pointer; padding: 4px 10px; font-weight: 700;}
 .botones-archivo {display: flex; gap: 10px; align-items: center; margin-bottom: 15px;}
@@ -126,7 +128,7 @@ button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; tex
 .seccion-adjuntos h4 {color: #4B732E; margin-bottom: 10px; font-weight: 700; text-transform: uppercase;}
 .lista-adjuntos {list-style: none;}
 .item-adjunto {display: flex; justify-content: space-between; align-items: center; padding: 8px; background: white; margin: 5px 0; border-radius: 4px; border-left: 3px solid #4B732E;}
-.nombre-archivo {font-size: 12px; color: #3B3B3B; font-weight: 600; text-transform: uppercase;}
+.nombre-archivo {font-size: 12px; color: #3B3B3B; font-weight: 600; text-transform: uppercase; word-break: break-all;}
 .btn-eliminar-archivo {background: #9B2E00; color: white; padding: 4px 8px; font-size: 10px;}
 .btn-eliminar-archivo:hover {background: #7a2300;}
 .botones-modal-aceptado {display: flex; gap: 10px; margin-top: 20px; justify-content: flex-end;}
@@ -140,6 +142,13 @@ button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; tex
 .modal-archivos-content {background: white; max-width: 600px; margin: 40px auto; padding: 25px; border-radius: 8px; position: relative; box-shadow: 0 8px 16px rgba(0,0,0,0.15);}
 .modal-archivos-titulo {font-size: 22px; font-weight: 700; margin-bottom: 20px; text-transform: uppercase; color: #3B3B3B; border-bottom: 3px solid #4B732E; padding-bottom: 10px;}
 .btn-cerrar-archivos {position: absolute; top: 15px; right: 20px; background: #9B2E00; color: white; font-size: 18px; border: none; border-radius: 6px; cursor: pointer; padding: 4px 10px; font-weight: 700;}
+.resumen-compra {background-color: #e3f2fd; padding: 15px; border-radius: 6px; border-left: 5px solid #1976d2; margin-bottom: 20px;}
+.resumen-compra h4 {color: #1976d2; margin-bottom: 12px; text-transform: uppercase; font-weight: 700; font-size: 14px;}
+.tabla-compra {width: 100%; border-collapse: collapse; font-size: 12px; background: white;}
+.tabla-compra th {background: #1976d2; color: white; padding: 8px; text-transform: uppercase; font-weight: 700; text-align: left;}
+.tabla-compra td {border: 1px solid #ccc; padding: 8px; text-transform: uppercase; color: #333;}
+.tabla-compra tr:nth-child(even) {background: #f0f8ff;}
+.tabla-compra .valor-numerico {text-align: right; font-weight: 700;}
 </style>
 </head>
 <body>
@@ -254,6 +263,8 @@ button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; tex
     <div class="modal-aceptado-content">
       <button class="btn-cerrar-aceptado" onclick="cerrarModalAceptado()">×</button>
       <h2 class="modal-aceptado-titulo">ACEPTACIÓN DE COTIZACIÓN</h2>
+      
+      <div class="resumen-compra" id="resumenCompraModal"></div>
       
       <div class="campo-grupo">
         <label>TIPO DE ENTREGA *</label>
@@ -654,7 +665,7 @@ function agregarProductoACotizacion(cod, prod) {
     ex.cantidad++;
     ex.total = +(ex.cantidad * ex.valorNetaConDescuento).toFixed(2);
   } else {
-    productosEnCotizacion.push({codigo: prod.codigo, descripcion: prod.descripcion, cantidad: 1, valorNeto: prod.valorNeto, costo: prod.costo, descuento: 0, valorNetaConDescuento: prod.valorNeto, total: prod.valorNeto.toFixed(2)});
+    productosEnCotizacion.push({codigo: prod.codigo, descripcion: prod.descripcion, cantidad: 1, valorNeto: prod.valorNeto, costo: prod.costo, descuento: 0, valorNetaConDescuento: prod.valorNeto, total: prod.valorNeto.toFixed(2), proveedor: prod.proveedor});
   }
   actualizarTablaProductos();
 }
@@ -979,6 +990,15 @@ function cerrarCotizaciones() {
   document.getElementById('modalCotizaciones').style.display = 'none';
 }
 
+function generarResumenCompra() {
+  let html = '<h4>📋 RESUMEN DE COMPRA</h4><table class="tabla-compra"><thead><tr><th>CÓDIGO</th><th>DESCRIPCIÓN</th><th>CANTIDAD</th><th>COSTO UNITARIO</th><th>PROVEEDOR</th></tr></thead><tbody>';
+  productosEnCotizacion.forEach(p => {
+    html += `<tr><td>${p.codigo}</td><td>${p.descripcion}</td><td class="valor-numerico">${p.cantidad}</td><td class="valor-numerico">$${parseFloat(p.costo).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td>${p.proveedor}</td></tr>`;
+  });
+  html += '</tbody></table>';
+  document.getElementById('resumenCompraModal').innerHTML = html;
+}
+
 function marcarAceptado() {
   if (!clienteActual) { alert('DEBE SELECCIONAR UN CLIENTE PRIMERO'); return; }
   if (productosEnCotizacion.length === 0) { alert('DEBE AGREGAR PRODUCTOS A LA COTIZACIÓN'); return; }
@@ -990,6 +1010,7 @@ function marcarAceptado() {
   document.getElementById('infoArchivo').textContent = '';
   document.getElementById('adjuntosContainer').style.display = 'none';
   document.getElementById('listaAdjuntos').innerHTML = '';
+  generarResumenCompra();
   document.getElementById('modalAceptado').style.display = 'block';
 }
 
@@ -1004,11 +1025,17 @@ function abrirSelectorArchivos() {
 function agregarArchivo(event) {
   const file = event.target.files[0];
   if (!file) return;
-  const nuevoArchivo = { nombre: file.name, tamaño: (file.size / 1024).toFixed(2), tipo: file.type };
-  archivosAdjuntos.push(nuevoArchivo);
-  actualizarListaAdjuntos();
-  document.getElementById('inputArchivo').value = '';
-  document.getElementById('infoArchivo').textContent = `${archivosAdjuntos.length} archivo(s) adjunto(s)`;
+  const nuevoArchivo = { nombre: file.name, tamaño: (file.size / 1024).toFixed(2), tipo: file.type, contenido: '' };
+  
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    nuevoArchivo.contenido = e.target.result;
+    archivosAdjuntos.push(nuevoArchivo);
+    actualizarListaAdjuntos();
+    document.getElementById('inputArchivo').value = '';
+    document.getElementById('infoArchivo').textContent = `${archivosAdjuntos.length} archivo(s) adjunto(s)`;
+  };
+  reader.readAsDataURL(file);
 }
 
 function actualizarListaAdjuntos() {
@@ -1111,11 +1138,34 @@ function verArchivos() {
   const lista = document.getElementById('listaArchivosModal');
   let html = '<div class="seccion-adjuntos" style="display:block;"><ul class="lista-adjuntos">';
   datosDespacho.archivos.forEach((archivo, index) => {
-    html += `<li class="item-adjunto"><span class="nombre-archivo">${archivo.nombre} (${archivo.tamaño} KB)</span></li>`;
+    const isImage = archivo.tipo.startsWith('image/');
+    const isPDF = archivo.tipo === 'application/pdf';
+    const isText = archivo.tipo.startsWith('text/');
+    
+    if (isImage || isPDF || isText) {
+      html += `<li class="item-adjunto"><span class="nombre-archivo">${archivo.nombre} (${archivo.tamaño} KB)</span><button class="btn-descargar" onclick="descargarArchivo(${index})">DESCARGAR</button></li>`;
+    } else {
+      html += `<li class="item-adjunto"><span class="nombre-archivo">${archivo.nombre} (${archivo.tamaño} KB)</span><button class="btn-descargar" onclick="descargarArchivo(${index})">DESCARGAR</button></li>`;
+    }
   });
   html += '</ul></div>';
   lista.innerHTML = html;
   modal.style.display = 'block';
+}
+
+function descargarArchivo(index) {
+  if (!datosDespacho || !datosDespacho.archivos || index < 0 || index >= datosDespacho.archivos.length) {
+    alert('ERROR: ARCHIVO NO ENCONTRADO');
+    return;
+  }
+  
+  const archivo = datosDespacho.archivos[index];
+  const link = document.createElement('a');
+  link.href = archivo.contenido;
+  link.download = archivo.nombre;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
 }
 
 function cerrarModalArchivos() {
