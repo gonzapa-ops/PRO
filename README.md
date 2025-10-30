@@ -372,6 +372,7 @@ class GestorCotizaciones {
   obtenerNumeroActual() {return `${this.prefijo}${this.numeroBase}`;}
   siguienteCotizacion() {this.numeroBase++; localStorage.setItem('ultimaCotizacion', this.numeroBase); this.actualizarDisplay(); return this.obtenerNumeroActual();}
   actualizarDisplay() {const el = document.getElementById('numeroCotizacion'); if (el) el.textContent = this.obtenerNumeroActual();}
+  establecerNumero(numero) {const numPuro = parseInt(numero.replace(this.prefijo, '')); this.numeroBase = numPuro; this.actualizarDisplay();}
 }
 
 class GestorClientes {
@@ -415,6 +416,7 @@ let cotizacionGuardada = false;
 let datosDespacho = null;
 let cotizacionActualIndex = null;
 let pdfEmitido = false;
+let esEdicionCotizacion = false;
 
 document.getElementById('inputRut').addEventListener('input', function(e) {
   let v = e.target.value.replace(/[^0-9kK]/g, '');
@@ -471,7 +473,7 @@ document.addEventListener('click', function(e) {
 });
 
 function buscarCliente() {
-  if (cotizacionGuardada) {
+  if (cotizacionGuardada && !esEdicionCotizacion) {
     alert('COTIZACIÓN YA GUARDADA. LIMPIE PARA COMENZAR UNA NUEVA.');
     return;
   }
@@ -522,7 +524,7 @@ function mostrarResumenCliente(cliente) {
 }
 
 function editarCliente() {
-  if (cotizacionGuardada) return;
+  if (cotizacionGuardada && !esEdicionCotizacion) return;
   if (!clienteActual) return;
   modoEdicion = true;
   document.getElementById('formularioCliente').classList.add('activo');
@@ -611,6 +613,7 @@ function limpiarCotizacion() {
   cotizacionActualIndex = null;
   archivosAdjuntos = [];
   pdfEmitido = false;
+  esEdicionCotizacion = false;
   document.getElementById('resumenDespacho').classList.remove('activo');
   document.getElementById('resumenCompra').classList.remove('activo');
   document.getElementById('seccionCierre').classList.remove('activo');
@@ -639,7 +642,7 @@ function calcularValorNeto() {
 }
 
 function buscarProducto() {
-  if (cotizacionGuardada) {
+  if (cotizacionGuardada && !esEdicionCotizacion) {
     alert('COTIZACIÓN YA GUARDADA. NO SE PUEDEN AGREGAR MÁS PRODUCTOS.');
     return;
   }
@@ -722,9 +725,9 @@ function actualizarTablaProductos() {
   }
   let html = '<table><thead><tr><th>CÓDIGO</th><th>DESCRIPCIÓN</th><th style="width:70px;">CANTIDAD</th><th style="width:80px;">VALOR NETO</th><th style="width:80px;">DESCUENTO (%)</th><th style="width:80px;">V. NETO DESC.</th><th style="width:100px;">TOTAL</th><th style="width:60px;">ACCIÓN</th></tr></thead><tbody>';
   productosEnCotizacion.forEach((p, i) => {
-    const inputQuantityDisabled = cotizacionGuardada ? 'disabled' : '';
-    const inputDescuentoDisabled = cotizacionGuardada ? 'disabled' : '';
-    const btnEliminarDisplay = cotizacionGuardada ? 'none' : 'block';
+    const inputQuantityDisabled = cotizacionGuardada && !esEdicionCotizacion ? 'disabled' : '';
+    const inputDescuentoDisabled = cotizacionGuardada && !esEdicionCotizacion ? 'disabled' : '';
+    const btnEliminarDisplay = cotizacionGuardada && !esEdicionCotizacion ? 'none' : 'block';
     html += `<tr><td>${p.codigo}</td><td>${p.descripcion}</td><td><input type="number" min="1" value="${p.cantidad}" onchange="actualizarCantidad(${i}, this.value)" ${inputQuantityDisabled} style="width:100%;"></td><td class="valor-numerico">$${parseFloat(p.valorNeto).toLocaleString('es-CL', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td><td><input type="number" min="0" max="100" step="0.01" value="${p.descuento}" style="width:100%;padding:5px;" onchange="actualizarDescuento(${i}, this.value)" ${inputDescuentoDisabled}></td><td class="valor-numerico">$${parseFloat(p.valorNetaConDescuento).toLocaleString('es-CL', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td><td class="valor-numerico">$${parseFloat(p.total).toLocaleString('es-CL', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td><td><button class="btn-eliminar" onclick="eliminarProducto(${i})" style="display:${btnEliminarDisplay}">ELIMINAR</button></td></tr>`;
   });
   html += '</tbody></table>';
@@ -858,11 +861,26 @@ function eliminarArticulo(codigo) {
 function generarPDF() {
   if (!clienteActual) {alert('INGRESE CLIENTE'); return;}
   if (productosEnCotizacion.length === 0) {alert('AGREGUE PRODUCTOS'); return;}
-  const numCot = gestorCotizaciones.siguienteCotizacion();
+  
+  let numCot;
+  if (esEdicionCotizacion && cotizacionActualIndex !== null) {
+    numCot = cotizacionesEmitidas[cotizacionActualIndex].numero;
+  } else {
+    numCot = gestorCotizaciones.siguienteCotizacion();
+  }
+  
   const net = productosEnCotizacion.reduce((acc, p) => acc + parseFloat(p.total), 0);
   const estado = datosDespacho ? 'aceptado' : 'pendiente';
   const cotizacion = {numero: numCot, razonSocial: clienteActual.razonSocial, neto: net.toFixed(2), fecha: new Date().toISOString(), cliente: JSON.parse(JSON.stringify(clienteActual)), productos: JSON.parse(JSON.stringify(productosEnCotizacion)), estado: estado, despacho: datosDespacho || null};
-  cotizacionesEmitidas.push(cotizacion);
+  
+  if (esEdicionCotizacion && cotizacionActualIndex !== null) {
+    cotizacionesEmitidas[cotizacionActualIndex] = cotizacion;
+    mostrarMensaje('COTIZACIÓN ACTUALIZADA CORRECTAMENTE', 'exito');
+  } else {
+    cotizacionesEmitidas.push(cotizacion);
+    mostrarMensaje('COTIZACIÓN GUARDADA CORRECTAMENTE', 'exito');
+  }
+  
   localStorage.setItem('cotizacionesEmitidas', JSON.stringify(cotizacionesEmitidas));
   pdfEmitido = true;
   document.getElementById('seccionCierre').classList.add('activo');
@@ -1009,6 +1027,9 @@ function editarCotizacionGuardada(index) {
   datosDespacho = cotizacion.despacho;
   cotizacionActualIndex = index;
   pdfEmitido = true;
+  esEdicionCotizacion = true;
+  
+  gestorCotizaciones.establecerNumero(cotizacion.numero);
   
   document.getElementById('seccionCierre').classList.add('activo');
   
@@ -1027,12 +1048,8 @@ function editarCotizacionGuardada(index) {
     document.getElementById('btnVerArchivos').style.display = 'inline-block';
   }
   
-  if (cotizacionGuardada) {
-    bloquearEdicion();
-  }
-  
   cerrarCotizaciones();
-  mostrarMensaje(`COTIZACIÓN ${cotizacion.numero} CARGADA`, 'info');
+  mostrarMensaje(`COTIZACIÓN ${cotizacion.numero} CARGADA PARA EDITAR`, 'info');
 }
 
 function borrarCotizacion(index) {
@@ -1065,14 +1082,19 @@ function marcarAceptado() {
   if (!pdfEmitido) { alert('DEBE GENERAR PDF PRIMERO'); return; }
   archivosAdjuntos = [];
   document.getElementById('tipoEntrega').value = '';
-  document.getElementById('regionInput').value = '';
-  document.getElementById('comunaInput').value = '';
-  document.getElementById('direccionDespacho').value = '';
-  document.getElementById('contactoDespacho').value = '';
-  document.getElementById('celularDespacho').value = '';
+  document.getElementById('regionInput').value = datosDespacho ? datosDespacho.region : '';
+  document.getElementById('comunaInput').value = datosDespacho ? datosDespacho.comuna : '';
+  document.getElementById('direccionDespacho').value = datosDespacho ? datosDespacho.direccion : '';
+  document.getElementById('contactoDespacho').value = datosDespacho ? datosDespacho.contacto : '';
+  document.getElementById('celularDespacho').value = datosDespacho ? datosDespacho.celular : '';
   document.getElementById('infoArchivo').textContent = '';
   document.getElementById('adjuntosContainer').style.display = 'none';
   document.getElementById('listaAdjuntos').innerHTML = '';
+  if (datosDespacho && datosDespacho.archivos) {
+    archivosAdjuntos = JSON.parse(JSON.stringify(datosDespacho.archivos));
+    document.getElementById('infoArchivo').textContent = `${archivosAdjuntos.length} archivo(s) adjunto(s)`;
+    actualizarListaAdjuntos();
+  }
   document.getElementById('modalAceptado').style.display = 'block';
 }
 
@@ -1173,14 +1195,14 @@ function mostrarResumenDespacho() {
 
 function bloquearEdicion() {
   document.getElementById('btnArticulos').disabled = true;
-  document.getElementById('btnBuscarProducto').disabled = true;
+  document.getElementById('btnBuscarProducto').disabled = false;
   document.getElementById('btnAceptado').disabled = true;
   document.getElementById('btnRechazado').disabled = true;
-  document.getElementById('btnBuscarCliente').disabled = true;
-  document.getElementById('btnLimpiarCliente').disabled = true;
+  document.getElementById('btnBuscarCliente').disabled = false;
+  document.getElementById('btnLimpiarCliente').disabled = false;
   document.getElementById('btnPDF').disabled = true;
-  document.getElementById('btnCotizaciones').disabled = true;
-  document.getElementById('inputCodigoProducto').disabled = true;
+  document.getElementById('btnCotizaciones').disabled = false;
+  document.getElementById('inputCodigoProducto').disabled = false;
   actualizarTablaProductos();
 }
 
