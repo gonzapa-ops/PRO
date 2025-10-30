@@ -86,7 +86,7 @@ button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; tex
 .btn-cerrar-modal {position: absolute; top: 14px; right: 25px; background: #9B2E00; color: white; font-size: 18px; border: none; border-radius: 6px; cursor: pointer; padding: 4px 10px; font-weight: 700;}
 .botones-superiores {display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; align-items: center;}
 #modalCotizaciones {display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.4); z-index: 10000; overflow: auto;}
-#modalCotizaciones > div {background: white; max-width: 900px; margin: 40px auto; padding: 20px; border-radius: 8px; position: relative; box-shadow: 0 8px 16px rgba(0,0,0,0.15);}
+#modalCotizaciones > div {background: white; max-width: 1100px; margin: 40px auto; padding: 20px; border-radius: 8px; position: relative; box-shadow: 0 8px 16px rgba(0,0,0,0.15); overflow-x: auto;}
 .resumen-totales {max-width: 400px; margin-left: auto; border-top: 3px solid #F25C05; padding-top: 15px; text-transform: uppercase; margin-bottom: 20px;}
 .resumen-linea {display: flex; justify-content: space-between; margin: 5px 0; font-weight: 700; font-size: 13px; color: #3B3B3B;}
 .resumen-linea.total {font-size: 18px; color: #000; font-weight: 900;}
@@ -96,7 +96,7 @@ button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; tex
 .utilidad-item strong {color: #1F6F8B; font-weight: 700;}
 .utilidad-porcentaje {color: #F25C05; font-weight: 700; font-size: 12px; background-color: #fff; padding: 2px 8px; border-radius: 3px; border: 1px solid #F25C05;}
 .utilidad-costo {color: #555; font-weight: 600; font-size: 12px; background-color: #fff; padding: 2px 8px; border-radius: 3px; border: 1px solid #999;}
-.tabla-cotizaciones {width: 100%; border-collapse: collapse; background: white;}
+.tabla-cotizaciones {width: 100%; border-collapse: collapse; background: white; min-width: 900px;}
 .tabla-cotizaciones th {background: #1F6F8B; color: white; padding: 12px; text-align: left; text-transform: uppercase; font-weight: 700;}
 .tabla-cotizaciones td {border: 1px solid #ddd; padding: 12px; text-transform: uppercase; color: #3B3B3B;}
 .tabla-cotizaciones tr.cot-aceptado {background-color: #C8E6C9 !important;}
@@ -159,7 +159,11 @@ button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; tex
 .contenido-archivo img {max-width: 100%; max-height: 70vh; object-fit: contain;}
 .contenido-archivo iframe {width: 100%; height: 70vh; border: none;}
 .contenido-archivo pre {background: #f5f5f5; padding: 15px; border-radius: 5px; overflow-x: auto; text-align: left; font-size: 12px;}
-.seccion-botones-pdf {margin-bottom: 30px;}
+.seccion-botones-pdf {margin-bottom: 20px; text-align: center;}
+.badge-estado {display: inline-block; padding: 4px 8px; border-radius: 3px; font-size: 11px; font-weight: 700; text-transform: uppercase;}
+.badge-aceptado {background: #4B732E; color: white;}
+.badge-rechazado {background: #9B2E00; color: white;}
+.badge-pendiente {background: #F25C05; color: white;}
 </style>
 </head>
 <body>
@@ -238,15 +242,15 @@ button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; tex
         <div class="resumen-linea total"><div>TOTAL</div><div id="totalGeneral">$0.00</div></div>
       </div>
       <div id="utilidadResumen" style="display:none;"></div>
+      
+      <div class="seccion-botones-pdf">
+        <button class="btn btn-pdf" onclick="generarPDF()" id="btnPDF">GENERAR PDF</button>
+      </div>
     </section>
 
     <section class="seccion-cierre">
       <h2 class="seccion-titulo">DATOS DE CIERRE</h2>
       
-      <div class="seccion-botones-pdf">
-        <button class="btn btn-pdf" onclick="generarPDF()" id="btnPDF">GENERAR PDF</button>
-      </div>
-
       <div id="resumenDespacho" class="resumen-despacho"></div>
       <div id="resumenCompra" class="resumen-compra"></div>
       <div class="botones-cierre">
@@ -845,7 +849,6 @@ function generarPDF() {
   cotizacionesEmitidas.push(cotizacion);
   localStorage.setItem('cotizacionesEmitidas', JSON.stringify(cotizacionesEmitidas));
   generarPDFDocumento(cotizacion);
-  alert('PDF GENERADO');
 }
 
 function generarPDFDocumento(cotizacion) {
@@ -946,7 +949,11 @@ function generarPDFDocumento(cotizacion) {
   doc.setFontSize(8);
   doc.setFont(undefined, 'italic');
   doc.text('Gracias por su preferencia', 105, 280, {align: 'center'});
-  doc.save(`Cotizacion_${cotizacion.numero}.pdf`);
+  
+  const pdfWindow = window.open('', '', 'width=800,height=600');
+  const pdfBlob = doc.output('blob');
+  const pdfUrl = URL.createObjectURL(pdfBlob);
+  pdfWindow.location.href = pdfUrl;
 }
 
 function mostrarCotizaciones() {
@@ -955,10 +962,13 @@ function mostrarCotizaciones() {
   if (cotizacionesEmitidas.length === 0) {
     cont.innerHTML = '<p style="text-transform:uppercase; text-align:center; padding: 20px;">NO HAY COTIZACIONES EMITIDAS</p>';
   } else {
-    let html = '<table class="tabla-cotizaciones"><thead><tr><th>N° COTIZACIÓN</th><th>RAZÓN SOCIAL</th><th style="text-align:right;">MONTO NETO</th><th style="text-align:center;">ACCIONES</th></tr></thead><tbody>';
+    let html = '<table class="tabla-cotizaciones"><thead><tr><th>N° COTIZACIÓN</th><th>RAZÓN SOCIAL</th><th style="text-align:right;">MONTO NETO</th><th>FECHA EMISIÓN</th><th>ESTADO</th><th style="text-align:center;">ACCIONES</th></tr></thead><tbody>';
     cotizacionesEmitidas.forEach((c, index) => {
       const claseEstado = c.estado === 'aceptado' ? 'cot-aceptado' : (c.estado === 'rechazado' ? 'cot-rechazado' : '');
-      html += `<tr class="${claseEstado}"><td>${c.numero}</td><td>${c.razonSocial}</td><td style="text-align:right;">$${parseFloat(c.neto).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td style="text-align:center;"><button class="btn-ver" onclick="verCotizacion(${index})">VER</button><button class="btn-editar-cot" onclick="editarCotizacionGuardada(${index})">EDITAR</button><button class="btn-eliminar" onclick="borrarCotizacion(${index})">BORRAR</button></td></tr>`;
+      const fechaEmision = new Date(c.fecha);
+      const fechaFormateada = `${fechaEmision.getDate().toString().padStart(2, '0')}/${(fechaEmision.getMonth() + 1).toString().padStart(2, '0')}/${fechaEmision.getFullYear()}`;
+      const badgeClase = c.estado === 'aceptado' ? 'badge-aceptado' : (c.estado === 'rechazado' ? 'badge-rechazado' : 'badge-pendiente');
+      html += `<tr class="${claseEstado}"><td>${c.numero}</td><td>${c.razonSocial}</td><td style="text-align:right;">$${parseFloat(c.neto).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td>${fechaFormateada}</td><td><span class="badge-estado ${badgeClase}">${c.estado}</span></td><td style="text-align:center;"><button class="btn-ver" onclick="verCotizacion(${index})">VER</button><button class="btn-editar-cot" onclick="editarCotizacionGuardada(${index})">EDITAR</button><button class="btn-eliminar" onclick="borrarCotizacion(${index})">BORRAR</button></td></tr>`;
     });
     html += '</tbody></table>';
     cont.innerHTML = html;
