@@ -166,14 +166,17 @@ button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; tex
 .badge-aceptado {background: #4B732E; color: white;}
 .badge-rechazado {background: #9B2E00; color: white;}
 .badge-pendiente {background: #F25C05; color: white;}
-#modalPDF {display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.3); z-index: 10004; overflow: hidden;}
-.modal-pdf-content {background: white; width: 100%; height: 100%; display: flex; flex-direction: column; box-shadow: 0 8px 16px rgba(0,0,0,0.15);}
-.pdf-header {background: #1F6F8B; color: white; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center;}
-.pdf-header h3 {margin: 0; font-size: 16px;}
-.btn-cerrar-pdf {background: #9B2E00; color: white; font-size: 16px; border: none; border-radius: 4px; cursor: pointer; padding: 6px 12px; font-weight: 700;}
+#modalPDF {display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 10004; overflow: hidden;}
+.modal-pdf-content {background: white; width: 100%; height: 100%; display: flex; flex-direction: column;}
+.pdf-header {background: #1F6F8B; color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.2);}
+.pdf-header h3 {margin: 0; font-size: 18px; font-weight: 700;}
+.pdf-header-botones {display: flex; gap: 10px; align-items: center;}
+.btn-descargar-pdf {background: #F25C05; color: white; font-size: 13px; border: none; border-radius: 4px; cursor: pointer; padding: 8px 15px; font-weight: 700; transition: all 0.3s ease;}
+.btn-descargar-pdf:hover {background: #cb4a04;}
+.btn-cerrar-pdf {background: #9B2E00; color: white; font-size: 13px; border: none; border-radius: 4px; cursor: pointer; padding: 8px 15px; font-weight: 700; transition: all 0.3s ease;}
 .btn-cerrar-pdf:hover {background: #7a2300;}
-.pdf-container {flex: 1; overflow: auto;}
-#canvasPDF {display: block; margin: 20px auto; border: 1px solid #ddd;}
+.pdf-container {flex: 1; overflow-y: auto; display: flex; justify-content: center; align-items: flex-start; padding: 20px; background: #f5f5f5;}
+#canvasPDF {max-width: 100%; height: auto; background: white; box-shadow: 0 2px 8px rgba(0,0,0,0.2);}
 </style>
 </head>
 <body>
@@ -373,8 +376,11 @@ button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; tex
   <div id="modalPDF">
     <div class="modal-pdf-content">
       <div class="pdf-header">
-        <h3>VISUALIZACIÓN DE COTIZACIÓN</h3>
-        <button class="btn-cerrar-pdf" onclick="cerrarModalPDF()">× CERRAR</button>
+        <h3>VISUALIZACIÓN Y DESCARGA DE COTIZACIÓN</h3>
+        <div class="pdf-header-botones">
+          <button class="btn-descargar-pdf" onclick="descargarPDFActual()">📥 DESCARGAR PDF</button>
+          <button class="btn-cerrar-pdf" onclick="cerrarModalPDF()">× CERRAR</button>
+        </div>
       </div>
       <div class="pdf-container">
         <canvas id="canvasPDF"></canvas>
@@ -384,11 +390,8 @@ button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; tex
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 
 <script>
-pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-
 class GestorCotizaciones {
   constructor() {this.prefijo = 'CO'; this.numeroBase = 100500; this.cargarNumeroCotizacion();}
   cargarNumeroCotizacion() {const n = localStorage.getItem('ultimaCotizacion'); if (n) this.numeroBase = parseInt(n); this.actualizarDisplay();}
@@ -441,6 +444,7 @@ let cotizacionActualIndex = null;
 let pdfEmitido = false;
 let esEdicionCotizacion = false;
 let pdfActual = null;
+let numeroCotizacionActual = null;
 
 document.getElementById('inputRut').addEventListener('input', function(e) {
   let v = e.target.value.replace(/[^0-9kK]/g, '');
@@ -639,6 +643,7 @@ function limpiarCotizacion() {
   pdfEmitido = false;
   esEdicionCotizacion = false;
   pdfActual = null;
+  numeroCotizacionActual = null;
   document.getElementById('resumenDespacho').classList.remove('activo');
   document.getElementById('resumenCompra').classList.remove('activo');
   document.getElementById('seccionCierre').classList.remove('activo');
@@ -894,6 +899,7 @@ function generarPDF() {
     numCot = gestorCotizaciones.siguienteCotizacion();
   }
   
+  numeroCotizacionActual = numCot;
   const net = productosEnCotizacion.reduce((acc, p) => acc + parseFloat(p.total), 0);
   const estado = datosDespacho ? 'aceptado' : 'pendiente';
   const cotizacion = {numero: numCot, razonSocial: clienteActual.razonSocial, neto: net.toFixed(2), fecha: new Date().toISOString(), cliente: JSON.parse(JSON.stringify(clienteActual)), productos: JSON.parse(JSON.stringify(productosEnCotizacion)), estado: estado, despacho: datosDespacho || null};
@@ -1021,16 +1027,16 @@ function generarPDFDocumento(cotizacion) {
 function mostrarPDFEnMismaVentana(doc) {
   const pdfBlob = doc.output('blob');
   const pdfUrl = URL.createObjectURL(pdfBlob);
-  const pdfCanvas = document.getElementById('canvasPDF');
-  const pdfjsLib = window.pdfjsLib;
+  const canvas = document.getElementById('canvasPDF');
+  canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
   
-  pdfjsLib.getDocument(pdfUrl).promise.then(pdf => {
+  const pdfDoc = pdfjsLib.getDocument(pdfUrl);
+  pdfDoc.promise.then(pdf => {
     pdf.getPage(1).then(page => {
-      const scale = 1.5;
-      const viewport = page.getViewport({ scale });
-      pdfCanvas.width = viewport.width;
-      pdfCanvas.height = viewport.height;
-      const renderContext = {canvasContext: pdfCanvas.getContext('2d'), viewport};
+      const viewport = page.getViewport({scale: 1.2});
+      canvas.width = viewport.width;
+      canvas.height = viewport.height;
+      const renderContext = {canvasContext: canvas.getContext('2d'), viewport};
       page.render(renderContext);
     });
   });
@@ -1038,9 +1044,14 @@ function mostrarPDFEnMismaVentana(doc) {
   document.getElementById('modalPDF').style.display = 'flex';
 }
 
+function descargarPDFActual() {
+  if (!pdfActual) {alert('NO HAY PDF PARA DESCARGAR'); return;}
+  const nombreArchivo = `Cotizacion_${numeroCotizacionActual}_${new Date().getTime()}.pdf`;
+  pdfActual.save(nombreArchivo);
+}
+
 function cerrarModalPDF() {
   document.getElementById('modalPDF').style.display = 'none';
-  pdfActual = null;
 }
 
 function mostrarCotizaciones() {
