@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Cotizador - EMPRESA CUNDO</title>
 <style>
-/* Estilos generales */
 * {margin: 0; padding: 0; box-sizing: border-box;}
 body {font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #F5F5F5; padding: 20px; color: #3B3B3B;}
 .cotizador-container {max-width: 1200px; margin: auto; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.1); padding: 30px; border-radius: 8px;}
@@ -17,50 +16,40 @@ table {width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 1
 th, td {border: 1px solid #ddd; padding: 8px; text-transform: uppercase; color: #3B3B3B;}
 th {background: #1F6F8B; color: white; font-weight: 700;}
 tr:nth-child(even) {background: #E9F0EA;}
-tr:hover {background: #FDE6D0;}
 .valor-numerico {text-align: right; font-weight: 700; color: #3B3B3B;}
-.celda-acciones {text-align: center;}
 button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; text-transform: uppercase; transition: all 0.3s ease;}
-.btn-buscar {background: #F25C05; color: white; padding: 8px 14px; font-size: 12px; box-shadow: 0 2px 4px rgba(242, 92, 5, 0.3);}
-.btn-buscar:hover {background: #cb4a04; box-shadow: 0 4px 8px rgba(242, 92, 5, 0.5);}
-.btn-buscar:disabled {background: #a0a0a0; cursor: not-allowed; box-shadow: none;}
+.btn-buscar {background: #F25C05; color: white; padding: 8px 14px; font-size: 12px;}
+.btn-buscar:hover {background: #cb4a04;}
+.btn-buscar:disabled {background: #a0a0a0; cursor: not-allowed;}
 .btn-limpiar {background: #7A8C52; color: white; padding: 8px 14px; font-size: 12px;}
 .btn-limpiar:hover {background: #5a6b37;}
 .btn-limpiar:disabled {background: #a0a0a0; cursor: not-allowed;}
 .btn-eliminar {background: #9B2E00; color: white; font-size: 11px; padding: 5px 10px;}
 .btn-eliminar:hover {background: #7a2300;}
-.btn-articulos {background: #4B732E; color: white; padding: 8px 14px; font-size: 12px; box-shadow: 0 2px 4px rgba(75, 115, 46, 0.3);}
-.btn-articulos:hover {background: #385525; box-shadow: 0 4px 8px rgba(75, 115, 46, 0.5);}
-.btn-articulos:disabled {background: #a0a0a0; cursor: not-allowed; box-shadow: none;}
-.btn-pdf {background: #F25C05; color: white; padding: 8px 14px; font-size: 12px; box-shadow: 0 2px 4px rgba(242, 92, 5, 0.3);}
-.btn-pdf:hover {background: #cb4a04; box-shadow: 0 4px 8px rgba(242, 92, 5, 0.5);}
-.btn-pdf:disabled {background: #a0a0a0; cursor: not-allowed; box-shadow: none;}
+.btn-articulos {background: #4B732E; color: white; padding: 8px 14px; font-size: 12px;}
+.btn-articulos:hover {background: #385525;}
+.btn-articulos:disabled {background: #a0a0a0; cursor: not-allowed;}
+.btn-pdf {background: #F25C05; color: white; padding: 8px 14px; font-size: 12px;}
+.btn-pdf:hover {background: #cb4a04;}
+.btn-pdf:disabled {background: #a0a0a0; cursor: not-allowed;}
 .btn-agregar {background: #385525; color: white; padding: 8px 14px; font-size: 12px;}
 .btn-agregar:hover {background: #274015;}
 .btn-editar {background: #D9822B; color: white; padding: 8px 14px; font-size: 12px;}
 .btn-editar:hover {background: #b36e1e;}
+.btn-editar:disabled {background: #a0a0a0; cursor: not-allowed;}
 .btn-cancelar {background: #9B2E00; color: white; padding: 8px 14px; font-size: 12px;}
 .btn-cancelar:hover {background: #7a2300;}
 .btn-ver {background: #556B2F; color: white; padding: 5px 8px; font-size: 10px; margin-right: 3px;}
 .btn-ver:hover {background: #3f4f20;}
 .btn-editar-cot {background: #D9822B; color: white; padding: 5px 8px; font-size: 10px; margin-right: 3px;}
 .btn-editar-cot:hover {background: #b36e1e;}
-.formulario-cliente, .formulario-producto, .formulario-editar-articulo {display: none; animation: fadeIn 0.3s;}
+.formulario-cliente, .formulario-producto, .formulario-editar-articulo {display: none;}
 .formulario-cliente.activo, .formulario-producto.activo, .formulario-editar-articulo.activo {display: block;}
-@keyframes fadeIn {from {opacity: 0;} to {opacity: 1;}}
-.campo-grupo {margin-bottom: 15px; position: relative;}
+.campo-grupo {margin-bottom: 15px;}
 .campo-grupo label {display: block; font-weight: 700; color: #3B3B3B; margin-bottom: 5px; font-size: 13px; text-transform: uppercase;}
-.campo-grupo input {width: 100%; padding: 10px; font-size: 13px; border: 2px solid #ddd; border-radius: 5px; transition: border-color 0.3s; text-transform: uppercase;}
-.campo-grupo input:focus {outline: none; border-color: #F25C05;}
-.campo-grupo input:disabled {background-color: #F5F5F5; cursor: not-allowed; color: #777;}
-.campo-grupo input.link-articulo, #linkProducto {text-transform: lowercase;}
-.campo-grupo select {width: 100%; padding: 10px; font-size: 13px; border: 2px solid #ddd; border-radius: 5px; transition: border-color 0.3s; text-transform: uppercase; background-color: white; cursor: pointer;}
-.campo-grupo select:focus {outline: none; border-color: #F25C05;}
-.campo-grupo select:disabled {background-color: #F5F5F5; cursor: not-allowed; color: #777;}
-.campo-grupo select option {text-transform: uppercase; background-color: white; color: #3B3B3B;}
-.campo-grupo textarea {width: 100%; padding: 10px; font-size: 13px; border: 2px solid #ddd; border-radius: 5px; transition: border-color 0.3s; text-transform: uppercase; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; resize: vertical; min-height: 80px;}
-.campo-grupo textarea:focus {outline: none; border-color: #F25C05;}
-.campo-grupo textarea:disabled {background-color: #F5F5F5; cursor: not-allowed; color: #777;}
+.campo-grupo input, .campo-grupo select, .campo-grupo textarea {width: 100%; padding: 10px; font-size: 13px; border: 2px solid #ddd; border-radius: 5px; text-transform: uppercase; font-family: inherit;}
+.campo-grupo input:focus, .campo-grupo select:focus, .campo-grupo textarea:focus {outline: none; border-color: #F25C05;}
+.campo-grupo input:disabled, .campo-grupo select:disabled, .campo-grupo textarea:disabled {background-color: #F5F5F5; cursor: not-allowed; color: #777;}
 .fila-campos {display: grid; grid-template-columns: 1fr 1fr; gap: 15px;}
 .mensaje {padding: 12px 15px; border-radius: 5px; margin-bottom: 15px; font-size: 12px; text-transform: uppercase; font-weight: 700;}
 .mensaje-exito {background-color: #d0e8d0; color: #385525; border: 1px solid #8bb76f;}
@@ -70,23 +59,18 @@ button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; tex
 .resumen-cliente.activo {display: block;}
 .resumen-cliente h4 {color: #3B3B3B; margin-bottom: 10px; text-transform: uppercase; font-weight: 700;}
 .resumen-cliente p {margin: 5px 0; font-size: 13px; color: #4B732E; text-transform: uppercase;}
-.resumen-cliente strong {color: #385525;}
 .botones-resumen {margin-top: 15px; display: flex; gap: 10px;}
 .botones-formulario {display: flex; gap: 10px; margin-top: 10px;}
 .seccion-cliente {margin-bottom: 30px; border: 1px solid #ddd; border-radius: 6px; padding: 20px; background-color: #fafafa;}
 .busqueda-rut {display: flex; gap: 10px; margin-bottom: 20px; align-items: center;}
 .busqueda-rut input {flex: 1; padding: 10px; font-size: 13px; border: 2px solid #ddd; border-radius: 6px; text-transform: uppercase;}
-.busqueda-rut input:focus {outline: none; border-color: #F25C05;}
 .seccion-productos {margin-bottom: 30px; border: 1px solid #ddd; border-radius: 6px; padding: 20px; background-color: #fafafa;}
 .busqueda-producto {display: flex; gap: 10px; margin-bottom: 20px; align-items: center; position: relative;}
 .busqueda-producto input {flex: 1; padding: 10px; font-size: 13px; border: 2px solid #ddd; border-radius: 6px; text-transform: uppercase;}
-.busqueda-producto input:focus {outline: none; border-color: #F25C05;}
 .autocomplete-list {display: none; position: absolute; top: 100%; left: 0; right: 70px; background: white; border: 1px solid #ddd; border-top: none; max-height: 200px; overflow-y: auto; z-index: 1000; border-radius: 0 0 6px 6px; box-shadow: 0 4px 8px rgba(0,0,0,0.07);}
 .autocomplete-list.activo {display: block;}
 .autocomplete-item {padding: 10px; cursor: pointer; background: white; font-size: 12px; text-transform: uppercase; border-bottom: 1px solid #eee; transition: background 0.2s;}
 .autocomplete-item:hover {background: #f9e2cd; border-left: 3px solid #F25C05;}
-.autocomplete-item strong {font-weight: 700; color: #3B3B3B;}
-.autocomplete-item:hover strong {color: #F25C05;}
 .formulario-producto {background: linear-gradient(135deg, #f9ead4 0%, #f7dba1 100%); padding: 15px; border-radius: 6px; border-left: 5px solid #F25C05; margin-bottom: 20px;}
 .formulario-producto h4 {text-transform: uppercase; color: #b35304; margin-bottom: 15px; font-weight: 700;}
 .fila-campos-producto {display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;}
@@ -107,65 +91,33 @@ button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; tex
 .resumen-utilidad {background-color: #E8E8E8; padding: 20px; border-radius: 8px; border: 2px solid #999999; border-top: 4px solid #1F6F8B; border-bottom: 4px solid #1F6F8B; margin-top: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);}
 .resumen-utilidad h4 {color: #1F6F8B; text-transform: uppercase; margin-bottom: 12px; font-size: 14px; font-weight: 700;}
 .utilidad-item {display: flex; justify-content: space-between; align-items: center; margin: 10px 0; font-size: 13px; color: #3B3B3B; flex-wrap: wrap; gap: 10px;}
-.utilidad-item-valor {display: flex; gap: 8px; align-items: center; flex-wrap: wrap;}
-.utilidad-item strong {color: #1F6F8B; font-weight: 700; min-width: 150px;}
+.utilidad-item strong {color: #1F6F8B; font-weight: 700;}
 .utilidad-porcentaje {color: #F25C05; font-weight: 700; font-size: 12px; background-color: #fff; padding: 2px 8px; border-radius: 3px; border: 1px solid #F25C05;}
 .utilidad-costo {color: #555; font-weight: 600; font-size: 12px; background-color: #fff; padding: 2px 8px; border-radius: 3px; border: 1px solid #999;}
-.utilidad-item-total {display: flex; justify-content: space-between; align-items: center; margin-top: 15px; padding-top: 10px; border-top: 1px solid #999999; font-size: 14px; flex-wrap: wrap; gap: 10px;}
-.utilidad-item-total strong {font-size: 15px; min-width: auto;}
-.formulario-editar-articulo {background: linear-gradient(135deg, #f9ead4 0%, #f7dba1 100%); padding: 15px; border-radius: 6px; border-left: 5px solid #F25C05; margin-bottom: 20px;}
-.formulario-editar-articulo h4 {text-transform: uppercase; color: #b35304; margin-bottom: 15px; font-weight: 700;}
 .tabla-cotizaciones {width: 100%; border-collapse: collapse; background: white;}
 .tabla-cotizaciones th {background: #1F6F8B; color: white; padding: 12px; text-align: left; text-transform: uppercase; font-weight: 700;}
 .tabla-cotizaciones td {border: 1px solid #ddd; padding: 12px; text-transform: uppercase; color: #3B3B3B;}
-
-/* COLORES DE ESTADO - COTIZACIONES */
 .tabla-cotizaciones tr.cot-aceptado {background-color: #C8E6C9 !important;}
 .tabla-cotizaciones tr.cot-aceptado td {background-color: #C8E6C9 !important; color: #2E7D32;}
-.tabla-cotizaciones tr.cot-aceptado:hover {background-color: #A5D6A7 !important;}
-.tabla-cotizaciones tr.cot-aceptado:hover td {background-color: #A5D6A7 !important;}
-
 .tabla-cotizaciones tr.cot-rechazado {background-color: #FFCDD2 !important;}
 .tabla-cotizaciones tr.cot-rechazado td {background-color: #FFCDD2 !important; color: #C62828;}
-.tabla-cotizaciones tr.cot-rechazado:hover {background-color: #EF9A9A !important;}
-.tabla-cotizaciones tr.cot-rechazado:hover td {background-color: #EF9A9A !important;}
-
-/* ESTILOS PARA BOTONES EN COTIZACIONES */
-#listaCotizaciones button {
-  width: 90px;
-  margin: 0 8px;
-  padding: 7px 0;
-  font-size: 11px;
-  border-radius: 6px;
-  display: inline-block;
-  box-sizing: border-box;
-  text-align: center;
-}
-#listaCotizaciones button:not(:last-child) {
-  margin-right: 16px;
-}
-
-/* ESTILOS PARA DATOS DE CIERRE */
 .seccion-cierre {margin-top: 30px; border: 1px solid #ddd; border-radius: 6px; padding: 20px; background-color: #fafafa;}
 .botones-cierre {display: flex; gap: 15px; margin-top: 15px; flex-wrap: wrap;}
-.btn-aceptado {background: #4B732E; color: white; padding: 12px 30px; font-size: 14px; box-shadow: 0 2px 6px rgba(75, 115, 46, 0.3);}
-.btn-aceptado:hover {background: #385525; box-shadow: 0 4px 10px rgba(75, 115, 46, 0.5);}
-.btn-aceptado:disabled {background: #a0a0a0; cursor: not-allowed; box-shadow: none;}
-.btn-rechazado {background: #9B2E00; color: white; padding: 12px 30px; font-size: 14px; box-shadow: 0 2px 6px rgba(155, 46, 0, 0.3);}
-.btn-rechazado:hover {background: #7a2300; box-shadow: 0 4px 10px rgba(155, 46, 0, 0.5);}
-.btn-rechazado:disabled {background: #a0a0a0; cursor: not-allowed; box-shadow: none;}
-.btn-limpiar-cot {background: #556B2F; color: white; padding: 12px 30px; font-size: 14px; box-shadow: 0 2px 6px rgba(85, 107, 47, 0.3);}
-.btn-limpiar-cot:hover {background: #3f4f20; box-shadow: 0 4px 10px rgba(85, 107, 47, 0.5);}
-.btn-limpiar-cot:disabled {background: #a0a0a0; cursor: not-allowed; box-shadow: none;}
-
-/* ESTILOS PARA MODAL DE ACEPTADO */
+.btn-aceptado {background: #4B732E; color: white; padding: 12px 30px; font-size: 14px;}
+.btn-aceptado:hover {background: #385525;}
+.btn-aceptado:disabled {background: #a0a0a0; cursor: not-allowed;}
+.btn-rechazado {background: #9B2E00; color: white; padding: 12px 30px; font-size: 14px;}
+.btn-rechazado:hover {background: #7a2300;}
+.btn-rechazado:disabled {background: #a0a0a0; cursor: not-allowed;}
+.btn-limpiar-cot {background: #556B2F; color: white; padding: 12px 30px; font-size: 14px; display: none;}
+.btn-limpiar-cot:hover {background: #3f4f20;}
 #modalAceptado {display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.4); z-index: 10001; overflow: auto;}
 .modal-aceptado-content {background: white; max-width: 600px; margin: 40px auto; padding: 25px; border-radius: 8px; position: relative; box-shadow: 0 8px 16px rgba(0,0,0,0.15);}
 .modal-aceptado-titulo {font-size: 22px; font-weight: 700; margin-bottom: 20px; text-transform: uppercase; color: #3B3B3B; border-bottom: 3px solid #4B732E; padding-bottom: 10px;}
 .btn-cerrar-aceptado {position: absolute; top: 15px; right: 20px; background: #9B2E00; color: white; font-size: 18px; border: none; border-radius: 6px; cursor: pointer; padding: 4px 10px; font-weight: 700;}
 .botones-archivo {display: flex; gap: 10px; align-items: center; margin-bottom: 15px;}
-.btn-adjuntar {background: #F25C05; color: white; padding: 10px 20px; font-size: 12px; box-shadow: 0 2px 4px rgba(242, 92, 5, 0.3);}
-.btn-adjuntar:hover {background: #cb4a04; box-shadow: 0 4px 8px rgba(242, 92, 5, 0.5);}
+.btn-adjuntar {background: #F25C05; color: white; padding: 10px 20px; font-size: 12px;}
+.btn-adjuntar:hover {background: #cb4a04;}
 #inputArchivo {display: none;}
 .archivo-info {font-size: 12px; color: #4B732E; font-weight: 600; text-transform: uppercase;}
 .seccion-adjuntos {margin-top: 15px; padding: 15px; background-color: #e9f6ec; border-radius: 6px; border-left: 5px solid #4B732E;}
@@ -176,16 +128,12 @@ button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; tex
 .btn-eliminar-archivo {background: #9B2E00; color: white; padding: 4px 8px; font-size: 10px;}
 .btn-eliminar-archivo:hover {background: #7a2300;}
 .botones-modal-aceptado {display: flex; gap: 10px; margin-top: 20px; justify-content: flex-end;}
-.btn-confirmar {background: #4B732E; color: white; padding: 10px 20px; font-size: 12px; box-shadow: 0 2px 4px rgba(75, 115, 46, 0.3);}
-.btn-confirmar:hover {background: #385525; box-shadow: 0 4px 8px rgba(75, 115, 46, 0.5);}
-
-/* RESUMEN DESPACHO */
+.btn-confirmar {background: #4B732E; color: white; padding: 10px 20px; font-size: 12px;}
+.btn-confirmar:hover {background: #385525;}
 .resumen-despacho {display: none; background-color: #e8f0e4; padding: 15px; border-radius: 5px; border-left: 5px solid #4B732E; margin-top: 20px;}
 .resumen-despacho.activo {display: block;}
 .resumen-despacho h4 {color: #3B3B3B; margin-bottom: 10px; text-transform: uppercase; font-weight: 700;}
 .resumen-despacho p {margin: 5px 0; font-size: 13px; color: #4B732E; text-transform: uppercase;}
-.resumen-despacho strong {color: #385525;}
-
 </style>
 </head>
 <body>
@@ -212,17 +160,17 @@ button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; tex
       <div id="resumenCliente" class="resumen-cliente"></div>
       <div id="formularioCliente" class="formulario-cliente">
         <div class="campo-grupo"><label>RUT *</label><input type="text" id="rut" disabled /></div>
-        <div class="campo-grupo"><label>RAZÓN SOCIAL *</label><input type="text" id="razonSocial" disabled /></div>
-        <div class="campo-grupo"><label>GIRO *</label><input type="text" id="giro" disabled /></div>
-        <div class="campo-grupo"><label>DIRECCIÓN DE FACTURACIÓN *</label><input type="text" id="direccion" disabled /></div>
+        <div class="campo-grupo"><label>RAZÓN SOCIAL *</label><input type="text" id="razonSocial" /></div>
+        <div class="campo-grupo"><label>GIRO *</label><input type="text" id="giro" /></div>
+        <div class="campo-grupo"><label>DIRECCIÓN DE FACTURACIÓN *</label><input type="text" id="direccion" /></div>
         <div class="fila-campos">
-          <div class="campo-grupo"><label>NOMBRE DE CONTACTO *</label><input type="text" id="nombreContacto" disabled /></div>
-          <div class="campo-grupo"><label>CELULAR *</label><input type="tel" id="celular" placeholder="+56912345678" disabled /></div>
+          <div class="campo-grupo"><label>NOMBRE DE CONTACTO *</label><input type="text" id="nombreContacto" /></div>
+          <div class="campo-grupo"><label>CELULAR *</label><input type="tel" id="celular" placeholder="+56912345678" /></div>
         </div>
-        <div class="campo-grupo"><label>MAIL *</label><input type="email" id="mail" disabled /></div>
-        <div class="campo-grupo"><label>MEDIO DE PAGO *</label><select id="medioPago" disabled><option value="">SELECCIONE MEDIO DE PAGO</option><option value="TRANSFERENCIA">TRANSFERENCIA</option><option value="WEBPAY">WEBPAY</option><option value="CHEQUE 30 DÍAS">CHEQUE 30 DÍAS</option><option value="OC 30 DÍAS">OC 30 DÍAS</option><option value="EFECTIVO">EFECTIVO</option></select></div>
+        <div class="campo-grupo"><label>MAIL *</label><input type="email" id="mail" /></div>
+        <div class="campo-grupo"><label>MEDIO DE PAGO *</label><select id="medioPago"><option value="">SELECCIONE MEDIO DE PAGO</option><option value="TRANSFERENCIA">TRANSFERENCIA</option><option value="WEBPAY">WEBPAY</option><option value="CHEQUE 30 DÍAS">CHEQUE 30 DÍAS</option><option value="OC 30 DÍAS">OC 30 DÍAS</option><option value="EFECTIVO">EFECTIVO</option></select></div>
         <div class="botones-formulario">
-          <button class="btn btn-buscar" onclick="guardarCliente()" id="btnGuardarCliente" style="display:none;"><span id="textoBotonGuardar">GUARDAR CLIENTE</span></button>
+          <button class="btn btn-buscar" onclick="guardarCliente()" id="btnGuardarCliente">GUARDAR CLIENTE</button>
           <button class="btn btn-cancelar" id="btnCancelarEdicion" onclick="cancelarEdicion()" style="display: none;">CANCELAR</button>
         </div>
       </div>
@@ -231,9 +179,9 @@ button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; tex
     <section class="seccion-productos">
       <h2 class="seccion-titulo">PRODUCTOS Y/O SERVICIOS</h2>
       <div class="busqueda-producto">
-        <input type="text" id="inputCodigoProducto" placeholder="INGRESE CÓDIGO O DESCRIPCIÓN DEL PRODUCTO" maxlength="50" disabled />
+        <input type="text" id="inputCodigoProducto" placeholder="INGRESE CÓDIGO O DESCRIPCIÓN DEL PRODUCTO" maxlength="50" />
         <div id="autocompleteLista" class="autocomplete-list"></div>
-        <button class="btn btn-buscar" onclick="buscarProducto()" id="btnBuscarProducto" disabled>BUSCAR</button>
+        <button class="btn btn-buscar" onclick="buscarProducto()" id="btnBuscarProducto">BUSCAR</button>
       </div>
       <div id="mensajeProducto"></div>
       <div id="formularioProducto" class="formulario-producto" style="display: none;">
@@ -249,7 +197,7 @@ button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; tex
         </div>
         <div class="fila-campos-producto">
           <div class="campo-grupo"><label>PROVEEDOR *</label><input type="text" id="proveedorProducto" /></div>
-          <div class="campo-grupo"><label>LINK *</label><input type="text" id="linkProducto" class="link-articulo" /></div>
+          <div class="campo-grupo"><label>LINK *</label><input type="text" id="linkProducto" /></div>
         </div>
         <div class="botones-producto">
           <button class="btn btn-agregar" onclick="guardarProducto()">GUARDAR PRODUCTO</button>
@@ -273,7 +221,7 @@ button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; tex
       <div class="botones-cierre">
         <button class="btn-aceptado" onclick="marcarAceptado()" id="btnAceptado">ACEPTADO</button>
         <button class="btn-rechazado" onclick="marcarRechazado()" id="btnRechazado">RECHAZADO</button>
-        <button class="btn-limpiar-cot" onclick="limpiarCotizacion()" id="btnLimpiarCotizacion" style="display:none;">LIMPIAR</button>
+        <button class="btn-limpiar-cot" onclick="limpiarCotizacion()" id="btnLimpiarCotizacion">LIMPIAR</button>
       </div>
     </section>
   </div>
@@ -458,6 +406,10 @@ document.addEventListener('click', function(e) {
 });
 
 function buscarCliente() {
+  if (cotizacionGuardada) {
+    alert('COTIZACIÓN YA GUARDADA. LIMPIE PARA COMENZAR UNA NUEVA.');
+    return;
+  }
   const rut = document.getElementById('inputRut').value.trim();
   if (!rut) return mostrarMensaje('POR FAVOR INGRESE UN RUT', 'error');
   if (!validarRut(rut)) return mostrarMensaje('EL FORMATO DEL RUT NO ES VÁLIDO', 'error');
@@ -470,24 +422,23 @@ function buscarCliente() {
     habilitarProductos();
   } else {
     mostrarMensaje('CLIENTE NO ENCONTRADO. COMPLETE LOS DATOS PARA CREAR.', 'info');
-    mostrarFormularioClienteNuevo(rut);
+    mostrarFormularioNuevo(rut);
   }
 }
 
-function mostrarFormularioClienteNuevo(rut) {
+function mostrarFormularioNuevo(rut) {
   document.getElementById('resumenCliente').classList.remove('activo');
   document.getElementById('formularioCliente').classList.add('activo');
   document.getElementById('rut').value = rut;
-  document.getElementById('rut').disabled = true;
-  document.getElementById('razonSocial').disabled = false;
-  document.getElementById('giro').disabled = false;
-  document.getElementById('direccion').disabled = false;
-  document.getElementById('nombreContacto').disabled = false;
-  document.getElementById('celular').disabled = false;
-  document.getElementById('mail').disabled = false;
-  document.getElementById('medioPago').disabled = false;
+  document.getElementById('razonSocial').value = '';
+  document.getElementById('giro').value = '';
+  document.getElementById('direccion').value = '';
+  document.getElementById('nombreContacto').value = '';
+  document.getElementById('celular').value = '';
+  document.getElementById('mail').value = '';
+  document.getElementById('medioPago').value = '';
   document.getElementById('btnGuardarCliente').style.display = 'inline-block';
-  document.getElementById('textoBotonGuardar').textContent = 'GUARDAR CLIENTE';
+  document.getElementById('btnCancelarEdicion').style.display = 'none';
 }
 
 function validarRut(rut) {return /^[0-9]{7,8}-[0-9kK]$/.test(rut);}
@@ -502,33 +453,24 @@ function mostrarMensaje(texto, tipo) {
 function mostrarResumenCliente(cliente) {
   const r = document.getElementById('resumenCliente');
   r.className = 'resumen-cliente activo';
-  r.innerHTML = `<h4>✓ CLIENTE REGISTRADO</h4><p><strong>RUT:</strong> ${cliente.rut}</p><p><strong>RAZÓN SOCIAL:</strong> ${cliente.razonSocial}</p><p><strong>GIRO:</strong> ${cliente.giro}</p><p><strong>DIRECCIÓN:</strong> ${cliente.direccion}</p><p><strong>CONTACTO:</strong> ${cliente.nombreContacto}</p><p><strong>CELULAR:</strong> ${cliente.celular}</p><p><strong>MAIL:</strong> ${cliente.mail}</p><p><strong>MEDIO DE PAGO:</strong> ${cliente.medioPago}</p><div class="botones-resumen"><button class="btn btn-editar" onclick="editarCliente()" ${cotizacionGuardada ? 'disabled' : ''}>✏️ EDITAR DATOS</button></div>`;
+  r.innerHTML = `<h4>✓ CLIENTE REGISTRADO</h4><p><strong>RUT:</strong> ${cliente.rut}</p><p><strong>RAZÓN SOCIAL:</strong> ${cliente.razonSocial}</p><p><strong>GIRO:</strong> ${cliente.giro}</p><p><strong>DIRECCIÓN:</strong> ${cliente.direccion}</p><p><strong>CONTACTO:</strong> ${cliente.nombreContacto}</p><p><strong>CELULAR:</strong> ${cliente.celular}</p><p><strong>MAIL:</strong> ${cliente.mail}</p><p><strong>MEDIO DE PAGO:</strong> ${cliente.medioPago}</p><div class="botones-resumen"><button class="btn btn-editar" onclick="editarCliente()" ${cotizacionGuardada ? 'disabled' : ''}>✏️ EDITAR</button></div>`;
 }
 
 function editarCliente() {
   if (cotizacionGuardada) return;
   if (!clienteActual) return;
   modoEdicion = true;
-  document.getElementById('rut').value = clienteActual.rut;
-  document.getElementById('rut').disabled = true;
-  document.getElementById('razonSocial').value = clienteActual.razonSocial;
-  document.getElementById('razonSocial').disabled = false;
-  document.getElementById('giro').value = clienteActual.giro;
-  document.getElementById('giro').disabled = false;
-  document.getElementById('direccion').value = clienteActual.direccion;
-  document.getElementById('direccion').disabled = false;
-  document.getElementById('nombreContacto').value = clienteActual.nombreContacto;
-  document.getElementById('nombreContacto').disabled = false;
-  document.getElementById('celular').value = clienteActual.celular;
-  document.getElementById('celular').disabled = false;
-  document.getElementById('mail').value = clienteActual.mail;
-  document.getElementById('mail').disabled = false;
-  document.getElementById('medioPago').value = clienteActual.medioPago || '';
-  document.getElementById('medioPago').disabled = false;
-  document.getElementById('resumenCliente').classList.remove('activo');
   document.getElementById('formularioCliente').classList.add('activo');
+  document.getElementById('resumenCliente').classList.remove('activo');
+  document.getElementById('rut').value = clienteActual.rut;
+  document.getElementById('razonSocial').value = clienteActual.razonSocial;
+  document.getElementById('giro').value = clienteActual.giro;
+  document.getElementById('direccion').value = clienteActual.direccion;
+  document.getElementById('nombreContacto').value = clienteActual.nombreContacto;
+  document.getElementById('celular').value = clienteActual.celular;
+  document.getElementById('mail').value = clienteActual.mail;
+  document.getElementById('medioPago').value = clienteActual.medioPago || '';
   document.getElementById('btnGuardarCliente').style.display = 'inline-block';
-  document.getElementById('textoBotonGuardar').textContent = 'GUARDAR CAMBIOS';
   document.getElementById('btnCancelarEdicion').style.display = 'inline-block';
   mostrarMensaje('MODO EDICIÓN. MODIFIQUE LOS CAMPOS.', 'info');
 }
@@ -537,13 +479,6 @@ function cancelarEdicion() {
   if (!clienteActual) return;
   modoEdicion = false;
   document.getElementById('formularioCliente').classList.remove('activo');
-  document.getElementById('razonSocial').disabled = true;
-  document.getElementById('giro').disabled = true;
-  document.getElementById('direccion').disabled = true;
-  document.getElementById('nombreContacto').disabled = true;
-  document.getElementById('celular').disabled = true;
-  document.getElementById('mail').disabled = true;
-  document.getElementById('medioPago').disabled = true;
   document.getElementById('btnGuardarCliente').style.display = 'none';
   document.getElementById('btnCancelarEdicion').style.display = 'none';
   mostrarMensaje('CLIENTE ENCONTRADO EN LA BASE DE DATOS', 'exito');
@@ -568,13 +503,6 @@ function guardarCliente() {
   clienteActual = cliente;
   modoEdicion = false;
   document.getElementById('formularioCliente').classList.remove('activo');
-  document.getElementById('razonSocial').disabled = true;
-  document.getElementById('giro').disabled = true;
-  document.getElementById('direccion').disabled = true;
-  document.getElementById('nombreContacto').disabled = true;
-  document.getElementById('celular').disabled = true;
-  document.getElementById('mail').disabled = true;
-  document.getElementById('medioPago').disabled = true;
   document.getElementById('btnGuardarCliente').style.display = 'none';
   document.getElementById('btnCancelarEdicion').style.display = 'none';
   mostrarResumenCliente(cliente);
@@ -599,6 +527,8 @@ function limpiarCotizacion() {
   document.getElementById('mensaje').style.display = 'none';
   document.getElementById('resumenCliente').classList.remove('activo');
   document.getElementById('formularioCliente').classList.remove('activo');
+  document.getElementById('btnGuardarCliente').style.display = 'none';
+  document.getElementById('btnCancelarEdicion').style.display = 'none';
   document.getElementById('rut').value = '';
   document.getElementById('razonSocial').value = '';
   document.getElementById('giro').value = '';
@@ -607,8 +537,6 @@ function limpiarCotizacion() {
   document.getElementById('celular').value = '';
   document.getElementById('mail').value = '';
   document.getElementById('medioPago').value = '';
-  document.getElementById('btnGuardarCliente').style.display = 'none';
-  document.getElementById('btnCancelarEdicion').style.display = 'none';
   
   clienteActual = null;
   modoEdicion = false;
@@ -623,6 +551,7 @@ function limpiarCotizacion() {
   document.getElementById('btnPDF').disabled = false;
   document.getElementById('btnCotizaciones').disabled = false;
   document.getElementById('btnBuscarCliente').disabled = false;
+  document.getElementById('btnLimpiarCliente').disabled = false;
   document.getElementById('btnLimpiarCotizacion').style.display = 'none';
   
   deshabilitarProductos();
@@ -727,7 +656,7 @@ function actualizarTablaProductos() {
     const inputQuantityDisabled = cotizacionGuardada ? 'disabled' : '';
     const inputDescuentoDisabled = cotizacionGuardada ? 'disabled' : '';
     const btnEliminarDisplay = cotizacionGuardada ? 'none' : 'block';
-    html += `<tr><td>${p.codigo}</td><td>${p.descripcion}</td><td><input type="number" min="1" value="${p.cantidad}" onchange="actualizarCantidad(${i}, this.value)" ${inputQuantityDisabled}></td><td class="valor-numerico">$${parseFloat(p.valorNeto).toLocaleString('es-CL', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td><td><input type="number" min="0" max="100" step="0.01" value="${p.descuento}" style="width:100%;padding:5px;" onchange="actualizarDescuento(${i}, this.value)" ${inputDescuentoDisabled}></td><td class="valor-numerico">$${parseFloat(p.valorNetaConDescuento).toLocaleString('es-CL', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td><td class="valor-numerico">$${parseFloat(p.total).toLocaleString('es-CL', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td><td class="celda-acciones"><button class="btn-eliminar" onclick="eliminarProducto(${i})" style="display:${btnEliminarDisplay}">ELIMINAR</button></td></tr>`;
+    html += `<tr><td>${p.codigo}</td><td>${p.descripcion}</td><td><input type="number" min="1" value="${p.cantidad}" onchange="actualizarCantidad(${i}, this.value)" ${inputQuantityDisabled} style="width:100%;"></td><td class="valor-numerico">$${parseFloat(p.valorNeto).toLocaleString('es-CL', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td><td><input type="number" min="0" max="100" step="0.01" value="${p.descuento}" style="width:100%;padding:5px;" onchange="actualizarDescuento(${i}, this.value)" ${inputDescuentoDisabled}></td><td class="valor-numerico">$${parseFloat(p.valorNetaConDescuento).toLocaleString('es-CL', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td><td class="valor-numerico">$${parseFloat(p.total).toLocaleString('es-CL', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td><td><button class="btn-eliminar" onclick="eliminarProducto(${i})" style="display:${btnEliminarDisplay}">ELIMINAR</button></td></tr>`;
   });
   html += '</tbody></table>';
   cont.innerHTML = html;
@@ -767,22 +696,19 @@ function actualizarResumenTotales() {
   document.getElementById('resumenTotales').style.display = 'block';
   
   let htmlUtilidad = '<div class="resumen-utilidad"><h4>📊 UTILIDAD (INTERNO)</h4>';
-  let utilidadTotal = 0;
-  let ventaTotal = 0;
-  let costoTotal = 0;
+  let utilidadTotal = 0, ventaTotal = 0, costoTotal = 0;
   productosEnCotizacion.forEach(p => {
     const costoProducto = parseFloat(p.costo) * p.cantidad;
-    const utilidad = (parseFloat(p.total) - costoProducto);
+    const utilidad = parseFloat(p.total) - costoProducto;
     const venta = parseFloat(p.total);
     const porcentajeUtilidad = venta > 0 ? ((utilidad / venta) * 100).toFixed(2) : 0;
     utilidadTotal += utilidad;
     ventaTotal += venta;
     costoTotal += costoProducto;
-    htmlUtilidad += `<div class="utilidad-item"><strong>${p.codigo}:</strong><div class="utilidad-item-valor"><span>$${Math.round(utilidad).toLocaleString('es-CL')}</span><span class="utilidad-porcentaje">${porcentajeUtilidad}%</span><span class="utilidad-costo">Costo: $${Math.round(costoProducto).toLocaleString('es-CL')}</span></div></div>`;
+    htmlUtilidad += `<div class="utilidad-item"><strong>${p.codigo}:</strong> <span>$${Math.round(utilidad).toLocaleString('es-CL')}</span><span class="utilidad-porcentaje">${porcentajeUtilidad}%</span><span class="utilidad-costo">Costo: $${Math.round(costoProducto).toLocaleString('es-CL')}</span></div>`;
   });
   const porcentajeUtilidadTotal = ventaTotal > 0 ? ((utilidadTotal / ventaTotal) * 100).toFixed(2) : 0;
-  htmlUtilidad += `<div class="utilidad-item-total"><strong>UTILIDAD TOTAL:</strong><div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;"><span>$${Math.round(utilidadTotal).toLocaleString('es-CL')}</span><span class="utilidad-porcentaje">${porcentajeUtilidadTotal}%</span><span class="utilidad-costo">Costo Total: $${Math.round(costoTotal).toLocaleString('es-CL')}</span></div></div>`;
-  htmlUtilidad += '</div>';
+  htmlUtilidad += `<div class="utilidad-item" style="border-top: 1px solid #999; padding-top: 10px; margin-top: 10px;"><strong>UTILIDAD TOTAL:</strong> <span>$${Math.round(utilidadTotal).toLocaleString('es-CL')}</span><span class="utilidad-porcentaje">${porcentajeUtilidadTotal}%</span><span class="utilidad-costo">Costo Total: $${Math.round(costoTotal).toLocaleString('es-CL')}</span></div></div>`;
   document.getElementById('utilidadResumen').innerHTML = htmlUtilidad;
   document.getElementById('utilidadResumen').style.display = 'block';
 }
@@ -790,7 +716,6 @@ function actualizarResumenTotales() {
 function abrirArticulos() {
   document.getElementById('modalArticulos').style.display = 'block';
   listarArticulos();
-  document.getElementById('formularioEditarArticulo').style.display = 'none';
 }
 
 function cerrarArticulos() {
@@ -807,7 +732,7 @@ function listarArticulos() {
     claves.forEach(codigo => {
       const art = todos[codigo];
       const util = (parseFloat(art.valorNeto) - parseFloat(art.costo)).toFixed(2);
-      html += `<tr><td>${art.codigo}</td><td>${art.descripcion}</td><td class="valor-numerico">$${parseFloat(art.costo).toLocaleString('es-CL', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td><td class="valor-numerico">${parseFloat(art.porcentaje).toLocaleString('es-CL', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td><td class="valor-numerico">$${parseFloat(art.valorNeto).toLocaleString('es-CL', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td><td class="valor-numerico">$${parseFloat(util).toLocaleString('es-CL', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td><td>${art.proveedor}</td><td style="text-transform:lowercase;">${art.link}</td><td><button class="btn btn-editar" onclick="editarArticulo('${art.codigo}')">EDITAR</button><button class="btn btn-eliminar" onclick="eliminarArticulo('${art.codigo}')">ELIMINAR</button></td></tr>`;
+      html += `<tr><td>${art.codigo}</td><td>${art.descripcion}</td><td class="valor-numerico">$${parseFloat(art.costo).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td class="valor-numerico">${parseFloat(art.porcentaje).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td class="valor-numerico">$${parseFloat(art.valorNeto).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td class="valor-numerico">$${parseFloat(util).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td>${art.proveedor}</td><td style="text-transform:lowercase;">${art.link}</td><td><button class="btn btn-editar" onclick="editarArticulo('${art.codigo}')">EDITAR</button><button class="btn btn-eliminar" onclick="eliminarArticulo('${art.codigo}')">ELIMINAR</button></td></tr>`;
     });
   }
   html += '</tbody></table>';
@@ -823,7 +748,6 @@ function editarArticulo(codigo) {
   f.innerHTML = `<h4>EDITAR ARTÍCULO</h4><div class="fila-campos-producto"><div class="campo-grupo"><label>CÓDIGO</label><input type="text" value="${art.codigo}" disabled></div><div class="campo-grupo"><label>DESCRIPCIÓN</label><input type="text" id="editarDescripcion" value="${art.descripcion}"></div></div><div class="fila-campos-producto-tres"><div class="campo-grupo"><label>COSTO</label><input type="number" id="editarCosto" value="${art.costo}"></div><div class="campo-grupo"><label>PORCENTAJE (%)</label><input type="number" id="editarPorcentaje" value="${art.porcentaje}"></div><div class="campo-grupo"><label>VALOR NETO</label><input type="number" id="editarValorNeto" value="${art.valorNeto}" disabled></div></div><div class="fila-campos-producto"><div class="campo-grupo"><label>PROVEEDOR</label><input type="text" id="editarProveedor" value="${art.proveedor}"></div><div class="campo-grupo"><label>LINK</label><input type="text" id="editarLink" value="${art.link}"></div></div><div class="botones-producto"><button class="btn btn-agregar" onclick="guardarEdicionArticulo()">GUARDAR</button><button class="btn btn-cancelar" onclick="cancelarEdicionArticulo()">CANCELAR</button></div>`;
   document.getElementById('editarCosto').addEventListener('change', calcularValorNetoEdicion);
   document.getElementById('editarPorcentaje').addEventListener('change', calcularValorNetoEdicion);
-  document.getElementById('editarLink').addEventListener('input', e => {e.target.value = e.target.value.toLowerCase();});
 }
 
 function calcularValorNetoEdicion() {
@@ -872,7 +796,7 @@ function generarPDF() {
   cotizacionesEmitidas.push(cotizacion);
   localStorage.setItem('cotizacionesEmitidas', JSON.stringify(cotizacionesEmitidas));
   generarPDFDocumento(cotizacion);
-  alert('PDF GENERADO Y COTIZACIÓN ACTUALIZADA');
+  alert('PDF GENERADO');
 }
 
 function generarPDFDocumento(cotizacion) {
@@ -881,7 +805,6 @@ function generarPDFDocumento(cotizacion) {
   const net = parseFloat(cotizacion.neto);
   const iva = +(net * 0.19).toFixed(2);
   const tot = +(net + iva).toFixed(2);
-
   const fechaEmision = new Date(cotizacion.fecha);
   const fechaFormateada = `${fechaEmision.getDate().toString().padStart(2, '0')}/${(fechaEmision.getMonth() + 1).toString().padStart(2, '0')}/${fechaEmision.getFullYear()}`;
 
@@ -931,7 +854,6 @@ function generarPDFDocumento(cotizacion) {
   doc.setDrawColor(242, 92, 5);
   doc.setLineWidth(0.5);
   doc.line(15, yPos + 2, 195, yPos + 2);
-
   yPos += 8;
   doc.setFont(undefined, 'bold');
   doc.setFontSize(9);
@@ -940,23 +862,11 @@ function generarPDFDocumento(cotizacion) {
   doc.autoTable({
     startY: yPos,
     head: [['Código', 'Descripción', 'Cant.', 'Valor Neto', 'Total']],
-    body: cotizacion.productos.map(p => [
-      p.codigo,
-      p.descripcion,
-      p.cantidad.toString(),
-      `$${Math.round(parseFloat(p.valorNetaConDescuento)).toLocaleString('es-CL')}`,
-      `$${Math.round(parseFloat(p.total)).toLocaleString('es-CL')}`
-    ]),
+    body: cotizacion.productos.map(p => [p.codigo, p.descripcion, p.cantidad.toString(), `$${Math.round(parseFloat(p.valorNetaConDescuento)).toLocaleString('es-CL')}`, `$${Math.round(parseFloat(p.total)).toLocaleString('es-CL')}`]),
     theme: 'striped',
     styles: {fontSize: 8, cellPadding: 3},
     headStyles: {fillColor: [31, 111, 139], textColor: 255, fontStyle: 'bold'},
-    columnStyles: {
-      0: {cellWidth: 20},
-      1: {cellWidth: 90},
-      2: {cellWidth: 15, halign: 'center'},
-      3: {cellWidth: 30, halign: 'right'},
-      4: {cellWidth: 30, halign: 'right'}
-    },
+    columnStyles: {0: {cellWidth: 20}, 1: {cellWidth: 90}, 2: {cellWidth: 15, halign: 'center'}, 3: {cellWidth: 30, halign: 'right'}, 4: {cellWidth: 30, halign: 'right'}},
     margin: {left: 15, right: 15}
   });
 
@@ -970,7 +880,6 @@ function generarPDFDocumento(cotizacion) {
   doc.text("IVA (19%):", resumenX, resumenY + 7);
   doc.text(`$${Math.round(iva).toLocaleString('es-CL')}`, 185, resumenY + 7, {align: 'right'});
   doc.setFont(undefined, 'bold');
-  doc.setTextColor(0, 0, 0);
   doc.text("TOTAL:", resumenX, resumenY + 14);
   doc.text(`$${Math.round(tot).toLocaleString('es-CL')}`, 185, resumenY + 14, {align: 'right'});
 
@@ -982,10 +891,8 @@ function generarPDFDocumento(cotizacion) {
   doc.setFontSize(7);
   doc.setFont(undefined, 'normal');
   doc.setTextColor(100, 100, 100);
-  let empresaY = 268;
-  doc.text('RUT: 78000256-0 | Razón social: Empresa Servicios SPA | Dirección: Los Pepinos 287, Las Condes.', 15, empresaY);
-  doc.text('Mail: contacto@servicios.cl | Teléfono: 56 22 5510365', 15, empresaY + 4);
-
+  doc.text('RUT: 78000256-0 | Razón social: Empresa Servicios SPA | Dirección: Los Pepinos 287, Las Condes.', 15, 268);
+  doc.text('Mail: contacto@servicios.cl | Teléfono: 56 22 5510365', 15, 272);
   doc.setTextColor(150, 150, 150);
   doc.setFontSize(8);
   doc.setFont(undefined, 'italic');
@@ -1012,21 +919,17 @@ function mostrarCotizaciones() {
 
 function verCotizacion(index) {
   if (index < 0 || index >= cotizacionesEmitidas.length) { alert('ERROR: COTIZACIÓN NO ENCONTRADA'); return; }
-  const cotizacion = cotizacionesEmitidas[index];
-  if (!cotizacion) { alert('ERROR: COTIZACIÓN VACÍA'); return; }
-  generarPDFDocumento(cotizacion);
+  generarPDFDocumento(cotizacionesEmitidas[index]);
 }
 
 function editarCotizacionGuardada(index) {
   if (index < 0 || index >= cotizacionesEmitidas.length) { alert('ERROR: COTIZACIÓN NO ENCONTRADA'); return; }
   const cotizacion = cotizacionesEmitidas[index];
-  if (!cotizacion) { alert('ERROR: COTIZACIÓN VACÍA'); return; }
   clienteActual = JSON.parse(JSON.stringify(cotizacion.cliente));
   productosEnCotizacion = JSON.parse(JSON.stringify(cotizacion.productos));
   datosDespacho = cotizacion.despacho;
   cotizacionActualIndex = index;
   mostrarResumenCliente(clienteActual);
-  document.getElementById('formularioCliente').classList.remove('activo');
   actualizarTablaProductos();
   if (datosDespacho) {
     mostrarResumenDespacho();
@@ -1049,14 +952,8 @@ function cerrarCotizaciones() {
 }
 
 function marcarAceptado() {
-  if (!clienteActual) {
-    alert('DEBE SELECCIONAR UN CLIENTE PRIMERO');
-    return;
-  }
-  if (productosEnCotizacion.length === 0) {
-    alert('DEBE AGREGAR PRODUCTOS A LA COTIZACIÓN');
-    return;
-  }
+  if (!clienteActual) { alert('DEBE SELECCIONAR UN CLIENTE PRIMERO'); return; }
+  if (productosEnCotizacion.length === 0) { alert('DEBE AGREGAR PRODUCTOS A LA COTIZACIÓN'); return; }
   archivosAdjuntos = [];
   document.getElementById('tipoEntrega').value = '';
   document.getElementById('direccionDespacho').value = '';
@@ -1080,14 +977,7 @@ function abrirSelectorArchivos() {
 function agregarArchivo(event) {
   const file = event.target.files[0];
   if (!file) return;
-  
-  const nuevoArchivo = {
-    nombre: file.name,
-    tamaño: (file.size / 1024).toFixed(2),
-    tipo: file.type,
-    archivo: file
-  };
-  
+  const nuevoArchivo = { nombre: file.name, tamaño: (file.size / 1024).toFixed(2), tipo: file.type, archivo: file };
   archivosAdjuntos.push(nuevoArchivo);
   actualizarListaAdjuntos();
   document.getElementById('inputArchivo').value = '';
@@ -1097,15 +987,12 @@ function agregarArchivo(event) {
 function actualizarListaAdjuntos() {
   const container = document.getElementById('adjuntosContainer');
   const lista = document.getElementById('listaAdjuntos');
-  
   if (archivosAdjuntos.length === 0) {
     container.style.display = 'none';
     return;
   }
-  
   container.style.display = 'block';
   lista.innerHTML = '';
-  
   archivosAdjuntos.forEach((archivo, index) => {
     const li = document.createElement('li');
     li.className = 'item-adjunto';
@@ -1126,25 +1013,10 @@ function confirmarAceptacion() {
   const contacto = document.getElementById('contactoDespacho').value.trim();
   const celular = document.getElementById('celularDespacho').value.trim();
   
-  if (!tipoEntrega) {
-    alert('DEBE SELECCIONAR UN TIPO DE ENTREGA');
-    return;
-  }
-  
-  if (!direccion) {
-    alert('DEBE INGRESAR DIRECCIÓN O INSTRUCCIONES DE DESPACHO');
-    return;
-  }
-
-  if (!contacto) {
-    alert('DEBE INGRESAR CONTACTO DE DESPACHO');
-    return;
-  }
-
-  if (!celular) {
-    alert('DEBE INGRESAR CELULAR DE CONTACTO');
-    return;
-  }
+  if (!tipoEntrega) { alert('DEBE SELECCIONAR UN TIPO DE ENTREGA'); return; }
+  if (!direccion) { alert('DEBE INGRESAR DIRECCIÓN O INSTRUCCIONES DE DESPACHO'); return; }
+  if (!contacto) { alert('DEBE INGRESAR CONTACTO DE DESPACHO'); return; }
+  if (!celular) { alert('DEBE INGRESAR CELULAR DE CONTACTO'); return; }
   
   datosDespacho = {
     tipoEntrega: tipoEntrega,
@@ -1173,14 +1045,7 @@ function mostrarResumenDespacho() {
   if (!datosDespacho) return;
   const resumen = document.getElementById('resumenDespacho');
   resumen.className = 'resumen-despacho activo';
-  resumen.innerHTML = `
-    <h4>✓ COTIZACIÓN ACEPTADA</h4>
-    <p><strong>TIPO ENTREGA:</strong> ${datosDespacho.tipoEntrega}</p>
-    <p><strong>DIRECCIÓN/INSTRUCCIONES:</strong> ${datosDespacho.direccion}</p>
-    <p><strong>CONTACTO DESPACHO:</strong> ${datosDespacho.contacto}</p>
-    <p><strong>CELULAR CONTACTO:</strong> ${datosDespacho.celular}</p>
-    <p><strong>ARCHIVOS ADJUNTOS:</strong> ${datosDespacho.archivos}</p>
-  `;
+  resumen.innerHTML = `<h4>✓ COTIZACIÓN ACEPTADA</h4><p><strong>TIPO ENTREGA:</strong> ${datosDespacho.tipoEntrega}</p><p><strong>DIRECCIÓN/INSTRUCCIONES:</strong> ${datosDespacho.direccion}</p><p><strong>CONTACTO DESPACHO:</strong> ${datosDespacho.contacto}</p><p><strong>CELULAR CONTACTO:</strong> ${datosDespacho.celular}</p><p><strong>ARCHIVOS ADJUNTOS:</strong> ${datosDespacho.archivos}</p>`;
 }
 
 function bloquearEdicion() {
@@ -1193,14 +1058,11 @@ function bloquearEdicion() {
   document.getElementById('btnPDF').disabled = true;
   document.getElementById('btnCotizaciones').disabled = true;
   document.getElementById('inputCodigoProducto').disabled = true;
-  deshabilitarProductos();
+  actualizarTablaProductos();
 }
 
 function marcarRechazado() {
-  if (!clienteActual) {
-    alert('DEBE SELECCIONAR UN CLIENTE PRIMERO');
-    return;
-  }
+  if (!clienteActual) { alert('DEBE SELECCIONAR UN CLIENTE PRIMERO'); return; }
   
   if (cotizacionActualIndex !== null) {
     cotizacionesEmitidas[cotizacionActualIndex].estado = 'rechazado';
@@ -1212,7 +1074,6 @@ function marcarRechazado() {
   document.getElementById('btnLimpiarCotizacion').style.display = 'inline-block';
   alert('COTIZACIÓN RECHAZADA Y GUARDADA');
 }
-
 </script>
 </body>
 </html>
