@@ -166,17 +166,14 @@ button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; tex
 .badge-aceptado {background: #4B732E; color: white;}
 .badge-rechazado {background: #9B2E00; color: white;}
 .badge-pendiente {background: #F25C05; color: white;}
-#modalPDF {display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 10004; overflow: hidden; flex-direction: column;}
-.modal-pdf-content {background: white; width: 100%; height: 100%; display: flex; flex-direction: column;}
-.pdf-header {background: #1F6F8B; color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.2);}
+#modalPDF {display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 10004; overflow: hidden; justify-content: center; align-items: center; flex-direction: column;}
+.modal-pdf-content {background: white; width: 95%; height: 95%; display: flex; flex-direction: column; border-radius: 8px; box-shadow: 0 8px 30px rgba(0,0,0,0.3);}
+.pdf-header {background: #1F6F8B; color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.2); border-radius: 8px 8px 0 0;}
 .pdf-header h3 {margin: 0; font-size: 18px; font-weight: 700;}
-.pdf-botones {display: flex; gap: 10px;}
-.btn-descargar-pdf {background: #F25C05; color: white; font-size: 13px; border: none; border-radius: 4px; cursor: pointer; padding: 8px 15px; font-weight: 700;}
-.btn-descargar-pdf:hover {background: #cb4a04;}
 .btn-cerrar-pdf {background: #9B2E00; color: white; font-size: 13px; border: none; border-radius: 4px; cursor: pointer; padding: 8px 15px; font-weight: 700;}
 .btn-cerrar-pdf:hover {background: #7a2300;}
-.pdf-container {flex: 1; overflow-y: auto; display: flex; justify-content: center; align-items: flex-start; padding: 20px; background: #ececec;}
-#pdfContent {background: white; padding: 20px; box-shadow: 0 0 10px rgba(0,0,0,0.3);}
+.pdf-container {flex: 1; overflow-y: auto; display: flex; justify-content: center; align-items: center; padding: 20px; background: #ececec;}
+.pdf-document {width: 100%; max-width: 850px; background: white; box-shadow: 0 0 15px rgba(0,0,0,0.2);}
 </style>
 </head>
 <body>
@@ -376,21 +373,17 @@ button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; tex
   <div id="modalPDF">
     <div class="modal-pdf-content">
       <div class="pdf-header">
-        <h3>VISUALIZACIÓN Y DESCARGA DE COTIZACIÓN</h3>
-        <div class="pdf-botones">
-          <button class="btn-descargar-pdf" onclick="descargarPDFActual()">📥 DESCARGAR PDF</button>
-          <button class="btn-cerrar-pdf" onclick="cerrarModalPDF()">✕ CERRAR</button>
-        </div>
+        <h3>COTIZACIÓN - PRESUPUESTO</h3>
+        <button class="btn-cerrar-pdf" onclick="cerrarModalPDF()">✕ CERRAR</button>
       </div>
       <div class="pdf-container">
-        <div id="pdfContent"></div>
+        <div id="pdfContent" class="pdf-document"></div>
       </div>
     </div>
   </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 <script>
 class GestorCotizaciones {
@@ -1013,23 +1006,13 @@ function generarPDFDocumento(cotizacion) {
   doc.text('Gracias por su preferencia', 105, 283, {align: 'center'});
   
   pdfActualDoc = doc;
-  mostrarPDFEnMismaVentana(doc);
+  mostrarPDFEnMismaVentana();
 }
 
-function mostrarPDFEnMismaVentana(doc) {
-  const pdfHTML = `
-    <div style="background:white;padding:20px;border-radius:4px;width:100%;max-width:900px;box-shadow:0 0 10px rgba(0,0,0,0.2);">
-      <embed src="${doc.output('datauristring')}" type="application/pdf" style="width:100%;height:800px;border:none;" />
-    </div>
-  `;
-  document.getElementById('pdfContent').innerHTML = pdfHTML;
+function mostrarPDFEnMismaVentana() {
+  const pdfDataUri = pdfActualDoc.output('datauristring');
+  document.getElementById('pdfContent').innerHTML = `<iframe src="${pdfDataUri}" style="width:100%;height:100%;border:none;"></iframe>`;
   document.getElementById('modalPDF').style.display = 'flex';
-}
-
-function descargarPDFActual() {
-  if (!pdfActualDoc) {alert('NO HAY PDF PARA DESCARGAR'); return;}
-  const nombreArchivo = `Cotizacion_${numeroCotizacionActual}.pdf`;
-  pdfActualDoc.save(nombreArchivo);
 }
 
 function cerrarModalPDF() {
