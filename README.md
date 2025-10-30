@@ -142,7 +142,8 @@ button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; tex
 .modal-archivos-content {background: white; max-width: 600px; margin: 40px auto; padding: 25px; border-radius: 8px; position: relative; box-shadow: 0 8px 16px rgba(0,0,0,0.15);}
 .modal-archivos-titulo {font-size: 22px; font-weight: 700; margin-bottom: 20px; text-transform: uppercase; color: #3B3B3B; border-bottom: 3px solid #4B732E; padding-bottom: 10px;}
 .btn-cerrar-archivos {position: absolute; top: 15px; right: 20px; background: #9B2E00; color: white; font-size: 18px; border: none; border-radius: 6px; cursor: pointer; padding: 4px 10px; font-weight: 700;}
-.resumen-compra {background-color: #e3f2fd; padding: 15px; border-radius: 6px; border-left: 5px solid #1976d2; margin-bottom: 20px;}
+.resumen-compra {display: none; background-color: #e3f2fd; padding: 15px; border-radius: 6px; border-left: 5px solid #1976d2; margin-top: 20px;}
+.resumen-compra.activo {display: block;}
 .resumen-compra h4 {color: #1976d2; margin-bottom: 12px; text-transform: uppercase; font-weight: 700; font-size: 14px;}
 .tabla-compra {width: 100%; border-collapse: collapse; font-size: 12px; background: white;}
 .tabla-compra th {background: #1976d2; color: white; padding: 8px; text-transform: uppercase; font-weight: 700; text-align: left;}
@@ -233,6 +234,7 @@ button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; tex
     <section class="seccion-cierre">
       <h2 class="seccion-titulo">DATOS DE CIERRE</h2>
       <div id="resumenDespacho" class="resumen-despacho"></div>
+      <div id="resumenCompra" class="resumen-compra"></div>
       <div class="botones-cierre">
         <button class="btn-aceptado" onclick="marcarAceptado()" id="btnAceptado">ACEPTADO</button>
         <button class="btn-rechazado" onclick="marcarRechazado()" id="btnRechazado">RECHAZADO</button>
@@ -263,8 +265,6 @@ button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; tex
     <div class="modal-aceptado-content">
       <button class="btn-cerrar-aceptado" onclick="cerrarModalAceptado()">×</button>
       <h2 class="modal-aceptado-titulo">ACEPTACIÓN DE COTIZACIÓN</h2>
-      
-      <div class="resumen-compra" id="resumenCompraModal"></div>
       
       <div class="campo-grupo">
         <label>TIPO DE ENTREGA *</label>
@@ -572,6 +572,7 @@ function limpiarCotizacion() {
   cotizacionActualIndex = null;
   archivosAdjuntos = [];
   document.getElementById('resumenDespacho').classList.remove('activo');
+  document.getElementById('resumenCompra').classList.remove('activo');
   document.getElementById('btnAceptado').disabled = false;
   document.getElementById('btnRechazado').disabled = false;
   document.getElementById('btnArticulos').disabled = false;
@@ -968,6 +969,7 @@ function editarCotizacionGuardada(index) {
   
   if (datosDespacho) {
     mostrarResumenDespacho();
+    mostrarResumenCompra();
     document.getElementById('btnVerArchivos').style.display = 'inline-block';
   }
   
@@ -990,13 +992,14 @@ function cerrarCotizaciones() {
   document.getElementById('modalCotizaciones').style.display = 'none';
 }
 
-function generarResumenCompra() {
+function mostrarResumenCompra() {
   let html = '<h4>📋 RESUMEN DE COMPRA</h4><table class="tabla-compra"><thead><tr><th>CÓDIGO</th><th>DESCRIPCIÓN</th><th>CANTIDAD</th><th>COSTO UNITARIO</th><th>PROVEEDOR</th></tr></thead><tbody>';
   productosEnCotizacion.forEach(p => {
     html += `<tr><td>${p.codigo}</td><td>${p.descripcion}</td><td class="valor-numerico">${p.cantidad}</td><td class="valor-numerico">$${parseFloat(p.costo).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td>${p.proveedor}</td></tr>`;
   });
   html += '</tbody></table>';
-  document.getElementById('resumenCompraModal').innerHTML = html;
+  document.getElementById('resumenCompra').innerHTML = html;
+  document.getElementById('resumenCompra').classList.add('activo');
 }
 
 function marcarAceptado() {
@@ -1010,7 +1013,6 @@ function marcarAceptado() {
   document.getElementById('infoArchivo').textContent = '';
   document.getElementById('adjuntosContainer').style.display = 'none';
   document.getElementById('listaAdjuntos').innerHTML = '';
-  generarResumenCompra();
   document.getElementById('modalAceptado').style.display = 'block';
 }
 
@@ -1082,6 +1084,7 @@ function confirmarAceptacion() {
 
   cotizacionGuardada = true;
   mostrarResumenDespacho();
+  mostrarResumenCompra();
   cerrarModalAceptado();
   bloquearEdicion();
   
@@ -1138,15 +1141,7 @@ function verArchivos() {
   const lista = document.getElementById('listaArchivosModal');
   let html = '<div class="seccion-adjuntos" style="display:block;"><ul class="lista-adjuntos">';
   datosDespacho.archivos.forEach((archivo, index) => {
-    const isImage = archivo.tipo.startsWith('image/');
-    const isPDF = archivo.tipo === 'application/pdf';
-    const isText = archivo.tipo.startsWith('text/');
-    
-    if (isImage || isPDF || isText) {
-      html += `<li class="item-adjunto"><span class="nombre-archivo">${archivo.nombre} (${archivo.tamaño} KB)</span><button class="btn-descargar" onclick="descargarArchivo(${index})">DESCARGAR</button></li>`;
-    } else {
-      html += `<li class="item-adjunto"><span class="nombre-archivo">${archivo.nombre} (${archivo.tamaño} KB)</span><button class="btn-descargar" onclick="descargarArchivo(${index})">DESCARGAR</button></li>`;
-    }
+    html += `<li class="item-adjunto"><span class="nombre-archivo">${archivo.nombre} (${archivo.tamaño} KB)</span><button class="btn-descargar" onclick="descargarArchivo(${index})">DESCARGAR</button></li>`;
   });
   html += '</ul></div>';
   lista.innerHTML = html;
