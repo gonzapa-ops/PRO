@@ -303,15 +303,11 @@ button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; tex
       <div class="fila-campos">
         <div class="campo-grupo">
           <label>REGIÓN *</label>
-          <select id="regionSelect" onchange="cargarComunas()">
-            <option value="">SELECCIONE REGIÓN</option>
-          </select>
+          <input type="text" id="regionInput" placeholder="INGRESE REGIÓN" />
         </div>
         <div class="campo-grupo">
           <label>COMUNA *</label>
-          <select id="comunaSelect">
-            <option value="">SELECCIONE COMUNA</option>
-          </select>
+          <input type="text" id="comunaInput" placeholder="INGRESE COMUNA" />
         </div>
       </div>
 
@@ -370,23 +366,6 @@ button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; tex
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
 
 <script>
-const REGIONES_COMUNAS = {
-  "ARICA Y PARINACOTA": ["ARICA", "CAMARONES", "PUTRE", "GENERAL LAGOS"],
-  "TARAPACÁ": ["IQUIQUE", "ALTO HOSPICIO", "CAMIÑA", "COLCHANE", "HUARA", "PICA", "POZO ALMONTE"],
-  "ANTOFAGASTA": ["ANTOFAGASTA", "MEJILLONES", "SIERRA GORDA", "TALTAL", "CALAMA", "OLLAGÜE", "SAN PEDRO DE ATACAMA", "COPIAPÓ", "CALDERA", "TIERRA AMARILLA", "CHAÑARAL", "DIEGO DE ALMAGRO"],
-  "COQUIMBO": ["LA SERENA", "COQUIMBO", "LA HIGUERA", "PAIGUANO", "ANDACOLLO", "OVALLE", "MONTE PATRIA", "PUNITAQUI", "RÍO HURTADO", "ILLAPEL", "CANELA", "LOS VILOS", "SALAMANCA"],
-  "VALPARAÍSO": ["VALPARAÍSO", "CASABLANCA", "CONCÓN", "JUAN FERNÁNDEZ", "PUCHUNCAVÍ", "QUINTERO", "VIÑA DEL MAR", "LIMACHE", "NOGALES", "OLIVA", "QUILLOTA", "CALERA", "HIJUELAS", "LA CALERA", "PETORCA", "CABILDO", "PAPUDO", "ZAPALLAR", "ISLA DE PASCUA", "SAN ANTONIO", "ALGARROBO", "CARTAGENA", "EL QUISCO", "EL TABO", "QUILPUÉ", "VILLA ALEMANA"],
-  "REGIÓN METROPOLITANA DE SANTIAGO": ["SANTIAGO", "CERRILLOS", "CERRO NAVIA", "CONCHALÍ", "EL BOSQUE", "ESTACIÓN CENTRAL", "HUECHURABA", "INDEPENDENCIA", "LA CISTERNA", "LA FLORIDA", "LA GRANJA", "LA PINTANA", "LA REINA", "LAS CONDES", "MACUL", "MAIPÚ", "ÑUÑOA", "PEDRO AGUIRRE CERDA", "PEÑALOLÉN", "PROVIDENCIA", "PUDAHUEL", "PUENTE ALTO", "QUINTA NORMAL", "RECOLETA", "RENCA", "SAN BERNARDO", "SAN JOAQUÍN", "SAN MIGUEL", "SAN RAMÓN", "VITACURA", "BUIN", "CALERA DE TANGO", "PAINE", "TALAGANTE", "MELIPILLA", "ALHUÉ", "CURACAVÍ", "MARÍA PINTO", "NANCAGUA", "PIRQUE", "SAN JOSÉ DE MAIPO", "COLINA", "LAMPA", "TILTIL"],
-  "LIBERTADOR GENERAL BERNARDO O'HIGGINS": ["RANCAGUA", "CODEGUA", "COLFAX", "DOÑIHUE", "GRANEROS", "LAS CABRAS", "MACHALÍ", "MALLOA", "OLIVAR", "PEUMO", "REQUÍNOA", "SAN FRANCISCO DE MOSTAZAL", "SAN VICENTE", "SANTA CRUZ", "PICHILEMU", "LA ESTRELLA", "LITUECHE", "MARCHIHUE", "NAVIDAD", "CURICÓ", "HUALAÑÉ", "LICANTÉN", "MOLINA", "RAUCO", "ROMERAL", "SAGRADA FAMILIA", "TALIUCA"],
-  "REGIÓN DEL MAULE": ["TALCA", "CONSTITUCIÓN", "EMPEDRADO", "MAULE", "PENCAHUE", "PELARCO", "PELLUHUE", "RÍO CLARO", "SAN CLEMENTE", "SAN JAVIER", "VILLA ALEGRE", "LINARES", "COLBÚN", "LONGAVÍ", "PARRAL", "RETIRO", "YERBAS BUENAS"],
-  "REGIÓN DE ÑUBLE": ["CHILLÁN", "BULNES", "CHILLÁN VIEJO", "EL CARMEN", "PEMUCO", "PINTO", "QUILLÓN", "SAN IGNACIO", "YUNGAY", "COBQUECURA", "COELEMU", "NINHUE", "PORTEZUELO", "QUIRIHUE", "RÁNQUIL", "TREGUACO", "SAN CARLOS", "ÑIQUÉN", "SAN FABIÁN", "SAN NICOLÁS"],
-  "LA ARAUCANÍA": ["TEMUCO", "CARAHUE", "CUNCO", "CURARREHUE", "FREIRE", "GALVARINO", "GORBEA", "LAUTARO", "LONCOCHE", "NUEVA IMPERIAL", "PADRE DE LAS CASAS", "PERKINENCO", "PITRUFQUÉN", "PUCÓN", "PUERTOLILLO", "QUEPE", "SAAVEDRA", "TOLTEN", "TRAIGUÉN", "VILCÚN", "VILLARRICA", "ANGOL", "COLLIPULLI", "CUMALÍ", "ERCILLA", "LONQUIMAY", "LOS ÁNGELES", "LUMACO", "PURÉN", "RENAICO", "RENGO"],
-  "LOS RÍOS": ["VALDIVIA", "CORRAL", "LACHON", "MARIQUINA", "MÁFIL", "PAILLACO", "PANGIPULLI", "RÍO BUENO", "LA UNIÓN", "FUTRONO", "LAGO RANCO"],
-  "LOS LAGOS": ["PUERTO MONTT", "CALBUCO", "COCHAMÓ", "FRESIA", "FRUTILLAR", "LLANQUIHUE", "LOS MUERMOS", "MAULLÍN", "PUERTO VARAS", "ANCUD", "CHONCHI", "CURACO DE VÉLEZ", "DALCAHUE", "PUQUELDÓN", "QUEILÉN", "QUELLÓN", "QUEMCHI", "QUINCHAO", "OSORNO", "PUCATRIHUE", "PUELO", "RÍO NEGRO", "SAN JUAN DE LA COSTA", "SAN PABLO", "CHAITÉN", "FUTALEUFÚ", "HUALAIHUÉ", "PALENA"],
-  "AYSÉN DEL GENERAL CARLOS IBÁÑEZ DEL CAMPO": ["COYHAIQUE", "BALMACEDA", "BUENOS AIRES", "CERRO CASTILLO", "LAGO VERDE", "PUERTO IBÁÑEZ", "VILLA SANTA LUCÍA", "AYSÉN", "CISNES", "GUAITECAS", "COCHRANE", "TORTEL", "VILLA O'HIGGINS"],
-  "MAGALLANES Y LA ANTÁRTICA CHILENA": ["PUNTA ARENAS", "LAGUNA BLANCA", "RÍO VERDE", "SAN GREGORIO", "PORVENIR", "PRIMAVERA", "TIMAUKEL", "PUERTO NATALES", "TORRES DEL PAINE"]
-};
-
 class GestorCotizaciones {
   constructor() {this.prefijo = 'CO'; this.numeroBase = 100500; this.cargarNumeroCotizacion();}
   cargarNumeroCotizacion() {const n = localStorage.getItem('ultimaCotizacion'); if (n) this.numeroBase = parseInt(n); this.actualizarDisplay();}
@@ -436,33 +415,6 @@ let cotizacionGuardada = false;
 let datosDespacho = null;
 let cotizacionActualIndex = null;
 let pdfEmitido = false;
-
-function inicializarRegiones() {
-  const selectRegion = document.getElementById('regionSelect');
-  selectRegion.innerHTML = '<option value="">SELECCIONE REGIÓN</option>';
-  Object.keys(REGIONES_COMUNAS).forEach(region => {
-    const option = document.createElement('option');
-    option.value = region;
-    option.textContent = region;
-    selectRegion.appendChild(option);
-  });
-}
-
-function cargarComunas() {
-  const regionSeleccionada = document.getElementById('regionSelect').value;
-  const selectComuna = document.getElementById('comunaSelect');
-  selectComuna.innerHTML = '<option value="">SELECCIONE COMUNA</option>';
-  
-  if (!regionSeleccionada) return;
-  
-  const comunas = REGIONES_COMUNAS[regionSeleccionada] || [];
-  comunas.forEach(comuna => {
-    const option = document.createElement('option');
-    option.value = comuna;
-    option.textContent = comuna;
-    selectComuna.appendChild(option);
-  });
-}
 
 document.getElementById('inputRut').addEventListener('input', function(e) {
   let v = e.target.value.replace(/[^0-9kK]/g, '');
@@ -1111,12 +1063,10 @@ function marcarAceptado() {
   if (!clienteActual) { alert('DEBE SELECCIONAR UN CLIENTE PRIMERO'); return; }
   if (productosEnCotizacion.length === 0) { alert('DEBE AGREGAR PRODUCTOS A LA COTIZACIÓN'); return; }
   if (!pdfEmitido) { alert('DEBE GENERAR PDF PRIMERO'); return; }
-  inicializarRegiones();
   archivosAdjuntos = [];
   document.getElementById('tipoEntrega').value = '';
-  document.getElementById('regionSelect').value = '';
-  document.getElementById('comunaSelect').value = '';
-  document.getElementById('comunaSelect').innerHTML = '<option value="">SELECCIONE COMUNA</option>';
+  document.getElementById('regionInput').value = '';
+  document.getElementById('comunaInput').value = '';
   document.getElementById('direccionDespacho').value = '';
   document.getElementById('contactoDespacho').value = '';
   document.getElementById('celularDespacho').value = '';
@@ -1175,23 +1125,23 @@ function eliminarArchivo(index) {
 
 function confirmarAceptacion() {
   const tipoEntrega = document.getElementById('tipoEntrega').value;
-  const region = document.getElementById('regionSelect').value;
-  const comuna = document.getElementById('comunaSelect').value;
+  const region = document.getElementById('regionInput').value.trim();
+  const comuna = document.getElementById('comunaInput').value.trim();
   const direccion = document.getElementById('direccionDespacho').value.trim();
   const contacto = document.getElementById('contactoDespacho').value.trim();
   const celular = document.getElementById('celularDespacho').value.trim();
   
   if (!tipoEntrega) { alert('DEBE SELECCIONAR UN TIPO DE ENTREGA'); return; }
-  if (!region) { alert('DEBE SELECCIONAR UNA REGIÓN'); return; }
-  if (!comuna) { alert('DEBE SELECCIONAR UNA COMUNA'); return; }
+  if (!region) { alert('DEBE INGRESAR UNA REGIÓN'); return; }
+  if (!comuna) { alert('DEBE INGRESAR UNA COMUNA'); return; }
   if (!direccion) { alert('DEBE INGRESAR DIRECCIÓN'); return; }
   if (!contacto) { alert('DEBE INGRESAR CONTACTO DE DESPACHO'); return; }
   if (!celular) { alert('DEBE INGRESAR CELULAR DE CONTACTO'); return; }
   
   datosDespacho = {
     tipoEntrega: tipoEntrega,
-    region: region,
-    comuna: comuna,
+    region: region.toUpperCase(),
+    comuna: comuna.toUpperCase(),
     direccion: direccion.toUpperCase(),
     contacto: contacto.toUpperCase(),
     celular: celular,
@@ -1306,10 +1256,6 @@ function cerrarModalVisualizarArchivo() {
   document.getElementById('modalVisualizarArchivo').style.display = 'none';
   document.getElementById('contenidoArchivo').innerHTML = '';
 }
-
-window.addEventListener('DOMContentLoaded', function() {
-  inicializarRegiones();
-});
 </script>
 </body>
 </html>
