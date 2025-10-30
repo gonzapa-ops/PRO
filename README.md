@@ -166,17 +166,17 @@ button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; tex
 .badge-aceptado {background: #4B732E; color: white;}
 .badge-rechazado {background: #9B2E00; color: white;}
 .badge-pendiente {background: #F25C05; color: white;}
-#modalPDF {display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 10004; overflow: hidden;}
+#modalPDF {display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 10004; overflow: hidden; flex-direction: column;}
 .modal-pdf-content {background: white; width: 100%; height: 100%; display: flex; flex-direction: column;}
 .pdf-header {background: #1F6F8B; color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.2);}
 .pdf-header h3 {margin: 0; font-size: 18px; font-weight: 700;}
-.pdf-header-botones {display: flex; gap: 10px; align-items: center;}
-.btn-descargar-pdf {background: #F25C05; color: white; font-size: 13px; border: none; border-radius: 4px; cursor: pointer; padding: 8px 15px; font-weight: 700; transition: all 0.3s ease;}
+.pdf-botones {display: flex; gap: 10px;}
+.btn-descargar-pdf {background: #F25C05; color: white; font-size: 13px; border: none; border-radius: 4px; cursor: pointer; padding: 8px 15px; font-weight: 700;}
 .btn-descargar-pdf:hover {background: #cb4a04;}
-.btn-cerrar-pdf {background: #9B2E00; color: white; font-size: 13px; border: none; border-radius: 4px; cursor: pointer; padding: 8px 15px; font-weight: 700; transition: all 0.3s ease;}
+.btn-cerrar-pdf {background: #9B2E00; color: white; font-size: 13px; border: none; border-radius: 4px; cursor: pointer; padding: 8px 15px; font-weight: 700;}
 .btn-cerrar-pdf:hover {background: #7a2300;}
-.pdf-container {flex: 1; overflow-y: auto; display: flex; justify-content: center; align-items: flex-start; padding: 20px; background: #f5f5f5;}
-#canvasPDF {max-width: 100%; height: auto; background: white; box-shadow: 0 2px 8px rgba(0,0,0,0.2);}
+.pdf-container {flex: 1; overflow-y: auto; display: flex; justify-content: center; align-items: flex-start; padding: 20px; background: #ececec;}
+#pdfContent {background: white; padding: 20px; box-shadow: 0 0 10px rgba(0,0,0,0.3);}
 </style>
 </head>
 <body>
@@ -377,19 +377,20 @@ button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; tex
     <div class="modal-pdf-content">
       <div class="pdf-header">
         <h3>VISUALIZACIÓN Y DESCARGA DE COTIZACIÓN</h3>
-        <div class="pdf-header-botones">
+        <div class="pdf-botones">
           <button class="btn-descargar-pdf" onclick="descargarPDFActual()">📥 DESCARGAR PDF</button>
-          <button class="btn-cerrar-pdf" onclick="cerrarModalPDF()">× CERRAR</button>
+          <button class="btn-cerrar-pdf" onclick="cerrarModalPDF()">✕ CERRAR</button>
         </div>
       </div>
       <div class="pdf-container">
-        <canvas id="canvasPDF"></canvas>
+        <div id="pdfContent"></div>
       </div>
     </div>
   </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 <script>
 class GestorCotizaciones {
@@ -422,9 +423,7 @@ class GestorProductos {
   buscarPorCodigoODescripcion(termino) {
     termino = termino.toUpperCase().trim();
     const todos = this.obtenerTodos();
-    return Object.values(todos).filter(prod => 
-      prod.codigo.includes(termino) || prod.descripcion.includes(termino)
-    ).slice(0, 10);
+    return Object.values(todos).filter(prod => prod.codigo.includes(termino) || prod.descripcion.includes(termino)).slice(0, 10);
   }
 }
 
@@ -443,7 +442,7 @@ let datosDespacho = null;
 let cotizacionActualIndex = null;
 let pdfEmitido = false;
 let esEdicionCotizacion = false;
-let pdfActual = null;
+let pdfActualDoc = null;
 let numeroCotizacionActual = null;
 
 document.getElementById('inputRut').addEventListener('input', function(e) {
@@ -464,26 +463,19 @@ document.getElementById('inputCodigoProducto').addEventListener('keydown', funct
 function mostrarAutocomplete() {
   const input = document.getElementById('inputCodigoProducto').value.trim();
   const lista = document.getElementById('autocompleteLista');
-  
   if (!input || input.length < 1) {
     lista.classList.remove('activo');
     return;
   }
-  
   const resultados = gestorProductos.buscarPorCodigoODescripcion(input);
-  
   if (resultados.length === 0) {
     lista.classList.remove('activo');
     return;
   }
-  
   let html = '';
   resultados.forEach(prod => {
-    html += `<div class="autocomplete-item" onclick="seleccionarProductoAutocomplete('${prod.codigo}')">
-      <strong>${prod.codigo}</strong> - ${prod.descripcion}
-    </div>`;
+    html += `<div class="autocomplete-item" onclick="seleccionarProductoAutocomplete('${prod.codigo}')"><strong>${prod.codigo}</strong> - ${prod.descripcion}</div>`;
   });
-  
   lista.innerHTML = html;
   lista.classList.add('activo');
 }
@@ -642,7 +634,7 @@ function limpiarCotizacion() {
   archivosAdjuntos = [];
   pdfEmitido = false;
   esEdicionCotizacion = false;
-  pdfActual = null;
+  pdfActualDoc = null;
   numeroCotizacionActual = null;
   document.getElementById('resumenDespacho').classList.remove('activo');
   document.getElementById('resumenCompra').classList.remove('activo');
@@ -758,7 +750,7 @@ function actualizarTablaProductos() {
     const inputQuantityDisabled = cotizacionGuardada && !esEdicionCotizacion ? 'disabled' : '';
     const inputDescuentoDisabled = cotizacionGuardada && !esEdicionCotizacion ? 'disabled' : '';
     const btnEliminarDisplay = cotizacionGuardada && !esEdicionCotizacion ? 'none' : 'block';
-    html += `<tr><td>${p.codigo}</td><td>${p.descripcion}</td><td><input type="number" min="1" value="${p.cantidad}" onchange="actualizarCantidad(${i}, this.value)" ${inputQuantityDisabled} style="width:100%;"></td><td class="valor-numerico">$${parseFloat(p.valorNeto).toLocaleString('es-CL', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td><td><input type="number" min="0" max="100" step="0.01" value="${p.descuento}" style="width:100%;padding:5px;" onchange="actualizarDescuento(${i}, this.value)" ${inputDescuentoDisabled}></td><td class="valor-numerico">$${parseFloat(p.valorNetaConDescuento).toLocaleString('es-CL', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td><td class="valor-numerico">$${parseFloat(p.total).toLocaleString('es-CL', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td><td><button class="btn-eliminar" onclick="eliminarProducto(${i})" style="display:${btnEliminarDisplay}">ELIMINAR</button></td></tr>`;
+    html += `<tr><td>${p.codigo}</td><td>${p.descripcion}</td><td><input type="number" min="1" value="${p.cantidad}" onchange="actualizarCantidad(${i}, this.value)" ${inputQuantityDisabled} style="width:100%;"></td><td class="valor-numerico">$${parseFloat(p.valorNeto).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td><input type="number" min="0" max="100" step="0.01" value="${p.descuento}" style="width:100%;padding:5px;" onchange="actualizarDescuento(${i}, this.value)" ${inputDescuentoDisabled}></td><td class="valor-numerico">$${parseFloat(p.valorNetaConDescuento).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td class="valor-numerico">$${parseFloat(p.total).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td><button class="btn-eliminar" onclick="eliminarProducto(${i})" style="display:${btnEliminarDisplay}">ELIMINAR</button></td></tr>`;
   });
   html += '</tbody></table>';
   cont.innerHTML = html;
@@ -792,9 +784,9 @@ function actualizarResumenTotales() {
   const net = productosEnCotizacion.reduce((acc, p) => acc + parseFloat(p.total), 0);
   const iva = +(net * 0.19).toFixed(2);
   const tot = +(net + iva).toFixed(2);
-  document.getElementById('totalNeto').textContent = '$' + net.toLocaleString('es-CL', {minimumFractionDigits: 2, maximumFractionDigits: 2});
-  document.getElementById('totalIva').textContent = '$' + iva.toLocaleString('es-CL', {minimumFractionDigits: 2, maximumFractionDigits: 2});
-  document.getElementById('totalGeneral').textContent = '$' + tot.toLocaleString('es-CL', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+  document.getElementById('totalNeto').textContent = '$' + net.toLocaleString('es-CL', {minimumFractionDigits: 2});
+  document.getElementById('totalIva').textContent = '$' + iva.toLocaleString('es-CL', {minimumFractionDigits: 2});
+  document.getElementById('totalGeneral').textContent = '$' + tot.toLocaleString('es-CL', {minimumFractionDigits: 2});
   document.getElementById('resumenTotales').style.display = 'block';
   
   let htmlUtilidad = '<div class="resumen-utilidad"><h4>📊 UTILIDAD (INTERNO)</h4>';
@@ -1020,38 +1012,29 @@ function generarPDFDocumento(cotizacion) {
   doc.setFont(undefined, 'italic');
   doc.text('Gracias por su preferencia', 105, 283, {align: 'center'});
   
-  pdfActual = doc;
+  pdfActualDoc = doc;
   mostrarPDFEnMismaVentana(doc);
 }
 
 function mostrarPDFEnMismaVentana(doc) {
-  const pdfBlob = doc.output('blob');
-  const pdfUrl = URL.createObjectURL(pdfBlob);
-  const canvas = document.getElementById('canvasPDF');
-  canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
-  
-  const pdfDoc = pdfjsLib.getDocument(pdfUrl);
-  pdfDoc.promise.then(pdf => {
-    pdf.getPage(1).then(page => {
-      const viewport = page.getViewport({scale: 1.2});
-      canvas.width = viewport.width;
-      canvas.height = viewport.height;
-      const renderContext = {canvasContext: canvas.getContext('2d'), viewport};
-      page.render(renderContext);
-    });
-  });
-  
+  const pdfHTML = `
+    <div style="background:white;padding:20px;border-radius:4px;width:100%;max-width:900px;box-shadow:0 0 10px rgba(0,0,0,0.2);">
+      <embed src="${doc.output('datauristring')}" type="application/pdf" style="width:100%;height:800px;border:none;" />
+    </div>
+  `;
+  document.getElementById('pdfContent').innerHTML = pdfHTML;
   document.getElementById('modalPDF').style.display = 'flex';
 }
 
 function descargarPDFActual() {
-  if (!pdfActual) {alert('NO HAY PDF PARA DESCARGAR'); return;}
-  const nombreArchivo = `Cotizacion_${numeroCotizacionActual}_${new Date().getTime()}.pdf`;
-  pdfActual.save(nombreArchivo);
+  if (!pdfActualDoc) {alert('NO HAY PDF PARA DESCARGAR'); return;}
+  const nombreArchivo = `Cotizacion_${numeroCotizacionActual}.pdf`;
+  pdfActualDoc.save(nombreArchivo);
 }
 
 function cerrarModalPDF() {
   document.getElementById('modalPDF').style.display = 'none';
+  document.getElementById('pdfContent').innerHTML = '';
 }
 
 function mostrarCotizaciones() {
