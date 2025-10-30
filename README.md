@@ -103,7 +103,8 @@ button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; tex
 .tabla-cotizaciones tr.cot-aceptado td {background-color: #C8E6C9 !important; color: #2E7D32;}
 .tabla-cotizaciones tr.cot-rechazado {background-color: #FFCDD2 !important;}
 .tabla-cotizaciones tr.cot-rechazado td {background-color: #FFCDD2 !important; color: #C62828;}
-.seccion-cierre {margin-top: 30px; border: 1px solid #ddd; border-radius: 6px; padding: 20px; background-color: #fafafa;}
+.seccion-cierre {margin-top: 30px; border: 1px solid #ddd; border-radius: 6px; padding: 20px; background-color: #fafafa; display: none;}
+.seccion-cierre.activo {display: block;}
 .botones-cierre {display: flex; gap: 15px; margin-top: 15px; flex-wrap: wrap;}
 .btn-aceptado {background: #4B732E; color: white; padding: 12px 30px; font-size: 14px;}
 .btn-aceptado:hover {background: #385525;}
@@ -248,7 +249,7 @@ button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; tex
       </div>
     </section>
 
-    <section class="seccion-cierre">
+    <section class="seccion-cierre" id="seccionCierre">
       <h2 class="seccion-titulo">DATOS DE CIERRE</h2>
       
       <div id="resumenDespacho" class="resumen-despacho"></div>
@@ -401,6 +402,7 @@ let archivosAdjuntos = [];
 let cotizacionGuardada = false;
 let datosDespacho = null;
 let cotizacionActualIndex = null;
+let pdfEmitido = false;
 
 document.getElementById('inputRut').addEventListener('input', function(e) {
   let v = e.target.value.replace(/[^0-9kK]/g, '');
@@ -596,8 +598,10 @@ function limpiarCotizacion() {
   datosDespacho = null;
   cotizacionActualIndex = null;
   archivosAdjuntos = [];
+  pdfEmitido = false;
   document.getElementById('resumenDespacho').classList.remove('activo');
   document.getElementById('resumenCompra').classList.remove('activo');
+  document.getElementById('seccionCierre').classList.remove('activo');
   document.getElementById('btnAceptado').disabled = false;
   document.getElementById('btnRechazado').disabled = false;
   document.getElementById('btnArticulos').disabled = false;
@@ -848,6 +852,8 @@ function generarPDF() {
   const cotizacion = {numero: numCot, razonSocial: clienteActual.razonSocial, neto: net.toFixed(2), fecha: new Date().toISOString(), cliente: JSON.parse(JSON.stringify(clienteActual)), productos: JSON.parse(JSON.stringify(productosEnCotizacion)), estado: estado, despacho: datosDespacho || null};
   cotizacionesEmitidas.push(cotizacion);
   localStorage.setItem('cotizacionesEmitidas', JSON.stringify(cotizacionesEmitidas));
+  pdfEmitido = true;
+  document.getElementById('seccionCierre').classList.add('activo');
   generarPDFDocumento(cotizacion);
 }
 
@@ -859,6 +865,7 @@ function generarPDFDocumento(cotizacion) {
   const tot = +(net + iva).toFixed(2);
   const fechaEmision = new Date(cotizacion.fecha);
   const fechaFormateada = `${fechaEmision.getDate().toString().padStart(2, '0')}/${(fechaEmision.getMonth() + 1).toString().padStart(2, '0')}/${fechaEmision.getFullYear()}`;
+  const horaFormateada = `${fechaEmision.getHours().toString().padStart(2, '0')}:${fechaEmision.getMinutes().toString().padStart(2, '0')}:${fechaEmision.getSeconds().toString().padStart(2, '0')}`;
 
   doc.setFillColor(31, 111, 139);
   doc.rect(0, 0, 210, 25, 'F');
@@ -945,10 +952,11 @@ function generarPDFDocumento(cotizacion) {
   doc.setTextColor(100, 100, 100);
   doc.text('RUT: 78000256-0 | Razón social: Empresa Servicios SPA | Dirección: Los Pepinos 287, Las Condes.', 15, 268);
   doc.text('Mail: contacto@servicios.cl | Teléfono: 56 22 5510365', 15, 272);
+  doc.text(`Hora de emisión: ${horaFormateada}`, 15, 276);
   doc.setTextColor(150, 150, 150);
   doc.setFontSize(8);
   doc.setFont(undefined, 'italic');
-  doc.text('Gracias por su preferencia', 105, 280, {align: 'center'});
+  doc.text('Gracias por su preferencia', 105, 283, {align: 'center'});
   
   const pdfWindow = window.open('', '', 'width=800,height=600');
   const pdfBlob = doc.output('blob');
@@ -988,6 +996,9 @@ function editarCotizacionGuardada(index) {
   productosEnCotizacion = JSON.parse(JSON.stringify(cotizacion.productos));
   datosDespacho = cotizacion.despacho;
   cotizacionActualIndex = index;
+  pdfEmitido = true;
+  
+  document.getElementById('seccionCierre').classList.add('activo');
   
   if (cotizacion.estado === 'rechazado' || cotizacion.estado === 'aceptado') {
     cotizacionGuardada = true;
@@ -1039,6 +1050,7 @@ function mostrarResumenCompra() {
 function marcarAceptado() {
   if (!clienteActual) { alert('DEBE SELECCIONAR UN CLIENTE PRIMERO'); return; }
   if (productosEnCotizacion.length === 0) { alert('DEBE AGREGAR PRODUCTOS A LA COTIZACIÓN'); return; }
+  if (!pdfEmitido) { alert('DEBE GENERAR PDF PRIMERO'); return; }
   archivosAdjuntos = [];
   document.getElementById('tipoEntrega').value = '';
   document.getElementById('direccionDespacho').value = '';
@@ -1154,6 +1166,7 @@ function bloquearEdicion() {
 
 function marcarRechazado() {
   if (!clienteActual) { alert('DEBE SELECCIONAR UN CLIENTE PRIMERO'); return; }
+  if (!pdfEmitido) { alert('DEBE GENERAR PDF PRIMERO'); return; }
   
   if (cotizacionActualIndex !== null) {
     cotizacionesEmitidas[cotizacionActualIndex].estado = 'rechazado';
