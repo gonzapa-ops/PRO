@@ -29,7 +29,7 @@ button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; tex
 .btn-articulos {background: #4B732E; color: white; padding: 8px 14px; font-size: 12px;}
 .btn-articulos:hover {background: #385525;}
 .btn-articulos:disabled {background: #a0a0a0; cursor: not-allowed;}
-.btn-pdf {background: #F25C05; color: white; padding: 8px 14px; font-size: 12px;}
+.btn-pdf {background: #F25C05; color: white; padding: 10px 20px; font-size: 13px;}
 .btn-pdf:hover {background: #cb4a04;}
 .btn-pdf:disabled {background: #a0a0a0; cursor: not-allowed;}
 .btn-agregar {background: #385525; color: white; padding: 8px 14px; font-size: 12px;}
@@ -43,8 +43,8 @@ button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; tex
 .btn-ver:hover {background: #3f4f20;}
 .btn-editar-cot {background: #D9822B; color: white; padding: 5px 8px; font-size: 10px; margin-right: 3px;}
 .btn-editar-cot:hover {background: #b36e1e;}
-.btn-descargar {background: #4B732E; color: white; padding: 5px 8px; font-size: 10px; margin-right: 3px;}
-.btn-descargar:hover {background: #385525;}
+.btn-ver-archivo {background: #4B732E; color: white; padding: 5px 8px; font-size: 10px; margin-right: 3px;}
+.btn-ver-archivo:hover {background: #385525;}
 .formulario-cliente, .formulario-producto, .formulario-editar-articulo {display: none;}
 .formulario-cliente.activo, .formulario-producto.activo, .formulario-editar-articulo.activo {display: block;}
 .campo-grupo {margin-bottom: 15px;}
@@ -142,14 +142,24 @@ button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; tex
 .modal-archivos-content {background: white; max-width: 600px; margin: 40px auto; padding: 25px; border-radius: 8px; position: relative; box-shadow: 0 8px 16px rgba(0,0,0,0.15);}
 .modal-archivos-titulo {font-size: 22px; font-weight: 700; margin-bottom: 20px; text-transform: uppercase; color: #3B3B3B; border-bottom: 3px solid #4B732E; padding-bottom: 10px;}
 .btn-cerrar-archivos {position: absolute; top: 15px; right: 20px; background: #9B2E00; color: white; font-size: 18px; border: none; border-radius: 6px; cursor: pointer; padding: 4px 10px; font-weight: 700;}
-.resumen-compra {display: none; background-color: #e3f2fd; padding: 15px; border-radius: 6px; border-left: 5px solid #1976d2; margin-top: 20px;}
+.resumen-compra {display: none; background-color: #e3f2fd; padding: 15px; border-radius: 6px; border-left: 5px solid #1976d2; margin-top: 20px; overflow-x: auto;}
 .resumen-compra.activo {display: block;}
 .resumen-compra h4 {color: #1976d2; margin-bottom: 12px; text-transform: uppercase; font-weight: 700; font-size: 14px;}
-.tabla-compra {width: 100%; border-collapse: collapse; font-size: 12px; background: white;}
+.tabla-compra {width: 100%; border-collapse: collapse; font-size: 11px; background: white; min-width: 700px;}
 .tabla-compra th {background: #1976d2; color: white; padding: 8px; text-transform: uppercase; font-weight: 700; text-align: left;}
 .tabla-compra td {border: 1px solid #ccc; padding: 8px; text-transform: uppercase; color: #333;}
 .tabla-compra tr:nth-child(even) {background: #f0f8ff;}
 .tabla-compra .valor-numerico {text-align: right; font-weight: 700;}
+.tabla-compra a {color: #1976d2; text-decoration: none; font-weight: 600;}
+.tabla-compra a:hover {text-decoration: underline;}
+#modalVisualizarArchivo {display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.5); z-index: 10003; overflow: auto;}
+.modal-archivo-content {background: white; max-width: 90%; max-height: 90vh; margin: 40px auto; border-radius: 8px; position: relative; box-shadow: 0 8px 16px rgba(0,0,0,0.15); overflow: auto;}
+.btn-cerrar-archivo {position: absolute; top: 15px; right: 20px; background: #9B2E00; color: white; font-size: 18px; border: none; border-radius: 6px; cursor: pointer; padding: 4px 10px; font-weight: 700; z-index: 1;}
+.contenido-archivo {padding: 20px; text-align: center;}
+.contenido-archivo img {max-width: 100%; max-height: 70vh; object-fit: contain;}
+.contenido-archivo iframe {width: 100%; height: 70vh; border: none;}
+.contenido-archivo pre {background: #f5f5f5; padding: 15px; border-radius: 5px; overflow-x: auto; text-align: left; font-size: 12px;}
+.seccion-botones-pdf {margin-bottom: 30px;}
 </style>
 </head>
 <body>
@@ -161,7 +171,6 @@ button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; tex
 
     <div class="botones-superiores">
       <button class="btn btn-articulos" onclick="abrirArticulos()" id="btnArticulos">ARTÍCULOS</button>
-      <button class="btn btn-pdf" onclick="generarPDF()" id="btnPDF">PDF</button>
       <button class="btn btn-buscar" onclick="mostrarCotizaciones()" id="btnCotizaciones">COTIZACIONES</button>
     </div>
 
@@ -233,6 +242,11 @@ button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; tex
 
     <section class="seccion-cierre">
       <h2 class="seccion-titulo">DATOS DE CIERRE</h2>
+      
+      <div class="seccion-botones-pdf">
+        <button class="btn btn-pdf" onclick="generarPDF()" id="btnPDF">GENERAR PDF</button>
+      </div>
+
       <div id="resumenDespacho" class="resumen-despacho"></div>
       <div id="resumenCompra" class="resumen-compra"></div>
       <div class="botones-cierre">
@@ -321,6 +335,13 @@ button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; tex
       <button class="btn-cerrar-archivos" onclick="cerrarModalArchivos()">×</button>
       <h2 class="modal-archivos-titulo">ARCHIVOS ADJUNTOS</h2>
       <div id="listaArchivosModal"></div>
+    </div>
+  </div>
+
+  <div id="modalVisualizarArchivo">
+    <div class="modal-archivo-content">
+      <button class="btn-cerrar-archivo" onclick="cerrarModalVisualizarArchivo()">×</button>
+      <div class="contenido-archivo" id="contenidoArchivo"></div>
     </div>
   </div>
 
@@ -666,7 +687,7 @@ function agregarProductoACotizacion(cod, prod) {
     ex.cantidad++;
     ex.total = +(ex.cantidad * ex.valorNetaConDescuento).toFixed(2);
   } else {
-    productosEnCotizacion.push({codigo: prod.codigo, descripcion: prod.descripcion, cantidad: 1, valorNeto: prod.valorNeto, costo: prod.costo, descuento: 0, valorNetaConDescuento: prod.valorNeto, total: prod.valorNeto.toFixed(2), proveedor: prod.proveedor});
+    productosEnCotizacion.push({codigo: prod.codigo, descripcion: prod.descripcion, cantidad: 1, valorNeto: prod.valorNeto, costo: prod.costo, descuento: 0, valorNetaConDescuento: prod.valorNeto, total: prod.valorNeto.toFixed(2), proveedor: prod.proveedor, link: prod.link});
   }
   actualizarTablaProductos();
 }
@@ -760,7 +781,7 @@ function listarArticulos() {
     claves.forEach(codigo => {
       const art = todos[codigo];
       const util = (parseFloat(art.valorNeto) - parseFloat(art.costo)).toFixed(2);
-      html += `<tr><td>${art.codigo}</td><td>${art.descripcion}</td><td class="valor-numerico">$${parseFloat(art.costo).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td class="valor-numerico">${parseFloat(art.porcentaje).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td class="valor-numerico">$${parseFloat(art.valorNeto).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td class="valor-numerico">$${parseFloat(util).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td>${art.proveedor}</td><td style="text-transform:lowercase;">${art.link}</td><td><button class="btn btn-editar" onclick="editarArticulo('${art.codigo}')">EDITAR</button><button class="btn btn-eliminar" onclick="eliminarArticulo('${art.codigo}')">ELIMINAR</button></td></tr>`;
+      html += `<tr><td>${art.codigo}</td><td>${art.descripcion}</td><td class="valor-numerico">$${parseFloat(art.costo).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td class="valor-numerico">${parseFloat(art.porcentaje).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td class="valor-numerico">$${parseFloat(art.valorNeto).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td class="valor-numerico">$${parseFloat(util).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td>${art.proveedor}</td><td style="text-transform:lowercase;"><a href="${art.link}" target="_blank">${art.link}</a></td><td><button class="btn btn-editar" onclick="editarArticulo('${art.codigo}')">EDITAR</button><button class="btn btn-eliminar" onclick="eliminarArticulo('${art.codigo}')">ELIMINAR</button></td></tr>`;
     });
   }
   html += '</tbody></table>';
@@ -993,10 +1014,13 @@ function cerrarCotizaciones() {
 }
 
 function mostrarResumenCompra() {
-  let html = '<h4>📋 RESUMEN DE COMPRA</h4><table class="tabla-compra"><thead><tr><th>CÓDIGO</th><th>DESCRIPCIÓN</th><th>CANTIDAD</th><th>COSTO UNITARIO</th><th>PROVEEDOR</th></tr></thead><tbody>';
+  const totalCosto = productosEnCotizacion.reduce((acc, p) => acc + (parseFloat(p.costo) * p.cantidad), 0);
+  let html = '<h4>📋 RESUMEN DE COMPRA</h4><table class="tabla-compra"><thead><tr><th>CÓDIGO</th><th>DESCRIPCIÓN</th><th>CANTIDAD</th><th>COSTO UNITARIO</th><th>PROVEEDOR</th><th>LINK PROVEEDOR</th></tr></thead><tbody>';
   productosEnCotizacion.forEach(p => {
-    html += `<tr><td>${p.codigo}</td><td>${p.descripcion}</td><td class="valor-numerico">${p.cantidad}</td><td class="valor-numerico">$${parseFloat(p.costo).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td>${p.proveedor}</td></tr>`;
+    const linkSeguro = p.link.startsWith('http') ? p.link : 'https://' + p.link;
+    html += `<tr><td>${p.codigo}</td><td>${p.descripcion}</td><td class="valor-numerico">${p.cantidad}</td><td class="valor-numerico">$${parseFloat(p.costo).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td>${p.proveedor}</td><td><a href="${linkSeguro}" target="_blank">${p.link}</a></td></tr>`;
   });
+  html += `<tr style="background: #fff3cd; font-weight: bold;"><td colspan="5" style="text-align: right;">TOTAL COSTO DE COMPRA:</td><td class="valor-numerico">$${totalCosto.toLocaleString('es-CL', {minimumFractionDigits: 2})}</td></tr>`;
   html += '</tbody></table>';
   document.getElementById('resumenCompra').innerHTML = html;
   document.getElementById('resumenCompra').classList.add('activo');
@@ -1141,30 +1165,53 @@ function verArchivos() {
   const lista = document.getElementById('listaArchivosModal');
   let html = '<div class="seccion-adjuntos" style="display:block;"><ul class="lista-adjuntos">';
   datosDespacho.archivos.forEach((archivo, index) => {
-    html += `<li class="item-adjunto"><span class="nombre-archivo">${archivo.nombre} (${archivo.tamaño} KB)</span><button class="btn-descargar" onclick="descargarArchivo(${index})">DESCARGAR</button></li>`;
+    html += `<li class="item-adjunto"><span class="nombre-archivo">${archivo.nombre} (${archivo.tamaño} KB)</span><button class="btn-ver-archivo" onclick="verArchivo(${index})">VER</button></li>`;
   });
   html += '</ul></div>';
   lista.innerHTML = html;
   modal.style.display = 'block';
 }
 
-function descargarArchivo(index) {
+function verArchivo(index) {
   if (!datosDespacho || !datosDespacho.archivos || index < 0 || index >= datosDespacho.archivos.length) {
     alert('ERROR: ARCHIVO NO ENCONTRADO');
     return;
   }
   
   const archivo = datosDespacho.archivos[index];
-  const link = document.createElement('a');
-  link.href = archivo.contenido;
-  link.download = archivo.nombre;
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
+  const modalVisualizar = document.getElementById('modalVisualizarArchivo');
+  const contenido = document.getElementById('contenidoArchivo');
+  
+  if (archivo.tipo.startsWith('image/')) {
+    contenido.innerHTML = `<img src="${archivo.contenido}" alt="${archivo.nombre}" />`;
+  } else if (archivo.tipo === 'application/pdf') {
+    contenido.innerHTML = `<iframe src="${archivo.contenido}"></iframe>`;
+  } else if (archivo.tipo.startsWith('text/')) {
+    const xhr = new XMLHttpRequest();
+    xhr.responseType = 'arraybuffer';
+    xhr.onload = function() {
+      const texto = new TextDecoder().decode(xhr.response);
+      contenido.innerHTML = `<pre>${texto}</pre>`;
+    };
+    xhr.onerror = function() {
+      contenido.innerHTML = `<pre>No se pudo visualizar el contenido del archivo</pre>`;
+    };
+    xhr.open('GET', archivo.contenido);
+    xhr.send();
+  } else {
+    contenido.innerHTML = `<p>Tipo de archivo no soportado para vista previa: ${archivo.tipo}</p>`;
+  }
+  
+  modalVisualizar.style.display = 'block';
 }
 
 function cerrarModalArchivos() {
   document.getElementById('modalArchivos').style.display = 'none';
+}
+
+function cerrarModalVisualizarArchivo() {
+  document.getElementById('modalVisualizarArchivo').style.display = 'none';
+  document.getElementById('contenidoArchivo').innerHTML = '';
 }
 </script>
 </body>
