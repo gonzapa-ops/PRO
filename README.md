@@ -17,6 +17,7 @@ th, td {border: 1px solid #ddd; padding: 8px; text-transform: uppercase; color: 
 th {background: #1F6F8B; color: white; font-weight: 700;}
 tr:nth-child(even) {background: #E9F0EA;}
 .valor-numerico {text-align: right; font-weight: 700; color: #3B3B3B;}
+.texto-centrado {text-align: center;}
 button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; text-transform: uppercase; transition: all 0.3s ease;}
 .btn-buscar {background: #F25C05; color: white; padding: 8px 14px; font-size: 12px;}
 .btn-buscar:hover {background: #cb4a04;}
@@ -29,6 +30,9 @@ button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; tex
 .btn-articulos {background: #4B732E; color: white; padding: 8px 14px; font-size: 12px;}
 .btn-articulos:hover {background: #385525;}
 .btn-articulos:disabled {background: #a0a0a0; cursor: not-allowed;}
+.btn-clientes {background: #1F6F8B; color: white; padding: 8px 14px; font-size: 12px;}
+.btn-clientes:hover {background: #174d63;}
+.btn-clientes:disabled {background: #a0a0a0; cursor: not-allowed;}
 .btn-pdf {background: #F25C05; color: white; padding: 10px 20px; font-size: 13px;}
 .btn-pdf:hover {background: #cb4a04;}
 .btn-pdf:disabled {background: #a0a0a0; cursor: not-allowed;}
@@ -89,6 +93,8 @@ button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; tex
 .botones-superiores {display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; align-items: center;}
 #modalCotizaciones {display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.4); z-index: 10000; overflow: auto;}
 #modalCotizaciones > div {background: white; max-width: 1100px; margin: 40px auto; padding: 20px; border-radius: 8px; position: relative; box-shadow: 0 8px 16px rgba(0,0,0,0.15); overflow-x: auto;}
+#modalClientes {display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.4); z-index: 9998; overflow: auto;}
+#modalClientes > div {background: white; max-width: 1100px; margin: 40px auto; padding: 20px; border-radius: 8px; position: relative; box-shadow: 0 8px 16px rgba(0,0,0,0.15); overflow-x: auto;}
 .resumen-totales {max-width: 400px; margin-left: auto; border-top: 3px solid #F25C05; padding-top: 15px; text-transform: uppercase; margin-bottom: 20px;}
 .resumen-linea {display: flex; justify-content: space-between; margin: 5px 0; font-weight: 700; font-size: 13px; color: #3B3B3B;}
 .resumen-linea.total {font-size: 18px; color: #000; font-weight: 900;}
@@ -107,6 +113,10 @@ button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; tex
 .tabla-cotizaciones tr.cot-rechazado td {background-color: #FFCDD2 !important; color: #C62828;}
 .tabla-cotizaciones tr.cot-pendiente {background-color: #FFF9C4 !important;}
 .tabla-cotizaciones tr.cot-pendiente td {background-color: #FFF9C4 !important; color: #F57F17;}
+.tabla-clientes {width: 100%; border-collapse: collapse; background: white; min-width: 900px;}
+.tabla-clientes th {background: #1F6F8B; color: white; padding: 12px; text-align: left; text-transform: uppercase; font-weight: 700;}
+.tabla-clientes td {border: 1px solid #ddd; padding: 12px; text-transform: uppercase; color: #3B3B3B;}
+.tabla-clientes tr:nth-child(even) {background: #E9F0EA;}
 .seccion-cierre {margin-top: 30px; border: 1px solid #ddd; border-radius: 6px; padding: 20px; background-color: #fafafa; display: none;}
 .seccion-cierre.activo {display: block;}
 .botones-cierre {display: flex; gap: 15px; margin-top: 15px; flex-wrap: wrap;}
@@ -182,8 +192,6 @@ button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; tex
 .seccion-bloqueada.activa {display: block;}
 .seccion-bloqueada h4 {color: #856404; text-transform: uppercase; font-weight: 700; margin-bottom: 5px;}
 .seccion-bloqueada p {color: #856404; font-size: 12px; text-transform: uppercase;}
-.btn-editar-lectura {background: #4B732E; color: white; padding: 5px 8px; font-size: 10px; margin-right: 3px;}
-.btn-editar-lectura:hover {background: #385525;}
 </style>
 </head>
 <body>
@@ -196,6 +204,7 @@ button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; tex
     <div class="botones-superiores">
       <button class="btn btn-articulos" onclick="abrirArticulos()" id="btnArticulos">ARTÍCULOS</button>
       <button class="btn btn-buscar" onclick="mostrarCotizaciones()" id="btnCotizaciones">COTIZACIONES</button>
+      <button class="btn btn-clientes" onclick="abrirClientes()" id="btnClientes">CLIENTES</button>
     </div>
 
     <div id="seccionBloqueada" class="seccion-bloqueada">
@@ -296,6 +305,14 @@ button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; tex
     </div>
   </div>
 
+  <div id="modalClientes">
+    <div>
+      <button onclick="cerrarClientes()" style="position:absolute;top:15px;right:20px;background:#9B2E00;color:white;border:none;border-radius:4px;padding:5px 10px;cursor:pointer;font-size:18px;font-weight:bold;">×</button>
+      <h2 style="margin-bottom:15px;text-transform:uppercase;color:#3B3B3B;">CLIENTES REGISTRADOS</h2>
+      <div id="listaClientes"></div>
+    </div>
+  </div>
+
   <div id="modalCotizaciones">
     <div>
       <button onclick="cerrarCotizaciones()" style="position:absolute;top:15px;right:20px;background:#9B2E00;color:white;border:none;border-radius:4px;padding:5px 10px;cursor:pointer;font-size:18px;font-weight:bold;">×</button>
@@ -326,7 +343,23 @@ button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; tex
       <div class="fila-campos">
         <div class="campo-grupo">
           <label>REGIÓN *</label>
-          <input type="text" id="regionInput" placeholder="INGRESE REGIÓN" />
+          <select id="regionSelect">
+            <option value="">SELECCIONE REGIÓN</option>
+            <option value="XV REGIÓN (ARICA Y PARINACOTA)">XV REGIÓN (ARICA Y PARINACOTA)</option>
+            <option value="I REGIÓN (TARAPACÁ)">I REGIÓN (TARAPACÁ)</option>
+            <option value="II REGIÓN (ANTOFAGASTA)">II REGIÓN (ANTOFAGASTA)</option>
+            <option value="III REGIÓN (ATACAMA)">III REGIÓN (ATACAMA)</option>
+            <option value="IV REGIÓN (COQUIMBO)">IV REGIÓN (COQUIMBO)</option>
+            <option value="V REGIÓN (VALPARAÍSO)">V REGIÓN (VALPARAÍSO)</option>
+            <option value="VI REGIÓN (LIB. B. O'HIGGINS)">VI REGIÓN (LIB. B. O'HIGGINS)</option>
+            <option value="VII REGIÓN (MAULE)">VII REGIÓN (MAULE)</option>
+            <option value="VIII REGIÓN (BÍO-BÍO)">VIII REGIÓN (BÍO-BÍO)</option>
+            <option value="IX REGIÓN (LA ARAUCANÍA)">IX REGIÓN (LA ARAUCANÍA)</option>
+            <option value="X REGIÓN (LOS LAGOS)">X REGIÓN (LOS LAGOS)</option>
+            <option value="XI REGIÓN (AYSÉN)">XI REGIÓN (AYSÉN)</option>
+            <option value="XII REGIÓN (MAGALLANES)">XII REGIÓN (MAGALLANES)</option>
+            <option value="RM (METROPOLITANA)">RM (METROPOLITANA)</option>
+          </select>
         </div>
         <div class="campo-grupo">
           <label>COMUNA *</label>
@@ -417,6 +450,7 @@ class GestorClientes {
   buscarPorRut(rut) {return this.clientes[rut] || null;}
   agregarCliente(rut, datos) {this.clientes[rut] = datos; this.guardarClientes();}
   actualizarCliente(rut, datos) {this.clientes[rut] = datos; this.guardarClientes();}
+  obtenerTodos() {return this.clientes;}
 }
 
 class GestorProductos {
@@ -675,6 +709,7 @@ function limpiarCotizacion() {
   document.getElementById('btnArticulos').disabled = false;
   document.getElementById('btnPDF').disabled = false;
   document.getElementById('btnCotizaciones').disabled = false;
+  document.getElementById('btnClientes').disabled = false;
   document.getElementById('btnBuscarCliente').disabled = false;
   document.getElementById('btnLimpiarCliente').disabled = false;
   document.getElementById('btnVerArchivos').style.display = 'none';
@@ -780,13 +815,13 @@ function actualizarTablaProductos() {
     document.getElementById('utilidadResumen').style.display = 'none';
     return;
   }
-  let html = '<table><thead><tr><th>CÓDIGO</th><th>DESCRIPCIÓN</th><th style="width:70px;">CANTIDAD</th><th style="width:80px;">VALOR NETO</th><th style="width:80px;">DESCUENTO (%)</th><th style="width:80px;">V. NETO DESC.</th><th style="width:80px;">COSTO</th><th style="width:100px;">PROVEEDOR</th><th style="width:60px;">ACCIÓN</th></tr></thead><tbody>';
+  let html = '<table><thead><tr><th>CÓDIGO</th><th>DESCRIPCIÓN</th><th style="width:70px;">CANTIDAD</th><th style="width:80px;">VALOR NETO</th><th style="width:80px;">DESCUENTO (%)</th><th style="width:80px;">V. NETO DESC.</th><th style="width:80px;">COSTO</th><th style="width:80px;">TOTAL</th><th style="width:100px;">PROVEEDOR</th><th style="width:60px;">ACCIÓN</th></tr></thead><tbody>';
   productosEnCotizacion.forEach((p, i) => {
     const bloqueado = esLecturaCotizacion || estadoCotizacionActual === 'aceptado' || estadoCotizacionActual === 'rechazado';
     const inputQuantityDisabled = bloqueado ? 'disabled' : '';
     const inputDescuentoDisabled = bloqueado ? 'disabled' : '';
     const btnEliminarDisplay = bloqueado ? 'none' : 'block';
-    html += `<tr><td>${p.codigo}</td><td>${p.descripcion}</td><td><input type="number" min="1" value="${p.cantidad}" onchange="actualizarCantidad(${i}, this.value)" ${inputQuantityDisabled} style="width:100%;"></td><td class="valor-numerico">$${parseFloat(p.valorNeto).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td><input type="number" min="0" max="100" step="0.01" value="${p.descuento}" style="width:100%;padding:5px;" onchange="actualizarDescuento(${i}, this.value)" ${inputDescuentoDisabled}></td><td class="valor-numerico">$${parseFloat(p.valorNetaConDescuento).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td class="valor-numerico">$${parseFloat(p.costo).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td>${p.proveedor}</td><td><button class="btn-eliminar" onclick="eliminarProducto(${i})" style="display:${btnEliminarDisplay}">ELIMINAR</button></td></tr>`;
+    html += `<tr><td>${p.codigo}</td><td>${p.descripcion}</td><td class="texto-centrado"><input type="number" min="1" value="${p.cantidad}" onchange="actualizarCantidad(${i}, this.value)" ${inputQuantityDisabled} style="width:100%;text-align:center;"></td><td class="valor-numerico">$${parseFloat(p.valorNeto).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td><input type="number" min="0" max="100" step="0.01" value="${p.descuento}" style="width:100%;padding:5px;text-align:center;" onchange="actualizarDescuento(${i}, this.value)" ${inputDescuentoDisabled}></td><td class="valor-numerico">$${parseFloat(p.valorNetaConDescuento).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td class="valor-numerico">$${parseFloat(p.costo).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td class="valor-numerico">$${parseFloat(p.total).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td>${p.proveedor}</td><td><button class="btn-eliminar" onclick="eliminarProducto(${i})" style="display:${btnEliminarDisplay}">ELIMINAR</button></td></tr>`;
   });
   html += '</tbody></table>';
   cont.innerHTML = html;
@@ -918,6 +953,43 @@ function eliminarArticulo(codigo) {
     gestorProductos.eliminarProducto(codigo);
     listarArticulos();
   }
+}
+
+function abrirClientes() {
+  document.getElementById('modalClientes').style.display = 'block';
+  listarClientes();
+}
+
+function cerrarClientes() {
+  document.getElementById('modalClientes').style.display = 'none';
+}
+
+function listarClientes() {
+  const todos = gestorClientes.obtenerTodos();
+  let html = '<table class="tabla-clientes"><thead><tr><th>RUT</th><th>RAZÓN SOCIAL</th><th>GIRO</th><th>CONTACTO</th><th>CELULAR</th><th>MAIL</th><th>ACCIÓN</th></tr></thead><tbody>';
+  const claves = Object.keys(todos);
+  if (claves.length === 0) {
+    html += '<tr><td colspan="7" style="text-align:center;">NO HAY CLIENTES REGISTRADOS</td></tr>';
+  } else {
+    claves.forEach(rut => {
+      const cli = todos[rut];
+      html += `<tr><td>${cli.rut}</td><td>${cli.razonSocial}</td><td>${cli.giro}</td><td>${cli.nombreContacto}</td><td>${cli.celular}</td><td>${cli.mail}</td><td><button class="btn btn-editar" onclick="editarClienteDesdeModal('${cli.rut}')">EDITAR</button></td></tr>`;
+    });
+  }
+  html += '</tbody></table>';
+  document.getElementById('listaClientes').innerHTML = html;
+}
+
+function editarClienteDesdeModal(rut) {
+  const cliente = gestorClientes.buscarPorRut(rut);
+  if (!cliente) return;
+  clienteActual = cliente;
+  mostrarResumenCliente(cliente);
+  document.getElementById('inputRut').value = rut;
+  document.getElementById('formularioCliente').classList.remove('activo');
+  cerrarClientes();
+  mostrarMensaje('CLIENTE CARGADO PARA EDITAR', 'exito');
+  habilitarProductos();
 }
 
 function generarPDF() {
@@ -1137,6 +1209,7 @@ function editarCotizacionGuardada(index) {
     document.getElementById('btnArticulos').disabled = false;
     document.getElementById('btnPDF').disabled = false;
     document.getElementById('btnCotizaciones').disabled = false;
+    document.getElementById('btnClientes').disabled = false;
     document.getElementById('btnLimpiarCotizacion').disabled = false;
   } else {
     document.getElementById('seccionBloqueada').classList.remove('activa');
@@ -1188,7 +1261,7 @@ function marcarAceptado() {
   if (!pdfEmitido) { alert('DEBE GENERAR PDF PRIMERO'); return; }
   archivosAdjuntos = [];
   document.getElementById('tipoEntrega').value = '';
-  document.getElementById('regionInput').value = datosDespacho ? datosDespacho.region : '';
+  document.getElementById('regionSelect').value = '';
   document.getElementById('comunaInput').value = datosDespacho ? datosDespacho.comuna : '';
   document.getElementById('direccionDespacho').value = datosDespacho ? datosDespacho.direccion : '';
   document.getElementById('contactoDespacho').value = datosDespacho ? datosDespacho.contacto : '';
@@ -1253,14 +1326,14 @@ function eliminarArchivo(index) {
 
 function confirmarAceptacion() {
   const tipoEntrega = document.getElementById('tipoEntrega').value;
-  const region = document.getElementById('regionInput').value.trim();
+  const region = document.getElementById('regionSelect').value;
   const comuna = document.getElementById('comunaInput').value.trim();
   const direccion = document.getElementById('direccionDespacho').value.trim();
   const contacto = document.getElementById('contactoDespacho').value.trim();
   const celular = document.getElementById('celularDespacho').value.trim();
   
   if (!tipoEntrega) { alert('DEBE SELECCIONAR UN TIPO DE ENTREGA'); return; }
-  if (!region) { alert('DEBE INGRESAR UNA REGIÓN'); return; }
+  if (!region) { alert('DEBE SELECCIONAR UNA REGIÓN'); return; }
   if (!comuna) { alert('DEBE INGRESAR UNA COMUNA'); return; }
   if (!direccion) { alert('DEBE INGRESAR DIRECCIÓN'); return; }
   if (!contacto) { alert('DEBE INGRESAR CONTACTO DE DESPACHO'); return; }
@@ -1308,6 +1381,7 @@ function bloquearEdicionConBotonesActivos() {
   document.getElementById('btnArticulos').disabled = false;
   document.getElementById('btnPDF').disabled = false;
   document.getElementById('btnCotizaciones').disabled = false;
+  document.getElementById('btnClientes').disabled = false;
   document.getElementById('btnBuscarCliente').disabled = true;
   document.getElementById('btnLimpiarCliente').disabled = false;
   document.getElementById('btnBuscarProducto').disabled = true;
@@ -1343,6 +1417,7 @@ function bloquearEdicion() {
   document.getElementById('btnLimpiarCliente').disabled = false;
   document.getElementById('btnPDF').disabled = true;
   document.getElementById('btnCotizaciones').disabled = false;
+  document.getElementById('btnClientes').disabled = false;
   document.getElementById('inputCodigoProducto').disabled = true;
   document.getElementById('inputRut').disabled = true;
   actualizarTablaProductos();
