@@ -1132,8 +1132,16 @@ function editarCotizacionGuardada(index) {
   
   if (cotizacion.estado === 'aceptado') {
     document.getElementById('seccionBloqueada').classList.add('activa');
+    document.getElementById('btnAceptado').disabled = true;
+    document.getElementById('btnRechazado').disabled = false;
+    document.getElementById('btnArticulos').disabled = false;
+    document.getElementById('btnPDF').disabled = false;
+    document.getElementById('btnCotizaciones').disabled = false;
+    document.getElementById('btnLimpiarCotizacion').disabled = false;
   } else {
     document.getElementById('seccionBloqueada').classList.remove('activa');
+    document.getElementById('btnAceptado').disabled = false;
+    document.getElementById('btnRechazado').disabled = false;
   }
   
   mostrarResumenCliente(clienteActual);
@@ -1274,7 +1282,7 @@ function confirmarAceptacion() {
   mostrarResumenDespacho();
   mostrarResumenCompra();
   cerrarModalAceptado();
-  bloquearEdicion();
+  bloquearEdicionConBotonesActivos();
   document.getElementById('seccionBloqueada').classList.add('activa');
   
   if (cotizacionActualIndex !== null) {
@@ -1294,15 +1302,16 @@ function mostrarResumenDespacho() {
   resumen.innerHTML = `<h4>✓ COTIZACIÓN ACEPTADA</h4><p><strong>TIPO ENTREGA:</strong> ${datosDespacho.tipoEntrega}</p><p><strong>REGIÓN:</strong> ${datosDespacho.region}</p><p><strong>COMUNA:</strong> ${datosDespacho.comuna}</p><p><strong>DIRECCIÓN:</strong> ${datosDespacho.direccion}</p><p><strong>CONTACTO DESPACHO:</strong> ${datosDespacho.contacto}</p><p><strong>CELULAR CONTACTO:</strong> ${datosDespacho.celular}</p><p><strong>ARCHIVOS ADJUNTOS:</strong> ${datosDespacho.archivos.length}</p>`;
 }
 
-function bloquearEdicion() {
-  document.getElementById('btnArticulos').disabled = true;
-  document.getElementById('btnBuscarProducto').disabled = true;
+function bloquearEdicionConBotonesActivos() {
   document.getElementById('btnAceptado').disabled = true;
-  document.getElementById('btnRechazado').disabled = true;
+  document.getElementById('btnRechazado').disabled = false;
+  document.getElementById('btnArticulos').disabled = false;
+  document.getElementById('btnPDF').disabled = false;
+  document.getElementById('btnCotizaciones').disabled = false;
   document.getElementById('btnBuscarCliente').disabled = true;
   document.getElementById('btnLimpiarCliente').disabled = false;
-  document.getElementById('btnPDF').disabled = true;
-  document.getElementById('btnCotizaciones').disabled = false;
+  document.getElementById('btnBuscarProducto').disabled = true;
+  document.getElementById('btnLimpiarCotizacion').disabled = false;
   document.getElementById('inputCodigoProducto').disabled = true;
   document.getElementById('inputRut').disabled = true;
   actualizarTablaProductos();
@@ -1323,6 +1332,20 @@ function marcarRechazado() {
   }
   
   alert('COTIZACIÓN RECHAZADA Y GUARDADA');
+}
+
+function bloquearEdicion() {
+  document.getElementById('btnArticulos').disabled = true;
+  document.getElementById('btnBuscarProducto').disabled = true;
+  document.getElementById('btnAceptado').disabled = true;
+  document.getElementById('btnRechazado').disabled = true;
+  document.getElementById('btnBuscarCliente').disabled = true;
+  document.getElementById('btnLimpiarCliente').disabled = false;
+  document.getElementById('btnPDF').disabled = true;
+  document.getElementById('btnCotizaciones').disabled = false;
+  document.getElementById('inputCodigoProducto').disabled = true;
+  document.getElementById('inputRut').disabled = true;
+  actualizarTablaProductos();
 }
 
 function verArchivos() {
