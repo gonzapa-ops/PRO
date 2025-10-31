@@ -49,6 +49,8 @@ button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; tex
 .btn-editar-cot:hover {background: #b36e1e;}
 .btn-ver-archivo {background: #4B732E; color: white; padding: 5px 8px; font-size: 10px; margin-right: 3px;}
 .btn-ver-archivo:hover {background: #385525;}
+.btn-toggle-utilidad {background: #556B2F; color: white; padding: 8px 16px; font-size: 12px; margin-top: 10px;}
+.btn-toggle-utilidad:hover {background: #3f4f20;}
 .formulario-cliente, .formulario-producto, .formulario-editar-articulo {display: none;}
 .formulario-cliente.activo, .formulario-producto.activo, .formulario-editar-articulo.activo {display: block;}
 .campo-grupo {margin-bottom: 15px;}
@@ -98,7 +100,8 @@ button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; tex
 .resumen-totales {max-width: 400px; margin-left: auto; border-top: 3px solid #F25C05; padding-top: 15px; text-transform: uppercase; margin-bottom: 20px;}
 .resumen-linea {display: flex; justify-content: space-between; margin: 5px 0; font-weight: 700; font-size: 13px; color: #3B3B3B;}
 .resumen-linea.total {font-size: 18px; color: #000; font-weight: 900;}
-.resumen-utilidad {background-color: #E8E8E8; padding: 20px; border-radius: 8px; border: 2px solid #999999; border-top: 4px solid #1F6F8B; border-bottom: 4px solid #1F6F8B; margin-top: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);}
+.resumen-utilidad {background-color: #E8E8E8; padding: 20px; border-radius: 8px; border: 2px solid #999999; border-top: 4px solid #1F6F8B; border-bottom: 4px solid #1F6F8B; margin-top: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); display: none;}
+.resumen-utilidad.visible {display: block;}
 .resumen-utilidad h4 {color: #1F6F8B; text-transform: uppercase; margin-bottom: 12px; font-size: 14px; font-weight: 700;}
 .utilidad-item {display: flex; justify-content: space-between; align-items: center; margin: 10px 0; font-size: 13px; color: #3B3B3B; flex-wrap: wrap; gap: 10px;}
 .utilidad-item strong {color: #1F6F8B; font-weight: 700;}
@@ -275,7 +278,9 @@ button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; tex
         <div class="resumen-linea"><div>IVA (19%)</div><div id="totalIva">$0.00</div></div>
         <div class="resumen-linea total"><div>TOTAL</div><div id="totalGeneral">$0.00</div></div>
       </div>
-      <div id="utilidadResumen" style="display:none;"></div>
+
+      <button class="btn-toggle-utilidad" id="btnToggleUtilidad" onclick="toggleUtilidad()">📊 VER UTILIDAD</button>
+      <div id="utilidadResumen" class="resumen-utilidad"></div>
       
       <div class="seccion-botones-pdf">
         <button class="btn btn-pdf" onclick="generarPDF()" id="btnPDF">GENERAR PDF</button>
@@ -488,6 +493,7 @@ let esLecturaCotizacion = false;
 let pdfActualDoc = null;
 let numeroCotizacionActual = null;
 let estadoCotizacionActual = 'pendiente';
+let utilidadVisible = false;
 
 document.getElementById('inputRut').addEventListener('input', function(e) {
   let v = e.target.value.replace(/[^0-9kK]/g, '');
@@ -701,6 +707,7 @@ function limpiarCotizacion() {
   pdfActualDoc = null;
   numeroCotizacionActual = null;
   estadoCotizacionActual = 'pendiente';
+  utilidadVisible = false;
   document.getElementById('resumenDespacho').classList.remove('activo');
   document.getElementById('resumenCompra').classList.remove('activo');
   document.getElementById('seccionCierre').classList.remove('activo');
@@ -713,6 +720,8 @@ function limpiarCotizacion() {
   document.getElementById('btnBuscarCliente').disabled = false;
   document.getElementById('btnLimpiarCliente').disabled = false;
   document.getElementById('btnVerArchivos').style.display = 'none';
+  document.getElementById('btnToggleUtilidad').textContent = '📊 VER UTILIDAD';
+  document.getElementById('utilidadResumen').classList.remove('visible');
   
   deshabilitarProductos();
   actualizarTablaProductos();
@@ -812,16 +821,17 @@ function actualizarTablaProductos() {
   if (productosEnCotizacion.length === 0) {
     cont.innerHTML = '<div class="alerta-sin-productos">NO HAY PRODUCTOS AÑADIDOS</div>';
     document.getElementById('resumenTotales').style.display = 'none';
-    document.getElementById('utilidadResumen').style.display = 'none';
+    document.getElementById('utilidadResumen').classList.remove('visible');
     return;
   }
-  let html = '<table><thead><tr><th>CÓDIGO</th><th>DESCRIPCIÓN</th><th style="width:70px;">CANTIDAD</th><th style="width:80px;">VALOR NETO</th><th style="width:80px;">DESCUENTO (%)</th><th style="width:80px;">V. NETO DESC.</th><th style="width:80px;">COSTO</th><th style="width:80px;">TOTAL</th><th style="width:100px;">PROVEEDOR</th><th style="width:60px;">ACCIÓN</th></tr></thead><tbody>';
+  let html = '<table><thead><tr><th>CÓDIGO</th><th>DESCRIPCIÓN</th><th style="width:70px;">CANTIDAD</th><th style="width:80px;">VALOR NETO</th><th style="width:80px;">DESCUENTO (%)</th><th style="width:80px;">V. NETO DESC.</th><th style="width:80px;">COSTO</th><th style="width:90px;">COSTO TOTAL</th><th style="width:80px;">TOTAL</th><th style="width:100px;">PROVEEDOR</th><th style="width:60px;">ACCIÓN</th></tr></thead><tbody>';
   productosEnCotizacion.forEach((p, i) => {
     const bloqueado = esLecturaCotizacion || estadoCotizacionActual === 'aceptado' || estadoCotizacionActual === 'rechazado';
     const inputQuantityDisabled = bloqueado ? 'disabled' : '';
     const inputDescuentoDisabled = bloqueado ? 'disabled' : '';
     const btnEliminarDisplay = bloqueado ? 'none' : 'block';
-    html += `<tr><td>${p.codigo}</td><td>${p.descripcion}</td><td class="texto-centrado"><input type="number" min="1" value="${p.cantidad}" onchange="actualizarCantidad(${i}, this.value)" ${inputQuantityDisabled} style="width:100%;text-align:center;"></td><td class="valor-numerico">$${parseFloat(p.valorNeto).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td><input type="number" min="0" max="100" step="0.01" value="${p.descuento}" style="width:100%;padding:5px;text-align:center;" onchange="actualizarDescuento(${i}, this.value)" ${inputDescuentoDisabled}></td><td class="valor-numerico">$${parseFloat(p.valorNetaConDescuento).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td class="valor-numerico">$${parseFloat(p.costo).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td class="valor-numerico">$${parseFloat(p.total).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td>${p.proveedor}</td><td><button class="btn-eliminar" onclick="eliminarProducto(${i})" style="display:${btnEliminarDisplay}">ELIMINAR</button></td></tr>`;
+    const costoTotal = parseFloat(p.costo) * p.cantidad;
+    html += `<tr><td>${p.codigo}</td><td>${p.descripcion}</td><td class="texto-centrado"><input type="number" min="1" value="${p.cantidad}" onchange="actualizarCantidad(${i}, this.value)" ${inputQuantityDisabled} style="width:100%;text-align:center;"></td><td class="valor-numerico">$${parseFloat(p.valorNeto).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td><input type="number" min="0" max="100" step="0.01" value="${p.descuento}" style="width:100%;padding:5px;text-align:center;" onchange="actualizarDescuento(${i}, this.value)" ${inputDescuentoDisabled}></td><td class="valor-numerico">$${parseFloat(p.valorNetaConDescuento).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td class="valor-numerico">$${parseFloat(p.costo).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td class="valor-numerico">$${parseFloat(costoTotal).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td class="valor-numerico">$${parseFloat(p.total).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td>${p.proveedor}</td><td><button class="btn-eliminar" onclick="eliminarProducto(${i})" style="display:${btnEliminarDisplay}">ELIMINAR</button></td></tr>`;
   });
   html += '</tbody></table>';
   cont.innerHTML = html;
@@ -864,7 +874,7 @@ function actualizarResumenTotales() {
   document.getElementById('totalGeneral').textContent = '$' + tot.toLocaleString('es-CL', {minimumFractionDigits: 2});
   document.getElementById('resumenTotales').style.display = 'block';
   
-  let htmlUtilidad = '<div class="resumen-utilidad"><h4>📊 UTILIDAD (INTERNO)</h4>';
+  let htmlUtilidad = '<div class="resumen-utilidad" id="resumenUtilidadInterno"><h4>📊 UTILIDAD (INTERNO)</h4>';
   let utilidadTotal = 0, ventaTotal = 0, costoTotal = 0;
   productosEnCotizacion.forEach(p => {
     const costoProducto = parseFloat(p.costo) * p.cantidad;
@@ -879,7 +889,20 @@ function actualizarResumenTotales() {
   const porcentajeUtilidadTotal = ventaTotal > 0 ? ((utilidadTotal / ventaTotal) * 100).toFixed(2) : 0;
   htmlUtilidad += `<div class="utilidad-item" style="border-top: 1px solid #999; padding-top: 10px; margin-top: 10px;"><strong>UTILIDAD TOTAL:</strong> <span>$${Math.round(utilidadTotal).toLocaleString('es-CL')}</span><span class="utilidad-porcentaje">${porcentajeUtilidadTotal}%</span><span class="utilidad-costo">Costo Total: $${Math.round(costoTotal).toLocaleString('es-CL')}</span></div></div>`;
   document.getElementById('utilidadResumen').innerHTML = htmlUtilidad;
-  document.getElementById('utilidadResumen').style.display = 'block';
+}
+
+function toggleUtilidad() {
+  utilidadVisible = !utilidadVisible;
+  const btn = document.getElementById('btnToggleUtilidad');
+  const utilidadEl = document.getElementById('utilidadResumen');
+  
+  if (utilidadVisible) {
+    utilidadEl.classList.add('visible');
+    btn.textContent = '📊 OCULTAR UTILIDAD';
+  } else {
+    utilidadEl.classList.remove('visible');
+    btn.textContent = '📊 VER UTILIDAD';
+  }
 }
 
 function abrirArticulos() {
@@ -1144,6 +1167,7 @@ function cerrarModalPDF() {
   const modal = document.getElementById('modalPDF');
   modal.classList.remove('mostrar');
   document.getElementById('pdfIframe').src = '';
+  limpiarCotizacion();
 }
 
 function mostrarCotizaciones() {
