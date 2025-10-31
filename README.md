@@ -9,7 +9,7 @@
 html, body {width: 100%; height: 100%;}
 body {font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #F5F5F5; padding: 10px; color: #3B3B3B;}
 .cotizador-container {max-width: 1200px; margin: 0 auto; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.1); padding: 15px; border-radius: 8px;}
-.cotizador-header {background: #1F6F8B; color: white; padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #F25C05; border-radius: 6px; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;}
+.cotizador-header {background: #1F6F8B; color: white; padding: 8px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #F25C05; border-radius: 6px; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;}
 .empresa-nombre {font-weight: 700; font-size: 14px; letter-spacing: 1px;}
 .numero-cotizacion {font-weight: 900; color: white; font-size: 12px;}
 .seccion-titulo {font-weight: 700; font-size: 16px; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid #F25C05; text-transform: uppercase; color: #1F6F8B;}
@@ -19,14 +19,14 @@ th {background: #1F6F8B; color: white; font-weight: 700;}
 tr:nth-child(even) {background: #E9F0EA;}
 .valor-numerico {text-align: right; font-weight: 700; color: #3B3B3B;}
 .texto-centrado {text-align: center;}
-button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; text-transform: uppercase; transition: all 0.3s ease; padding: 8px 12px; font-size: 11px;}
+button {cursor: pointer; border: none; border-radius: 2px; font-weight: 700; text-transform: uppercase; transition: all 0.3s ease; padding: 6px 10px; font-size: 10px;}
 .btn-buscar {background: #F25C05; color: white;}
 .btn-buscar:hover {background: #cb4a04;}
 .btn-buscar:disabled {background: #a0a0a0; cursor: not-allowed;}
 .btn-limpiar {background: #7A8C52; color: white;}
 .btn-limpiar:hover {background: #5a6b37;}
 .btn-limpiar:disabled {background: #a0a0a0; cursor: not-allowed;}
-.btn-eliminar {background: #9B2E00; color: white; font-size: 10px; padding: 4px 8px;}
+.btn-eliminar {background: #9B2E00; color: white; font-size: 9px; padding: 4px 6px;}
 .btn-eliminar:hover {background: #7a2300;}
 .btn-articulos {background: #4B732E; color: white;}
 .btn-articulos:hover {background: #385525;}
@@ -34,7 +34,7 @@ button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; tex
 .btn-clientes {background: #1F6F8B; color: white;}
 .btn-clientes:hover {background: #174d63;}
 .btn-clientes:disabled {background: #a0a0a0; cursor: not-allowed;}
-.btn-pdf {background: #F25C05; color: white; padding: 10px 16px; font-size: 12px;}
+.btn-pdf {background: #F25C05; color: white; padding: 8px 12px; font-size: 11px;}
 .btn-pdf:hover {background: #cb4a04;}
 .btn-pdf:disabled {background: #a0a0a0; cursor: not-allowed;}
 .btn-agregar {background: #385525; color: white;}
@@ -44,28 +44,28 @@ button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; tex
 .btn-editar:disabled {background: #a0a0a0; cursor: not-allowed;}
 .btn-cancelar {background: #9B2E00; color: white;}
 .btn-cancelar:hover {background: #7a2300;}
-.btn-ver {background: #556B2F; color: white; padding: 4px 6px; font-size: 9px; margin-right: 2px;}
+.btn-ver {background: #556B2F; color: white; padding: 4px 5px; font-size: 8px; margin-right: 2px;}
 .btn-ver:hover {background: #3f4f20;}
-.btn-editar-cot {background: #D9822B; color: white; padding: 4px 6px; font-size: 9px; margin-right: 2px;}
+.btn-editar-cot {background: #D9822B; color: white; padding: 4px 5px; font-size: 8px; margin-right: 2px;}
 .btn-editar-cot:hover {background: #b36e1e;}
-.btn-ver-archivo {background: #4B732E; color: white; padding: 4px 6px; font-size: 9px; margin-right: 2px;}
+.btn-ver-archivo {background: #4B732E; color: white; padding: 4px 5px; font-size: 8px; margin-right: 2px;}
 .btn-ver-archivo:hover {background: #385525;}
 .formulario-cliente, .formulario-producto, .formulario-editar-articulo {display: none;}
 .formulario-cliente.activo, .formulario-producto.activo, .formulario-editar-articulo.activo {display: block;}
 .campo-grupo {margin-bottom: 12px;}
 .campo-grupo label {display: block; font-weight: 700; color: #3B3B3B; margin-bottom: 4px; font-size: 11px; text-transform: uppercase;}
-.campo-grupo input, .campo-grupo select, .campo-grupo textarea {width: 100%; padding: 8px; font-size: 11px; border: 2px solid #ddd; border-radius: 5px; text-transform: uppercase; font-family: inherit;}
+.campo-grupo input, .campo-grupo select, .campo-grupo textarea {width: 100%; padding: 8px; font-size: 11px; border: 2px solid #ddd; border-radius: 2px; text-transform: uppercase; font-family: inherit;}
 .campo-grupo input:focus, .campo-grupo select:focus, .campo-grupo textarea:focus {outline: none; border-color: #F25C05;}
 .campo-grupo input:disabled, .campo-grupo select:disabled, .campo-grupo textarea:disabled {background-color: #F5F5F5; cursor: not-allowed; color: #777;}
 .fila-campos {display: grid; grid-template-columns: 1fr 1fr; gap: 12px;}
 .fila-campos-tres {display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px;}
 @media (max-width: 768px) {
   .fila-campos, .fila-campos-tres {grid-template-columns: 1fr;}
-  .cotizador-header {padding: 10px 12px;}
+  .cotizador-header {padding: 8px 12px;}
   .empresa-nombre {font-size: 12px;}
-  .numero-cotizacion {font-size: 11px;}
+  .numero-cotizacion {font-size: 10px;}
   .seccion-titulo {font-size: 14px;}
-  button {padding: 6px 10px; font-size: 10px;}
+  button {padding: 5px 8px; font-size: 9px;}
   th, td {padding: 4px; font-size: 9px;}
   table {font-size: 9px;}
 }
@@ -73,38 +73,39 @@ button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; tex
   body {padding: 5px;}
   .cotizador-container {padding: 10px; margin: 0;}
   .fila-campos, .fila-campos-tres {grid-template-columns: 1fr;}
-  .cotizador-header {padding: 8px 10px; gap: 5px;}
+  .cotizador-header {padding: 6px 10px; gap: 5px;}
   .empresa-nombre {font-size: 11px;}
-  .numero-cotizacion {font-size: 10px;}
+  .numero-cotizacion {font-size: 9px;}
   .seccion-titulo {font-size: 13px; margin-bottom: 10px; padding-bottom: 6px;}
-  button {padding: 5px 8px; font-size: 9px;}
+  button {padding: 4px 6px; font-size: 8px;}
   th, td {padding: 3px; font-size: 8px;}
   table {font-size: 8px;}
-  .btn-pdf {padding: 8px 12px; font-size: 11px;}
+  .btn-pdf {padding: 6px 10px; font-size: 9px;}
   .mensaje {font-size: 10px; padding: 8px 10px;}
 }
-.mensaje {padding: 10px 12px; border-radius: 5px; margin-bottom: 12px; font-size: 11px; text-transform: uppercase; font-weight: 700;}
+.mensaje {padding: 10px 12px; border-radius: 2px; margin-bottom: 12px; font-size: 11px; text-transform: uppercase; font-weight: 700;}
 .mensaje-exito {background-color: #d0e8d0; color: #385525; border: 1px solid #8bb76f;}
 .mensaje-error {background-color: #fbd7d2; color: #9b2e00; border: 1px solid #e4827b;}
 .mensaje-info {background-color: #e2f0ec; color: #4b732e; border: 1px solid #a7c3a1;}
 .mensaje-bloqueado {background-color: #fff3cd; color: #856404; border: 1px solid #ffeaa7;}
-.resumen-cliente {display: none; background-color: #e8f0e4; padding: 12px; border-radius: 5px; border-left: 5px solid #4B732E;}
+.resumen-cliente {display: none; background-color: #e8f0e4; padding: 12px; border-radius: 2px; border-left: 5px solid #4B732E;}
 .resumen-cliente.activo {display: block;}
 .resumen-cliente h4 {color: #3B3B3B; margin-bottom: 8px; text-transform: uppercase; font-weight: 700; font-size: 12px;}
 .resumen-cliente p {margin: 3px 0; font-size: 11px; color: #4B732E; text-transform: uppercase;}
-.botones-resumen {margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap;}
-.botones-formulario {display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap;}
-.seccion-cliente {margin-bottom: 20px; border: 1px solid #ddd; border-radius: 6px; padding: 15px; background-color: #fafafa;}
-.busqueda-rut {display: flex; gap: 8px; margin-bottom: 15px; align-items: center; flex-wrap: wrap;}
-.busqueda-rut input {flex: 1; min-width: 150px; padding: 8px; font-size: 11px; border: 2px solid #ddd; border-radius: 6px; text-transform: uppercase;}
-.seccion-productos {margin-bottom: 20px; border: 1px solid #ddd; border-radius: 6px; padding: 15px; background-color: #fafafa; overflow-x: auto;}
-.busqueda-producto {display: flex; gap: 8px; margin-bottom: 15px; align-items: center; position: relative; flex-wrap: wrap;}
-.busqueda-producto input {flex: 1; min-width: 150px; padding: 8px; font-size: 11px; border: 2px solid #ddd; border-radius: 6px; text-transform: uppercase;}
-.autocomplete-list {display: none; position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1px solid #ddd; border-top: none; max-height: 200px; overflow-y: auto; z-index: 1000; border-radius: 0 0 6px 6px; box-shadow: 0 4px 8px rgba(0,0,0,0.07);}
+.botones-resumen {margin-top: 10px; display: flex; gap: 6px; flex-wrap: wrap;}
+.botones-formulario {display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap;}
+.seccion-cliente {margin-bottom: 20px; border: 1px solid #ddd; border-radius: 2px; padding: 15px; background-color: #fafafa;}
+.busqueda-rut {display: flex; gap: 6px; margin-bottom: 15px; align-items: center; flex-wrap: wrap;}
+.busqueda-rut input {flex: 1; min-width: 150px; padding: 8px; font-size: 11px; border: 2px solid #ddd; border-radius: 2px; text-transform: uppercase;}
+.busqueda-rut-botones {display: flex; gap: 6px; align-items: center; flex-wrap: wrap;}
+.seccion-productos {margin-bottom: 20px; border: 1px solid #ddd; border-radius: 2px; padding: 15px; background-color: #fafafa; overflow-x: auto;}
+.busqueda-producto {display: flex; gap: 6px; margin-bottom: 15px; align-items: center; position: relative; flex-wrap: wrap;}
+.busqueda-producto input {flex: 1; min-width: 150px; padding: 8px; font-size: 11px; border: 2px solid #ddd; border-radius: 2px; text-transform: uppercase;}
+.autocomplete-list {display: none; position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1px solid #ddd; border-top: none; max-height: 200px; overflow-y: auto; z-index: 1000; border-radius: 0 0 2px 2px; box-shadow: 0 4px 8px rgba(0,0,0,0.07);}
 .autocomplete-list.activo {display: block;}
 .autocomplete-item {padding: 8px; cursor: pointer; background: white; font-size: 10px; text-transform: uppercase; border-bottom: 1px solid #eee; transition: background 0.2s;}
 .autocomplete-item:hover {background: #f9e2cd; border-left: 3px solid #F25C05;}
-.formulario-producto {background: linear-gradient(135deg, #f9ead4 0%, #f7dba1 100%); padding: 12px; border-radius: 6px; border-left: 5px solid #F25C05; margin-bottom: 15px;}
+.formulario-producto {background: linear-gradient(135deg, #f9ead4 0%, #f7dba1 100%); padding: 12px; border-radius: 2px; border-left: 5px solid #F25C05; margin-bottom: 15px;}
 .formulario-producto h4 {text-transform: uppercase; color: #b35304; margin-bottom: 12px; font-weight: 700; font-size: 12px;}
 .fila-campos-producto {display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;}
 .fila-campos-producto-tres {display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 12px;}
@@ -112,17 +113,17 @@ button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; tex
   .fila-campos-producto, .fila-campos-producto-tres {grid-template-columns: 1fr;}
 }
 .fila-campos-producto .campo-grupo, .fila-campos-producto-tres .campo-grupo {margin-bottom: 0;}
-.botones-producto {display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap;}
-.alerta-sin-productos {background-color: #e9f6ec; padding: 12px; border-radius: 6px; border-left: 5px solid #4B732E; text-align: center; color: #4B732E; text-transform: uppercase; font-weight: 700; font-size: 11px;}
+.botones-producto {display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap;}
+.alerta-sin-productos {background-color: #e9f6ec; padding: 12px; border-radius: 2px; border-left: 5px solid #4B732E; text-align: center; color: #4B732E; text-transform: uppercase; font-weight: 700; font-size: 11px;}
 #modalArticulos {display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.4); z-index: 9999; overflow: auto; padding: 10px;}
-.articulos-content {background: white; border-radius: 8px; margin: 20px auto; padding: 15px; max-width: 95%; position: relative; box-shadow: 0 8px 16px rgba(0,0,0,0.15);}
+.articulos-content {background: white; border-radius: 2px; margin: 20px auto; padding: 15px; max-width: 95%; position: relative; box-shadow: 0 8px 16px rgba(0,0,0,0.15);}
 .modal-titulo {font-size: 16px; font-weight: 700; margin-bottom: 15px; text-transform: uppercase; color: #3B3B3B;}
-.btn-cerrar-modal {position: absolute; top: 10px; right: 15px; background: #9B2E00; color: white; font-size: 16px; border: none; border-radius: 6px; cursor: pointer; padding: 4px 8px; font-weight: 700;}
+.btn-cerrar-modal {position: absolute; top: 10px; right: 15px; background: #9B2E00; color: white; font-size: 14px; border: none; border-radius: 2px; cursor: pointer; padding: 4px 6px; font-weight: 700;}
 .botones-superiores {display: flex; gap: 6px; margin-bottom: 15px; flex-wrap: wrap; align-items: center;}
 #modalCotizaciones {display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.4); z-index: 10000; overflow: auto; padding: 10px;}
-#modalCotizaciones > div {background: white; max-width: 95%; margin: 20px auto; padding: 15px; border-radius: 8px; position: relative; box-shadow: 0 8px 16px rgba(0,0,0,0.15); overflow-x: auto;}
+#modalCotizaciones > div {background: white; max-width: 95%; margin: 20px auto; padding: 15px; border-radius: 2px; position: relative; box-shadow: 0 8px 16px rgba(0,0,0,0.15); overflow-x: auto;}
 #modalClientes {display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.4); z-index: 9998; overflow: auto; padding: 10px;}
-#modalClientes > div {background: white; max-width: 95%; margin: 20px auto; padding: 15px; border-radius: 8px; position: relative; box-shadow: 0 8px 16px rgba(0,0,0,0.15); overflow-x: auto;}
+#modalClientes > div {background: white; max-width: 95%; margin: 20px auto; padding: 15px; border-radius: 2px; position: relative; box-shadow: 0 8px 16px rgba(0,0,0,0.15); overflow-x: auto;}
 .resumen-totales {max-width: 350px; margin-left: auto; border-top: 3px solid #F25C05; padding-top: 12px; text-transform: uppercase; margin-bottom: 15px; font-size: 12px;}
 .resumen-linea {display: flex; justify-content: space-between; margin: 4px 0; font-weight: 700; font-size: 11px; color: #3B3B3B;}
 .resumen-linea.total {font-size: 14px; color: #000; font-weight: 900;}
@@ -139,47 +140,47 @@ button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; tex
 .tabla-clientes th {background: #1F6F8B; color: white; padding: 8px; text-align: left; text-transform: uppercase; font-weight: 700; font-size: 10px;}
 .tabla-clientes td {border: 1px solid #ddd; padding: 8px; text-transform: uppercase; color: #3B3B3B; font-size: 10px;}
 .tabla-clientes tr:nth-child(even) {background: #E9F0EA;}
-.seccion-cierre {margin-top: 20px; border: 1px solid #ddd; border-radius: 6px; padding: 15px; background-color: #fafafa; display: none;}
+.seccion-cierre {margin-top: 20px; border: 1px solid #ddd; border-radius: 2px; padding: 15px; background-color: #fafafa; display: none;}
 .seccion-cierre.activo {display: block;}
-.botones-cierre {display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap;}
-.btn-aceptado {background: #4B732E; color: white; padding: 10px 16px; font-size: 11px;}
+.botones-cierre {display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap;}
+.btn-aceptado {background: #4B732E; color: white; padding: 8px 12px; font-size: 10px;}
 .btn-aceptado:hover {background: #385525;}
 .btn-aceptado:disabled {background: #a0a0a0; cursor: not-allowed;}
-.btn-rechazado {background: #9B2E00; color: white; padding: 10px 16px; font-size: 11px;}
+.btn-rechazado {background: #9B2E00; color: white; padding: 8px 12px; font-size: 10px;}
 .btn-rechazado:hover {background: #7a2300;}
 .btn-rechazado:disabled {background: #a0a0a0; cursor: not-allowed;}
-.btn-limpiar-cot {background: #556B2F; color: white; padding: 10px 16px; font-size: 11px;}
+.btn-limpiar-cot {background: #556B2F; color: white; padding: 8px 12px; font-size: 10px;}
 .btn-limpiar-cot:hover {background: #3f4f20;}
-.btn-archivo {background: #D9822B; color: white; padding: 10px 16px; font-size: 11px; display: none;}
+.btn-archivo {background: #D9822B; color: white; padding: 8px 12px; font-size: 10px; display: none;}
 .btn-archivo:hover {background: #b36e1e;}
 #modalAceptado {display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.4); z-index: 10001; overflow: auto; padding: 10px;}
-.modal-aceptado-content {background: white; max-width: 90%; margin: 20px auto; padding: 15px; border-radius: 8px; position: relative; box-shadow: 0 8px 16px rgba(0,0,0,0.15); max-height: 90vh; overflow-y: auto;}
+.modal-aceptado-content {background: white; max-width: 90%; margin: 20px auto; padding: 15px; border-radius: 2px; position: relative; box-shadow: 0 8px 16px rgba(0,0,0,0.15); max-height: 90vh; overflow-y: auto;}
 .modal-aceptado-titulo {font-size: 16px; font-weight: 700; margin-bottom: 15px; text-transform: uppercase; color: #3B3B3B; border-bottom: 3px solid #4B732E; padding-bottom: 8px;}
-.btn-cerrar-aceptado {position: absolute; top: 10px; right: 15px; background: #9B2E00; color: white; font-size: 16px; border: none; border-radius: 6px; cursor: pointer; padding: 4px 8px; font-weight: 700;}
-.botones-archivo {display: flex; gap: 8px; align-items: center; margin-bottom: 12px; flex-wrap: wrap;}
-.btn-adjuntar {background: #F25C05; color: white; padding: 8px 12px; font-size: 11px;}
+.btn-cerrar-aceptado {position: absolute; top: 10px; right: 15px; background: #9B2E00; color: white; font-size: 14px; border: none; border-radius: 2px; cursor: pointer; padding: 4px 6px; font-weight: 700;}
+.botones-archivo {display: flex; gap: 6px; align-items: center; margin-bottom: 12px; flex-wrap: wrap;}
+.btn-adjuntar {background: #F25C05; color: white; padding: 6px 10px; font-size: 10px;}
 .btn-adjuntar:hover {background: #cb4a04;}
 #inputArchivo {display: none;}
 .archivo-info {font-size: 10px; color: #4B732E; font-weight: 600; text-transform: uppercase;}
-.seccion-adjuntos {margin-top: 12px; padding: 12px; background-color: #e9f6ec; border-radius: 6px; border-left: 5px solid #4B732E;}
+.seccion-adjuntos {margin-top: 12px; padding: 12px; background-color: #e9f6ec; border-radius: 2px; border-left: 5px solid #4B732E;}
 .seccion-adjuntos h4 {color: #4B732E; margin-bottom: 8px; font-weight: 700; text-transform: uppercase; font-size: 11px;}
 .lista-adjuntos {list-style: none;}
-.item-adjunto {display: flex; justify-content: space-between; align-items: center; padding: 6px; background: white; margin: 4px 0; border-radius: 4px; border-left: 3px solid #4B732E; flex-wrap: wrap; gap: 5px;}
+.item-adjunto {display: flex; justify-content: space-between; align-items: center; padding: 6px; background: white; margin: 4px 0; border-radius: 2px; border-left: 3px solid #4B732E; flex-wrap: wrap; gap: 5px;}
 .nombre-archivo {font-size: 10px; color: #3B3B3B; font-weight: 600; text-transform: uppercase; word-break: break-all;}
-.btn-eliminar-archivo {background: #9B2E00; color: white; padding: 3px 6px; font-size: 9px;}
+.btn-eliminar-archivo {background: #9B2E00; color: white; padding: 3px 5px; font-size: 8px;}
 .btn-eliminar-archivo:hover {background: #7a2300;}
-.botones-modal-aceptado {display: flex; gap: 8px; margin-top: 15px; justify-content: flex-end; flex-wrap: wrap;}
-.btn-confirmar {background: #4B732E; color: white; padding: 8px 16px; font-size: 11px;}
+.botones-modal-aceptado {display: flex; gap: 6px; margin-top: 15px; justify-content: flex-end; flex-wrap: wrap;}
+.btn-confirmar {background: #4B732E; color: white; padding: 6px 10px; font-size: 10px;}
 .btn-confirmar:hover {background: #385525;}
-.resumen-despacho {display: none; background-color: #e8f0e4; padding: 12px; border-radius: 5px; border-left: 5px solid #4B732E; margin-top: 15px;}
+.resumen-despacho {display: none; background-color: #e8f0e4; padding: 12px; border-radius: 2px; border-left: 5px solid #4B732E; margin-top: 15px;}
 .resumen-despacho.activo {display: block;}
 .resumen-despacho h4 {color: #3B3B3B; margin-bottom: 8px; text-transform: uppercase; font-weight: 700; font-size: 12px;}
 .resumen-despacho p {margin: 3px 0; font-size: 10px; color: #4B732E; text-transform: uppercase;}
 #modalArchivos {display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.4); z-index: 10002; overflow: auto; padding: 10px;}
-.modal-archivos-content {background: white; max-width: 90%; margin: 20px auto; padding: 15px; border-radius: 8px; position: relative; box-shadow: 0 8px 16px rgba(0,0,0,0.15);}
+.modal-archivos-content {background: white; max-width: 90%; margin: 20px auto; padding: 15px; border-radius: 2px; position: relative; box-shadow: 0 8px 16px rgba(0,0,0,0.15);}
 .modal-archivos-titulo {font-size: 16px; font-weight: 700; margin-bottom: 15px; text-transform: uppercase; color: #3B3B3B; border-bottom: 3px solid #4B732E; padding-bottom: 8px;}
-.btn-cerrar-archivos {position: absolute; top: 10px; right: 15px; background: #9B2E00; color: white; font-size: 16px; border: none; border-radius: 6px; cursor: pointer; padding: 4px 8px; font-weight: 700;}
-.resumen-compra {display: none; background-color: #e3f2fd; padding: 12px; border-radius: 6px; border-left: 5px solid #1976d2; margin-top: 15px; overflow-x: auto;}
+.btn-cerrar-archivos {position: absolute; top: 10px; right: 15px; background: #9B2E00; color: white; font-size: 14px; border: none; border-radius: 2px; cursor: pointer; padding: 4px 6px; font-weight: 700;}
+.resumen-compra {display: none; background-color: #e3f2fd; padding: 12px; border-radius: 2px; border-left: 5px solid #1976d2; margin-top: 15px; overflow-x: auto;}
 .resumen-compra.activo {display: block;}
 .resumen-compra h4 {color: #1976d2; margin-bottom: 10px; text-transform: uppercase; font-weight: 700; font-size: 12px;}
 .tabla-compra {width: 100%; border-collapse: collapse; font-size: 10px; background: white; overflow-x: auto;}
@@ -190,30 +191,31 @@ button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; tex
 .tabla-compra a {color: #1976d2; text-decoration: none; font-weight: 600; font-size: 9px;}
 .tabla-compra a:hover {text-decoration: underline;}
 #modalVisualizarArchivo {display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.5); z-index: 10003; overflow: auto; padding: 10px;}
-.modal-archivo-content {background: white; max-width: 95%; max-height: 90vh; margin: 20px auto; border-radius: 8px; position: relative; box-shadow: 0 8px 16px rgba(0,0,0,0.15); overflow: auto;}
-.btn-cerrar-archivo {position: absolute; top: 10px; right: 15px; background: #9B2E00; color: white; font-size: 16px; border: none; border-radius: 6px; cursor: pointer; padding: 4px 8px; font-weight: 700; z-index: 1;}
+.modal-archivo-content {background: white; max-width: 95%; max-height: 90vh; margin: 20px auto; border-radius: 2px; position: relative; box-shadow: 0 8px 16px rgba(0,0,0,0.15); overflow: auto;}
+.btn-cerrar-archivo {position: absolute; top: 10px; right: 15px; background: #9B2E00; color: white; font-size: 14px; border: none; border-radius: 2px; cursor: pointer; padding: 4px 6px; font-weight: 700; z-index: 1;}
 .contenido-archivo {padding: 15px; text-align: center;}
 .contenido-archivo img {max-width: 100%; max-height: 70vh; object-fit: contain;}
 .contenido-archivo iframe {width: 100%; height: 70vh; border: none;}
-.contenido-archivo pre {background: #f5f5f5; padding: 12px; border-radius: 5px; overflow-x: auto; text-align: left; font-size: 10px;}
+.contenido-archivo pre {background: #f5f5f5; padding: 12px; border-radius: 2px; overflow-x: auto; text-align: left; font-size: 10px;}
 .seccion-botones-pdf {margin-bottom: 15px; text-align: center;}
-.badge-estado {display: inline-block; padding: 3px 6px; border-radius: 3px; font-size: 9px; font-weight: 700; text-transform: uppercase;}
+.badge-estado {display: inline-block; padding: 3px 6px; border-radius: 2px; font-size: 9px; font-weight: 700; text-transform: uppercase;}
 .badge-aceptado {background: #4B732E; color: white;}
 .badge-rechazado {background: #9B2E00; color: white;}
 .badge-pendiente {background: #F25C05; color: white;}
 #modalPDF {display: none !important; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.8); z-index: 10004; overflow: auto; padding: 0;}
 #modalPDF.mostrar {display: block !important;}
 .modal-pdf-wrapper {width: 100%; height: 100%; display: flex; flex-direction: column;}
-.pdf-header {background: #1F6F8B; color: white; padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.3);}
-.pdf-header h3 {margin: 0; font-size: 14px; font-weight: 700;}
-.btn-cerrar-pdf {background: #9B2E00; color: white; font-size: 12px; border: none; border-radius: 4px; cursor: pointer; padding: 6px 12px; font-weight: 700;}
+.pdf-header {background: #1F6F8B; color: white; padding: 6px 12px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.3);}
+.pdf-header h3 {margin: 0; font-size: 12px; font-weight: 700;}
+.btn-cerrar-pdf {background: #9B2E00; color: white; font-size: 11px; border: none; border-radius: 2px; cursor: pointer; padding: 5px 10px; font-weight: 700;}
 .btn-cerrar-pdf:hover {background: #7a2300;}
 .pdf-viewer {flex: 1; width: 100%; background: white; overflow: auto; display: flex; justify-content: center; align-items: flex-start; padding: 0;}
 .pdf-viewer iframe {width: 100%; height: 100%; border: none;}
-.seccion-bloqueada {background-color: #fff3cd; padding: 12px; border-radius: 6px; border-left: 5px solid #FFA500; margin-bottom: 15px; display: none;}
+.seccion-bloqueada {background-color: #fff3cd; padding: 12px; border-radius: 2px; border-left: 5px solid #FFA500; margin-bottom: 15px; display: none;}
 .seccion-bloqueada.activa {display: block;}
 .seccion-bloqueada h4 {color: #856404; text-transform: uppercase; font-weight: 700; margin-bottom: 4px; font-size: 12px;}
 .seccion-bloqueada p {color: #856404; font-size: 10px; text-transform: uppercase;}
+input[type="number"] {text-align: center;}
 </style>
 </head>
 <body>
@@ -238,8 +240,11 @@ button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; tex
       <h2 class="seccion-titulo">DATOS DEL CLIENTE</h2>
       <div class="busqueda-rut">
         <input type="text" id="inputRut" placeholder="INGRESE RUT (EJ: 78070615-7)" maxlength="12" />
-        <button class="btn btn-buscar" onclick="buscarCliente()" id="btnBuscarCliente">BUSCAR</button>
-        <button class="btn btn-limpiar" onclick="limpiarCotizacion()" id="btnLimpiarCliente">LIMPIAR</button>
+        <div class="busqueda-rut-botones">
+          <button class="btn btn-buscar" onclick="buscarCliente()" id="btnBuscarCliente">BUSCAR</button>
+          <button class="btn btn-clientes" onclick="abrirClientes()" id="btnClientesDesdeRut">CLIENTES</button>
+          <button class="btn btn-limpiar" onclick="limpiarCotizacion()" id="btnLimpiarCliente">LIMPIAR</button>
+        </div>
       </div>
       <div id="mensaje"></div>
       <div id="resumenCliente" class="resumen-cliente"></div>
@@ -328,7 +333,7 @@ button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; tex
 
   <div id="modalClientes">
     <div>
-      <button onclick="cerrarClientes()" style="position:absolute;top:10px;right:15px;background:#9B2E00;color:white;border:none;border-radius:4px;padding:4px 8px;cursor:pointer;font-size:16px;font-weight:bold;">×</button>
+      <button onclick="cerrarClientes()" style="position:absolute;top:10px;right:15px;background:#9B2E00;color:white;border:none;border-radius:2px;padding:4px 6px;cursor:pointer;font-size:14px;font-weight:bold;">×</button>
       <h2 style="margin-bottom:12px;text-transform:uppercase;color:#3B3B3B;font-size:16px;">CLIENTES REGISTRADOS</h2>
       <div id="listaClientes" style="overflow-x:auto;"></div>
     </div>
@@ -336,7 +341,7 @@ button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; tex
 
   <div id="modalCotizaciones">
     <div>
-      <button onclick="cerrarCotizaciones()" style="position:absolute;top:10px;right:15px;background:#9B2E00;color:white;border:none;border-radius:4px;padding:4px 8px;cursor:pointer;font-size:16px;font-weight:bold;">×</button>
+      <button onclick="cerrarCotizaciones()" style="position:absolute;top:10px;right:15px;background:#9B2E00;color:white;border:none;border-radius:2px;padding:4px 6px;cursor:pointer;font-size:14px;font-weight:bold;">×</button>
       <h2 style="margin-bottom:12px;text-transform:uppercase;color:#3B3B3B;font-size:16px;">COTIZACIONES EMITIDAS</h2>
       <div id="listaCotizaciones" style="overflow-x:auto;"></div>
     </div>
@@ -442,7 +447,7 @@ button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; tex
   <div id="modalPDF">
     <div class="modal-pdf-wrapper">
       <div class="pdf-header">
-        <h3>COTIZACIÓN - PRESUPUESTO</h3>
+        <h3>COTIZACIÓN</h3>
         <button class="btn-cerrar-pdf" onclick="cerrarModalPDF()">✕ CERRAR</button>
       </div>
       <div class="pdf-viewer">
@@ -844,7 +849,7 @@ function actualizarTablaProductos() {
     const costoTotal = parseFloat(p.costo) * p.cantidad;
     const utilidadUnitaria = parseFloat(p.total) / p.cantidad - parseFloat(p.costo);
     const utilidadTotal = utilidadUnitaria * p.cantidad;
-    html += `<tr><td>${p.codigo}</td><td>${p.descripcion}</td><td class="texto-centrado"><input type="number" min="1" value="${p.cantidad}" onchange="actualizarCantidad(${i}, this.value)" ${inputQuantityDisabled} style="width:100%;text-align:center;border:1px solid #ddd;padding:4px;"></td><td class="valor-numerico">$${parseFloat(p.valorNeto).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td><input type="number" min="0" max="100" step="0.01" value="${p.descuento}" style="width:100%;padding:4px;text-align:center;border:1px solid #ddd;" onchange="actualizarDescuento(${i}, this.value)" ${inputDescuentoDisabled}></td><td class="valor-numerico">$${parseFloat(p.valorNetaConDescuento).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td class="valor-numerico">$${parseFloat(p.costo).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td class="valor-numerico">$${parseFloat(costoTotal).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td class="valor-numerico">$${parseFloat(utilidadTotal).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td class="valor-numerico">$${parseFloat(p.total).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td>${p.proveedor}</td><td><button class="btn-eliminar" onclick="eliminarProducto(${i})" style="display:${btnEliminarDisplay};width:100%;">DEL</button></td></tr>`;
+    html += `<tr><td>${p.codigo}</td><td>${p.descripcion}</td><td class="texto-centrado"><input type="number" min="1" value="${p.cantidad}" onchange="actualizarCantidad(${i}, this.value)" ${inputQuantityDisabled} style="width:100%;text-align:center;border:1px solid #ddd;padding:4px;"></td><td class="valor-numerico">$${parseFloat(p.valorNeto).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td class="texto-centrado"><input type="number" min="0" max="100" step="0.01" value="${p.descuento}" style="width:100%;padding:4px;text-align:center;border:1px solid #ddd;" onchange="actualizarDescuento(${i}, this.value)" ${inputDescuentoDisabled}></td><td class="valor-numerico">$${parseFloat(p.valorNetaConDescuento).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td class="valor-numerico">$${parseFloat(p.costo).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td class="valor-numerico">$${parseFloat(costoTotal).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td class="valor-numerico">$${parseFloat(utilidadTotal).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td class="valor-numerico">$${parseFloat(p.total).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td>${p.proveedor}</td><td><button class="btn-eliminar" onclick="eliminarProducto(${i})" style="display:${btnEliminarDisplay};width:100%;">DEL</button></td></tr>`;
   });
   html += '</tbody></table></div>';
   cont.innerHTML = html;
@@ -1043,26 +1048,22 @@ function generarPDFDocumento(cotizacion) {
   const horaFormateada = `${fechaEmision.getHours().toString().padStart(2, '0')}:${fechaEmision.getMinutes().toString().padStart(2, '0')}:${fechaEmision.getSeconds().toString().padStart(2, '0')}`;
 
   doc.setFillColor(31, 111, 139);
-  doc.rect(0, 0, 210, 25, 'F');
+  doc.rect(0, 0, 210, 15, 'F');
   doc.setTextColor(255, 255, 255);
-  doc.setFontSize(22);
+  doc.setFontSize(16);
   doc.setFont(undefined, 'bold');
-  doc.text('COTIZACIÓN', 15, 12);
-  doc.setFontSize(12);
-  doc.setFont(undefined, 'bold');
-  doc.setTextColor(255, 255, 255);
-  doc.text(`N° ${cotizacion.numero}`, 180, 12, {align: 'right'});
-  doc.setFontSize(10);
-  doc.setTextColor(255, 255, 255);
-  doc.text(`Fecha: ${fechaFormateada}`, 180, 18, {align: 'right'});
+  doc.text('COTIZACIÓN', 15, 8);
+  doc.setFontSize(9);
+  doc.setFont(undefined, 'normal');
+  doc.text(`${cotizacion.numero} | ${fechaFormateada}`, 185, 8, {align: 'right'});
 
   doc.setTextColor(0, 0, 0);
   doc.setFontSize(11);
   doc.setFont(undefined, 'bold');
-  doc.text('DATOS DEL CLIENTE', 15, 40);
+  doc.text('DATOS DEL CLIENTE', 15, 28);
   doc.setDrawColor(242, 92, 5);
   doc.setLineWidth(0.3);
-  doc.line(15, 42, 195, 42);
+  doc.line(15, 30, 195, 30);
   doc.setFontSize(9);
   doc.setFont(undefined, 'normal');
   const clienteData = [
@@ -1071,7 +1072,7 @@ function generarPDFDocumento(cotizacion) {
     ['GIRO:', cotizacion.cliente.giro, 'MAIL:', cotizacion.cliente.mail],
     ['DIRECCIÓN:', cotizacion.cliente.direccion, 'MEDIO PAGO:', cotizacion.cliente.medioPago]
   ];
-  let yPos = 48;
+  let yPos = 36;
   clienteData.forEach(row => {
     doc.setFont(undefined, 'bold');
     doc.text(row[0], 15, yPos);
@@ -1132,7 +1133,7 @@ function generarPDFDocumento(cotizacion) {
   doc.setTextColor(150, 150, 150);
   doc.setFontSize(8);
   doc.setFont(undefined, 'italic');
-  doc.text('Gracias por su preferencia', 105, 283, {align: 'center'});
+  doc.text('ERP DESARROLLADO POR ING. AGONPA', 105, 283, {align: 'center'});
   
   pdfActualDoc = doc;
   mostrarPDFEnMismaVentana();
