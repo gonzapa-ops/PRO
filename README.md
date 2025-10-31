@@ -2,206 +2,225 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
 <title>Cotizador - EMPRESA CUNDO</title>
 <style>
 * {margin: 0; padding: 0; box-sizing: border-box;}
-body {font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #F5F5F5; padding: 20px; color: #3B3B3B;}
-.cotizador-container {max-width: 1200px; margin: auto; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.1); padding: 30px; border-radius: 8px;}
-.cotizador-header {background: #1F6F8B; color: white; padding: 8px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #F25C05; border-radius: 6px; margin-bottom: 20px;}
-.empresa-nombre {font-weight: 700; font-size: 16px; letter-spacing: 1px;}
-.numero-cotizacion {font-weight: 900; color: white; font-size: 15px;}
-.seccion-titulo {font-weight: 700; font-size: 18px; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #F25C05; text-transform: uppercase; color: #1F6F8B;}
-table {width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 13px;}
-th, td {border: 1px solid #ddd; padding: 8px; text-transform: uppercase; color: #3B3B3B;}
+html, body {width: 100%; height: 100%;}
+body {font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #F5F5F5; padding: 10px; color: #3B3B3B;}
+.cotizador-container {max-width: 1200px; margin: 0 auto; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.1); padding: 15px; border-radius: 8px;}
+.cotizador-header {background: #1F6F8B; color: white; padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #F25C05; border-radius: 6px; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;}
+.empresa-nombre {font-weight: 700; font-size: 14px; letter-spacing: 1px;}
+.numero-cotizacion {font-weight: 900; color: white; font-size: 12px;}
+.seccion-titulo {font-weight: 700; font-size: 16px; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid #F25C05; text-transform: uppercase; color: #1F6F8B;}
+table {width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 11px; overflow-x: auto;}
+th, td {border: 1px solid #ddd; padding: 6px; text-transform: uppercase; color: #3B3B3B;}
 th {background: #1F6F8B; color: white; font-weight: 700;}
 tr:nth-child(even) {background: #E9F0EA;}
 .valor-numerico {text-align: right; font-weight: 700; color: #3B3B3B;}
 .texto-centrado {text-align: center;}
-button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; text-transform: uppercase; transition: all 0.3s ease;}
-.btn-buscar {background: #F25C05; color: white; padding: 8px 14px; font-size: 12px;}
+button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; text-transform: uppercase; transition: all 0.3s ease; padding: 8px 12px; font-size: 11px;}
+.btn-buscar {background: #F25C05; color: white;}
 .btn-buscar:hover {background: #cb4a04;}
 .btn-buscar:disabled {background: #a0a0a0; cursor: not-allowed;}
-.btn-limpiar {background: #7A8C52; color: white; padding: 8px 14px; font-size: 12px;}
+.btn-limpiar {background: #7A8C52; color: white;}
 .btn-limpiar:hover {background: #5a6b37;}
 .btn-limpiar:disabled {background: #a0a0a0; cursor: not-allowed;}
-.btn-eliminar {background: #9B2E00; color: white; font-size: 11px; padding: 5px 10px;}
+.btn-eliminar {background: #9B2E00; color: white; font-size: 10px; padding: 4px 8px;}
 .btn-eliminar:hover {background: #7a2300;}
-.btn-articulos {background: #4B732E; color: white; padding: 8px 14px; font-size: 12px;}
+.btn-articulos {background: #4B732E; color: white;}
 .btn-articulos:hover {background: #385525;}
 .btn-articulos:disabled {background: #a0a0a0; cursor: not-allowed;}
-.btn-clientes {background: #1F6F8B; color: white; padding: 8px 14px; font-size: 12px;}
+.btn-clientes {background: #1F6F8B; color: white;}
 .btn-clientes:hover {background: #174d63;}
 .btn-clientes:disabled {background: #a0a0a0; cursor: not-allowed;}
-.btn-pdf {background: #F25C05; color: white; padding: 10px 20px; font-size: 13px;}
+.btn-pdf {background: #F25C05; color: white; padding: 10px 16px; font-size: 12px;}
 .btn-pdf:hover {background: #cb4a04;}
 .btn-pdf:disabled {background: #a0a0a0; cursor: not-allowed;}
-.btn-agregar {background: #385525; color: white; padding: 8px 14px; font-size: 12px;}
+.btn-agregar {background: #385525; color: white;}
 .btn-agregar:hover {background: #274015;}
-.btn-editar {background: #D9822B; color: white; padding: 8px 14px; font-size: 12px;}
+.btn-editar {background: #D9822B; color: white;}
 .btn-editar:hover {background: #b36e1e;}
 .btn-editar:disabled {background: #a0a0a0; cursor: not-allowed;}
-.btn-cancelar {background: #9B2E00; color: white; padding: 8px 14px; font-size: 12px;}
+.btn-cancelar {background: #9B2E00; color: white;}
 .btn-cancelar:hover {background: #7a2300;}
-.btn-ver {background: #556B2F; color: white; padding: 5px 8px; font-size: 10px; margin-right: 3px;}
+.btn-ver {background: #556B2F; color: white; padding: 4px 6px; font-size: 9px; margin-right: 2px;}
 .btn-ver:hover {background: #3f4f20;}
-.btn-editar-cot {background: #D9822B; color: white; padding: 5px 8px; font-size: 10px; margin-right: 3px;}
+.btn-editar-cot {background: #D9822B; color: white; padding: 4px 6px; font-size: 9px; margin-right: 2px;}
 .btn-editar-cot:hover {background: #b36e1e;}
-.btn-ver-archivo {background: #4B732E; color: white; padding: 5px 8px; font-size: 10px; margin-right: 3px;}
+.btn-ver-archivo {background: #4B732E; color: white; padding: 4px 6px; font-size: 9px; margin-right: 2px;}
 .btn-ver-archivo:hover {background: #385525;}
-.btn-toggle-utilidad {background: #556B2F; color: white; padding: 8px 16px; font-size: 12px; margin-top: 10px;}
-.btn-toggle-utilidad:hover {background: #3f4f20;}
 .formulario-cliente, .formulario-producto, .formulario-editar-articulo {display: none;}
 .formulario-cliente.activo, .formulario-producto.activo, .formulario-editar-articulo.activo {display: block;}
-.campo-grupo {margin-bottom: 15px;}
-.campo-grupo label {display: block; font-weight: 700; color: #3B3B3B; margin-bottom: 5px; font-size: 13px; text-transform: uppercase;}
-.campo-grupo input, .campo-grupo select, .campo-grupo textarea {width: 100%; padding: 10px; font-size: 13px; border: 2px solid #ddd; border-radius: 5px; text-transform: uppercase; font-family: inherit;}
+.campo-grupo {margin-bottom: 12px;}
+.campo-grupo label {display: block; font-weight: 700; color: #3B3B3B; margin-bottom: 4px; font-size: 11px; text-transform: uppercase;}
+.campo-grupo input, .campo-grupo select, .campo-grupo textarea {width: 100%; padding: 8px; font-size: 11px; border: 2px solid #ddd; border-radius: 5px; text-transform: uppercase; font-family: inherit;}
 .campo-grupo input:focus, .campo-grupo select:focus, .campo-grupo textarea:focus {outline: none; border-color: #F25C05;}
 .campo-grupo input:disabled, .campo-grupo select:disabled, .campo-grupo textarea:disabled {background-color: #F5F5F5; cursor: not-allowed; color: #777;}
-.fila-campos {display: grid; grid-template-columns: 1fr 1fr; gap: 15px;}
-.fila-campos-tres {display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px;}
-.mensaje {padding: 12px 15px; border-radius: 5px; margin-bottom: 15px; font-size: 12px; text-transform: uppercase; font-weight: 700;}
+.fila-campos {display: grid; grid-template-columns: 1fr 1fr; gap: 12px;}
+.fila-campos-tres {display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px;}
+@media (max-width: 768px) {
+  .fila-campos, .fila-campos-tres {grid-template-columns: 1fr;}
+  .cotizador-header {padding: 10px 12px;}
+  .empresa-nombre {font-size: 12px;}
+  .numero-cotizacion {font-size: 11px;}
+  .seccion-titulo {font-size: 14px;}
+  button {padding: 6px 10px; font-size: 10px;}
+  th, td {padding: 4px; font-size: 9px;}
+  table {font-size: 9px;}
+}
+@media (max-width: 480px) {
+  body {padding: 5px;}
+  .cotizador-container {padding: 10px; margin: 0;}
+  .fila-campos, .fila-campos-tres {grid-template-columns: 1fr;}
+  .cotizador-header {padding: 8px 10px; gap: 5px;}
+  .empresa-nombre {font-size: 11px;}
+  .numero-cotizacion {font-size: 10px;}
+  .seccion-titulo {font-size: 13px; margin-bottom: 10px; padding-bottom: 6px;}
+  button {padding: 5px 8px; font-size: 9px;}
+  th, td {padding: 3px; font-size: 8px;}
+  table {font-size: 8px;}
+  .btn-pdf {padding: 8px 12px; font-size: 11px;}
+  .mensaje {font-size: 10px; padding: 8px 10px;}
+}
+.mensaje {padding: 10px 12px; border-radius: 5px; margin-bottom: 12px; font-size: 11px; text-transform: uppercase; font-weight: 700;}
 .mensaje-exito {background-color: #d0e8d0; color: #385525; border: 1px solid #8bb76f;}
 .mensaje-error {background-color: #fbd7d2; color: #9b2e00; border: 1px solid #e4827b;}
 .mensaje-info {background-color: #e2f0ec; color: #4b732e; border: 1px solid #a7c3a1;}
 .mensaje-bloqueado {background-color: #fff3cd; color: #856404; border: 1px solid #ffeaa7;}
-.resumen-cliente {display: none; background-color: #e8f0e4; padding: 15px; border-radius: 5px; border-left: 5px solid #4B732E;}
+.resumen-cliente {display: none; background-color: #e8f0e4; padding: 12px; border-radius: 5px; border-left: 5px solid #4B732E;}
 .resumen-cliente.activo {display: block;}
-.resumen-cliente h4 {color: #3B3B3B; margin-bottom: 10px; text-transform: uppercase; font-weight: 700;}
-.resumen-cliente p {margin: 5px 0; font-size: 13px; color: #4B732E; text-transform: uppercase;}
-.botones-resumen {margin-top: 15px; display: flex; gap: 10px;}
-.botones-formulario {display: flex; gap: 10px; margin-top: 10px;}
-.seccion-cliente {margin-bottom: 30px; border: 1px solid #ddd; border-radius: 6px; padding: 20px; background-color: #fafafa;}
-.busqueda-rut {display: flex; gap: 10px; margin-bottom: 20px; align-items: center;}
-.busqueda-rut input {flex: 1; padding: 10px; font-size: 13px; border: 2px solid #ddd; border-radius: 6px; text-transform: uppercase;}
-.seccion-productos {margin-bottom: 30px; border: 1px solid #ddd; border-radius: 6px; padding: 20px; background-color: #fafafa;}
-.busqueda-producto {display: flex; gap: 10px; margin-bottom: 20px; align-items: center; position: relative;}
-.busqueda-producto input {flex: 1; padding: 10px; font-size: 13px; border: 2px solid #ddd; border-radius: 6px; text-transform: uppercase;}
-.autocomplete-list {display: none; position: absolute; top: 100%; left: 0; right: 70px; background: white; border: 1px solid #ddd; border-top: none; max-height: 200px; overflow-y: auto; z-index: 1000; border-radius: 0 0 6px 6px; box-shadow: 0 4px 8px rgba(0,0,0,0.07);}
+.resumen-cliente h4 {color: #3B3B3B; margin-bottom: 8px; text-transform: uppercase; font-weight: 700; font-size: 12px;}
+.resumen-cliente p {margin: 3px 0; font-size: 11px; color: #4B732E; text-transform: uppercase;}
+.botones-resumen {margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap;}
+.botones-formulario {display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap;}
+.seccion-cliente {margin-bottom: 20px; border: 1px solid #ddd; border-radius: 6px; padding: 15px; background-color: #fafafa;}
+.busqueda-rut {display: flex; gap: 8px; margin-bottom: 15px; align-items: center; flex-wrap: wrap;}
+.busqueda-rut input {flex: 1; min-width: 150px; padding: 8px; font-size: 11px; border: 2px solid #ddd; border-radius: 6px; text-transform: uppercase;}
+.seccion-productos {margin-bottom: 20px; border: 1px solid #ddd; border-radius: 6px; padding: 15px; background-color: #fafafa; overflow-x: auto;}
+.busqueda-producto {display: flex; gap: 8px; margin-bottom: 15px; align-items: center; position: relative; flex-wrap: wrap;}
+.busqueda-producto input {flex: 1; min-width: 150px; padding: 8px; font-size: 11px; border: 2px solid #ddd; border-radius: 6px; text-transform: uppercase;}
+.autocomplete-list {display: none; position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1px solid #ddd; border-top: none; max-height: 200px; overflow-y: auto; z-index: 1000; border-radius: 0 0 6px 6px; box-shadow: 0 4px 8px rgba(0,0,0,0.07);}
 .autocomplete-list.activo {display: block;}
-.autocomplete-item {padding: 10px; cursor: pointer; background: white; font-size: 12px; text-transform: uppercase; border-bottom: 1px solid #eee; transition: background 0.2s;}
+.autocomplete-item {padding: 8px; cursor: pointer; background: white; font-size: 10px; text-transform: uppercase; border-bottom: 1px solid #eee; transition: background 0.2s;}
 .autocomplete-item:hover {background: #f9e2cd; border-left: 3px solid #F25C05;}
-.formulario-producto {background: linear-gradient(135deg, #f9ead4 0%, #f7dba1 100%); padding: 15px; border-radius: 6px; border-left: 5px solid #F25C05; margin-bottom: 20px;}
-.formulario-producto h4 {text-transform: uppercase; color: #b35304; margin-bottom: 15px; font-weight: 700;}
-.fila-campos-producto {display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;}
-.fila-campos-producto-tres {display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-bottom: 15px;}
+.formulario-producto {background: linear-gradient(135deg, #f9ead4 0%, #f7dba1 100%); padding: 12px; border-radius: 6px; border-left: 5px solid #F25C05; margin-bottom: 15px;}
+.formulario-producto h4 {text-transform: uppercase; color: #b35304; margin-bottom: 12px; font-weight: 700; font-size: 12px;}
+.fila-campos-producto {display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;}
+.fila-campos-producto-tres {display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 12px;}
+@media (max-width: 768px) {
+  .fila-campos-producto, .fila-campos-producto-tres {grid-template-columns: 1fr;}
+}
 .fila-campos-producto .campo-grupo, .fila-campos-producto-tres .campo-grupo {margin-bottom: 0;}
-.botones-producto {display: flex; gap: 10px; margin-top: 10px;}
-.alerta-sin-productos {background-color: #e9f6ec; padding: 15px; border-radius: 6px; border-left: 5px solid #4B732E; text-align: center; color: #4B732E; text-transform: uppercase; font-weight: 700;}
-#modalArticulos {display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.4); z-index: 9999; overflow: auto;}
-.articulos-content {background: white; border-radius: 8px; margin: 40px auto; padding: 25px; max-width: 1000px; position: relative; box-shadow: 0 8px 16px rgba(0,0,0,0.15);}
-.modal-titulo {font-size: 22px; font-weight: 700; margin-bottom: 20px; text-transform: uppercase; color: #3B3B3B;}
-.btn-cerrar-modal {position: absolute; top: 14px; right: 25px; background: #9B2E00; color: white; font-size: 18px; border: none; border-radius: 6px; cursor: pointer; padding: 4px 10px; font-weight: 700;}
-.botones-superiores {display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; align-items: center;}
-#modalCotizaciones {display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.4); z-index: 10000; overflow: auto;}
-#modalCotizaciones > div {background: white; max-width: 1100px; margin: 40px auto; padding: 20px; border-radius: 8px; position: relative; box-shadow: 0 8px 16px rgba(0,0,0,0.15); overflow-x: auto;}
-#modalClientes {display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.4); z-index: 9998; overflow: auto;}
-#modalClientes > div {background: white; max-width: 1100px; margin: 40px auto; padding: 20px; border-radius: 8px; position: relative; box-shadow: 0 8px 16px rgba(0,0,0,0.15); overflow-x: auto;}
-.resumen-totales {max-width: 400px; margin-left: auto; border-top: 3px solid #F25C05; padding-top: 15px; text-transform: uppercase; margin-bottom: 20px;}
-.resumen-linea {display: flex; justify-content: space-between; margin: 5px 0; font-weight: 700; font-size: 13px; color: #3B3B3B;}
-.resumen-linea.total {font-size: 18px; color: #000; font-weight: 900;}
-.resumen-utilidad {background-color: #E8E8E8; padding: 20px; border-radius: 8px; border: 2px solid #999999; border-top: 4px solid #1F6F8B; border-bottom: 4px solid #1F6F8B; margin-top: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); display: none;}
-.resumen-utilidad.visible {display: block;}
-.resumen-utilidad h4 {color: #1F6F8B; text-transform: uppercase; margin-bottom: 12px; font-size: 14px; font-weight: 700;}
-.utilidad-item {display: flex; justify-content: space-between; align-items: center; margin: 10px 0; font-size: 13px; color: #3B3B3B; flex-wrap: wrap; gap: 10px;}
-.utilidad-item strong {color: #1F6F8B; font-weight: 700;}
-.utilidad-porcentaje {color: #F25C05; font-weight: 700; font-size: 12px; background-color: #fff; padding: 2px 8px; border-radius: 3px; border: 1px solid #F25C05;}
-.utilidad-costo {color: #555; font-weight: 600; font-size: 12px; background-color: #fff; padding: 2px 8px; border-radius: 3px; border: 1px solid #999;}
-.tabla-cotizaciones {width: 100%; border-collapse: collapse; background: white; min-width: 900px;}
-.tabla-cotizaciones th {background: #1F6F8B; color: white; padding: 12px; text-align: left; text-transform: uppercase; font-weight: 700;}
-.tabla-cotizaciones td {border: 1px solid #ddd; padding: 12px; text-transform: uppercase; color: #3B3B3B;}
+.botones-producto {display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap;}
+.alerta-sin-productos {background-color: #e9f6ec; padding: 12px; border-radius: 6px; border-left: 5px solid #4B732E; text-align: center; color: #4B732E; text-transform: uppercase; font-weight: 700; font-size: 11px;}
+#modalArticulos {display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.4); z-index: 9999; overflow: auto; padding: 10px;}
+.articulos-content {background: white; border-radius: 8px; margin: 20px auto; padding: 15px; max-width: 95%; position: relative; box-shadow: 0 8px 16px rgba(0,0,0,0.15);}
+.modal-titulo {font-size: 16px; font-weight: 700; margin-bottom: 15px; text-transform: uppercase; color: #3B3B3B;}
+.btn-cerrar-modal {position: absolute; top: 10px; right: 15px; background: #9B2E00; color: white; font-size: 16px; border: none; border-radius: 6px; cursor: pointer; padding: 4px 8px; font-weight: 700;}
+.botones-superiores {display: flex; gap: 6px; margin-bottom: 15px; flex-wrap: wrap; align-items: center;}
+#modalCotizaciones {display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.4); z-index: 10000; overflow: auto; padding: 10px;}
+#modalCotizaciones > div {background: white; max-width: 95%; margin: 20px auto; padding: 15px; border-radius: 8px; position: relative; box-shadow: 0 8px 16px rgba(0,0,0,0.15); overflow-x: auto;}
+#modalClientes {display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.4); z-index: 9998; overflow: auto; padding: 10px;}
+#modalClientes > div {background: white; max-width: 95%; margin: 20px auto; padding: 15px; border-radius: 8px; position: relative; box-shadow: 0 8px 16px rgba(0,0,0,0.15); overflow-x: auto;}
+.resumen-totales {max-width: 350px; margin-left: auto; border-top: 3px solid #F25C05; padding-top: 12px; text-transform: uppercase; margin-bottom: 15px; font-size: 12px;}
+.resumen-linea {display: flex; justify-content: space-between; margin: 4px 0; font-weight: 700; font-size: 11px; color: #3B3B3B;}
+.resumen-linea.total {font-size: 14px; color: #000; font-weight: 900;}
+.tabla-cotizaciones {width: 100%; border-collapse: collapse; background: white; overflow-x: auto;}
+.tabla-cotizaciones th {background: #1F6F8B; color: white; padding: 8px; text-align: left; text-transform: uppercase; font-weight: 700; font-size: 10px;}
+.tabla-cotizaciones td {border: 1px solid #ddd; padding: 8px; text-transform: uppercase; color: #3B3B3B; font-size: 10px;}
 .tabla-cotizaciones tr.cot-aceptado {background-color: #C8E6C9 !important;}
 .tabla-cotizaciones tr.cot-aceptado td {background-color: #C8E6C9 !important; color: #2E7D32;}
 .tabla-cotizaciones tr.cot-rechazado {background-color: #FFCDD2 !important;}
 .tabla-cotizaciones tr.cot-rechazado td {background-color: #FFCDD2 !important; color: #C62828;}
 .tabla-cotizaciones tr.cot-pendiente {background-color: #FFF9C4 !important;}
 .tabla-cotizaciones tr.cot-pendiente td {background-color: #FFF9C4 !important; color: #F57F17;}
-.tabla-clientes {width: 100%; border-collapse: collapse; background: white; min-width: 900px;}
-.tabla-clientes th {background: #1F6F8B; color: white; padding: 12px; text-align: left; text-transform: uppercase; font-weight: 700;}
-.tabla-clientes td {border: 1px solid #ddd; padding: 12px; text-transform: uppercase; color: #3B3B3B;}
+.tabla-clientes {width: 100%; border-collapse: collapse; background: white; overflow-x: auto;}
+.tabla-clientes th {background: #1F6F8B; color: white; padding: 8px; text-align: left; text-transform: uppercase; font-weight: 700; font-size: 10px;}
+.tabla-clientes td {border: 1px solid #ddd; padding: 8px; text-transform: uppercase; color: #3B3B3B; font-size: 10px;}
 .tabla-clientes tr:nth-child(even) {background: #E9F0EA;}
-.seccion-cierre {margin-top: 30px; border: 1px solid #ddd; border-radius: 6px; padding: 20px; background-color: #fafafa; display: none;}
+.seccion-cierre {margin-top: 20px; border: 1px solid #ddd; border-radius: 6px; padding: 15px; background-color: #fafafa; display: none;}
 .seccion-cierre.activo {display: block;}
-.botones-cierre {display: flex; gap: 15px; margin-top: 15px; flex-wrap: wrap;}
-.btn-aceptado {background: #4B732E; color: white; padding: 12px 30px; font-size: 14px;}
+.botones-cierre {display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap;}
+.btn-aceptado {background: #4B732E; color: white; padding: 10px 16px; font-size: 11px;}
 .btn-aceptado:hover {background: #385525;}
 .btn-aceptado:disabled {background: #a0a0a0; cursor: not-allowed;}
-.btn-rechazado {background: #9B2E00; color: white; padding: 12px 30px; font-size: 14px;}
+.btn-rechazado {background: #9B2E00; color: white; padding: 10px 16px; font-size: 11px;}
 .btn-rechazado:hover {background: #7a2300;}
 .btn-rechazado:disabled {background: #a0a0a0; cursor: not-allowed;}
-.btn-limpiar-cot {background: #556B2F; color: white; padding: 12px 30px; font-size: 14px;}
+.btn-limpiar-cot {background: #556B2F; color: white; padding: 10px 16px; font-size: 11px;}
 .btn-limpiar-cot:hover {background: #3f4f20;}
-.btn-archivo {background: #D9822B; color: white; padding: 12px 30px; font-size: 14px; display: none;}
+.btn-archivo {background: #D9822B; color: white; padding: 10px 16px; font-size: 11px; display: none;}
 .btn-archivo:hover {background: #b36e1e;}
-#modalAceptado {display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.4); z-index: 10001; overflow: auto;}
-.modal-aceptado-content {background: white; max-width: 700px; margin: 40px auto; padding: 25px; border-radius: 8px; position: relative; box-shadow: 0 8px 16px rgba(0,0,0,0.15); max-height: 90vh; overflow-y: auto;}
-.modal-aceptado-titulo {font-size: 22px; font-weight: 700; margin-bottom: 20px; text-transform: uppercase; color: #3B3B3B; border-bottom: 3px solid #4B732E; padding-bottom: 10px;}
-.btn-cerrar-aceptado {position: absolute; top: 15px; right: 20px; background: #9B2E00; color: white; font-size: 18px; border: none; border-radius: 6px; cursor: pointer; padding: 4px 10px; font-weight: 700;}
-.botones-archivo {display: flex; gap: 10px; align-items: center; margin-bottom: 15px;}
-.btn-adjuntar {background: #F25C05; color: white; padding: 10px 20px; font-size: 12px;}
+#modalAceptado {display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.4); z-index: 10001; overflow: auto; padding: 10px;}
+.modal-aceptado-content {background: white; max-width: 90%; margin: 20px auto; padding: 15px; border-radius: 8px; position: relative; box-shadow: 0 8px 16px rgba(0,0,0,0.15); max-height: 90vh; overflow-y: auto;}
+.modal-aceptado-titulo {font-size: 16px; font-weight: 700; margin-bottom: 15px; text-transform: uppercase; color: #3B3B3B; border-bottom: 3px solid #4B732E; padding-bottom: 8px;}
+.btn-cerrar-aceptado {position: absolute; top: 10px; right: 15px; background: #9B2E00; color: white; font-size: 16px; border: none; border-radius: 6px; cursor: pointer; padding: 4px 8px; font-weight: 700;}
+.botones-archivo {display: flex; gap: 8px; align-items: center; margin-bottom: 12px; flex-wrap: wrap;}
+.btn-adjuntar {background: #F25C05; color: white; padding: 8px 12px; font-size: 11px;}
 .btn-adjuntar:hover {background: #cb4a04;}
 #inputArchivo {display: none;}
-.archivo-info {font-size: 12px; color: #4B732E; font-weight: 600; text-transform: uppercase;}
-.seccion-adjuntos {margin-top: 15px; padding: 15px; background-color: #e9f6ec; border-radius: 6px; border-left: 5px solid #4B732E;}
-.seccion-adjuntos h4 {color: #4B732E; margin-bottom: 10px; font-weight: 700; text-transform: uppercase;}
+.archivo-info {font-size: 10px; color: #4B732E; font-weight: 600; text-transform: uppercase;}
+.seccion-adjuntos {margin-top: 12px; padding: 12px; background-color: #e9f6ec; border-radius: 6px; border-left: 5px solid #4B732E;}
+.seccion-adjuntos h4 {color: #4B732E; margin-bottom: 8px; font-weight: 700; text-transform: uppercase; font-size: 11px;}
 .lista-adjuntos {list-style: none;}
-.item-adjunto {display: flex; justify-content: space-between; align-items: center; padding: 8px; background: white; margin: 5px 0; border-radius: 4px; border-left: 3px solid #4B732E;}
-.nombre-archivo {font-size: 12px; color: #3B3B3B; font-weight: 600; text-transform: uppercase; word-break: break-all;}
-.btn-eliminar-archivo {background: #9B2E00; color: white; padding: 4px 8px; font-size: 10px;}
+.item-adjunto {display: flex; justify-content: space-between; align-items: center; padding: 6px; background: white; margin: 4px 0; border-radius: 4px; border-left: 3px solid #4B732E; flex-wrap: wrap; gap: 5px;}
+.nombre-archivo {font-size: 10px; color: #3B3B3B; font-weight: 600; text-transform: uppercase; word-break: break-all;}
+.btn-eliminar-archivo {background: #9B2E00; color: white; padding: 3px 6px; font-size: 9px;}
 .btn-eliminar-archivo:hover {background: #7a2300;}
-.botones-modal-aceptado {display: flex; gap: 10px; margin-top: 20px; justify-content: flex-end;}
-.btn-confirmar {background: #4B732E; color: white; padding: 10px 20px; font-size: 12px;}
+.botones-modal-aceptado {display: flex; gap: 8px; margin-top: 15px; justify-content: flex-end; flex-wrap: wrap;}
+.btn-confirmar {background: #4B732E; color: white; padding: 8px 16px; font-size: 11px;}
 .btn-confirmar:hover {background: #385525;}
-.resumen-despacho {display: none; background-color: #e8f0e4; padding: 15px; border-radius: 5px; border-left: 5px solid #4B732E; margin-top: 20px;}
+.resumen-despacho {display: none; background-color: #e8f0e4; padding: 12px; border-radius: 5px; border-left: 5px solid #4B732E; margin-top: 15px;}
 .resumen-despacho.activo {display: block;}
-.resumen-despacho h4 {color: #3B3B3B; margin-bottom: 10px; text-transform: uppercase; font-weight: 700;}
-.resumen-despacho p {margin: 5px 0; font-size: 13px; color: #4B732E; text-transform: uppercase;}
-#modalArchivos {display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.4); z-index: 10002; overflow: auto;}
-.modal-archivos-content {background: white; max-width: 600px; margin: 40px auto; padding: 25px; border-radius: 8px; position: relative; box-shadow: 0 8px 16px rgba(0,0,0,0.15);}
-.modal-archivos-titulo {font-size: 22px; font-weight: 700; margin-bottom: 20px; text-transform: uppercase; color: #3B3B3B; border-bottom: 3px solid #4B732E; padding-bottom: 10px;}
-.btn-cerrar-archivos {position: absolute; top: 15px; right: 20px; background: #9B2E00; color: white; font-size: 18px; border: none; border-radius: 6px; cursor: pointer; padding: 4px 10px; font-weight: 700;}
-.resumen-compra {display: none; background-color: #e3f2fd; padding: 15px; border-radius: 6px; border-left: 5px solid #1976d2; margin-top: 20px; overflow-x: auto;}
+.resumen-despacho h4 {color: #3B3B3B; margin-bottom: 8px; text-transform: uppercase; font-weight: 700; font-size: 12px;}
+.resumen-despacho p {margin: 3px 0; font-size: 10px; color: #4B732E; text-transform: uppercase;}
+#modalArchivos {display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.4); z-index: 10002; overflow: auto; padding: 10px;}
+.modal-archivos-content {background: white; max-width: 90%; margin: 20px auto; padding: 15px; border-radius: 8px; position: relative; box-shadow: 0 8px 16px rgba(0,0,0,0.15);}
+.modal-archivos-titulo {font-size: 16px; font-weight: 700; margin-bottom: 15px; text-transform: uppercase; color: #3B3B3B; border-bottom: 3px solid #4B732E; padding-bottom: 8px;}
+.btn-cerrar-archivos {position: absolute; top: 10px; right: 15px; background: #9B2E00; color: white; font-size: 16px; border: none; border-radius: 6px; cursor: pointer; padding: 4px 8px; font-weight: 700;}
+.resumen-compra {display: none; background-color: #e3f2fd; padding: 12px; border-radius: 6px; border-left: 5px solid #1976d2; margin-top: 15px; overflow-x: auto;}
 .resumen-compra.activo {display: block;}
-.resumen-compra h4 {color: #1976d2; margin-bottom: 12px; text-transform: uppercase; font-weight: 700; font-size: 14px;}
-.tabla-compra {width: 100%; border-collapse: collapse; font-size: 11px; background: white; min-width: 700px;}
-.tabla-compra th {background: #1976d2; color: white; padding: 8px; text-transform: uppercase; font-weight: 700; text-align: left;}
-.tabla-compra td {border: 1px solid #ccc; padding: 8px; text-transform: uppercase; color: #333;}
+.resumen-compra h4 {color: #1976d2; margin-bottom: 10px; text-transform: uppercase; font-weight: 700; font-size: 12px;}
+.tabla-compra {width: 100%; border-collapse: collapse; font-size: 10px; background: white; overflow-x: auto;}
+.tabla-compra th {background: #1976d2; color: white; padding: 6px; text-transform: uppercase; font-weight: 700; text-align: left; font-size: 9px;}
+.tabla-compra td {border: 1px solid #ccc; padding: 6px; text-transform: uppercase; color: #333; font-size: 9px;}
 .tabla-compra tr:nth-child(even) {background: #f0f8ff;}
 .tabla-compra .valor-numerico {text-align: right; font-weight: 700;}
-.tabla-compra a {color: #1976d2; text-decoration: none; font-weight: 600;}
+.tabla-compra a {color: #1976d2; text-decoration: none; font-weight: 600; font-size: 9px;}
 .tabla-compra a:hover {text-decoration: underline;}
-#modalVisualizarArchivo {display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.5); z-index: 10003; overflow: auto;}
-.modal-archivo-content {background: white; max-width: 90%; max-height: 90vh; margin: 40px auto; border-radius: 8px; position: relative; box-shadow: 0 8px 16px rgba(0,0,0,0.15); overflow: auto;}
-.btn-cerrar-archivo {position: absolute; top: 15px; right: 20px; background: #9B2E00; color: white; font-size: 18px; border: none; border-radius: 6px; cursor: pointer; padding: 4px 10px; font-weight: 700; z-index: 1;}
-.contenido-archivo {padding: 20px; text-align: center;}
+#modalVisualizarArchivo {display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.5); z-index: 10003; overflow: auto; padding: 10px;}
+.modal-archivo-content {background: white; max-width: 95%; max-height: 90vh; margin: 20px auto; border-radius: 8px; position: relative; box-shadow: 0 8px 16px rgba(0,0,0,0.15); overflow: auto;}
+.btn-cerrar-archivo {position: absolute; top: 10px; right: 15px; background: #9B2E00; color: white; font-size: 16px; border: none; border-radius: 6px; cursor: pointer; padding: 4px 8px; font-weight: 700; z-index: 1;}
+.contenido-archivo {padding: 15px; text-align: center;}
 .contenido-archivo img {max-width: 100%; max-height: 70vh; object-fit: contain;}
 .contenido-archivo iframe {width: 100%; height: 70vh; border: none;}
-.contenido-archivo pre {background: #f5f5f5; padding: 15px; border-radius: 5px; overflow-x: auto; text-align: left; font-size: 12px;}
-.seccion-botones-pdf {margin-bottom: 20px; text-align: center;}
-.badge-estado {display: inline-block; padding: 4px 8px; border-radius: 3px; font-size: 11px; font-weight: 700; text-transform: uppercase;}
+.contenido-archivo pre {background: #f5f5f5; padding: 12px; border-radius: 5px; overflow-x: auto; text-align: left; font-size: 10px;}
+.seccion-botones-pdf {margin-bottom: 15px; text-align: center;}
+.badge-estado {display: inline-block; padding: 3px 6px; border-radius: 3px; font-size: 9px; font-weight: 700; text-transform: uppercase;}
 .badge-aceptado {background: #4B732E; color: white;}
 .badge-rechazado {background: #9B2E00; color: white;}
 .badge-pendiente {background: #F25C05; color: white;}
-#modalPDF {display: none !important; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.8); z-index: 10004; overflow: auto; padding: 10px;}
+#modalPDF {display: none !important; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.8); z-index: 10004; overflow: auto; padding: 0;}
 #modalPDF.mostrar {display: block !important;}
 .modal-pdf-wrapper {width: 100%; height: 100%; display: flex; flex-direction: column;}
-.pdf-header {background: #1F6F8B; color: white; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.3);}
-.pdf-header h3 {margin: 0; font-size: 16px; font-weight: 700;}
-.btn-cerrar-pdf {background: #9B2E00; color: white; font-size: 14px; border: none; border-radius: 4px; cursor: pointer; padding: 8px 15px; font-weight: 700;}
+.pdf-header {background: #1F6F8B; color: white; padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.3);}
+.pdf-header h3 {margin: 0; font-size: 14px; font-weight: 700;}
+.btn-cerrar-pdf {background: #9B2E00; color: white; font-size: 12px; border: none; border-radius: 4px; cursor: pointer; padding: 6px 12px; font-weight: 700;}
 .btn-cerrar-pdf:hover {background: #7a2300;}
-.pdf-viewer {flex: 1; width: 100%; background: white; overflow: auto; display: flex; justify-content: center; align-items: flex-start; padding: 20px;}
-.pdf-viewer iframe {width: 100%; height: 100%; border: none; min-height: 100vh;}
-.seccion-bloqueada {background-color: #fff3cd; padding: 15px; border-radius: 6px; border-left: 5px solid #FFA500; margin-bottom: 20px; display: none;}
+.pdf-viewer {flex: 1; width: 100%; background: white; overflow: auto; display: flex; justify-content: center; align-items: flex-start; padding: 0;}
+.pdf-viewer iframe {width: 100%; height: 100%; border: none;}
+.seccion-bloqueada {background-color: #fff3cd; padding: 12px; border-radius: 6px; border-left: 5px solid #FFA500; margin-bottom: 15px; display: none;}
 .seccion-bloqueada.activa {display: block;}
-.seccion-bloqueada h4 {color: #856404; text-transform: uppercase; font-weight: 700; margin-bottom: 5px;}
-.seccion-bloqueada p {color: #856404; font-size: 12px; text-transform: uppercase;}
+.seccion-bloqueada h4 {color: #856404; text-transform: uppercase; font-weight: 700; margin-bottom: 4px; font-size: 12px;}
+.seccion-bloqueada p {color: #856404; font-size: 10px; text-transform: uppercase;}
 </style>
 </head>
 <body>
   <div class="cotizador-container">
     <header class="cotizador-header">
       <div class="empresa-nombre">EMPRESA CUNDO</div>
-      <div class="numero-cotizacion">COTIZACIÓN N° <span id="numeroCotizacion" style="color: white;">CO100500</span></div>
+      <div class="numero-cotizacion">N° <span id="numeroCotizacion" style="color: white;">CO100500</span></div>
     </header>
 
     <div class="botones-superiores">
@@ -278,9 +297,6 @@ button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; tex
         <div class="resumen-linea"><div>IVA (19%)</div><div id="totalIva">$0.00</div></div>
         <div class="resumen-linea total"><div>TOTAL</div><div id="totalGeneral">$0.00</div></div>
       </div>
-
-      <button class="btn-toggle-utilidad" id="btnToggleUtilidad" onclick="toggleUtilidad()">📊 VER UTILIDAD</button>
-      <div id="utilidadResumen" class="resumen-utilidad"></div>
       
       <div class="seccion-botones-pdf">
         <button class="btn btn-pdf" onclick="generarPDF()" id="btnPDF">GENERAR PDF</button>
@@ -312,17 +328,17 @@ button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; tex
 
   <div id="modalClientes">
     <div>
-      <button onclick="cerrarClientes()" style="position:absolute;top:15px;right:20px;background:#9B2E00;color:white;border:none;border-radius:4px;padding:5px 10px;cursor:pointer;font-size:18px;font-weight:bold;">×</button>
-      <h2 style="margin-bottom:15px;text-transform:uppercase;color:#3B3B3B;">CLIENTES REGISTRADOS</h2>
-      <div id="listaClientes"></div>
+      <button onclick="cerrarClientes()" style="position:absolute;top:10px;right:15px;background:#9B2E00;color:white;border:none;border-radius:4px;padding:4px 8px;cursor:pointer;font-size:16px;font-weight:bold;">×</button>
+      <h2 style="margin-bottom:12px;text-transform:uppercase;color:#3B3B3B;font-size:16px;">CLIENTES REGISTRADOS</h2>
+      <div id="listaClientes" style="overflow-x:auto;"></div>
     </div>
   </div>
 
   <div id="modalCotizaciones">
     <div>
-      <button onclick="cerrarCotizaciones()" style="position:absolute;top:15px;right:20px;background:#9B2E00;color:white;border:none;border-radius:4px;padding:5px 10px;cursor:pointer;font-size:18px;font-weight:bold;">×</button>
-      <h2 style="margin-bottom:15px;text-transform:uppercase;color:#3B3B3B;">COTIZACIONES EMITIDAS</h2>
-      <div id="listaCotizaciones"></div>
+      <button onclick="cerrarCotizaciones()" style="position:absolute;top:10px;right:15px;background:#9B2E00;color:white;border:none;border-radius:4px;padding:4px 8px;cursor:pointer;font-size:16px;font-weight:bold;">×</button>
+      <h2 style="margin-bottom:12px;text-transform:uppercase;color:#3B3B3B;font-size:16px;">COTIZACIONES EMITIDAS</h2>
+      <div id="listaCotizaciones" style="overflow-x:auto;"></div>
     </div>
   </div>
 
@@ -412,7 +428,7 @@ button {cursor: pointer; border: none; border-radius: 5px; font-weight: 700; tex
     <div class="modal-archivos-content">
       <button class="btn-cerrar-archivos" onclick="cerrarModalArchivos()">×</button>
       <h2 class="modal-archivos-titulo">ARCHIVOS ADJUNTOS</h2>
-      <div id="listaArchivosModal"></div>
+      <div id="listaArchivosModal" style="overflow-x:auto;"></div>
     </div>
   </div>
 
@@ -493,7 +509,6 @@ let esLecturaCotizacion = false;
 let pdfActualDoc = null;
 let numeroCotizacionActual = null;
 let estadoCotizacionActual = 'pendiente';
-let utilidadVisible = false;
 
 document.getElementById('inputRut').addEventListener('input', function(e) {
   let v = e.target.value.replace(/[^0-9kK]/g, '');
@@ -707,7 +722,6 @@ function limpiarCotizacion() {
   pdfActualDoc = null;
   numeroCotizacionActual = null;
   estadoCotizacionActual = 'pendiente';
-  utilidadVisible = false;
   document.getElementById('resumenDespacho').classList.remove('activo');
   document.getElementById('resumenCompra').classList.remove('activo');
   document.getElementById('seccionCierre').classList.remove('activo');
@@ -720,8 +734,6 @@ function limpiarCotizacion() {
   document.getElementById('btnBuscarCliente').disabled = false;
   document.getElementById('btnLimpiarCliente').disabled = false;
   document.getElementById('btnVerArchivos').style.display = 'none';
-  document.getElementById('btnToggleUtilidad').textContent = '📊 VER UTILIDAD';
-  document.getElementById('utilidadResumen').classList.remove('visible');
   
   deshabilitarProductos();
   actualizarTablaProductos();
@@ -821,19 +833,20 @@ function actualizarTablaProductos() {
   if (productosEnCotizacion.length === 0) {
     cont.innerHTML = '<div class="alerta-sin-productos">NO HAY PRODUCTOS AÑADIDOS</div>';
     document.getElementById('resumenTotales').style.display = 'none';
-    document.getElementById('utilidadResumen').classList.remove('visible');
     return;
   }
-  let html = '<table><thead><tr><th>CÓDIGO</th><th>DESCRIPCIÓN</th><th style="width:70px;">CANTIDAD</th><th style="width:80px;">VALOR NETO</th><th style="width:80px;">DESCUENTO (%)</th><th style="width:80px;">V. NETO DESC.</th><th style="width:80px;">COSTO</th><th style="width:90px;">COSTO TOTAL</th><th style="width:80px;">TOTAL</th><th style="width:100px;">PROVEEDOR</th><th style="width:60px;">ACCIÓN</th></tr></thead><tbody>';
+  let html = '<div style="overflow-x:auto;"><table><thead><tr><th style="min-width:60px;">CÓDIGO</th><th style="min-width:100px;">DESCRIPCIÓN</th><th style="width:50px;">CANT</th><th style="min-width:70px;">V.NETO</th><th style="width:50px;">DESC(%)</th><th style="min-width:70px;">V.NETO DESC</th><th style="min-width:70px;">COSTO</th><th style="min-width:70px;">COSTO TOT</th><th style="min-width:70px;">UTILIDAD TOT</th><th style="min-width:70px;">TOTAL</th><th style="min-width:80px;">PROVEEDOR</th><th style="width:60px;">ACCIÓN</th></tr></thead><tbody>';
   productosEnCotizacion.forEach((p, i) => {
     const bloqueado = esLecturaCotizacion || estadoCotizacionActual === 'aceptado' || estadoCotizacionActual === 'rechazado';
     const inputQuantityDisabled = bloqueado ? 'disabled' : '';
     const inputDescuentoDisabled = bloqueado ? 'disabled' : '';
     const btnEliminarDisplay = bloqueado ? 'none' : 'block';
     const costoTotal = parseFloat(p.costo) * p.cantidad;
-    html += `<tr><td>${p.codigo}</td><td>${p.descripcion}</td><td class="texto-centrado"><input type="number" min="1" value="${p.cantidad}" onchange="actualizarCantidad(${i}, this.value)" ${inputQuantityDisabled} style="width:100%;text-align:center;"></td><td class="valor-numerico">$${parseFloat(p.valorNeto).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td><input type="number" min="0" max="100" step="0.01" value="${p.descuento}" style="width:100%;padding:5px;text-align:center;" onchange="actualizarDescuento(${i}, this.value)" ${inputDescuentoDisabled}></td><td class="valor-numerico">$${parseFloat(p.valorNetaConDescuento).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td class="valor-numerico">$${parseFloat(p.costo).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td class="valor-numerico">$${parseFloat(costoTotal).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td class="valor-numerico">$${parseFloat(p.total).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td>${p.proveedor}</td><td><button class="btn-eliminar" onclick="eliminarProducto(${i})" style="display:${btnEliminarDisplay}">ELIMINAR</button></td></tr>`;
+    const utilidadUnitaria = parseFloat(p.total) / p.cantidad - parseFloat(p.costo);
+    const utilidadTotal = utilidadUnitaria * p.cantidad;
+    html += `<tr><td>${p.codigo}</td><td>${p.descripcion}</td><td class="texto-centrado"><input type="number" min="1" value="${p.cantidad}" onchange="actualizarCantidad(${i}, this.value)" ${inputQuantityDisabled} style="width:100%;text-align:center;border:1px solid #ddd;padding:4px;"></td><td class="valor-numerico">$${parseFloat(p.valorNeto).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td><input type="number" min="0" max="100" step="0.01" value="${p.descuento}" style="width:100%;padding:4px;text-align:center;border:1px solid #ddd;" onchange="actualizarDescuento(${i}, this.value)" ${inputDescuentoDisabled}></td><td class="valor-numerico">$${parseFloat(p.valorNetaConDescuento).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td class="valor-numerico">$${parseFloat(p.costo).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td class="valor-numerico">$${parseFloat(costoTotal).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td class="valor-numerico">$${parseFloat(utilidadTotal).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td class="valor-numerico">$${parseFloat(p.total).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td>${p.proveedor}</td><td><button class="btn-eliminar" onclick="eliminarProducto(${i})" style="display:${btnEliminarDisplay};width:100%;">DEL</button></td></tr>`;
   });
-  html += '</tbody></table>';
+  html += '</tbody></table></div>';
   cont.innerHTML = html;
   actualizarResumenTotales();
 }
@@ -873,36 +886,6 @@ function actualizarResumenTotales() {
   document.getElementById('totalIva').textContent = '$' + iva.toLocaleString('es-CL', {minimumFractionDigits: 2});
   document.getElementById('totalGeneral').textContent = '$' + tot.toLocaleString('es-CL', {minimumFractionDigits: 2});
   document.getElementById('resumenTotales').style.display = 'block';
-  
-  let htmlUtilidad = '<div class="resumen-utilidad" id="resumenUtilidadInterno"><h4>📊 UTILIDAD (INTERNO)</h4>';
-  let utilidadTotal = 0, ventaTotal = 0, costoTotal = 0;
-  productosEnCotizacion.forEach(p => {
-    const costoProducto = parseFloat(p.costo) * p.cantidad;
-    const utilidad = parseFloat(p.total) - costoProducto;
-    const venta = parseFloat(p.total);
-    const porcentajeUtilidad = venta > 0 ? ((utilidad / venta) * 100).toFixed(2) : 0;
-    utilidadTotal += utilidad;
-    ventaTotal += venta;
-    costoTotal += costoProducto;
-    htmlUtilidad += `<div class="utilidad-item"><strong>${p.codigo}:</strong> <span>$${Math.round(utilidad).toLocaleString('es-CL')}</span><span class="utilidad-porcentaje">${porcentajeUtilidad}%</span><span class="utilidad-costo">Costo: $${Math.round(costoProducto).toLocaleString('es-CL')}</span></div>`;
-  });
-  const porcentajeUtilidadTotal = ventaTotal > 0 ? ((utilidadTotal / ventaTotal) * 100).toFixed(2) : 0;
-  htmlUtilidad += `<div class="utilidad-item" style="border-top: 1px solid #999; padding-top: 10px; margin-top: 10px;"><strong>UTILIDAD TOTAL:</strong> <span>$${Math.round(utilidadTotal).toLocaleString('es-CL')}</span><span class="utilidad-porcentaje">${porcentajeUtilidadTotal}%</span><span class="utilidad-costo">Costo Total: $${Math.round(costoTotal).toLocaleString('es-CL')}</span></div></div>`;
-  document.getElementById('utilidadResumen').innerHTML = htmlUtilidad;
-}
-
-function toggleUtilidad() {
-  utilidadVisible = !utilidadVisible;
-  const btn = document.getElementById('btnToggleUtilidad');
-  const utilidadEl = document.getElementById('utilidadResumen');
-  
-  if (utilidadVisible) {
-    utilidadEl.classList.add('visible');
-    btn.textContent = '📊 OCULTAR UTILIDAD';
-  } else {
-    utilidadEl.classList.remove('visible');
-    btn.textContent = '📊 VER UTILIDAD';
-  }
 }
 
 function abrirArticulos() {
@@ -916,7 +899,7 @@ function cerrarArticulos() {
 
 function listarArticulos() {
   const todos = gestorProductos.obtenerTodos();
-  let html = '<table class="tabla-articulos"><thead><tr><th>CÓDIGO</th><th>DESCRIPCIÓN</th><th>COSTO</th><th>PORCENTAJE (%)</th><th>VALOR NETO</th><th>UTILIDAD</th><th>PROVEEDOR</th><th>LINK</th><th>ACCIÓN</th></tr></thead><tbody>';
+  let html = '<div style="overflow-x:auto;"><table class="tabla-articulos"><thead><tr><th>CÓDIGO</th><th>DESCRIPCIÓN</th><th>COSTO</th><th>PORCENTAJE (%)</th><th>VALOR NETO</th><th>UTILIDAD</th><th>PROVEEDOR</th><th>LINK</th><th>ACCIÓN</th></tr></thead><tbody>';
   const claves = Object.keys(todos);
   if (claves.length === 0) {
     html += '<tr><td colspan="9" style="text-align:center;">NO HAY ARTÍCULOS</td></tr>';
@@ -927,7 +910,7 @@ function listarArticulos() {
       html += `<tr><td>${art.codigo}</td><td>${art.descripcion}</td><td class="valor-numerico">$${parseFloat(art.costo).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td class="valor-numerico">${parseFloat(art.porcentaje).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td class="valor-numerico">$${parseFloat(art.valorNeto).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td class="valor-numerico">$${parseFloat(util).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td>${art.proveedor}</td><td style="text-transform:lowercase;"><a href="${art.link}" target="_blank">${art.link}</a></td><td><button class="btn btn-editar" onclick="editarArticulo('${art.codigo}')">EDITAR</button><button class="btn btn-eliminar" onclick="eliminarArticulo('${art.codigo}')">ELIMINAR</button></td></tr>`;
     });
   }
-  html += '</tbody></table>';
+  html += '</tbody></table></div>';
   document.getElementById('tablaArticulosContenedor').innerHTML = html;
 }
 
@@ -1174,7 +1157,7 @@ function mostrarCotizaciones() {
   const modal = document.getElementById('modalCotizaciones');
   const cont = document.getElementById('listaCotizaciones');
   if (cotizacionesEmitidas.length === 0) {
-    cont.innerHTML = '<p style="text-transform:uppercase; text-align:center; padding: 20px;">NO HAY COTIZACIONES EMITIDAS</p>';
+    cont.innerHTML = '<p style="text-transform:uppercase; text-align:center; padding: 15px; font-size:11px;">NO HAY COTIZACIONES EMITIDAS</p>';
   } else {
     let html = '<table class="tabla-cotizaciones"><thead><tr><th>N° COTIZACIÓN</th><th>RAZÓN SOCIAL</th><th style="text-align:right;">MONTO NETO</th><th>FECHA EMISIÓN</th><th>ESTADO</th><th style="text-align:center;">ACCIONES</th></tr></thead><tbody>';
     cotizacionesEmitidas.forEach((c, index) => {
@@ -1268,13 +1251,13 @@ function cerrarCotizaciones() {
 
 function mostrarResumenCompra() {
   const totalCosto = productosEnCotizacion.reduce((acc, p) => acc + (parseFloat(p.costo) * p.cantidad), 0);
-  let html = '<h4>📋 RESUMEN DE COMPRA</h4><table class="tabla-compra"><thead><tr><th>CÓDIGO</th><th>DESCRIPCIÓN</th><th>CANTIDAD</th><th>COSTO UNITARIO</th><th>PROVEEDOR</th><th>LINK PROVEEDOR</th></tr></thead><tbody>';
+  let html = '<h4>📋 RESUMEN DE COMPRA</h4><div style="overflow-x:auto;"><table class="tabla-compra"><thead><tr><th>CÓDIGO</th><th>DESCRIPCIÓN</th><th>CANTIDAD</th><th>COSTO UNITARIO</th><th>PROVEEDOR</th><th>LINK PROVEEDOR</th></tr></thead><tbody>';
   productosEnCotizacion.forEach(p => {
     const linkSeguro = p.link.startsWith('http') ? p.link : 'https://' + p.link;
     html += `<tr><td>${p.codigo}</td><td>${p.descripcion}</td><td class="valor-numerico">${p.cantidad}</td><td class="valor-numerico">$${parseFloat(p.costo).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td>${p.proveedor}</td><td><a href="${linkSeguro}" target="_blank">${p.link}</a></td></tr>`;
   });
   html += `<tr style="background: #fff3cd; font-weight: bold;"><td colspan="5" style="text-align: right;">TOTAL COSTO DE COMPRA:</td><td class="valor-numerico">$${totalCosto.toLocaleString('es-CL', {minimumFractionDigits: 2})}</td></tr>`;
-  html += '</tbody></table>';
+  html += '</tbody></table></div>';
   document.getElementById('resumenCompra').innerHTML = html;
   document.getElementById('resumenCompra').classList.add('activo');
 }
