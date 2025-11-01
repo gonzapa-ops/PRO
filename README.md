@@ -93,7 +93,10 @@ button {cursor: pointer; border: none; border-radius: 2px; font-weight: 700; tex
 .botones-formulario {display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap;}
 .seccion-cliente {margin-bottom: 20px; border: 1px solid #ddd; border-radius: 2px; padding: 15px; background-color: #fafafa; position: relative;}
 .busqueda-rut {display: flex; gap: 6px; margin-bottom: 15px; align-items: center; flex-wrap: wrap;}
-.busqueda-rut input {flex: 1; min-width: 150px; padding: 8px; font-size: 11px; border: 2px solid #ddd; border-radius: 2px; text-transform: uppercase;}
+.contenedor-rut {flex: 1; min-width: 150px; position: relative; display: flex; align-items: center; gap: 6px;}
+.contenedor-rut input {flex: 1; padding: 8px; font-size: 11px; border: 2px solid #ddd; border-radius: 2px; text-transform: uppercase;}
+.btn-lupa {background: #4B732E; color: white; padding: 8px 12px; font-size: 12px; cursor: pointer; border-radius: 2px; display: flex; align-items: center; justify-content: center; min-width: 44px; height: 36px;}
+.btn-lupa:hover {background: #385525;}
 .busqueda-rut-botones {display: flex; gap: 6px; align-items: center; flex-wrap: wrap;}
 .seccion-productos {margin-bottom: 20px; border: 1px solid #ddd; border-radius: 2px; padding: 15px; background-color: #fafafa; overflow-x: auto;}
 .busqueda-producto {display: flex; gap: 6px; margin-bottom: 15px; align-items: center; position: relative; flex-wrap: wrap;}
@@ -123,9 +126,20 @@ button {cursor: pointer; border: none; border-radius: 2px; font-weight: 700; tex
 .botones-superiores {display: flex; gap: 6px; margin-bottom: 15px; flex-wrap: wrap; align-items: center;}
 #modalCotizaciones {display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.4); z-index: 10000; overflow: auto; padding: 10px;}
 #modalCotizaciones > div {background: white; max-width: 95%; margin: 20px auto; padding: 15px; border-radius: 2px; position: relative; box-shadow: 0 8px 16px rgba(0,0,0,0.15); overflow-x: auto;}
+#modalClientes {display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.4); z-index: 10001; overflow: auto; padding: 10px;}
+.modal-clientes-content {background: white; max-width: 90%; margin: 20px auto; padding: 15px; border-radius: 2px; position: relative; box-shadow: 0 8px 16px rgba(0,0,0,0.15); max-height: 90vh; overflow-y: auto;}
+.modal-clientes-titulo {font-size: 16px; font-weight: 700; margin-bottom: 15px; text-transform: uppercase; color: #3B3B3B; border-bottom: 3px solid #4B732E; padding-bottom: 8px;}
+.btn-cerrar-clientes {position: absolute; top: 10px; right: 15px; background: #9B2E00; color: white; font-size: 14px; border: none; border-radius: 2px; cursor: pointer; padding: 4px 6px; font-weight: 700;}
+.tabla-clientes-modal {width: 100%; border-collapse: collapse; background: white;}
+.tabla-clientes-modal th {background: #1F6F8B; color: white; padding: 8px; text-align: left; text-transform: uppercase; font-weight: 700; font-size: 10px;}
+.tabla-clientes-modal td {border: 1px solid #ddd; padding: 8px; text-transform: uppercase; color: #3B3B3B; font-size: 10px;}
+.tabla-clientes-modal tr:nth-child(even) {background: #E9F0EA;}
+.btn-seleccionar-cliente {background: #4B732E; color: white; padding: 4px 8px; font-size: 9px; cursor: pointer; border: none; border-radius: 2px;}
+.btn-seleccionar-cliente:hover {background: #385525;}
 .resumen-totales {max-width: 350px; margin-left: auto; border-top: 3px solid #F25C05; padding-top: 12px; text-transform: uppercase; margin-bottom: 15px; font-size: 12px;}
 .resumen-linea {display: flex; justify-content: space-between; margin: 4px 0; font-weight: 700; font-size: 11px; color: #3B3B3B;}
 .resumen-linea.total {font-size: 14px; color: #000; font-weight: 900;}
+.resumen-linea.utilidad-total {font-size: 13px; color: #2E7D32; font-weight: 900; background-color: #e8f5e9; padding: 6px; border-radius: 2px; margin-top: 6px; border-left: 4px solid #2E7D32;}
 .tabla-cotizaciones {width: 100%; border-collapse: collapse; background: white; overflow-x: auto;}
 .tabla-cotizaciones th {background: #1F6F8B; color: white; padding: 8px; text-align: left; text-transform: uppercase; font-weight: 700; font-size: 10px;}
 .tabla-cotizaciones td {border: 1px solid #ddd; padding: 8px; text-transform: uppercase; color: #3B3B3B; font-size: 10px;}
@@ -152,7 +166,7 @@ button {cursor: pointer; border: none; border-radius: 2px; font-weight: 700; tex
 .btn-limpiar-cot:hover {background: #3f4f20;}
 .btn-archivo {background: #D9822B; color: white; padding: 8px 12px; font-size: 10px; display: none;}
 .btn-archivo:hover {background: #b36e1e;}
-#modalAceptado {display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.4); z-index: 10001; overflow: auto; padding: 10px;}
+#modalAceptado {display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.4); z-index: 10002; overflow: auto; padding: 10px;}
 .modal-aceptado-content {background: white; max-width: 90%; margin: 20px auto; padding: 15px; border-radius: 2px; position: relative; box-shadow: 0 8px 16px rgba(0,0,0,0.15); max-height: 90vh; overflow-y: auto;}
 .modal-aceptado-titulo {font-size: 16px; font-weight: 700; margin-bottom: 15px; text-transform: uppercase; color: #3B3B3B; border-bottom: 3px solid #4B732E; padding-bottom: 8px;}
 .btn-cerrar-aceptado {position: absolute; top: 10px; right: 15px; background: #9B2E00; color: white; font-size: 14px; border: none; border-radius: 2px; cursor: pointer; padding: 4px 6px; font-weight: 700;}
@@ -175,7 +189,7 @@ button {cursor: pointer; border: none; border-radius: 2px; font-weight: 700; tex
 .resumen-despacho.activo {display: block;}
 .resumen-despacho h4 {color: #3B3B3B; margin-bottom: 8px; text-transform: uppercase; font-weight: 700; font-size: 12px;}
 .resumen-despacho p {margin: 3px 0; font-size: 10px; color: #4B732E; text-transform: uppercase;}
-#modalArchivos {display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.4); z-index: 10002; overflow: auto; padding: 10px;}
+#modalArchivos {display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.4); z-index: 10003; overflow: auto; padding: 10px;}
 .modal-archivos-content {background: white; max-width: 90%; margin: 20px auto; padding: 15px; border-radius: 2px; position: relative; box-shadow: 0 8px 16px rgba(0,0,0,0.15);}
 .modal-archivos-titulo {font-size: 16px; font-weight: 700; margin-bottom: 15px; text-transform: uppercase; color: #3B3B3B; border-bottom: 3px solid #4B732E; padding-bottom: 8px;}
 .btn-cerrar-archivos {position: absolute; top: 10px; right: 15px; background: #9B2E00; color: white; font-size: 14px; border: none; border-radius: 2px; cursor: pointer; padding: 4px 6px; font-weight: 700;}
@@ -189,7 +203,7 @@ button {cursor: pointer; border: none; border-radius: 2px; font-weight: 700; tex
 .tabla-compra .valor-numerico {text-align: right; font-weight: 700;}
 .tabla-compra a {color: #1976d2; text-decoration: none; font-weight: 600; font-size: 9px;}
 .tabla-compra a:hover {text-decoration: underline;}
-#modalVisualizarArchivo {display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.5); z-index: 10003; overflow: auto; padding: 10px;}
+#modalVisualizarArchivo {display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.5); z-index: 10004; overflow: auto; padding: 10px;}
 .modal-archivo-content {background: white; max-width: 95%; max-height: 90vh; margin: 20px auto; border-radius: 2px; position: relative; box-shadow: 0 8px 16px rgba(0,0,0,0.15); overflow: auto;}
 .btn-cerrar-archivo {position: absolute; top: 10px; right: 15px; background: #9B2E00; color: white; font-size: 14px; border: none; border-radius: 2px; cursor: pointer; padding: 4px 6px; font-weight: 700; z-index: 1;}
 .contenido-archivo {padding: 15px; text-align: center;}
@@ -201,7 +215,7 @@ button {cursor: pointer; border: none; border-radius: 2px; font-weight: 700; tex
 .badge-aceptado {background: #4B732E; color: white;}
 .badge-rechazado {background: #9B2E00; color: white;}
 .badge-pendiente {background: #F25C05; color: white;}
-#modalPDF {display: none !important; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.8); z-index: 10004; overflow: auto; padding: 0;}
+#modalPDF {display: none !important; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.8); z-index: 10005; overflow: auto; padding: 0;}
 #modalPDF.mostrar {display: block !important;}
 .modal-pdf-wrapper {width: 100%; height: 100%; display: flex; flex-direction: column;}
 .pdf-header {background: #1F6F8B; color: white; padding: 6px 12px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.3);}
@@ -239,8 +253,9 @@ input[type="number"] {text-align: center;}
     <section class="seccion-cliente">
       <h2 class="seccion-titulo">DATOS DEL CLIENTE</h2>
       <div class="busqueda-rut">
-        <div style="flex: 1; min-width: 150px; position: relative;">
+        <div class="contenedor-rut">
           <input type="text" id="inputRut" placeholder="INGRESE RUT (EJ: 78070615-7)" maxlength="12" />
+          <button class="btn-lupa" onclick="abrirModalClientes()" title="Ver todos los clientes">🔍</button>
           <div id="desplegableClientes" class="desplegable-clientes"></div>
         </div>
         <div class="busqueda-rut-botones">
@@ -300,6 +315,7 @@ input[type="number"] {text-align: center;}
         <div class="resumen-linea"><div>NETO</div><div id="totalNeto">$0.00</div></div>
         <div class="resumen-linea"><div>IVA (19%)</div><div id="totalIva">$0.00</div></div>
         <div class="resumen-linea total"><div>TOTAL</div><div id="totalGeneral">$0.00</div></div>
+        <div class="resumen-linea utilidad-total"><div>TOTAL UTILIDAD</div><div id="totalUtilidad">$0.00</div></div>
       </div>
       
       <div class="seccion-botones-pdf">
@@ -335,6 +351,14 @@ input[type="number"] {text-align: center;}
       <button onclick="cerrarCotizaciones()" style="position:absolute;top:10px;right:15px;background:#9B2E00;color:white;border:none;border-radius:2px;padding:4px 6px;cursor:pointer;font-size:14px;font-weight:bold;">×</button>
       <h2 style="margin-bottom:12px;text-transform:uppercase;color:#3B3B3B;font-size:16px;">COTIZACIONES EMITIDAS</h2>
       <div id="listaCotizaciones" style="overflow-x:auto;"></div>
+    </div>
+  </div>
+
+  <div id="modalClientes">
+    <div class="modal-clientes-content">
+      <button class="btn-cerrar-clientes" onclick="cerrarModalClientes()">×</button>
+      <h2 class="modal-clientes-titulo">SELECCIONAR CLIENTE</h2>
+      <div id="listaClientesModal" style="overflow-x:auto;"></div>
     </div>
   </div>
 
@@ -545,6 +569,35 @@ function seleccionarClienteDesplegable(rut, razonSocial) {
   document.getElementById('inputRut').value = rut;
   document.getElementById('desplegableClientes').classList.remove('activo');
   buscarCliente();
+}
+
+function abrirModalClientes() {
+  const modal = document.getElementById('modalClientes');
+  const listado = document.getElementById('listaClientesModal');
+  const todos = gestorClientes.obtenerTodos();
+  const clientes = Object.entries(todos);
+  
+  if (clientes.length === 0) {
+    listado.innerHTML = '<p style="text-transform:uppercase; text-align:center; padding: 15px; font-size:11px;">NO HAY CLIENTES REGISTRADOS</p>';
+  } else {
+    let html = '<div style="overflow-x:auto;"><table class="tabla-clientes-modal"><thead><tr><th>RUT</th><th>RAZÓN SOCIAL</th><th>GIRO</th><th>CONTACTO</th><th>CELULAR</th><th>ACCIÓN</th></tr></thead><tbody>';
+    clientes.forEach(([rut, cliente]) => {
+      html += `<tr><td>${rut}</td><td>${cliente.razonSocial}</td><td>${cliente.giro}</td><td>${cliente.nombreContacto}</td><td>${cliente.celular}</td><td><button class="btn-seleccionar-cliente" onclick="seleccionarClienteDelModal('${rut}')">SELECCIONAR</button></td></tr>`;
+    });
+    html += '</tbody></table></div>';
+    listado.innerHTML = html;
+  }
+  modal.style.display = 'block';
+}
+
+function seleccionarClienteDelModal(rut) {
+  document.getElementById('inputRut').value = rut;
+  cerrarModalClientes();
+  buscarCliente();
+}
+
+function cerrarModalClientes() {
+  document.getElementById('modalClientes').style.display = 'none';
 }
 
 document.addEventListener('click', function(e) {
@@ -922,9 +975,13 @@ function actualizarResumenTotales() {
   const net = productosEnCotizacion.reduce((acc, p) => acc + parseFloat(p.total), 0);
   const iva = +(net * 0.19).toFixed(2);
   const tot = +(net + iva).toFixed(2);
+  const totalCostos = productosEnCotizacion.reduce((acc, p) => acc + (parseFloat(p.costo) * p.cantidad), 0);
+  const totalUtilidad = +(net - totalCostos).toFixed(2);
+  
   document.getElementById('totalNeto').textContent = '$' + net.toLocaleString('es-CL', {minimumFractionDigits: 2});
   document.getElementById('totalIva').textContent = '$' + iva.toLocaleString('es-CL', {minimumFractionDigits: 2});
   document.getElementById('totalGeneral').textContent = '$' + tot.toLocaleString('es-CL', {minimumFractionDigits: 2});
+  document.getElementById('totalUtilidad').textContent = '$' + totalUtilidad.toLocaleString('es-CL', {minimumFractionDigits: 2});
   document.getElementById('resumenTotales').style.display = 'block';
 }
 
@@ -1163,14 +1220,6 @@ function generarPDFDocumento(cotizacion) {
   setTimeout(() => {
     doc.save(`cotizacion-${cotizacion.numero}.pdf`);
   }, 500);
-}
-
-function mostrarPDFEnMismaVentana() {
-  const pdfDataUri = pdfActualDoc.output('datauristring');
-  const modal = document.getElementById('modalPDF');
-  const iframe = document.getElementById('pdfIframe');
-  iframe.src = pdfDataUri;
-  modal.classList.add('mostrar');
 }
 
 function cerrarModalPDF() {
