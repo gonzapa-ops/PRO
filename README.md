@@ -31,9 +31,6 @@ button {cursor: pointer; border: none; border-radius: 2px; font-weight: 700; tex
 .btn-articulos {background: #4B732E; color: white;}
 .btn-articulos:hover {background: #385525;}
 .btn-articulos:disabled {background: #a0a0a0; cursor: not-allowed;}
-.btn-clientes {background: #1F6F8B; color: white;}
-.btn-clientes:hover {background: #174d63;}
-.btn-clientes:disabled {background: #a0a0a0; cursor: not-allowed;}
 .btn-pdf {background: #F25C05; color: white; padding: 8px 12px; font-size: 11px;}
 .btn-pdf:hover {background: #cb4a04;}
 .btn-pdf:disabled {background: #a0a0a0; cursor: not-allowed;}
@@ -122,8 +119,6 @@ button {cursor: pointer; border: none; border-radius: 2px; font-weight: 700; tex
 .botones-superiores {display: flex; gap: 6px; margin-bottom: 15px; flex-wrap: wrap; align-items: center;}
 #modalCotizaciones {display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.4); z-index: 10000; overflow: auto; padding: 10px;}
 #modalCotizaciones > div {background: white; max-width: 95%; margin: 20px auto; padding: 15px; border-radius: 2px; position: relative; box-shadow: 0 8px 16px rgba(0,0,0,0.15); overflow-x: auto;}
-#modalClientes {display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.4); z-index: 9998; overflow: auto; padding: 10px;}
-#modalClientes > div {background: white; max-width: 95%; margin: 20px auto; padding: 15px; border-radius: 2px; position: relative; box-shadow: 0 8px 16px rgba(0,0,0,0.15); overflow-x: auto;}
 .resumen-totales {max-width: 350px; margin-left: auto; border-top: 3px solid #F25C05; padding-top: 12px; text-transform: uppercase; margin-bottom: 15px; font-size: 12px;}
 .resumen-linea {display: flex; justify-content: space-between; margin: 4px 0; font-weight: 700; font-size: 11px; color: #3B3B3B;}
 .resumen-linea.total {font-size: 14px; color: #000; font-weight: 900;}
@@ -228,7 +223,6 @@ input[type="number"] {text-align: center;}
     <div class="botones-superiores">
       <button class="btn btn-articulos" onclick="abrirArticulos()" id="btnArticulos">ARTÍCULOS</button>
       <button class="btn btn-buscar" onclick="mostrarCotizaciones()" id="btnCotizaciones">COTIZACIONES</button>
-      <button class="btn btn-clientes" onclick="abrirClientes()" id="btnClientes">CLIENTES</button>
     </div>
 
     <div id="seccionBloqueada" class="seccion-bloqueada">
@@ -242,7 +236,6 @@ input[type="number"] {text-align: center;}
         <input type="text" id="inputRut" placeholder="INGRESE RUT (EJ: 78070615-7)" maxlength="12" />
         <div class="busqueda-rut-botones">
           <button class="btn btn-buscar" onclick="buscarCliente()" id="btnBuscarCliente">BUSCAR</button>
-          <button class="btn btn-clientes" onclick="abrirClientes()" id="btnClientesDesdeRut">CLIENTES</button>
           <button class="btn btn-limpiar" onclick="limpiarCotizacion()" id="btnLimpiarCliente">LIMPIAR</button>
         </div>
       </div>
@@ -285,10 +278,7 @@ input[type="number"] {text-align: center;}
           <div class="campo-grupo"><label>PORCENTAJE (%) *</label><input type="number" id="porcentajeProducto" min="0" step="0.01" value="0" /></div>
           <div class="campo-grupo"><label>VALOR NETO (AUTOCALCULADO)</label><input type="number" id="valorNetoProducto" disabled /></div>
         </div>
-        <div class="fila-campos-producto">
-          <div class="campo-grupo"><label>PROVEEDOR *</label><input type="text" id="proveedorProducto" /></div>
-          <div class="campo-grupo"><label>LINK *</label><input type="text" id="linkProducto" /></div>
-        </div>
+        <div class="campo-grupo"><label>LINK *</label><input type="text" id="linkProducto" /></div>
         <div class="botones-producto">
           <button class="btn btn-agregar" onclick="guardarProducto()">GUARDAR PRODUCTO</button>
           <button class="btn btn-cancelar" onclick="cancelarProducto()">CANCELAR</button>
@@ -328,14 +318,6 @@ input[type="number"] {text-align: center;}
       <div class="modal-titulo">ARTÍCULOS (PRODUCTOS Y SERVICIOS REGISTRADOS)</div>
       <div id="tablaArticulosContenedor"></div>
       <div id="formularioEditarArticulo" class="formulario-editar-articulo" style="display: none;"></div>
-    </div>
-  </div>
-
-  <div id="modalClientes">
-    <div>
-      <button onclick="cerrarClientes()" style="position:absolute;top:10px;right:15px;background:#9B2E00;color:white;border:none;border-radius:2px;padding:4px 6px;cursor:pointer;font-size:14px;font-weight:bold;">×</button>
-      <h2 style="margin-bottom:12px;text-transform:uppercase;color:#3B3B3B;font-size:16px;">CLIENTES REGISTRADOS</h2>
-      <div id="listaClientes" style="overflow-x:auto;"></div>
     </div>
   </div>
 
@@ -602,7 +584,9 @@ function mostrarFormularioNuevo(rut) {
   document.getElementById('btnCancelarEdicion').style.display = 'none';
 }
 
-function validarRut(rut) {return /^[0-9]{7,8}-[0-9kK]$/.test(rut);}
+function validarRut(rut) {
+  return /^[0-9]{7,8}-[0-9kK]$/.test(rut);
+}
 
 function mostrarMensaje(texto, tipo) {
   const m = document.getElementById('mensaje');
@@ -678,7 +662,9 @@ function guardarCliente() {
   habilitarProductos();
 }
 
-function validarEmail(e) {return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);}
+function validarEmail(e) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
+}
 
 function habilitarProductos() {
   if (esLecturaCotizacion || estadoCotizacionActual === 'aceptado' || estadoCotizacionActual === 'rechazado') {
@@ -735,7 +721,6 @@ function limpiarCotizacion() {
   document.getElementById('btnArticulos').disabled = false;
   document.getElementById('btnPDF').disabled = false;
   document.getElementById('btnCotizaciones').disabled = false;
-  document.getElementById('btnClientes').disabled = false;
   document.getElementById('btnBuscarCliente').disabled = false;
   document.getElementById('btnLimpiarCliente').disabled = false;
   document.getElementById('btnVerArchivos').style.display = 'none';
@@ -776,7 +761,6 @@ function buscarProducto() {
     document.getElementById('costoProducto').value = '';
     document.getElementById('porcentajeProducto').value = '0';
     document.getElementById('valorNetoProducto').value = '';
-    document.getElementById('proveedorProducto').value = '';
     document.getElementById('linkProducto').value = '';
   }
 }
@@ -794,11 +778,10 @@ function guardarProducto() {
   const cos = parseFloat(document.getElementById('costoProducto').value);
   const por = parseFloat(document.getElementById('porcentajeProducto').value) || 0;
   const vn = parseFloat(document.getElementById('valorNetoProducto').value);
-  const prov = document.getElementById('proveedorProducto').value.trim();
   const link = document.getElementById('linkProducto').value.trim().toLowerCase();
-  if (!cod || !desc || isNaN(cos) || cos <= 0 || !prov || !link) return mostrarMensajeProducto('COMPLETE TODOS LOS CAMPOS', 'error');
+  if (!cod || !desc || isNaN(cos) || cos <= 0 || !link) return mostrarMensajeProducto('COMPLETE TODOS LOS CAMPOS', 'error');
   if (isNaN(vn) || vn <= 0) return mostrarMensajeProducto('VALOR NETO INVÁLIDO', 'error');
-  const prod = {codigo: cod, descripcion: desc.toUpperCase(), costo: parseFloat(cos.toFixed(2)), porcentaje: parseFloat(por.toFixed(2)), valorNeto: parseFloat(vn.toFixed(2)), proveedor: prov.toUpperCase(), link: link};
+  const prod = {codigo: cod, descripcion: desc.toUpperCase(), costo: parseFloat(cos.toFixed(2)), porcentaje: parseFloat(por.toFixed(2)), valorNeto: parseFloat(vn.toFixed(2)), link: link};
   gestorProductos.agregarProducto(cod, prod);
   mostrarMensajeProducto('PRODUCTO GUARDADO', 'exito');
   cancelarProducto();
@@ -812,7 +795,6 @@ function cancelarProducto() {
   document.getElementById('costoProducto').value = '';
   document.getElementById('porcentajeProducto').value = '0';
   document.getElementById('valorNetoProducto').value = '';
-  document.getElementById('proveedorProducto').value = '';
   document.getElementById('linkProducto').value = '';
   document.getElementById('inputCodigoProducto').value = '';
   document.getElementById('mensajeProducto').style.display = 'none';
@@ -828,7 +810,7 @@ function agregarProductoACotizacion(cod, prod) {
     ex.cantidad++;
     ex.total = +(ex.cantidad * ex.valorNetaConDescuento).toFixed(2);
   } else {
-    productosEnCotizacion.push({codigo: prod.codigo, descripcion: prod.descripcion, cantidad: 1, valorNeto: prod.valorNeto, costo: prod.costo, descuento: 0, valorNetaConDescuento: prod.valorNeto, total: prod.valorNeto.toFixed(2), proveedor: prod.proveedor, link: prod.link});
+    productosEnCotizacion.push({codigo: prod.codigo, descripcion: prod.descripcion, cantidad: 1, valorNeto: prod.valorNeto, costo: prod.costo, descuento: 0, valorNetaConDescuento: prod.valorNeto, total: prod.valorNeto.toFixed(2), link: prod.link});
   }
   actualizarTablaProductos();
 }
@@ -840,7 +822,7 @@ function actualizarTablaProductos() {
     document.getElementById('resumenTotales').style.display = 'none';
     return;
   }
-  let html = '<div style="overflow-x:auto;"><table><thead><tr><th style="min-width:60px;">CÓDIGO</th><th style="min-width:100px;">DESCRIPCIÓN</th><th style="width:50px;">CANT</th><th style="min-width:70px;">V.NETO</th><th style="width:50px;">DESC(%)</th><th style="min-width:70px;">V.NETO DESC</th><th style="min-width:70px;">COSTO</th><th style="min-width:70px;">COSTO TOT</th><th style="min-width:70px;">UTILIDAD TOT</th><th style="min-width:70px;">TOTAL</th><th style="min-width:80px;">PROVEEDOR</th><th style="width:60px;">ACCIÓN</th></tr></thead><tbody>';
+  let html = '<div style="overflow-x:auto;"><table><thead><tr><th style="min-width:60px;">CÓDIGO</th><th style="min-width:100px;">DESCRIPCIÓN</th><th style="width:80px;">CANT</th><th style="min-width:70px;">V.NETO</th><th style="width:50px;">DESC(%)</th><th style="min-width:70px;">V.NETO DESC</th><th style="min-width:70px;">COSTO</th><th style="min-width:70px;">COSTO TOT</th><th style="min-width:70px;">% UTILIDAD</th><th style="min-width:70px;">UTILIDAD TOT</th><th style="min-width:70px;">TOTAL</th><th style="width:60px;">ACCIÓN</th></tr></thead><tbody>';
   productosEnCotizacion.forEach((p, i) => {
     const bloqueado = esLecturaCotizacion || estadoCotizacionActual === 'aceptado' || estadoCotizacionActual === 'rechazado';
     const inputQuantityDisabled = bloqueado ? 'disabled' : '';
@@ -849,7 +831,9 @@ function actualizarTablaProductos() {
     const costoTotal = parseFloat(p.costo) * p.cantidad;
     const utilidadUnitaria = parseFloat(p.total) / p.cantidad - parseFloat(p.costo);
     const utilidadTotal = utilidadUnitaria * p.cantidad;
-    html += `<tr><td>${p.codigo}</td><td>${p.descripcion}</td><td class="texto-centrado"><input type="number" min="1" value="${p.cantidad}" onchange="actualizarCantidad(${i}, this.value)" ${inputQuantityDisabled} style="width:100%;text-align:center;border:1px solid #ddd;padding:4px;"></td><td class="valor-numerico">$${parseFloat(p.valorNeto).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td class="texto-centrado"><input type="number" min="0" max="100" step="0.01" value="${p.descuento}" style="width:100%;padding:4px;text-align:center;border:1px solid #ddd;" onchange="actualizarDescuento(${i}, this.value)" ${inputDescuentoDisabled}></td><td class="valor-numerico">$${parseFloat(p.valorNetaConDescuento).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td class="valor-numerico">$${parseFloat(p.costo).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td class="valor-numerico">$${parseFloat(costoTotal).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td class="valor-numerico">$${parseFloat(utilidadTotal).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td class="valor-numerico">$${parseFloat(p.total).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td>${p.proveedor}</td><td><button class="btn-eliminar" onclick="eliminarProducto(${i})" style="display:${btnEliminarDisplay};width:100%;">DEL</button></td></tr>`;
+    const precioUnitario = parseFloat(p.total) / p.cantidad;
+    const porcentajeUtilidad = precioUnitario > 0 ? ((utilidadUnitaria / precioUnitario) * 100).toFixed(2) : 0;
+    html += `<tr><td>${p.codigo}</td><td>${p.descripcion}</td><td class="texto-centrado"><input type="number" min="1" value="${p.cantidad}" onchange="actualizarCantidad(${i}, this.value)" ${inputQuantityDisabled} style="width:100%;text-align:center;border:1px solid #ddd;padding:4px;"></td><td class="valor-numerico">$${parseFloat(p.valorNeto).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td class="texto-centrado"><input type="number" min="0" max="100" step="0.01" value="${p.descuento}" style="width:100%;padding:4px;text-align:center;border:1px solid #ddd;" onchange="actualizarDescuento(${i}, this.value)" ${inputDescuentoDisabled}></td><td class="valor-numerico">$${parseFloat(p.valorNetaConDescuento).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td class="valor-numerico">$${parseFloat(p.costo).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td class="valor-numerico">$${parseFloat(costoTotal).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td class="valor-numerico">${porcentajeUtilidad}%</td><td class="valor-numerico">$${parseFloat(utilidadTotal).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td class="valor-numerico">$${parseFloat(p.total).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td><button class="btn-eliminar" onclick="eliminarProducto(${i})" style="display:${btnEliminarDisplay};width:100%;">DEL</button></td></tr>`;
   });
   html += '</tbody></table></div>';
   cont.innerHTML = html;
@@ -904,15 +888,15 @@ function cerrarArticulos() {
 
 function listarArticulos() {
   const todos = gestorProductos.obtenerTodos();
-  let html = '<div style="overflow-x:auto;"><table class="tabla-articulos"><thead><tr><th>CÓDIGO</th><th>DESCRIPCIÓN</th><th>COSTO</th><th>PORCENTAJE (%)</th><th>VALOR NETO</th><th>UTILIDAD</th><th>PROVEEDOR</th><th>LINK</th><th>ACCIÓN</th></tr></thead><tbody>';
+  let html = '<div style="overflow-x:auto;"><table class="tabla-articulos"><thead><tr><th>CÓDIGO</th><th>DESCRIPCIÓN</th><th>COSTO</th><th>PORCENTAJE (%)</th><th>VALOR NETO</th><th>UTILIDAD</th><th>LINK</th><th>ACCIÓN</th></tr></thead><tbody>';
   const claves = Object.keys(todos);
   if (claves.length === 0) {
-    html += '<tr><td colspan="9" style="text-align:center;">NO HAY ARTÍCULOS</td></tr>';
+    html += '<tr><td colspan="8" style="text-align:center;">NO HAY ARTÍCULOS</td></tr>';
   } else {
     claves.forEach(codigo => {
       const art = todos[codigo];
       const util = (parseFloat(art.valorNeto) - parseFloat(art.costo)).toFixed(2);
-      html += `<tr><td>${art.codigo}</td><td>${art.descripcion}</td><td class="valor-numerico">$${parseFloat(art.costo).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td class="valor-numerico">${parseFloat(art.porcentaje).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td class="valor-numerico">$${parseFloat(art.valorNeto).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td class="valor-numerico">$${parseFloat(util).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td>${art.proveedor}</td><td style="text-transform:lowercase;"><a href="${art.link}" target="_blank">${art.link}</a></td><td><button class="btn btn-editar" onclick="editarArticulo('${art.codigo}')">EDITAR</button><button class="btn btn-eliminar" onclick="eliminarArticulo('${art.codigo}')">ELIMINAR</button></td></tr>`;
+      html += `<tr><td>${art.codigo}</td><td>${art.descripcion}</td><td class="valor-numerico">$${parseFloat(art.costo).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td class="valor-numerico">${parseFloat(art.porcentaje).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td class="valor-numerico">$${parseFloat(art.valorNeto).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td class="valor-numerico">$${parseFloat(util).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td style="text-transform:lowercase;"><a href="${art.link}" target="_blank">${art.link}</a></td><td><button class="btn btn-editar" onclick="editarArticulo('${art.codigo}')">EDITAR</button><button class="btn btn-eliminar" onclick="eliminarArticulo('${art.codigo}')">ELIMINAR</button></td></tr>`;
     });
   }
   html += '</tbody></table></div>';
@@ -925,7 +909,7 @@ function editarArticulo(codigo) {
   articuloEdicion = art;
   const f = document.getElementById('formularioEditarArticulo');
   f.style.display = 'block';
-  f.innerHTML = `<h4>EDITAR ARTÍCULO</h4><div class="fila-campos-producto"><div class="campo-grupo"><label>CÓDIGO</label><input type="text" value="${art.codigo}" disabled></div><div class="campo-grupo"><label>DESCRIPCIÓN</label><input type="text" id="editarDescripcion" value="${art.descripcion}"></div></div><div class="fila-campos-producto-tres"><div class="campo-grupo"><label>COSTO</label><input type="number" id="editarCosto" value="${art.costo}"></div><div class="campo-grupo"><label>PORCENTAJE (%)</label><input type="number" id="editarPorcentaje" value="${art.porcentaje}"></div><div class="campo-grupo"><label>VALOR NETO</label><input type="number" id="editarValorNeto" value="${art.valorNeto}" disabled></div></div><div class="fila-campos-producto"><div class="campo-grupo"><label>PROVEEDOR</label><input type="text" id="editarProveedor" value="${art.proveedor}"></div><div class="campo-grupo"><label>LINK</label><input type="text" id="editarLink" value="${art.link}"></div></div><div class="botones-producto"><button class="btn btn-agregar" onclick="guardarEdicionArticulo()">GUARDAR</button><button class="btn btn-cancelar" onclick="cancelarEdicionArticulo()">CANCELAR</button></div>`;
+  f.innerHTML = `<h4>EDITAR ARTÍCULO</h4><div class="fila-campos-producto"><div class="campo-grupo"><label>CÓDIGO</label><input type="text" value="${art.codigo}" disabled></div><div class="campo-grupo"><label>DESCRIPCIÓN</label><input type="text" id="editarDescripcion" value="${art.descripcion}"></div></div><div class="fila-campos-producto-tres"><div class="campo-grupo"><label>COSTO</label><input type="number" id="editarCosto" value="${art.costo}"></div><div class="campo-grupo"><label>PORCENTAJE (%)</label><input type="number" id="editarPorcentaje" value="${art.porcentaje}"></div><div class="campo-grupo"><label>VALOR NETO</label><input type="number" id="editarValorNeto" value="${art.valorNeto}" disabled></div></div><div class="campo-grupo"><label>LINK</label><input type="text" id="editarLink" value="${art.link}"></div><div class="botones-producto"><button class="btn btn-agregar" onclick="guardarEdicionArticulo()">GUARDAR</button><button class="btn btn-cancelar" onclick="cancelarEdicionArticulo()">CANCELAR</button></div>`;
   document.getElementById('editarCosto').addEventListener('change', calcularValorNetoEdicion);
   document.getElementById('editarPorcentaje').addEventListener('change', calcularValorNetoEdicion);
 }
@@ -944,10 +928,9 @@ function guardarEdicionArticulo() {
   const cos = parseFloat(document.getElementById('editarCosto').value) || 0;
   const por = parseFloat(document.getElementById('editarPorcentaje').value) || 0;
   const vn = parseFloat(document.getElementById('editarValorNeto').value) || 0;
-  const prov = document.getElementById('editarProveedor').value.trim().toUpperCase();
   const link = document.getElementById('editarLink').value.trim().toLowerCase();
-  if (!desc || !prov || !link) {alert('COMPLETE TODOS'); return;}
-  const nuevo = {codigo, descripcion: desc, costo: cos, porcentaje: por, valorNeto: vn, proveedor: prov, link: link};
+  if (!desc || !link) {alert('COMPLETE TODOS'); return;}
+  const nuevo = {codigo, descripcion: desc, costo: cos, porcentaje: por, valorNeto: vn, link: link};
   gestorProductos.actualizarProducto(codigo, nuevo);
   articuloEdicion = null;
   document.getElementById('formularioEditarArticulo').style.display = 'none';
@@ -964,43 +947,6 @@ function eliminarArticulo(codigo) {
     gestorProductos.eliminarProducto(codigo);
     listarArticulos();
   }
-}
-
-function abrirClientes() {
-  document.getElementById('modalClientes').style.display = 'block';
-  listarClientes();
-}
-
-function cerrarClientes() {
-  document.getElementById('modalClientes').style.display = 'none';
-}
-
-function listarClientes() {
-  const todos = gestorClientes.obtenerTodos();
-  let html = '<table class="tabla-clientes"><thead><tr><th>RUT</th><th>RAZÓN SOCIAL</th><th>GIRO</th><th>CONTACTO</th><th>CELULAR</th><th>MAIL</th><th>ACCIÓN</th></tr></thead><tbody>';
-  const claves = Object.keys(todos);
-  if (claves.length === 0) {
-    html += '<tr><td colspan="7" style="text-align:center;">NO HAY CLIENTES REGISTRADOS</td></tr>';
-  } else {
-    claves.forEach(rut => {
-      const cli = todos[rut];
-      html += `<tr><td>${cli.rut}</td><td>${cli.razonSocial}</td><td>${cli.giro}</td><td>${cli.nombreContacto}</td><td>${cli.celular}</td><td>${cli.mail}</td><td><button class="btn btn-editar" onclick="editarClienteDesdeModal('${cli.rut}')">EDITAR</button></td></tr>`;
-    });
-  }
-  html += '</tbody></table>';
-  document.getElementById('listaClientes').innerHTML = html;
-}
-
-function editarClienteDesdeModal(rut) {
-  const cliente = gestorClientes.buscarPorRut(rut);
-  if (!cliente) return;
-  clienteActual = cliente;
-  mostrarResumenCliente(cliente);
-  document.getElementById('inputRut').value = rut;
-  document.getElementById('formularioCliente').classList.remove('activo');
-  cerrarClientes();
-  mostrarMensaje('CLIENTE CARGADO PARA EDITAR', 'exito');
-  habilitarProductos();
 }
 
 function generarPDF() {
@@ -1097,27 +1043,26 @@ function generarPDFDocumento(cotizacion) {
   yPos += 5;
   doc.autoTable({
     startY: yPos,
-    head: [['Código', 'Descripción', 'Cant.', 'Valor Neto', 'Total']],
+    head: [['CÓDIGO', 'DESCRIPCIÓN', 'CANT.', 'VALOR NETO', 'TOTAL']],
     body: cotizacion.productos.map(p => [p.codigo, p.descripcion, p.cantidad.toString(), `$${Math.round(parseFloat(p.valorNetaConDescuento)).toLocaleString('es-CL')}`, `$${Math.round(parseFloat(p.total)).toLocaleString('es-CL')}`]),
     theme: 'striped',
-    styles: {fontSize: 8, cellPadding: 3},
-    headStyles: {fillColor: [31, 111, 139], textColor: 255, fontStyle: 'bold'},
-    columnStyles: {0: {cellWidth: 20}, 1: {cellWidth: 90}, 2: {cellWidth: 15, halign: 'center'}, 3: {cellWidth: 30, halign: 'right'}, 4: {cellWidth: 30, halign: 'right'}},
+    styles: {fontSize: 8, cellPadding: 3, halign: 'center'},
+    headStyles: {fillColor: [31, 111, 139], textColor: 255, fontStyle: 'bold', halign: 'center'},
+    columnStyles: {0: {cellWidth: 20, halign: 'center'}, 1: {cellWidth: 90, halign: 'left'}, 2: {cellWidth: 15, halign: 'center'}, 3: {cellWidth: 30, halign: 'right'}, 4: {cellWidth: 30, halign: 'right'}},
     margin: {left: 15, right: 15}
   });
 
   const resumenY = doc.lastAutoTable.finalY + 15;
-  const resumenX = 120;
   doc.setFont(undefined, 'normal');
   doc.setTextColor(0, 0, 0);
   doc.setFontSize(10);
-  doc.text("Neto:", resumenX, resumenY);
-  doc.text(`$${Math.round(net).toLocaleString('es-CL')}`, 185, resumenY, {align: 'right'});
-  doc.text("IVA (19%):", resumenX, resumenY + 7);
-  doc.text(`$${Math.round(iva).toLocaleString('es-CL')}`, 185, resumenY + 7, {align: 'right'});
+  doc.text("NETO:", 140, resumenY);
+  doc.text(`$${Math.round(net).toLocaleString('es-CL')}`, 195, resumenY, {align: 'right'});
+  doc.text("IVA (19%):", 140, resumenY + 7);
+  doc.text(`$${Math.round(iva).toLocaleString('es-CL')}`, 195, resumenY + 7, {align: 'right'});
   doc.setFont(undefined, 'bold');
-  doc.text("TOTAL:", resumenX, resumenY + 14);
-  doc.text(`$${Math.round(tot).toLocaleString('es-CL')}`, 185, resumenY + 14, {align: 'right'});
+  doc.text("TOTAL:", 140, resumenY + 14);
+  doc.text(`$${Math.round(tot).toLocaleString('es-CL')}`, 195, resumenY + 14, {align: 'right'});
 
   doc.setFontSize(8);
   doc.setFont(undefined, 'bold');
@@ -1176,12 +1121,12 @@ function mostrarCotizaciones() {
 }
 
 function verCotizacion(index) {
-  if (index < 0 || index >= cotizacionesEmitidas.length) { alert('ERROR: COTIZACIÓN NO ENCONTRADA'); return; }
+  if (index < 0 || index >= cotizacionesEmitidas.length) {alert('ERROR: COTIZACIÓN NO ENCONTRADA'); return;}
   generarPDFDocumento(cotizacionesEmitidas[index]);
 }
 
 function editarCotizacionGuardada(index) {
-  if (index < 0 || index >= cotizacionesEmitidas.length) { alert('ERROR: COTIZACIÓN NO ENCONTRADA'); return; }
+  if (index < 0 || index >= cotizacionesEmitidas.length) {alert('ERROR: COTIZACIÓN NO ENCONTRADA'); return;}
   const cotizacion = cotizacionesEmitidas[index];
   
   if (cotizacion.estado === 'rechazado') {
@@ -1217,7 +1162,6 @@ function editarCotizacionGuardada(index) {
     document.getElementById('btnArticulos').disabled = false;
     document.getElementById('btnPDF').disabled = false;
     document.getElementById('btnCotizaciones').disabled = false;
-    document.getElementById('btnClientes').disabled = false;
     document.getElementById('btnLimpiarCotizacion').disabled = false;
   } else {
     document.getElementById('seccionBloqueada').classList.remove('activa');
@@ -1252,21 +1196,21 @@ function cerrarCotizaciones() {
 
 function mostrarResumenCompra() {
   const totalCosto = productosEnCotizacion.reduce((acc, p) => acc + (parseFloat(p.costo) * p.cantidad), 0);
-  let html = '<h4>📋 RESUMEN DE COMPRA</h4><div style="overflow-x:auto;"><table class="tabla-compra"><thead><tr><th>CÓDIGO</th><th>DESCRIPCIÓN</th><th>CANTIDAD</th><th>COSTO UNITARIO</th><th>PROVEEDOR</th><th>LINK PROVEEDOR</th></tr></thead><tbody>';
+  let html = '<h4>📋 RESUMEN DE COMPRA</h4><div style="overflow-x:auto;"><table class="tabla-compra"><thead><tr><th>CÓDIGO</th><th>DESCRIPCIÓN</th><th>CANTIDAD</th><th>COSTO UNITARIO</th><th>LINK</th></tr></thead><tbody>';
   productosEnCotizacion.forEach(p => {
     const linkSeguro = p.link.startsWith('http') ? p.link : 'https://' + p.link;
-    html += `<tr><td>${p.codigo}</td><td>${p.descripcion}</td><td class="valor-numerico">${p.cantidad}</td><td class="valor-numerico">$${parseFloat(p.costo).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td>${p.proveedor}</td><td><a href="${linkSeguro}" target="_blank">${p.link}</a></td></tr>`;
+    html += `<tr><td>${p.codigo}</td><td>${p.descripcion}</td><td class="valor-numerico">${p.cantidad}</td><td class="valor-numerico">$${parseFloat(p.costo).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td><a href="${linkSeguro}" target="_blank">${p.link}</a></td></tr>`;
   });
-  html += `<tr style="background: #fff3cd; font-weight: bold;"><td colspan="5" style="text-align: right;">TOTAL COSTO DE COMPRA:</td><td class="valor-numerico">$${totalCosto.toLocaleString('es-CL', {minimumFractionDigits: 2})}</td></tr>`;
+  html += `<tr style="background: #fff3cd; font-weight: bold;"><td colspan="4" style="text-align: right;">TOTAL COSTO DE COMPRA:</td><td class="valor-numerico">$${totalCosto.toLocaleString('es-CL', {minimumFractionDigits: 2})}</td></tr>`;
   html += '</tbody></table></div>';
   document.getElementById('resumenCompra').innerHTML = html;
   document.getElementById('resumenCompra').classList.add('activo');
 }
 
 function marcarAceptado() {
-  if (!clienteActual) { alert('DEBE SELECCIONAR UN CLIENTE PRIMERO'); return; }
-  if (productosEnCotizacion.length === 0) { alert('DEBE AGREGAR PRODUCTOS A LA COTIZACIÓN'); return; }
-  if (!pdfEmitido) { alert('DEBE GENERAR PDF PRIMERO'); return; }
+  if (!clienteActual) {alert('DEBE SELECCIONAR UN CLIENTE PRIMERO'); return;}
+  if (productosEnCotizacion.length === 0) {alert('DEBE AGREGAR PRODUCTOS A LA COTIZACIÓN'); return;}
+  if (!pdfEmitido) {alert('DEBE GENERAR PDF PRIMERO'); return;}
   archivosAdjuntos = [];
   document.getElementById('tipoEntrega').value = '';
   document.getElementById('regionSelect').value = '';
@@ -1296,7 +1240,7 @@ function abrirSelectorArchivos() {
 function agregarArchivo(event) {
   const file = event.target.files[0];
   if (!file) return;
-  const nuevoArchivo = { nombre: file.name, tamaño: (file.size / 1024).toFixed(2), tipo: file.type, contenido: '' };
+  const nuevoArchivo = {nombre: file.name, tamaño: (file.size / 1024).toFixed(2), tipo: file.type, contenido: ''};
   
   const reader = new FileReader();
   reader.onload = function(e) {
@@ -1340,12 +1284,12 @@ function confirmarAceptacion() {
   const contacto = document.getElementById('contactoDespacho').value.trim();
   const celular = document.getElementById('celularDespacho').value.trim();
   
-  if (!tipoEntrega) { alert('DEBE SELECCIONAR UN TIPO DE ENTREGA'); return; }
-  if (!region) { alert('DEBE SELECCIONAR UNA REGIÓN'); return; }
-  if (!comuna) { alert('DEBE INGRESAR UNA COMUNA'); return; }
-  if (!direccion) { alert('DEBE INGRESAR DIRECCIÓN'); return; }
-  if (!contacto) { alert('DEBE INGRESAR CONTACTO DE DESPACHO'); return; }
-  if (!celular) { alert('DEBE INGRESAR CELULAR DE CONTACTO'); return; }
+  if (!tipoEntrega) {alert('DEBE SELECCIONAR UN TIPO DE ENTREGA'); return;}
+  if (!region) {alert('DEBE SELECCIONAR UNA REGIÓN'); return;}
+  if (!comuna) {alert('DEBE INGRESAR UNA COMUNA'); return;}
+  if (!direccion) {alert('DEBE INGRESAR DIRECCIÓN'); return;}
+  if (!contacto) {alert('DEBE INGRESAR CONTACTO DE DESPACHO'); return;}
+  if (!celular) {alert('DEBE INGRESAR CELULAR DE CONTACTO'); return;}
   
   datosDespacho = {
     tipoEntrega: tipoEntrega,
@@ -1389,7 +1333,6 @@ function bloquearEdicionConBotonesActivos() {
   document.getElementById('btnArticulos').disabled = false;
   document.getElementById('btnPDF').disabled = false;
   document.getElementById('btnCotizaciones').disabled = false;
-  document.getElementById('btnClientes').disabled = false;
   document.getElementById('btnBuscarCliente').disabled = true;
   document.getElementById('btnLimpiarCliente').disabled = false;
   document.getElementById('btnBuscarProducto').disabled = true;
@@ -1400,8 +1343,8 @@ function bloquearEdicionConBotonesActivos() {
 }
 
 function marcarRechazado() {
-  if (!clienteActual) { alert('DEBE SELECCIONAR UN CLIENTE PRIMERO'); return; }
-  if (!pdfEmitido) { alert('DEBE GENERAR PDF PRIMERO'); return; }
+  if (!clienteActual) {alert('DEBE SELECCIONAR UN CLIENTE PRIMERO'); return;}
+  if (!pdfEmitido) {alert('DEBE GENERAR PDF PRIMERO'); return;}
   
   cotizacionGuardada = true;
   estadoCotizacionActual = 'rechazado';
@@ -1425,7 +1368,6 @@ function bloquearEdicion() {
   document.getElementById('btnLimpiarCliente').disabled = false;
   document.getElementById('btnPDF').disabled = true;
   document.getElementById('btnCotizaciones').disabled = false;
-  document.getElementById('btnClientes').disabled = false;
   document.getElementById('inputCodigoProducto').disabled = true;
   document.getElementById('inputRut').disabled = true;
   actualizarTablaProductos();
