@@ -357,36 +357,35 @@ input[type="number"] {text-align: center;}
         </select>
       </div>
 
-      <div class="fila-campos">
-        <div class="campo-grupo">
-          <label>REGIÓN *</label>
-          <select id="regionSelect">
-            <option value="">SELECCIONE REGIÓN</option>
-            <option value="XV REGIÓN (ARICA Y PARINACOTA)">XV REGIÓN (ARICA Y PARINACOTA)</option>
-            <option value="I REGIÓN (TARAPACÁ)">I REGIÓN (TARAPACÁ)</option>
-            <option value="II REGIÓN (ANTOFAGASTA)">II REGIÓN (ANTOFAGASTA)</option>
-            <option value="III REGIÓN (ATACAMA)">III REGIÓN (ATACAMA)</option>
-            <option value="IV REGIÓN (COQUIMBO)">IV REGIÓN (COQUIMBO)</option>
-            <option value="V REGIÓN (VALPARAÍSO)">V REGIÓN (VALPARAÍSO)</option>
-            <option value="VI REGIÓN (LIB. B. O'HIGGINS)">VI REGIÓN (LIB. B. O'HIGGINS)</option>
-            <option value="VII REGIÓN (MAULE)">VII REGIÓN (MAULE)</option>
-            <option value="VIII REGIÓN (BÍO-BÍO)">VIII REGIÓN (BÍO-BÍO)</option>
-            <option value="IX REGIÓN (LA ARAUCANÍA)">IX REGIÓN (LA ARAUCANÍA)</option>
-            <option value="X REGIÓN (LOS LAGOS)">X REGIÓN (LOS LAGOS)</option>
-            <option value="XI REGIÓN (AYSÉN)">XI REGIÓN (AYSÉN)</option>
-            <option value="XII REGIÓN (MAGALLANES)">XII REGIÓN (MAGALLANES)</option>
-            <option value="RM (METROPOLITANA)">RM (METROPOLITANA)</option>
-          </select>
-        </div>
-        <div class="campo-grupo">
-          <label>COMUNA *</label>
-          <input type="text" id="comunaInput" placeholder="INGRESE COMUNA" />
-        </div>
-      </div>
-
       <div class="campo-grupo">
         <label>DIRECCIÓN *</label>
         <input type="text" id="direccionDespacho" placeholder="INGRESE DIRECCIÓN" />
+      </div>
+
+      <div class="campo-grupo">
+        <label>REGIÓN *</label>
+        <select id="regionSelect">
+          <option value="">SELECCIONE REGIÓN</option>
+          <option value="XV REGIÓN (ARICA Y PARINACOTA)">XV REGIÓN (ARICA Y PARINACOTA)</option>
+          <option value="I REGIÓN (TARAPACÁ)">I REGIÓN (TARAPACÁ)</option>
+          <option value="II REGIÓN (ANTOFAGASTA)">II REGIÓN (ANTOFAGASTA)</option>
+          <option value="III REGIÓN (ATACAMA)">III REGIÓN (ATACAMA)</option>
+          <option value="IV REGIÓN (COQUIMBO)">IV REGIÓN (COQUIMBO)</option>
+          <option value="V REGIÓN (VALPARAÍSO)">V REGIÓN (VALPARAÍSO)</option>
+          <option value="VI REGIÓN (LIB. B. O'HIGGINS)">VI REGIÓN (LIB. B. O'HIGGINS)</option>
+          <option value="VII REGIÓN (MAULE)">VII REGIÓN (MAULE)</option>
+          <option value="VIII REGIÓN (BÍO-BÍO)">VIII REGIÓN (BÍO-BÍO)</option>
+          <option value="IX REGIÓN (LA ARAUCANÍA)">IX REGIÓN (LA ARAUCANÍA)</option>
+          <option value="X REGIÓN (LOS LAGOS)">X REGIÓN (LOS LAGOS)</option>
+          <option value="XI REGIÓN (AYSÉN)">XI REGIÓN (AYSÉN)</option>
+          <option value="XII REGIÓN (MAGALLANES)">XII REGIÓN (MAGALLANES)</option>
+          <option value="RM (METROPOLITANA)">RM (METROPOLITANA)</option>
+        </select>
+      </div>
+
+      <div class="campo-grupo">
+        <label>COMUNA *</label>
+        <input type="text" id="comunaInput" placeholder="INGRESE COMUNA" />
       </div>
 
       <div class="fila-campos">
@@ -1093,28 +1092,49 @@ function generarPDFDocumento(cotizacion) {
   doc.setFontSize(9);
   doc.text('PRODUCTOS Y SERVICIOS', 15, yPos);
   yPos += 5;
+
   doc.autoTable({
     startY: yPos,
-    head: [['CÓDIGO', 'DESCRIPCIÓN', 'CANT.', 'DESC. %', 'VALOR NETO', 'TOTAL']],
-    body: cotizacion.productos.map(p => [p.codigo, p.descripcion, p.cantidad.toString(), `${p.descuento}%`, `$${Math.round(parseFloat(p.valorNetaConDescuento)).toLocaleString('es-CL')}`, `$${Math.round(parseFloat(p.total)).toLocaleString('es-CL')}`]),
+    head: [['CÓDIGO', 'DESCRIPCIÓN', 'CANT.', 'VALOR NETO', 'TOTAL']],
+    body: cotizacion.productos.map(p => [
+      p.codigo,
+      p.descripcion,
+      p.cantidad.toString(),
+      `$${Math.round(parseFloat(p.valorNetaConDescuento)).toLocaleString('es-CL')}`,
+      `$${Math.round(parseFloat(p.total)).toLocaleString('es-CL')}`
+    ]),
     theme: 'striped',
     styles: {fontSize: 8, cellPadding: 3, halign: 'center'},
     headStyles: {fillColor: [31, 111, 139], textColor: 255, fontStyle: 'bold', halign: 'center'},
-    columnStyles: {0: {cellWidth: 20, halign: 'center'}, 1: {cellWidth: 80, halign: 'left'}, 2: {cellWidth: 15, halign: 'center'}, 3: {cellWidth: 15, halign: 'center'}, 4: {cellWidth: 30, halign: 'right'}, 5: {cellWidth: 30, halign: 'right'}},
+    columnStyles: {
+      0: {cellWidth: 25, halign: 'center'},
+      1: {cellWidth: 85, halign: 'left'},
+      2: {cellWidth: 15, halign: 'center'},
+      3: {cellWidth: 30, halign: 'right'},
+      4: {cellWidth: 35, halign: 'right'}
+    },
     margin: {left: 15, right: 15}
   });
 
-  const resumenY = doc.lastAutoTable.finalY + 15;
+  const resumenY = doc.lastAutoTable.finalY + 10;
+  
+  doc.setDrawColor(100, 100, 100);
+  doc.setLineWidth(0.4);
+  doc.line(120, resumenY, 195, resumenY);
+
   doc.setFont(undefined, 'normal');
   doc.setTextColor(0, 0, 0);
-  doc.setFontSize(10);
-  doc.text("NETO:", 140, resumenY);
-  doc.text(`$${Math.round(net).toLocaleString('es-CL')}`, 195, resumenY, {align: 'right'});
-  doc.text("IVA (19%):", 140, resumenY + 7);
-  doc.text(`$${Math.round(iva).toLocaleString('es-CL')}`, 195, resumenY + 7, {align: 'right'});
+  doc.setFontSize(11);
+  
+  doc.text("NETO:", 155, resumenY + 7, {align: 'right'});
+  doc.text(`$${Math.round(net).toLocaleString('es-CL')}`, 195, resumenY + 7, {align: 'right'});
+  
+  doc.text("IVA (19%):", 155, resumenY + 14, {align: 'right'});
+  doc.text(`$${Math.round(iva).toLocaleString('es-CL')}`, 195, resumenY + 14, {align: 'right'});
+  
   doc.setFont(undefined, 'bold');
-  doc.text("TOTAL:", 140, resumenY + 14);
-  doc.text(`$${Math.round(tot).toLocaleString('es-CL')}`, 195, resumenY + 14, {align: 'right'});
+  doc.text("TOTAL:", 155, resumenY + 21, {align: 'right'});
+  doc.text(`$${Math.round(tot).toLocaleString('es-CL')}`, 195, resumenY + 21, {align: 'right'});
 
   doc.setFontSize(8);
   doc.setFont(undefined, 'bold');
@@ -1131,9 +1151,18 @@ function generarPDFDocumento(cotizacion) {
   doc.setFontSize(8);
   doc.setFont(undefined, 'italic');
   doc.text('ERP DESARROLLADO POR ING. AGONPA', 105, 283, {align: 'center'});
-  
+
   pdfActualDoc = doc;
-  mostrarPDFEnMismaVentana();
+  
+  const pdfDataUri = doc.output('datauristring');
+  const modal = document.getElementById('modalPDF');
+  const iframe = document.getElementById('pdfIframe');
+  iframe.src = pdfDataUri;
+  modal.classList.add('mostrar');
+  
+  setTimeout(() => {
+    doc.save(`cotizacion-${cotizacion.numero}.pdf`);
+  }, 500);
 }
 
 function mostrarPDFEnMismaVentana() {
@@ -1148,7 +1177,7 @@ function cerrarModalPDF() {
   const modal = document.getElementById('modalPDF');
   modal.classList.remove('mostrar');
   document.getElementById('pdfIframe').src = '';
-  actualizarTablaProductos();
+  limpiarCotizacion();
 }
 
 function mostrarCotizaciones() {
