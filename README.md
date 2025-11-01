@@ -91,7 +91,7 @@ button {cursor: pointer; border: none; border-radius: 2px; font-weight: 700; tex
 .resumen-cliente p {margin: 3px 0; font-size: 11px; color: #4B732E; text-transform: uppercase;}
 .botones-resumen {margin-top: 10px; display: flex; gap: 6px; flex-wrap: wrap;}
 .botones-formulario {display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap;}
-.seccion-cliente {margin-bottom: 20px; border: 1px solid #ddd; border-radius: 2px; padding: 15px; background-color: #fafafa;}
+.seccion-cliente {margin-bottom: 20px; border: 1px solid #ddd; border-radius: 2px; padding: 15px; background-color: #fafafa; position: relative;}
 .busqueda-rut {display: flex; gap: 6px; margin-bottom: 15px; align-items: center; flex-wrap: wrap;}
 .busqueda-rut input {flex: 1; min-width: 150px; padding: 8px; font-size: 11px; border: 2px solid #ddd; border-radius: 2px; text-transform: uppercase;}
 .busqueda-rut-botones {display: flex; gap: 6px; align-items: center; flex-wrap: wrap;}
@@ -102,6 +102,10 @@ button {cursor: pointer; border: none; border-radius: 2px; font-weight: 700; tex
 .autocomplete-list.activo {display: block;}
 .autocomplete-item {padding: 8px; cursor: pointer; background: white; font-size: 10px; text-transform: uppercase; border-bottom: 1px solid #eee; transition: background 0.2s;}
 .autocomplete-item:hover {background: #f9e2cd; border-left: 3px solid #F25C05;}
+.desplegable-clientes {display: none; position: absolute; top: 100%; left: 0; right: 70px; background: white; border: 1px solid #ddd; border-top: none; max-height: 200px; overflow-y: auto; z-index: 1001; border-radius: 0 0 2px 2px; box-shadow: 0 4px 8px rgba(0,0,0,0.07);}
+.desplegable-clientes.activo {display: block;}
+.item-cliente {padding: 8px; cursor: pointer; background: white; font-size: 10px; text-transform: uppercase; border-bottom: 1px solid #eee; transition: background 0.2s;}
+.item-cliente:hover {background: #e8f5e9; border-left: 3px solid #4B732E;}
 .formulario-producto {background: linear-gradient(135deg, #f9ead4 0%, #f7dba1 100%); padding: 12px; border-radius: 2px; border-left: 5px solid #F25C05; margin-bottom: 15px;}
 .formulario-producto h4 {text-transform: uppercase; color: #b35304; margin-bottom: 12px; font-weight: 700; font-size: 12px;}
 .fila-campos-producto {display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;}
@@ -211,6 +215,8 @@ button {cursor: pointer; border: none; border-radius: 2px; font-weight: 700; tex
 .seccion-bloqueada h4 {color: #856404; text-transform: uppercase; font-weight: 700; margin-bottom: 4px; font-size: 12px;}
 .seccion-bloqueada p {color: #856404; font-size: 10px; text-transform: uppercase;}
 input[type="number"] {text-align: center;}
+.utilidad-verde {color: #2E7D32; font-weight: 700;}
+.utilidad-roja {color: #C62828; font-weight: 700;}
 </style>
 </head>
 <body>
@@ -233,7 +239,10 @@ input[type="number"] {text-align: center;}
     <section class="seccion-cliente">
       <h2 class="seccion-titulo">DATOS DEL CLIENTE</h2>
       <div class="busqueda-rut">
-        <input type="text" id="inputRut" placeholder="INGRESE RUT (EJ: 78070615-7)" maxlength="12" />
+        <div style="flex: 1; min-width: 150px; position: relative;">
+          <input type="text" id="inputRut" placeholder="INGRESE RUT (EJ: 78070615-7)" maxlength="12" />
+          <div id="desplegableClientes" class="desplegable-clientes"></div>
+        </div>
         <div class="busqueda-rut-botones">
           <button class="btn btn-buscar" onclick="buscarCliente()" id="btnBuscarCliente">BUSCAR</button>
           <button class="btn btn-limpiar" onclick="limpiarCotizacion()" id="btnLimpiarCliente">LIMPIAR</button>
@@ -459,6 +468,11 @@ class GestorClientes {
   agregarCliente(rut, datos) {this.clientes[rut] = datos; this.guardarClientes();}
   actualizarCliente(rut, datos) {this.clientes[rut] = datos; this.guardarClientes();}
   obtenerTodos() {return this.clientes;}
+  buscarPorCoincidencia(termino) {
+    termino = termino.toUpperCase().trim();
+    const todos = this.obtenerTodos();
+    return Object.entries(todos).filter(([rut, cliente]) => rut.includes(termino) || cliente.razonSocial.includes(termino)).map(([rut, cliente]) => ({rut, ...cliente})).slice(0, 10);
+  }
 }
 
 class GestorProductos {
@@ -501,6 +515,43 @@ document.getElementById('inputRut').addEventListener('input', function(e) {
   let v = e.target.value.replace(/[^0-9kK]/g, '');
   if (v.length > 1) v = v.slice(0, -1) + '-' + v.slice(-1);
   e.target.value = v.toUpperCase();
+  mostrarDesplegableClientes();
+});
+
+document.getElementById('inputRut').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') buscarCliente();
+});
+
+function mostrarDesplegableClientes() {
+  const input = document.getElementById('inputRut').value.trim();
+  const desplegable = document.getElementById('desplegableClientes');
+  if (!input || input.length < 2) {
+    desplegable.classList.remove('activo');
+    return;
+  }
+  const resultados = gestorClientes.buscarPorCoincidencia(input);
+  if (resultados.length === 0) {
+    desplegable.classList.remove('activo');
+    return;
+  }
+  let html = '';
+  resultados.forEach(cliente => {
+    html += `<div class="item-cliente" onclick="seleccionarClienteDesplegable('${cliente.rut}', '${cliente.razonSocial}')"><strong>${cliente.rut}</strong> - ${cliente.razonSocial}</div>`;
+  });
+  desplegable.innerHTML = html;
+  desplegable.classList.add('activo');
+}
+
+function seleccionarClienteDesplegable(rut, razonSocial) {
+  document.getElementById('inputRut').value = rut;
+  document.getElementById('desplegableClientes').classList.remove('activo');
+  buscarCliente();
+}
+
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.seccion-cliente')) {
+    document.getElementById('desplegableClientes').classList.remove('activo');
+  }
 });
 
 document.getElementById('inputCodigoProducto').addEventListener('input', function(e) {
@@ -833,7 +884,8 @@ function actualizarTablaProductos() {
     const utilidadTotal = utilidadUnitaria * p.cantidad;
     const precioUnitario = parseFloat(p.total) / p.cantidad;
     const porcentajeUtilidad = precioUnitario > 0 ? ((utilidadUnitaria / precioUnitario) * 100).toFixed(2) : 0;
-    html += `<tr><td>${p.codigo}</td><td>${p.descripcion}</td><td class="texto-centrado"><input type="number" min="1" value="${p.cantidad}" onchange="actualizarCantidad(${i}, this.value)" ${inputQuantityDisabled} style="width:100%;text-align:center;border:1px solid #ddd;padding:4px;"></td><td class="valor-numerico">$${parseFloat(p.valorNeto).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td class="texto-centrado"><input type="number" min="0" max="100" step="0.01" value="${p.descuento}" style="width:100%;padding:4px;text-align:center;border:1px solid #ddd;" onchange="actualizarDescuento(${i}, this.value)" ${inputDescuentoDisabled}></td><td class="valor-numerico">$${parseFloat(p.valorNetaConDescuento).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td class="valor-numerico">$${parseFloat(p.costo).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td class="valor-numerico">$${parseFloat(costoTotal).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td class="valor-numerico">${porcentajeUtilidad}%</td><td class="valor-numerico">$${parseFloat(utilidadTotal).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td class="valor-numerico">$${parseFloat(p.total).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td><button class="btn-eliminar" onclick="eliminarProducto(${i})" style="display:${btnEliminarDisplay};width:100%;">DEL</button></td></tr>`;
+    const claseUtilidad = porcentajeUtilidad > 20 ? 'utilidad-verde' : 'utilidad-roja';
+    html += `<tr><td>${p.codigo}</td><td>${p.descripcion}</td><td class="texto-centrado"><input type="number" min="1" value="${p.cantidad}" onchange="actualizarCantidad(${i}, this.value)" ${inputQuantityDisabled} style="width:100%;text-align:center;border:1px solid #ddd;padding:4px;"></td><td class="valor-numerico">$${parseFloat(p.valorNeto).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td class="texto-centrado"><input type="number" min="0" max="100" step="0.01" value="${p.descuento}" style="width:100%;padding:4px;text-align:center;border:1px solid #ddd;" onchange="actualizarDescuento(${i}, this.value)" ${inputDescuentoDisabled}></td><td class="valor-numerico">$${parseFloat(p.valorNetaConDescuento).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td class="valor-numerico">$${parseFloat(p.costo).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td class="valor-numerico">$${parseFloat(costoTotal).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td class="valor-numerico ${claseUtilidad}">${porcentajeUtilidad}%</td><td class="valor-numerico">$${parseFloat(utilidadTotal).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td class="valor-numerico">$${parseFloat(p.total).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td><button class="btn-eliminar" onclick="eliminarProducto(${i})" style="display:${btnEliminarDisplay};width:100%;">DEL</button></td></tr>`;
   });
   html += '</tbody></table></div>';
   cont.innerHTML = html;
@@ -1043,12 +1095,12 @@ function generarPDFDocumento(cotizacion) {
   yPos += 5;
   doc.autoTable({
     startY: yPos,
-    head: [['CÓDIGO', 'DESCRIPCIÓN', 'CANT.', 'VALOR NETO', 'TOTAL']],
-    body: cotizacion.productos.map(p => [p.codigo, p.descripcion, p.cantidad.toString(), `$${Math.round(parseFloat(p.valorNetaConDescuento)).toLocaleString('es-CL')}`, `$${Math.round(parseFloat(p.total)).toLocaleString('es-CL')}`]),
+    head: [['CÓDIGO', 'DESCRIPCIÓN', 'CANT.', 'DESC. %', 'VALOR NETO', 'TOTAL']],
+    body: cotizacion.productos.map(p => [p.codigo, p.descripcion, p.cantidad.toString(), `${p.descuento}%`, `$${Math.round(parseFloat(p.valorNetaConDescuento)).toLocaleString('es-CL')}`, `$${Math.round(parseFloat(p.total)).toLocaleString('es-CL')}`]),
     theme: 'striped',
     styles: {fontSize: 8, cellPadding: 3, halign: 'center'},
     headStyles: {fillColor: [31, 111, 139], textColor: 255, fontStyle: 'bold', halign: 'center'},
-    columnStyles: {0: {cellWidth: 20, halign: 'center'}, 1: {cellWidth: 90, halign: 'left'}, 2: {cellWidth: 15, halign: 'center'}, 3: {cellWidth: 30, halign: 'right'}, 4: {cellWidth: 30, halign: 'right'}},
+    columnStyles: {0: {cellWidth: 20, halign: 'center'}, 1: {cellWidth: 80, halign: 'left'}, 2: {cellWidth: 15, halign: 'center'}, 3: {cellWidth: 15, halign: 'center'}, 4: {cellWidth: 30, halign: 'right'}, 5: {cellWidth: 30, halign: 'right'}},
     margin: {left: 15, right: 15}
   });
 
@@ -1096,7 +1148,7 @@ function cerrarModalPDF() {
   const modal = document.getElementById('modalPDF');
   modal.classList.remove('mostrar');
   document.getElementById('pdfIframe').src = '';
-  limpiarCotizacion();
+  actualizarTablaProductos();
 }
 
 function mostrarCotizaciones() {
