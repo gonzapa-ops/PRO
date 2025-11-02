@@ -95,8 +95,8 @@ button {cursor: pointer; border: none; border-radius: 2px; font-weight: 700; tex
 .busqueda-rut {display: flex; gap: 6px; margin-bottom: 15px; align-items: center; flex-wrap: wrap;}
 .contenedor-rut {flex: 1; min-width: 150px; position: relative; display: flex; align-items: center; gap: 6px;}
 .contenedor-rut input {flex: 1; padding: 8px; font-size: 11px; border: 2px solid #ddd; border-radius: 2px; text-transform: uppercase;}
-.btn-lupa {background: #4B732E; color: white; padding: 8px 12px; font-size: 12px; cursor: pointer; border-radius: 2px; display: flex; align-items: center; justify-content: center; min-width: 44px; height: 36px;}
-.btn-lupa:hover {background: #385525;}
+.btn-lupa {background: transparent; border: none; color: #4B732E; padding: 4px; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;}
+.btn-lupa:hover {color: #385525; transform: scale(1.2);}
 .busqueda-rut-botones {display: flex; gap: 6px; align-items: center; flex-wrap: wrap;}
 .seccion-productos {margin-bottom: 20px; border: 1px solid #ddd; border-radius: 2px; padding: 15px; background-color: #fafafa; overflow-x: auto;}
 .busqueda-producto {display: flex; gap: 6px; margin-bottom: 15px; align-items: center; position: relative; flex-wrap: wrap;}
@@ -315,7 +315,7 @@ input[type="number"] {text-align: center;}
         <div class="resumen-linea"><div>NETO</div><div id="totalNeto">$0.00</div></div>
         <div class="resumen-linea"><div>IVA (19%)</div><div id="totalIva">$0.00</div></div>
         <div class="resumen-linea total"><div>TOTAL</div><div id="totalGeneral">$0.00</div></div>
-        <div class="resumen-linea utilidad-total"><div>TOTAL UTILIDAD</div><div id="totalUtilidad">$0.00</div></div>
+        <div class="resumen-linea utilidad-total"><div>💰 TOTAL UTILIDAD</div><div id="totalUtilidad">$0.00</div></div>
       </div>
       
       <div class="seccion-botones-pdf">
