@@ -216,15 +216,16 @@ button {cursor: pointer; border: none; border-radius: 2px; font-weight: 700; tex
 .badge-aceptado {background: #4B732E; color: white;}
 .badge-rechazado {background: #9B2E00; color: white;}
 .badge-pendiente {background: #F25C05; color: white;}
-#modalPDF {display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.9); z-index: 10005; padding: 0; overflow: hidden;}
-#modalPDF.mostrar {display: flex;}
+#modalPDF {display: none !important; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 10005; padding: 0; margin: 0; overflow: hidden; opacity: 0; transition: opacity 0.3s ease;}
+#modalPDF.mostrar {display: flex !important; opacity: 1; flex-direction: column;}
 .modal-pdf-wrapper {width: 100%; height: 100%; display: flex; flex-direction: column;}
-.pdf-header {background: #1F6F8B; color: white; padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.3); flex-shrink: 0;}
-.pdf-header h3 {margin: 0; font-size: 14px; font-weight: 700;}
-.btn-cerrar-pdf {background: #9B2E00; color: white; font-size: 12px; border: none; border-radius: 2px; cursor: pointer; padding: 8px 12px; font-weight: 700;}
-.btn-cerrar-pdf:hover {background: #7a2300;}
-.pdf-viewer {flex: 1; width: 100%; background: #fff; overflow: auto; display: flex; justify-content: center; align-items: flex-start; padding: 10px;}
-.pdf-viewer embed {width: 100%; max-width: 900px; border: none;}
+.pdf-header {background: #1F6F8B; color: white; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 12px rgba(0,0,0,0.5); flex-shrink: 0; z-index: 1;}
+.pdf-header h3 {margin: 0; font-size: 16px; font-weight: 700; letter-spacing: 1px;}
+.btn-cerrar-pdf {background: #9B2E00; color: white; font-size: 13px; border: none; border-radius: 3px; cursor: pointer; padding: 10px 16px; font-weight: 700; transition: all 0.2s ease;}
+.btn-cerrar-pdf:hover {background: #7a2300; transform: scale(1.05);}
+.pdf-viewer {flex: 1; width: 100%; background: white; overflow: auto; display: flex; justify-content: center; align-items: flex-start; padding: 20px; flex-shrink: 1;}
+.pdf-container {width: 100%; max-width: 900px; background: white; box-shadow: 0 0 20px rgba(0,0,0,0.3);}
+.pdf-container embed {width: 100%; border: none; display: block;}
 .seccion-bloqueada {background-color: #fff3cd; padding: 12px; border-radius: 2px; border-left: 5px solid #FFA500; margin-bottom: 15px; display: none;}
 .seccion-bloqueada.activa {display: block;}
 .seccion-bloqueada h4 {color: #856404; text-transform: uppercase; font-weight: 700; margin-bottom: 4px; font-size: 12px;}
@@ -446,10 +447,11 @@ input[type="number"] {text-align: center;}
   <div id="modalPDF">
     <div class="modal-pdf-wrapper">
       <div class="pdf-header">
-        <h3>COTIZACIÓN PDF</h3>
+        <h3>📄 COTIZACIÓN EN PDF</h3>
         <button class="btn-cerrar-pdf" onclick="cerrarModalPDF()">✕ CERRAR</button>
       </div>
-      <div class="pdf-viewer" id="pdfViewerContainer">
+      <div class="pdf-viewer">
+        <div class="pdf-container" id="pdfContainer"></div>
       </div>
     </div>
   </div>
@@ -1198,13 +1200,13 @@ function generarPDFDocumento(cotizacion) {
     
     const pdfDataUri = doc.output('datauristring');
     const modal = document.getElementById('modalPDF');
-    const container = document.getElementById('pdfViewerContainer');
-    container.innerHTML = `<embed src="${pdfDataUri}" type="application/pdf" />`;
+    const container = document.getElementById('pdfContainer');
+    container.innerHTML = `<embed src="${pdfDataUri}" type="application/pdf" style="width:100%; height:100%;" />`;
     modal.classList.add('mostrar');
     
     setTimeout(() => {
       doc.save(`cotizacion-${cotizacion.numero}.pdf`);
-    }, 1000);
+    }, 1500);
   } catch(error) {
     alert('Error al generar PDF: ' + error.message);
     console.error('Error PDF:', error);
@@ -1214,7 +1216,7 @@ function generarPDFDocumento(cotizacion) {
 function cerrarModalPDF() {
   const modal = document.getElementById('modalPDF');
   modal.classList.remove('mostrar');
-  document.getElementById('pdfViewerContainer').innerHTML = '';
+  document.getElementById('pdfContainer').innerHTML = '';
   limpiarCotizacion();
 }
 
