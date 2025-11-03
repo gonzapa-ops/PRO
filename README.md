@@ -209,21 +209,22 @@ button {cursor: pointer; border: none; border-radius: 2px; font-weight: 700; tex
 .contenido-archivo {padding: 15px; text-align: center;}
 .contenido-archivo img {max-width: 100%; max-height: 70vh; object-fit: contain;}
 .contenido-archivo iframe {width: 100%; height: 70vh; border: none;}
+.contenido-archivo embed {width: 100%; height: 70vh; border: none;}
 .contenido-archivo pre {background: #f5f5f5; padding: 12px; border-radius: 2px; overflow-x: auto; text-align: left; font-size: 10px;}
 .seccion-botones-pdf {margin-bottom: 15px; text-align: center;}
 .badge-estado {display: inline-block; padding: 3px 6px; border-radius: 2px; font-size: 9px; font-weight: 700; text-transform: uppercase;}
 .badge-aceptado {background: #4B732E; color: white;}
 .badge-rechazado {background: #9B2E00; color: white;}
 .badge-pendiente {background: #F25C05; color: white;}
-#modalPDF {display: none !important; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.9); z-index: 10005; padding: 0;}
-#modalPDF.mostrar {display: flex !important;}
+#modalPDF {display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.9); z-index: 10005; padding: 0; overflow: hidden;}
+#modalPDF.mostrar {display: flex;}
 .modal-pdf-wrapper {width: 100%; height: 100%; display: flex; flex-direction: column;}
-.pdf-header {background: #1F6F8B; color: white; padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.3);}
+.pdf-header {background: #1F6F8B; color: white; padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.3); flex-shrink: 0;}
 .pdf-header h3 {margin: 0; font-size: 14px; font-weight: 700;}
 .btn-cerrar-pdf {background: #9B2E00; color: white; font-size: 12px; border: none; border-radius: 2px; cursor: pointer; padding: 8px 12px; font-weight: 700;}
 .btn-cerrar-pdf:hover {background: #7a2300;}
-.pdf-viewer {flex: 1; width: 100%; background: white; overflow: auto; display: flex; justify-content: center; padding: 20px;}
-.pdf-viewer embed {width: 100%; height: 100%; border: none;}
+.pdf-viewer {flex: 1; width: 100%; background: #fff; overflow: auto; display: flex; justify-content: center; align-items: flex-start; padding: 10px;}
+.pdf-viewer embed {width: 100%; max-width: 900px; border: none;}
 .seccion-bloqueada {background-color: #fff3cd; padding: 12px; border-radius: 2px; border-left: 5px solid #FFA500; margin-bottom: 15px; display: none;}
 .seccion-bloqueada.activa {display: block;}
 .seccion-bloqueada h4 {color: #856404; text-transform: uppercase; font-weight: 700; margin-bottom: 4px; font-size: 12px;}
@@ -445,7 +446,7 @@ input[type="number"] {text-align: center;}
   <div id="modalPDF">
     <div class="modal-pdf-wrapper">
       <div class="pdf-header">
-        <h3>COTIZACIÓN - PDF</h3>
+        <h3>COTIZACIÓN PDF</h3>
         <button class="btn-cerrar-pdf" onclick="cerrarModalPDF()">✕ CERRAR</button>
       </div>
       <div class="pdf-viewer" id="pdfViewerContainer">
@@ -1198,7 +1199,7 @@ function generarPDFDocumento(cotizacion) {
     const pdfDataUri = doc.output('datauristring');
     const modal = document.getElementById('modalPDF');
     const container = document.getElementById('pdfViewerContainer');
-    container.innerHTML = `<embed src="${pdfDataUri}" type="application/pdf" width="100%" height="100%" />`;
+    container.innerHTML = `<embed src="${pdfDataUri}" type="application/pdf" />`;
     modal.classList.add('mostrar');
     
     setTimeout(() => {
