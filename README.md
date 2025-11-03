@@ -215,15 +215,15 @@ button {cursor: pointer; border: none; border-radius: 2px; font-weight: 700; tex
 .badge-aceptado {background: #4B732E; color: white;}
 .badge-rechazado {background: #9B2E00; color: white;}
 .badge-pendiente {background: #F25C05; color: white;}
-#modalPDF {display: none !important; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.8); z-index: 10005; overflow: auto; padding: 0;}
-#modalPDF.mostrar {display: block !important;}
+#modalPDF {display: none !important; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.9); z-index: 10005; padding: 0;}
+#modalPDF.mostrar {display: flex !important;}
 .modal-pdf-wrapper {width: 100%; height: 100%; display: flex; flex-direction: column;}
-.pdf-header {background: #1F6F8B; color: white; padding: 6px 12px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.3);}
-.pdf-header h3 {margin: 0; font-size: 12px; font-weight: 700;}
-.btn-cerrar-pdf {background: #9B2E00; color: white; font-size: 11px; border: none; border-radius: 2px; cursor: pointer; padding: 5px 10px; font-weight: 700;}
+.pdf-header {background: #1F6F8B; color: white; padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.3);}
+.pdf-header h3 {margin: 0; font-size: 14px; font-weight: 700;}
+.btn-cerrar-pdf {background: #9B2E00; color: white; font-size: 12px; border: none; border-radius: 2px; cursor: pointer; padding: 8px 12px; font-weight: 700;}
 .btn-cerrar-pdf:hover {background: #7a2300;}
-.pdf-viewer {flex: 1; width: 100%; background: white; overflow: auto; display: flex; justify-content: center; align-items: flex-start; padding: 0;}
-.pdf-viewer iframe {width: 100%; height: 100%; border: none;}
+.pdf-viewer {flex: 1; width: 100%; background: white; overflow: auto; display: flex; justify-content: center; padding: 20px;}
+.pdf-viewer embed {width: 100%; height: 100%; border: none;}
 .seccion-bloqueada {background-color: #fff3cd; padding: 12px; border-radius: 2px; border-left: 5px solid #FFA500; margin-bottom: 15px; display: none;}
 .seccion-bloqueada.activa {display: block;}
 .seccion-bloqueada h4 {color: #856404; text-transform: uppercase; font-weight: 700; margin-bottom: 4px; font-size: 12px;}
@@ -388,23 +388,7 @@ input[type="number"] {text-align: center;}
 
       <div class="campo-grupo">
         <label>REGIÓN *</label>
-        <select id="regionSelect">
-          <option value="">SELECCIONE REGIÓN</option>
-          <option value="XV REGIÓN (ARICA Y PARINACOTA)">XV REGIÓN (ARICA Y PARINACOTA)</option>
-          <option value="I REGIÓN (TARAPACÁ)">I REGIÓN (TARAPACÁ)</option>
-          <option value="II REGIÓN (ANTOFAGASTA)">II REGIÓN (ANTOFAGASTA)</option>
-          <option value="III REGIÓN (ATACAMA)">III REGIÓN (ATACAMA)</option>
-          <option value="IV REGIÓN (COQUIMBO)">IV REGIÓN (COQUIMBO)</option>
-          <option value="V REGIÓN (VALPARAÍSO)">V REGIÓN (VALPARAÍSO)</option>
-          <option value="VI REGIÓN (LIB. B. O'HIGGINS)">VI REGIÓN (LIB. B. O'HIGGINS)</option>
-          <option value="VII REGIÓN (MAULE)">VII REGIÓN (MAULE)</option>
-          <option value="VIII REGIÓN (BÍO-BÍO)">VIII REGIÓN (BÍO-BÍO)</option>
-          <option value="IX REGIÓN (LA ARAUCANÍA)">IX REGIÓN (LA ARAUCANÍA)</option>
-          <option value="X REGIÓN (LOS LAGOS)">X REGIÓN (LOS LAGOS)</option>
-          <option value="XI REGIÓN (AYSÉN)">XI REGIÓN (AYSÉN)</option>
-          <option value="XII REGIÓN (MAGALLANES)">XII REGIÓN (MAGALLANES)</option>
-          <option value="RM (METROPOLITANA)">RM (METROPOLITANA)</option>
-        </select>
+        <input type="text" id="regionSelect" placeholder="INGRESE REGIÓN" />
       </div>
 
       <div class="campo-grupo">
@@ -461,11 +445,10 @@ input[type="number"] {text-align: center;}
   <div id="modalPDF">
     <div class="modal-pdf-wrapper">
       <div class="pdf-header">
-        <h3>COTIZACIÓN</h3>
+        <h3>COTIZACIÓN - PDF</h3>
         <button class="btn-cerrar-pdf" onclick="cerrarModalPDF()">✕ CERRAR</button>
       </div>
-      <div class="pdf-viewer">
-        <iframe id="pdfIframe" src="" title="Visualizador PDF"></iframe>
+      <div class="pdf-viewer" id="pdfViewerContainer">
       </div>
     </div>
   </div>
@@ -1092,140 +1075,145 @@ function generarPDF() {
 }
 
 function generarPDFDocumento(cotizacion) {
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF();
-  const net = parseFloat(cotizacion.neto);
-  const iva = +(net * 0.19).toFixed(2);
-  const tot = +(net + iva).toFixed(2);
-  const fechaEmision = new Date(cotizacion.fecha);
-  const fechaFormateada = `${fechaEmision.getDate().toString().padStart(2, '0')}/${(fechaEmision.getMonth() + 1).toString().padStart(2, '0')}/${fechaEmision.getFullYear()}`;
-  const horaFormateada = `${fechaEmision.getHours().toString().padStart(2, '0')}:${fechaEmision.getMinutes().toString().padStart(2, '0')}:${fechaEmision.getSeconds().toString().padStart(2, '0')}`;
+  try {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    const net = parseFloat(cotizacion.neto);
+    const iva = +(net * 0.19).toFixed(2);
+    const tot = +(net + iva).toFixed(2);
+    const fechaEmision = new Date(cotizacion.fecha);
+    const fechaFormateada = `${fechaEmision.getDate().toString().padStart(2, '0')}/${(fechaEmision.getMonth() + 1).toString().padStart(2, '0')}/${fechaEmision.getFullYear()}`;
+    const horaFormateada = `${fechaEmision.getHours().toString().padStart(2, '0')}:${fechaEmision.getMinutes().toString().padStart(2, '0')}:${fechaEmision.getSeconds().toString().padStart(2, '0')}`;
 
-  doc.setFillColor(31, 111, 139);
-  doc.rect(0, 0, 210, 15, 'F');
-  doc.setTextColor(255, 255, 255);
-  doc.setFontSize(16);
-  doc.setFont(undefined, 'bold');
-  doc.text('COTIZACIÓN', 15, 8);
-  doc.setFontSize(9);
-  doc.setFont(undefined, 'normal');
-  doc.text(`${cotizacion.numero} | ${fechaFormateada}`, 185, 8, {align: 'right'});
-
-  doc.setTextColor(0, 0, 0);
-  doc.setFontSize(11);
-  doc.setFont(undefined, 'bold');
-  doc.text('DATOS DEL CLIENTE', 15, 28);
-  doc.setDrawColor(242, 92, 5);
-  doc.setLineWidth(0.3);
-  doc.line(15, 30, 195, 30);
-  doc.setFontSize(9);
-  doc.setFont(undefined, 'normal');
-  const clienteData = [
-    ['RUT:', cotizacion.cliente.rut, 'CONTACTO:', cotizacion.cliente.nombreContacto],
-    ['RAZÓN SOCIAL:', cotizacion.cliente.razonSocial, 'CELULAR:', cotizacion.cliente.celular],
-    ['GIRO:', cotizacion.cliente.giro, 'MAIL:', cotizacion.cliente.mail],
-    ['DIRECCIÓN:', cotizacion.cliente.direccion, 'MEDIO PAGO:', cotizacion.cliente.medioPago]
-  ];
-  let yPos = 36;
-  clienteData.forEach(row => {
+    doc.setFillColor(31, 111, 139);
+    doc.rect(0, 0, 210, 15, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(16);
     doc.setFont(undefined, 'bold');
-    doc.text(row[0], 15, yPos);
+    doc.text('COTIZACIÓN', 15, 8);
+    doc.setFontSize(9);
     doc.setFont(undefined, 'normal');
-    doc.text(row[1], 40, yPos);
-    if (row[2]) {
+    doc.text(`${cotizacion.numero} | ${fechaFormateada}`, 185, 8, {align: 'right'});
+
+    doc.setTextColor(0, 0, 0);
+    doc.setFontSize(11);
+    doc.setFont(undefined, 'bold');
+    doc.text('DATOS DEL CLIENTE', 15, 28);
+    doc.setDrawColor(242, 92, 5);
+    doc.setLineWidth(0.3);
+    doc.line(15, 30, 195, 30);
+    doc.setFontSize(9);
+    doc.setFont(undefined, 'normal');
+    const clienteData = [
+      ['RUT:', cotizacion.cliente.rut, 'CONTACTO:', cotizacion.cliente.nombreContacto],
+      ['RAZÓN SOCIAL:', cotizacion.cliente.razonSocial, 'CELULAR:', cotizacion.cliente.celular],
+      ['GIRO:', cotizacion.cliente.giro, 'MAIL:', cotizacion.cliente.mail],
+      ['DIRECCIÓN:', cotizacion.cliente.direccion, 'MEDIO PAGO:', cotizacion.cliente.medioPago]
+    ];
+    let yPos = 36;
+    clienteData.forEach(row => {
       doc.setFont(undefined, 'bold');
-      doc.text(row[2], 110, yPos);
+      doc.text(row[0], 15, yPos);
       doc.setFont(undefined, 'normal');
-      doc.text(row[3], 135, yPos);
-    }
-    yPos += 6;
-  });
+      doc.text(row[1], 40, yPos);
+      if (row[2]) {
+        doc.setFont(undefined, 'bold');
+        doc.text(row[2], 110, yPos);
+        doc.setFont(undefined, 'normal');
+        doc.text(row[3], 135, yPos);
+      }
+      yPos += 6;
+    });
 
-  doc.setDrawColor(242, 92, 5);
-  doc.setLineWidth(0.5);
-  doc.line(15, yPos + 2, 195, yPos + 2);
-  yPos += 8;
-  doc.setFont(undefined, 'bold');
-  doc.setFontSize(9);
-  doc.text('PRODUCTOS Y SERVICIOS', 15, yPos);
-  yPos += 5;
+    doc.setDrawColor(242, 92, 5);
+    doc.setLineWidth(0.5);
+    doc.line(15, yPos + 2, 195, yPos + 2);
+    yPos += 8;
+    doc.setFont(undefined, 'bold');
+    doc.setFontSize(9);
+    doc.text('PRODUCTOS Y SERVICIOS', 15, yPos);
+    yPos += 5;
 
-  doc.autoTable({
-    startY: yPos,
-    head: [['CÓDIGO', 'DESCRIPCIÓN', 'CANT.', 'VALOR NETO', 'TOTAL']],
-    body: cotizacion.productos.map(p => [
-      p.codigo,
-      p.descripcion,
-      p.cantidad.toString(),
-      `$${Math.round(parseFloat(p.valorNetaConDescuento)).toLocaleString('es-CL')}`,
-      `$${Math.round(parseFloat(p.total)).toLocaleString('es-CL')}`
-    ]),
-    theme: 'striped',
-    styles: {fontSize: 8, cellPadding: 3, halign: 'center'},
-    headStyles: {fillColor: [31, 111, 139], textColor: 255, fontStyle: 'bold', halign: 'center'},
-    columnStyles: {
-      0: {cellWidth: 25, halign: 'center'},
-      1: {cellWidth: 85, halign: 'left'},
-      2: {cellWidth: 15, halign: 'center'},
-      3: {cellWidth: 30, halign: 'right'},
-      4: {cellWidth: 35, halign: 'right'}
-    },
-    margin: {left: 15, right: 15}
-  });
+    doc.autoTable({
+      startY: yPos,
+      head: [['CÓDIGO', 'DESCRIPCIÓN', 'CANT.', 'VALOR NETO', 'TOTAL']],
+      body: cotizacion.productos.map(p => [
+        p.codigo,
+        p.descripcion,
+        p.cantidad.toString(),
+        `$${Math.round(parseFloat(p.valorNetaConDescuento)).toLocaleString('es-CL')}`,
+        `$${Math.round(parseFloat(p.total)).toLocaleString('es-CL')}`
+      ]),
+      theme: 'striped',
+      styles: {fontSize: 8, cellPadding: 3, halign: 'center'},
+      headStyles: {fillColor: [31, 111, 139], textColor: 255, fontStyle: 'bold', halign: 'center'},
+      columnStyles: {
+        0: {cellWidth: 25, halign: 'center'},
+        1: {cellWidth: 85, halign: 'left'},
+        2: {cellWidth: 15, halign: 'center'},
+        3: {cellWidth: 30, halign: 'right'},
+        4: {cellWidth: 35, halign: 'right'}
+      },
+      margin: {left: 15, right: 15}
+    });
 
-  const resumenY = doc.lastAutoTable.finalY + 10;
-  
-  doc.setDrawColor(100, 100, 100);
-  doc.setLineWidth(0.4);
-  doc.line(120, resumenY, 195, resumenY);
+    const resumenY = doc.lastAutoTable.finalY + 10;
+    
+    doc.setDrawColor(100, 100, 100);
+    doc.setLineWidth(0.4);
+    doc.line(120, resumenY, 195, resumenY);
 
-  doc.setFont(undefined, 'normal');
-  doc.setTextColor(0, 0, 0);
-  doc.setFontSize(11);
-  
-  doc.text("NETO:", 155, resumenY + 7, {align: 'right'});
-  doc.text(`$${Math.round(net).toLocaleString('es-CL')}`, 195, resumenY + 7, {align: 'right'});
-  
-  doc.text("IVA (19%):", 155, resumenY + 14, {align: 'right'});
-  doc.text(`$${Math.round(iva).toLocaleString('es-CL')}`, 195, resumenY + 14, {align: 'right'});
-  
-  doc.setFont(undefined, 'bold');
-  doc.text("TOTAL:", 155, resumenY + 21, {align: 'right'});
-  doc.text(`$${Math.round(tot).toLocaleString('es-CL')}`, 195, resumenY + 21, {align: 'right'});
+    doc.setFont(undefined, 'normal');
+    doc.setTextColor(0, 0, 0);
+    doc.setFontSize(11);
+    
+    doc.text("NETO:", 155, resumenY + 7, {align: 'right'});
+    doc.text(`$${Math.round(net).toLocaleString('es-CL')}`, 195, resumenY + 7, {align: 'right'});
+    
+    doc.text("IVA (19%):", 155, resumenY + 14, {align: 'right'});
+    doc.text(`$${Math.round(iva).toLocaleString('es-CL')}`, 195, resumenY + 14, {align: 'right'});
+    
+    doc.setFont(undefined, 'bold');
+    doc.text("TOTAL:", 155, resumenY + 21, {align: 'right'});
+    doc.text(`$${Math.round(tot).toLocaleString('es-CL')}`, 195, resumenY + 21, {align: 'right'});
 
-  doc.setFontSize(8);
-  doc.setFont(undefined, 'bold');
-  doc.setTextColor(50, 50, 50);
-  doc.text('Validez de la cotización: 5 días hábiles desde la emisión de este documento.', 15, 260);
+    doc.setFontSize(8);
+    doc.setFont(undefined, 'bold');
+    doc.setTextColor(50, 50, 50);
+    doc.text('Validez de la cotización: 5 días hábiles desde la emisión de este documento.', 15, 260);
 
-  doc.setFontSize(7);
-  doc.setFont(undefined, 'normal');
-  doc.setTextColor(100, 100, 100);
-  doc.text('RUT: 78000256-0 | Razón social: Empresa Servicios SPA | Dirección: Los Pepinos 287, Las Condes.', 15, 268);
-  doc.text('Mail: contacto@servicios.cl | Teléfono: 56 22 5510365', 15, 272);
-  doc.text(`Hora de emisión: ${horaFormateada}`, 15, 276);
-  doc.setTextColor(150, 150, 150);
-  doc.setFontSize(8);
-  doc.setFont(undefined, 'italic');
-  doc.text('ERP DESARROLLADO POR ING. AGONPA', 105, 283, {align: 'center'});
+    doc.setFontSize(7);
+    doc.setFont(undefined, 'normal');
+    doc.setTextColor(100, 100, 100);
+    doc.text('RUT: 78000256-0 | Razón social: Empresa Servicios SPA | Dirección: Los Pepinos 287, Las Condes.', 15, 268);
+    doc.text('Mail: contacto@servicios.cl | Teléfono: 56 22 5510365', 15, 272);
+    doc.text(`Fecha de emisión: ${fechaFormateada} | Hora: ${horaFormateada}`, 15, 276);
+    doc.setTextColor(150, 150, 150);
+    doc.setFontSize(8);
+    doc.setFont(undefined, 'italic');
+    doc.text('ERP DESARROLLADO POR ING. AGONPA', 105, 283, {align: 'center'});
 
-  pdfActualDoc = doc;
-  
-  const pdfDataUri = doc.output('datauristring');
-  const modal = document.getElementById('modalPDF');
-  const iframe = document.getElementById('pdfIframe');
-  iframe.src = pdfDataUri;
-  modal.classList.add('mostrar');
-  
-  setTimeout(() => {
-    doc.save(`cotizacion-${cotizacion.numero}.pdf`);
-  }, 500);
+    pdfActualDoc = doc;
+    
+    const pdfDataUri = doc.output('datauristring');
+    const modal = document.getElementById('modalPDF');
+    const container = document.getElementById('pdfViewerContainer');
+    container.innerHTML = `<embed src="${pdfDataUri}" type="application/pdf" width="100%" height="100%" />`;
+    modal.classList.add('mostrar');
+    
+    setTimeout(() => {
+      doc.save(`cotizacion-${cotizacion.numero}.pdf`);
+    }, 1000);
+  } catch(error) {
+    alert('Error al generar PDF: ' + error.message);
+    console.error('Error PDF:', error);
+  }
 }
 
 function cerrarModalPDF() {
   const modal = document.getElementById('modalPDF');
   modal.classList.remove('mostrar');
-  document.getElementById('pdfIframe').src = '';
+  document.getElementById('pdfViewerContainer').innerHTML = '';
   limpiarCotizacion();
 }
 
@@ -1415,7 +1403,7 @@ function confirmarAceptacion() {
   const celular = document.getElementById('celularDespacho').value.trim();
   
   if (!tipoEntrega) {alert('DEBE SELECCIONAR UN TIPO DE ENTREGA'); return;}
-  if (!region) {alert('DEBE SELECCIONAR UNA REGIÓN'); return;}
+  if (!region) {alert('DEBE INGRESAR REGIÓN'); return;}
   if (!comuna) {alert('DEBE INGRESAR UNA COMUNA'); return;}
   if (!direccion) {alert('DEBE INGRESAR DIRECCIÓN'); return;}
   if (!contacto) {alert('DEBE INGRESAR CONTACTO DE DESPACHO'); return;}
@@ -1533,7 +1521,7 @@ function verArchivo(index) {
   if (archivo.tipo.startsWith('image/')) {
     contenido.innerHTML = `<img src="${archivo.contenido}" alt="${archivo.nombre}" />`;
   } else if (archivo.tipo === 'application/pdf') {
-    contenido.innerHTML = `<iframe src="${archivo.contenido}"></iframe>`;
+    contenido.innerHTML = `<embed src="${archivo.contenido}" type="application/pdf" width="100%" height="100%" />`;
   } else if (archivo.tipo.startsWith('text/')) {
     const xhr = new XMLHttpRequest();
     xhr.responseType = 'arraybuffer';
