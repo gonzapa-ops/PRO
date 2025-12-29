@@ -12,6 +12,9 @@ body {font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: 
 .cotizador-header {background: #1F6F8B; color: white; padding: 8px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #F25C05; border-radius: 6px; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;}
 .empresa-nombre {font-weight: 700; font-size: 14px; letter-spacing: 1px;}
 .numero-cotizacion {font-weight: 900; color: white; font-size: 12px;}
+.header-botones {display: flex; gap: 6px; flex-wrap: wrap; align-items: center;}
+.btn-config {background: #D9822B; color: white; padding: 6px 10px; font-size: 9px; border: none; cursor: pointer; border-radius: 2px; font-weight: 700; transition: all 0.3s;}
+.btn-config:hover {background: #b36e1e;}
 .seccion-titulo {font-weight: 700; font-size: 16px; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid #F25C05; text-transform: uppercase; color: #1F6F8B;}
 table {width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 11px;}
 th, td {border: 1px solid #ddd; padding: 6px; text-transform: uppercase; color: #3B3B3B;}
@@ -47,6 +50,12 @@ button {cursor: pointer; border: none; border-radius: 2px; font-weight: 700; tex
 .btn-editar-cot:hover {background: #b36e1e;}
 .btn-ver-archivo {background: #4B732E; color: white; padding: 4px 5px; font-size: 8px;}
 .btn-ver-archivo:hover {background: #385525;}
+.btn-exportar {background: #1976d2; color: white; padding: 8px 12px; font-size: 10px;}
+.btn-exportar:hover {background: #1565c0;}
+.btn-importar {background: #388e3c; color: white; padding: 8px 12px; font-size: 10px;}
+.btn-importar:hover {background: #2e7d32;}
+.btn-reportes {background: #7b1fa2; color: white; padding: 8px 12px; font-size: 10px;}
+.btn-reportes:hover {background: #6a1b9a;}
 .formulario-cliente, .formulario-producto, .formulario-editar-articulo {display: none;}
 .formulario-cliente.activo, .formulario-producto.activo, .formulario-editar-articulo.activo {display: block;}
 .campo-grupo {margin-bottom: 12px;}
@@ -54,12 +63,17 @@ button {cursor: pointer; border: none; border-radius: 2px; font-weight: 700; tex
 .campo-grupo input, .campo-grupo select, .campo-grupo textarea {width: 100%; padding: 8px; font-size: 11px; border: 2px solid #ddd; border-radius: 2px; text-transform: uppercase; font-family: inherit;}
 .campo-grupo input:focus, .campo-grupo select:focus, .campo-grupo textarea:focus {outline: none; border-color: #F25C05;}
 .campo-grupo input:disabled, .campo-grupo select:disabled, .campo-grupo textarea:disabled {background-color: #F5F5F5; cursor: not-allowed; color: #777;}
+.campo-grupo input.error {border-color: #9B2E00; background-color: #ffebee;}
+.campo-grupo input.valido {border-color: #4B732E; background-color: #e8f5e9;}
+.campo-grupo .validacion-msg {font-size: 9px; margin-top: 3px; display: none; font-weight: 600;}
+.campo-grupo .validacion-msg.error {color: #9B2E00; display: block;}
+.campo-grupo .validacion-msg.exito {color: #4B732E; display: block;}
 .fila-campos {display: grid; grid-template-columns: 1fr 1fr; gap: 12px;}
 .fila-campos-tres {display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px;}
 .fila-campos-dos {display: grid; grid-template-columns: 1fr 1fr; gap: 12px;}
 @media (max-width: 768px) {
   .fila-campos, .fila-campos-tres {grid-template-columns: 1fr;}
-  .cotizador-header {padding: 8px 12px;}
+  .cotizador-header {padding: 8px 12px; flex-direction: column;}
   .empresa-nombre {font-size: 12px;}
   .numero-cotizacion {font-size: 10px;}
   .seccion-titulo {font-size: 14px;}
@@ -102,6 +116,9 @@ button {cursor: pointer; border: none; border-radius: 2px; font-weight: 700; tex
 .fila-campos-producto-tres {display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 12px;}
 .botones-producto {display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap;}
 .alerta-sin-productos {background-color: #e9f6ec; padding: 12px; border-radius: 2px; border-left: 5px solid #4B732E; text-align: center; color: #4B732E; text-transform: uppercase; font-weight: 700; font-size: 11px;}
+.descuento-global {background: #e3f2fd; padding: 12px; border-radius: 2px; border-left: 5px solid #1976d2; margin-bottom: 15px;}
+.descuento-global h4 {color: #1976d2; margin-bottom: 8px; font-weight: 700; text-transform: uppercase; font-size: 12px;}
+.descuento-global p {color: #1976d2; font-size: 10px; margin: 3px 0;}
 #modalArticulos {display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.4); z-index: 9999; overflow: auto; padding: 10px;}
 .articulos-content {background: white; border-radius: 2px; margin: 20px auto; padding: 15px; max-width: 95%; position: relative; box-shadow: 0 8px 16px rgba(0,0,0,0.15);}
 .modal-titulo {font-size: 16px; font-weight: 700; margin-bottom: 15px; text-transform: uppercase; color: #3B3B3B;}
@@ -217,33 +234,47 @@ input[type="number"] {text-align: center;}
 .tabla-articulos tr:nth-child(even) {background: #E9F0EA;}
 .tabla-articulos a {color: #1976d2; text-decoration: none; font-weight: 600; font-size: 9px; text-transform: lowercase;}
 .tabla-articulos a:hover {text-decoration: underline;}
-.form-calculo-precio {background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); padding: 15px; border-radius: 2px; border-left: 5px solid #4B732E; margin-bottom: 15px;}
-.form-calculo-precio h4 {text-transform: uppercase; color: #2E7D32; margin-bottom: 12px; font-weight: 700; font-size: 12px;}
-.form-calculo-precio p {color: #2E7D32; font-size: 10px;}
-.form-calculo-precio .campo-grupo label {color: #2E7D32;}
-.form-calculo-precio input {background-color: white;}
-.btn-calcular {background: #4B732E; color: white; padding: 8px 15px; font-size: 10px;}
-.btn-calcular:hover {background: #385525;}
-.btn-limpiar-calc {background: #9B2E00; color: white; padding: 8px 15px; font-size: 10px;}
-.btn-limpiar-calc:hover {background: #7a2300;}
-.resultado-calculo {background: white; padding: 12px; border-radius: 2px; border-left: 5px solid #4B732E; margin-top: 12px; display: none;}
-.resultado-calculo.activo {display: block;}
-.resultado-linea {display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #ddd; font-size: 11px; text-transform: uppercase; font-weight: 600;}
-.resultado-linea strong {color: #2E7D32; font-weight: 700; min-width: 150px;}
-.resultado-valor {text-align: right; font-weight: 700; color: #1F6F8B;}
-.input-solo-lectura {background-color: #f0f0f0 !important; color: #666 !important;}
+.buscador-articulos {display: flex; gap: 6px; margin-bottom: 12px; align-items: center;}
+.buscador-articulos input {flex: 1; padding: 8px; font-size: 11px; border: 2px solid #ddd; border-radius: 2px; text-transform: uppercase;}
+.buscador-articulos button {background: #4B732E; color: white;}
+.buscador-articulos button:hover {background: #385525;}
+#modalConfig {display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.4); z-index: 9998; overflow: auto; padding: 10px;}
+.modal-config-content {background: white; max-width: 600px; margin: 20px auto; padding: 15px; border-radius: 2px; position: relative; box-shadow: 0 8px 16px rgba(0,0,0,0.15);}
+.modal-config-titulo {font-size: 16px; font-weight: 700; margin-bottom: 15px; text-transform: uppercase; color: #3B3B3B; border-bottom: 3px solid #D9822B; padding-bottom: 8px;}
+.btn-cerrar-config {position: absolute; top: 10px; right: 15px; background: #9B2E00; color: white; font-size: 14px; border: none; border-radius: 2px; cursor: pointer; padding: 4px 6px; font-weight: 700;}
+.botones-config {display: flex; gap: 6px; margin-top: 15px; justify-content: flex-end; flex-wrap: wrap;}
+#modalReportes {display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.4); z-index: 10006; overflow: auto; padding: 10px;}
+.modal-reportes-content {background: white; max-width: 95%; margin: 20px auto; padding: 15px; border-radius: 2px; position: relative; box-shadow: 0 8px 16px rgba(0,0,0,0.15); max-height: 90vh; overflow-y: auto;}
+.btn-cerrar-reportes {position: absolute; top: 10px; right: 15px; background: #9B2E00; color: white; font-size: 14px; border: none; border-radius: 2px; cursor: pointer; padding: 4px 6px; font-weight: 700;}
+.tabla-reportes {width: 100%; border-collapse: collapse; background: white;}
+.tabla-reportes th {background: #7b1fa2; color: white; padding: 8px; text-align: left; text-transform: uppercase; font-weight: 700; font-size: 10px;}
+.tabla-reportes td {border: 1px solid #ddd; padding: 8px; text-transform: uppercase; color: #3B3B3B; font-size: 10px;}
+.tabla-reportes tr:nth-child(even) {background: #f3e5f5;}
+.fila-total-reportes {background: #7b1fa2 !important; color: white !important; font-weight: 700;}
+.fila-total-reportes td {background: #7b1fa2; color: white; font-weight: 700;}
+#modalBackup {display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.4); z-index: 9997; overflow: auto; padding: 10px;}
+.modal-backup-content {background: white; max-width: 500px; margin: 20px auto; padding: 15px; border-radius: 2px; position: relative; box-shadow: 0 8px 16px rgba(0,0,0,0.15);}
+.modal-backup-titulo {font-size: 16px; font-weight: 700; margin-bottom: 15px; text-transform: uppercase; color: #3B3B3B; border-bottom: 3px solid #388e3c; padding-bottom: 8px;}
+.btn-cerrar-backup {position: absolute; top: 10px; right: 15px; background: #9B2E00; color: white; font-size: 14px; border: none; border-radius: 2px; cursor: pointer; padding: 4px 6px; font-weight: 700;}
+.botones-backup {display: flex; gap: 6px; margin-top: 15px; flex-wrap: wrap;}
+#inputImportar {display: none;}
 </style>
 </head>
 <body>
   <div class="cotizador-container">
     <header class="cotizador-header">
-      <div class="empresa-nombre">EMPRESA CUNDO</div>
+      <div class="empresa-nombre" id="empresaNombre">EMPRESA CUNDO</div>
       <div class="numero-cotizacion">N° <span id="numeroCotizacion" style="color: white;">CO100500</span></div>
+      <div class="header-botones">
+        <button class="btn-config" onclick="abrirConfiguracion()" title="Configurar empresa">⚙️ CONFIG</button>
+      </div>
     </header>
 
     <div class="botones-superiores">
       <button class="btn btn-articulos" onclick="abrirArticulos()" id="btnArticulos">ARTÍCULOS</button>
+      <button class="btn btn-reportes" onclick="abrirReportes()" id="btnReportes">📊 REPORTES</button>
       <button class="btn btn-buscar" onclick="mostrarCotizaciones()" id="btnCotizaciones">COTIZACIONES</button>
+      <button class="btn btn-exportar" onclick="abrirBackup()" id="btnBackup">💾 BACKUP</button>
     </div>
 
     <div id="seccionBloqueada" class="seccion-bloqueada">
@@ -272,10 +303,21 @@ input[type="number"] {text-align: center;}
         <div class="campo-grupo"><label>GIRO *</label><input type="text" id="giro" /></div>
         <div class="campo-grupo"><label>DIRECCIÓN DE FACTURACIÓN *</label><input type="text" id="direccion" /></div>
         <div class="fila-campos">
-          <div class="campo-grupo"><label>NOMBRE DE CONTACTO *</label><input type="text" id="nombreContacto" /></div>
-          <div class="campo-grupo"><label>CELULAR *</label><input type="tel" id="celular" placeholder="+56912345678" /></div>
+          <div class="campo-grupo">
+            <label>NOMBRE DE CONTACTO *</label>
+            <input type="text" id="nombreContacto" />
+          </div>
+          <div class="campo-grupo">
+            <label>CELULAR *</label>
+            <input type="tel" id="celular" placeholder="+56912345678" onchange="validarTelefono(this)" />
+            <div class="validacion-msg"></div>
+          </div>
         </div>
-        <div class="campo-grupo"><label>MAIL *</label><input type="email" id="mail" /></div>
+        <div class="campo-grupo">
+          <label>MAIL *</label>
+          <input type="email" id="mail" onchange="validarEmail(this)" />
+          <div class="validacion-msg"></div>
+        </div>
         <div class="campo-grupo"><label>MEDIO DE PAGO *</label><select id="medioPago"><option value="">SELECCIONE MEDIO DE PAGO</option><option value="TRANSFERENCIA">TRANSFERENCIA</option><option value="WEBPAY">WEBPAY</option><option value="CHEQUE 30 DÍAS">CHEQUE 30 DÍAS</option><option value="OC 30 DÍAS">OC 30 DÍAS</option><option value="EFECTIVO">EFECTIVO</option></select></div>
         <div class="botones-formulario">
           <button class="btn btn-buscar" onclick="guardarCliente()" id="btnGuardarCliente">GUARDAR CLIENTE</button>
@@ -309,11 +351,32 @@ input[type="number"] {text-align: center;}
           <button class="btn btn-cancelar" onclick="cancelarProducto()">CANCELAR</button>
         </div>
       </div>
+
+      <div id="descuentoGlobal" class="descuento-global" style="display:none;">
+        <h4>💰 DESCUENTO GLOBAL</h4>
+        <div class="fila-campos-dos">
+          <div class="campo-grupo">
+            <label>TIPO DESCUENTO</label>
+            <select id="tipoDescuento" onchange="actualizarTablaProductos()">
+              <option value="porcentaje">PORCENTAJE (%)</option>
+              <option value="monto">MONTO ($)</option>
+            </select>
+          </div>
+          <div class="campo-grupo">
+            <label>VALOR DESCUENTO</label>
+            <input type="number" id="valorDescuento" min="0" step="0.01" placeholder="0" onchange="actualizarTablaProductos()" />
+          </div>
+        </div>
+        <p id="textoDescuento"></p>
+      </div>
+
       <div id="tablaProductosContenedor">
         <div class="alerta-sin-productos">NO HAY PRODUCTOS AÑADIDOS A LA COTIZACIÓN</div>
       </div>
       <div class="resumen-totales" id="resumenTotales" style="display:none;">
         <div class="resumen-linea"><div>NETO</div><div id="totalNeto">$0.00</div></div>
+        <div class="resumen-linea"><div>DESCUENTO</div><div id="totalDescuento">$0.00</div></div>
+        <div class="resumen-linea"><div>NETO FINAL</div><div id="totalNetoFinal">$0.00</div></div>
         <div class="resumen-linea"><div>IVA (19%)</div><div id="totalIva">$0.00</div></div>
         <div class="resumen-linea total"><div>TOTAL</div><div id="totalGeneral">$0.00</div></div>
       </div>
@@ -336,55 +399,32 @@ input[type="number"] {text-align: center;}
     </section>
   </div>
 
+  <!-- MODALES -->
+  <div id="modalConfig">
+    <div class="modal-config-content">
+      <button class="btn-cerrar-config" onclick="cerrarConfiguracion()">×</button>
+      <div class="modal-config-titulo">⚙️ CONFIGURACIÓN DE EMPRESA</div>
+      <div class="campo-grupo"><label>NOMBRE DE EMPRESA *</label><input type="text" id="configNombreEmpresa" placeholder="Ej: Empresa Servicios SPA" /></div>
+      <div class="campo-grupo"><label>RUT EMPRESA *</label><input type="text" id="configRutEmpresa" placeholder="Ej: 78000256-0" /></div>
+      <div class="campo-grupo"><label>DIRECCIÓN *</label><input type="text" id="configDireccion" placeholder="Ej: Los Pepinos 287, Las Condes" /></div>
+      <div class="campo-grupo"><label>TELÉFONO *</label><input type="text" id="configTelefono" placeholder="Ej: 56 22 5510365" /></div>
+      <div class="campo-grupo"><label>EMAIL *</label><input type="email" id="configEmail" placeholder="contacto@empresa.cl" /></div>
+      <div class="botones-config">
+        <button class="btn btn-cancelar" onclick="cerrarConfiguracion()">CANCELAR</button>
+        <button class="btn btn-agregar" onclick="guardarConfiguracion()">GUARDAR</button>
+      </div>
+    </div>
+  </div>
+
   <div id="modalArticulos">
     <div class="articulos-content">
       <button class="btn-cerrar-modal" onclick="cerrarArticulos()">×</button>
       <div class="modal-titulo">ARTÍCULOS (PRODUCTOS Y SERVICIOS REGISTRADOS)</div>
       
-      <div class="form-calculo-precio">
-        <h4>💰 CALCULADORA DE PRECIO - PRECIOS SIN IVA</h4>
-        <p>Calcula la utilidad y margen considerando precios NETOS sin IVA (recomendado en Chile).</p>
-        <div class="fila-campos-dos">
-          <div class="campo-grupo">
-            <label>COSTO DE COMPRA (SIN IVA) *</label>
-            <input type="number" id="costoCompraCalc" min="0" step="0.01" placeholder="Ej: 100.00" />
-          </div>
-          <div class="campo-grupo">
-            <label>PRECIO NETO AL CLIENTE (SIN IVA) *</label>
-            <input type="number" id="montoTotalCalc" min="0" step="0.01" placeholder="Ej: 150.00" />
-          </div>
-        </div>
-        <div style="display: flex; gap: 6px; flex-wrap: wrap;">
-          <button class="btn btn-calcular" onclick="calcularPrecioAutomatico()">🔢 CALCULAR AUTOMÁTICAMENTE</button>
-          <button class="btn btn-limpiar-calc" onclick="limpiarCalculadora()">🗑️ LIMPIAR CALCULADORA</button>
-        </div>
-        
-        <div id="resultadoCalculo" class="resultado-calculo">
-          <div class="resultado-linea">
-            <strong>COSTO DE COMPRA (SIN IVA):</strong>
-            <span class="resultado-valor" id="resultCosto">$0.00</span>
-          </div>
-          <div class="resultado-linea">
-            <strong>PRECIO NETO (SIN IVA):</strong>
-            <span class="resultado-valor" id="resultNeto">$0.00</span>
-          </div>
-          <div class="resultado-linea">
-            <strong>UTILIDAD NETA (SIN IVA):</strong>
-            <span class="resultado-valor" id="resultUtilidadNeta">$0.00</span>
-          </div>
-          <div class="resultado-linea" style="background-color: #fff9e6; border-bottom: 2px solid #4B732E; padding: 10px 0; margin-top: 5px;">
-            <strong style="font-size: 12px;">% MARGEN SOBRE NETO:</strong>
-            <span class="resultado-valor" id="resultPorcentaje" style="font-size: 14px; color: #2E7D32;">0.00%</span>
-          </div>
-          <div class="resultado-linea">
-            <strong>IVA 19% (solo referencia):</strong>
-            <span class="resultado-valor" id="resultIva">$0.00</span>
-          </div>
-          <div class="resultado-linea">
-            <strong>TOTAL CON IVA (referencia):</strong>
-            <span class="resultado-valor" id="resultTotalConIva">$0.00</span>
-          </div>
-        </div>
+      <div class="buscador-articulos">
+        <input type="text" id="inputBuscador" placeholder="BUSCAR CÓDIGO O DESCRIPCIÓN" />
+        <button class="btn" onclick="filtrarArticulos()">🔍 BUSCAR</button>
+        <button class="btn btn-limpiar" onclick="limpiarBuscadorArticulos()">🗑️ LIMPIAR</button>
       </div>
 
       <div id="tablaArticulosContenedor"></div>
@@ -397,6 +437,28 @@ input[type="number"] {text-align: center;}
       <button onclick="cerrarCotizaciones()" style="position:absolute;top:10px;right:15px;background:#9B2E00;color:white;border:none;border-radius:2px;padding:4px 6px;cursor:pointer;font-size:14px;font-weight:bold;">×</button>
       <h2 style="margin-bottom:12px;text-transform:uppercase;color:#3B3B3B;font-size:16px;">COTIZACIONES EMITIDAS</h2>
       <div id="listaCotizaciones" style="overflow-x:auto;"></div>
+    </div>
+  </div>
+
+  <div id="modalReportes">
+    <div class="modal-reportes-content">
+      <button class="btn-cerrar-reportes" onclick="cerrarReportes()">×</button>
+      <h2 style="margin-bottom:15px;text-transform:uppercase;color:#3B3B3B;font-size:16px;border-bottom:3px solid #7b1fa2;padding-bottom:8px;">📊 REPORTES - UTILIDAD VS INGRESOS</h2>
+      <div id="contenidoReportes" style="overflow-x:auto;"></div>
+    </div>
+  </div>
+
+  <div id="modalBackup">
+    <div class="modal-backup-content">
+      <button class="btn-cerrar-backup" onclick="cerrarBackup()">×</button>
+      <div class="modal-backup-titulo">💾 RESPALDO Y RESTAURACIÓN DE DATOS</div>
+      <p style="font-size:11px; color:#666; margin-bottom:12px; text-transform:uppercase;">Descargue un respaldo de todos sus datos (clientes, productos, cotizaciones) o restaure desde un backup anterior.</p>
+      <div class="botones-backup">
+        <button class="btn btn-exportar" onclick="exportarDatos()">⬇️ DESCARGAR RESPALDO</button>
+        <button class="btn btn-importar" onclick="abrirSelectorArchivoBak()">⬆️ RESTAURAR RESPALDO</button>
+        <input type="file" id="inputImportar" accept=".json" onchange="importarDatos(event)" style="display:none;" />
+      </div>
+      <div id="mensajeBackup" style="margin-top:12px;"></div>
     </div>
   </div>
 
@@ -457,57 +519,241 @@ input[type="number"] {text-align: center;}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
 
 <script>
-// ================== CALCULADORA DE PRECIOS (PRECIOS NETOS SIN IVA) ==================
-// FÓRMULA: Utilidad = Precio Neto - Costo (AMBOS sin IVA)
-// FÓRMULA: % Margen = (Utilidad / Precio Neto) × 100
-function calcularPrecioAutomatico() {
-  const costoCompra = parseFloat(document.getElementById('costoCompraCalc').value) || 0;
-  const precioNeto = parseFloat(document.getElementById('montoTotalCalc').value) || 0;
-  if (costoCompra <= 0) { alert('❌ Ingrese un costo de compra válido (> 0)'); return; }
-  if (precioNeto <= 0) { alert('❌ Ingrese un precio neto válido (> 0)'); return; }
-  if (precioNeto < costoCompra) { alert('❌ El precio neto no puede ser menor que el costo de compra'); return; }
+// ================== CONFIGURACIÓN DE EMPRESA (MEJORA 1) ==================
+const configEmpresaDefault = {
+  nombre: 'EMPRESA CUNDO',
+  rut: '78000256-0',
+  direccion: 'Los Pepinos 287, Las Condes',
+  telefono: '56 22 5510365',
+  email: 'contacto@servicios.cl'
+};
 
-  // CÁLCULO CORRECTO: Utilidad sobre NETO (sin IVA)
-  const utilidadNeta = +(precioNeto - costoCompra).toFixed(2);
-  const margenSobreNeto = precioNeto > 0 ? +((utilidadNeta / precioNeto) * 100).toFixed(2) : 0;
+function cargarConfiguracion() {
+  const config = JSON.parse(localStorage.getItem('configEmpresa')) || configEmpresaDefault;
+  document.getElementById('empresaNombre').textContent = config.nombre;
+  return config;
+}
+
+function abrirConfiguracion() {
+  const config = JSON.parse(localStorage.getItem('configEmpresa')) || configEmpresaDefault;
+  document.getElementById('configNombreEmpresa').value = config.nombre;
+  document.getElementById('configRutEmpresa').value = config.rut;
+  document.getElementById('configDireccion').value = config.direccion;
+  document.getElementById('configTelefono').value = config.telefono;
+  document.getElementById('configEmail').value = config.email;
+  document.getElementById('modalConfig').style.display = 'block';
+}
+
+function cerrarConfiguracion() {
+  document.getElementById('modalConfig').style.display = 'none';
+}
+
+function guardarConfiguracion() {
+  const config = {
+    nombre: document.getElementById('configNombreEmpresa').value.toUpperCase() || 'EMPRESA CUNDO',
+    rut: document.getElementById('configRutEmpresa').value || '78000256-0',
+    direccion: document.getElementById('configDireccion').value.toUpperCase() || 'Los Pepinos 287, Las Condes',
+    telefono: document.getElementById('configTelefono').value || '56 22 5510365',
+    email: document.getElementById('configEmail').value || 'contacto@servicios.cl'
+  };
+  localStorage.setItem('configEmpresa', JSON.stringify(config));
+  document.getElementById('empresaNombre').textContent = config.nombre;
+  mostrarMensaje('CONFIGURACIÓN GUARDADA ✓', 'exito');
+  cerrarConfiguracion();
+}
+
+// ================== VALIDACIÓN AVANZADA (MEJORA 5) ==================
+function validarTelefono(input) {
+  const valor = input.value.trim();
+  const regexTelefono = /^(\+56|56)?[\s]?9?[\s]?\d{8}$/;
+  const msgDiv = input.nextElementSibling;
   
-  // IVA solo como referencia
-  const ivaReferencia = +(precioNeto * 0.19).toFixed(2);
-  const totalConIva = +(precioNeto * 1.19).toFixed(2);
-
-  document.getElementById('resultCosto').textContent = '$' + costoCompra.toLocaleString('es-CL', {minimumFractionDigits: 2});
-  document.getElementById('resultNeto').textContent = '$' + precioNeto.toLocaleString('es-CL', {minimumFractionDigits: 2});
-  document.getElementById('resultUtilidadNeta').textContent = '$' + utilidadNeta.toLocaleString('es-CL', {minimumFractionDigits: 2});
-  document.getElementById('resultPorcentaje').textContent = margenSobreNeto.toFixed(2) + '%';
-  document.getElementById('resultIva').textContent = '$' + ivaReferencia.toLocaleString('es-CL', {minimumFractionDigits: 2});
-  document.getElementById('resultTotalConIva').textContent = '$' + totalConIva.toLocaleString('es-CL', {minimumFractionDigits: 2});
-
-  document.getElementById('resultadoCalculo').classList.add('activo');
-  guardarCalculadora();
+  if (!valor) {
+    input.classList.remove('error', 'valido');
+    msgDiv.textContent = '';
+    msgDiv.className = 'validacion-msg';
+    return;
+  }
+  
+  if (regexTelefono.test(valor)) {
+    input.classList.remove('error');
+    input.classList.add('valido');
+    msgDiv.textContent = '✓ Teléfono válido';
+    msgDiv.className = 'validacion-msg exito';
+  } else {
+    input.classList.remove('valido');
+    input.classList.add('error');
+    msgDiv.textContent = '❌ Formato: +56912345678 o 912345678';
+    msgDiv.className = 'validacion-msg error';
+  }
 }
 
-function guardarCalculadora() {
-  localStorage.setItem('calcPrecio_costo', document.getElementById('costoCompraCalc').value);
-  localStorage.setItem('calcPrecio_precio', document.getElementById('montoTotalCalc').value);
+function validarEmail(input) {
+  const valor = input.value.trim();
+  const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const msgDiv = input.nextElementSibling;
+  
+  if (!valor) {
+    input.classList.remove('error', 'valido');
+    msgDiv.textContent = '';
+    msgDiv.className = 'validacion-msg';
+    return;
+  }
+  
+  if (regexEmail.test(valor)) {
+    input.classList.remove('error');
+    input.classList.add('valido');
+    msgDiv.textContent = '✓ Email válido';
+    msgDiv.className = 'validacion-msg exito';
+  } else {
+    input.classList.remove('valido');
+    input.classList.add('error');
+    msgDiv.textContent = '❌ Email inválido';
+    msgDiv.className = 'validacion-msg error';
+  }
 }
 
-function restaurarCalculadora() {
-  const c = localStorage.getItem('calcPrecio_costo');
-  const p = localStorage.getItem('calcPrecio_precio');
-  if (c) document.getElementById('costoCompraCalc').value = c;
-  if (p) document.getElementById('montoTotalCalc').value = p;
-  if (c && p) calcularPrecioAutomatico();
+function validarRut(rut) {
+  if (!/^[0-9]{7,8}-[0-9kK]$/.test(rut)) return false;
+  const [numeros, digito] = rut.split('-');
+  const suma = [...numeros].reverse().reduce((acc, n, i) => acc + parseInt(n) * ((i % 6) + 2), 0);
+  const dvCalculado = (11 - (suma % 11)) % 11;
+  const dvEsperado = digito.toUpperCase() === 'K' ? 10 : parseInt(digito);
+  return dvCalculado === dvEsperado;
 }
 
-function limpiarCalculadora() {
-  document.getElementById('costoCompraCalc').value = '';
-  document.getElementById('montoTotalCalc').value = '';
-  document.getElementById('resultadoCalculo').classList.remove('activo');
-  localStorage.removeItem('calcPrecio_costo');
-  localStorage.removeItem('calcPrecio_precio');
-  document.getElementById('costoCompraCalc').focus();
+function formatearNumero(valor) {
+  return Math.round(parseFloat(valor) * 100) / 100;
 }
 
+// ================== DESCUENTOS GLOBALES (MEJORA 2) ==================
+let descuentoGlobal = {tipo: 'porcentaje', valor: 0};
+
+function mostrarSeccionDescuento() {
+  document.getElementById('descuentoGlobal').style.display = productosEnCotizacion.length > 0 ? 'block' : 'none';
+}
+
+function obtenerMontoDescuento() {
+  if (descuentoGlobal.valor === 0) return 0;
+  const totalNeto = productosEnCotizacion.reduce((acc, p) => acc + parseFloat(p.totalNeto), 0);
+  if (descuentoGlobal.tipo === 'porcentaje') {
+    return formatearNumero(totalNeto * (descuentoGlobal.valor / 100));
+  } else {
+    return formatearNumero(descuentoGlobal.valor);
+  }
+}
+
+// ================== EXPORTAR/IMPORTAR DATOS (MEJORA 4) ==================
+function exportarDatos() {
+  const datos = {
+    clientes: JSON.parse(localStorage.getItem('clientes') || '{}'),
+    productos: JSON.parse(localStorage.getItem('productos') || '{}'),
+    cotizaciones: JSON.parse(localStorage.getItem('cotizacionesEmitidas') || '[]'),
+    configuracion: JSON.parse(localStorage.getItem('configEmpresa') || JSON.stringify(configEmpresaDefault)),
+    fecha_respaldo: new Date().toISOString()
+  };
+  const json = JSON.stringify(datos, null, 2);
+  const blob = new Blob([json], {type: 'application/json'});
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `respaldo_cotizador_${new Date().toISOString().split('T')[0]}.json`;
+  link.click();
+  URL.revokeObjectURL(url);
+  mostrarMensajeBackup('✓ RESPALDO DESCARGADO CORRECTAMENTE', 'exito');
+}
+
+function abrirSelectorArchivoBak() {
+  document.getElementById('inputImportar').click();
+}
+
+function importarDatos(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const datos = JSON.parse(e.target.result);
+      
+      if (!datos.clientes || !datos.productos || !datos.cotizaciones) {
+        mostrarMensajeBackup('❌ ARCHIVO INVÁLIDO - Estructura incorrecta', 'error');
+        return;
+      }
+      
+      localStorage.setItem('clientes', JSON.stringify(datos.clientes));
+      localStorage.setItem('productos', JSON.stringify(datos.productos));
+      localStorage.setItem('cotizacionesEmitidas', JSON.stringify(datos.cotizaciones));
+      if (datos.configuracion) {
+        localStorage.setItem('configEmpresa', JSON.stringify(datos.configuracion));
+        cargarConfiguracion();
+      }
+      
+      mostrarMensajeBackup(`✓ RESPALDO RESTAURADO - ${Object.keys(datos.clientes).length} clientes, ${Object.keys(datos.productos).length} productos, ${datos.cotizaciones.length} cotizaciones`, 'exito');
+      setTimeout(() => { location.reload(); }, 2000);
+    } catch (error) {
+      mostrarMensajeBackup('❌ ERROR AL LEER EL ARCHIVO: ' + error.message, 'error');
+    }
+  };
+  reader.readAsText(file);
+}
+
+function mostrarMensajeBackup(texto, tipo) {
+  const m = document.getElementById('mensajeBackup');
+  m.className = `mensaje mensaje-${tipo}`;
+  m.textContent = texto;
+}
+
+function abrirBackup() {
+  document.getElementById('modalBackup').style.display = 'block';
+}
+
+function cerrarBackup() {
+  document.getElementById('modalBackup').style.display = 'none';
+}
+
+// ================== REPORTES (MEJORA 3) ==================
+function abrirReportes() {
+  generarReportes();
+  document.getElementById('modalReportes').style.display = 'block';
+}
+
+function cerrarReportes() {
+  document.getElementById('modalReportes').style.display = 'none';
+}
+
+function generarReportes() {
+  if (cotizacionesEmitidas.length === 0) {
+    document.getElementById('contenidoReportes').innerHTML = '<p style="text-align:center; padding:15px; font-size:11px; text-transform:uppercase;">NO HAY COTIZACIONES PARA REPORTAR</p>';
+    return;
+  }
+
+  let totalIngresos = 0, totalCostos = 0, totalUtilidad = 0, html = '<div style="overflow-x:auto;"><table class="tabla-reportes"><thead><tr><th>N° COTIZACIÓN</th><th>CLIENTE</th><th>INGRESOS NETO</th><th>COSTO TOTAL</th><th>UTILIDAD NETA</th><th>% MARGEN</th><th>ESTADO</th></tr></thead><tbody>';
+  
+  cotizacionesEmitidas.forEach(cot => {
+    let costoTotal = 0, ingresoNeto = formatearNumero(parseFloat(cot.totalNeto));
+    if (cot.productos) {
+      costoTotal = formatearNumero(cot.productos.reduce((acc, p) => acc + (parseFloat(p.costo) * p.cantidad), 0));
+    }
+    const utilidad = formatearNumero(ingresoNeto - costoTotal);
+    const margen = ingresoNeto > 0 ? formatearNumero((utilidad / ingresoNeto) * 100) : 0;
+    
+    totalIngresos += ingresoNeto;
+    totalCostos += costoTotal;
+    totalUtilidad += utilidad;
+    
+    const badgeClase = cot.estado === 'aceptado' ? 'badge-aceptado' : (cot.estado === 'rechazado' ? 'badge-rechazado' : 'badge-pendiente');
+    html += `<tr><td>${cot.numero}</td><td>${cot.razonSocial}</td><td class="valor-numerico">$${ingresoNeto.toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td class="valor-numerico">$${costoTotal.toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td class="valor-numerico">$${utilidad.toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td class="valor-numerico">${margen.toFixed(2)}%</td><td><span class="badge-estado ${badgeClase}">${cot.estado}</span></td></tr>`;
+  });
+
+  const margenTotal = totalIngresos > 0 ? formatearNumero((totalUtilidad / totalIngresos) * 100) : 0;
+  html += `<tr class="fila-total-reportes"><td colspan="2"><strong>TOTALES</strong></td><td class="valor-numerico"><strong>$${formatearNumero(totalIngresos).toLocaleString('es-CL', {minimumFractionDigits: 2})}</strong></td><td class="valor-numerico"><strong>$${formatearNumero(totalCostos).toLocaleString('es-CL', {minimumFractionDigits: 2})}</strong></td><td class="valor-numerico"><strong>$${formatearNumero(totalUtilidad).toLocaleString('es-CL', {minimumFractionDigits: 2})}</strong></td><td class="valor-numerico"><strong>${margenTotal.toFixed(2)}%</strong></td><td></td></tr>`;
+  html += '</tbody></table></div>';
+  
+  document.getElementById('contenidoReportes').innerHTML = html;
+}
+
+// ================== RESTO DEL CÓDIGO (IGUAL AL ANTERIOR) ==================
 class GestorCotizaciones {
   constructor() { this.prefijo = 'CO'; this.numeroBase = 100500; this.cargarNumeroCotizacion(); }
   cargarNumeroCotizacion() { const n = localStorage.getItem('ultimaCotizacion'); if (n) this.numeroBase = parseInt(n); this.actualizarDisplay(); }
@@ -546,9 +792,11 @@ const gestorProductos = new GestorProductos();
 let clienteActual = null, modoEdicion = false, productosEnCotizacion = [], cotizacionesEmitidas = JSON.parse(localStorage.getItem('cotizacionesEmitidas') || '[]'), articuloEdicion = null, archivosAdjuntos = [], cotizacionGuardada = false, datosDespacho = null, cotizacionActualIndex = null, pdfEmitido = false, esEdicionCotizacion = false, esLecturaCotizacion = false, pdfActualDoc = null, numeroCotizacionActual = null, estadoCotizacionActual = 'pendiente';
 
 document.addEventListener('DOMContentLoaded', function() {
+  cargarConfiguracion();
+  
   document.getElementById('inputRut').addEventListener('input', function(e) {
-    let v = e.target.value.replace(/[^0-9kK]/g, '');
-    if (v.length > 1) v = v.slice(0, -1) + '-' + v.slice(-1);
+    let v = e.target.value.replace(/[^0-9kK-]/g, '');
+    if (v.length > 1 && v[v.length - 2] !== '-') v = v.slice(0, -1) + '-' + v.slice(-1);
     e.target.value = v.toUpperCase();
     mostrarDesplegableClientes();
   });
@@ -575,8 +823,6 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 
-// ================== CÁLCULO % MARGEN SOBRE NETO (SIN IVA) ==================
-// FÓRMULA: % Margen = (Precio Neto - Costo) / Precio Neto × 100
 function calcularMargenUtilidad() {
   const costo = parseFloat(document.getElementById('costoProducto').value) || 0;
   const precioNeto = parseFloat(document.getElementById('valorTotalProducto').value) || 0;
@@ -632,11 +878,11 @@ function buscarCliente() {
   if (cotizacionGuardada && (estadoCotizacionActual === 'aceptado' || estadoCotizacionActual === 'rechazado')) { mostrarMensaje('COTIZACIÓN BLOQUEADA. NO SE PUEDEN HACER MODIFICACIONES.', 'bloqueado'); return; }
   const rut = document.getElementById('inputRut').value.trim();
   if (!rut) return mostrarMensaje('POR FAVOR INGRESE UN RUT', 'error');
-  if (!validarRut(rut)) return mostrarMensaje('EL FORMATO DEL RUT NO ES VÁLIDO', 'error');
+  if (!validarRut(rut)) return mostrarMensaje('RUT INVÁLIDO - VERIFIQUE FORMATO Y DÍGITO VERIFICADOR', 'error');
   const cliente = gestorClientes.buscarPorRut(rut);
   if (cliente) {
     clienteActual = cliente;
-    mostrarMensaje('CLIENTE ENCONTRADO EN LA BASE DE DATOS', 'exito');
+    mostrarMensaje('CLIENTE ENCONTRADO ✓', 'exito');
     mostrarResumenCliente(cliente);
     document.getElementById('formularioCliente').classList.remove('activo');
     habilitarProductos();
@@ -658,8 +904,6 @@ function mostrarFormularioNuevo(rut) {
   document.getElementById('mail').value = '';
   document.getElementById('medioPago').value = '';
 }
-
-function validarRut(rut) { return /^[0-9]{7,8}-[0-9kK]$/.test(rut); }
 
 function mostrarMensaje(texto, tipo) {
   const m = document.getElementById('mensaje');
@@ -688,34 +932,38 @@ function editarCliente() {
   document.getElementById('celular').value = clienteActual.celular;
   document.getElementById('mail').value = clienteActual.mail;
   document.getElementById('medioPago').value = clienteActual.medioPago || '';
-  mostrarMensaje('MODO EDICIÓN. MODIFIQUE LOS CAMPOS.', 'info');
+  mostrarMensaje('MODO EDICIÓN - MODIFIQUE LOS CAMPOS', 'info');
 }
 
 function cancelarEdicion() {
   if (!clienteActual) return;
   modoEdicion = false;
   document.getElementById('formularioCliente').classList.remove('activo');
-  mostrarMensaje('CLIENTE ENCONTRADO EN LA BASE DE DATOS', 'exito');
+  mostrarMensaje('CLIENTE ENCONTRADO ✓', 'exito');
   mostrarResumenCliente(clienteActual);
 }
 
 function guardarCliente() {
   if (esLecturaCotizacion) { mostrarMensaje('MODO LECTURA. NO SE PUEDEN HACER MODIFICACIONES.', 'bloqueado'); return; }
   const rut = document.getElementById('rut').value, rs = document.getElementById('razonSocial').value.trim(), gi = document.getElementById('giro').value.trim(), di = document.getElementById('direccion').value.trim(), nc = document.getElementById('nombreContacto').value.trim(), ce = document.getElementById('celular').value.trim(), ma = document.getElementById('mail').value.trim(), mp = document.getElementById('medioPago').value;
-  if (!rs || !gi || !di || !nc || !ce || !ma || !mp) return mostrarMensaje('COMPLETE TODOS LOS CAMPOS', 'error');
-  if (!validarEmail(ma)) return mostrarMensaje('EMAIL INVÁLIDO', 'error');
+  if (!rs || !gi || !di || !nc || !ce || !ma || !mp) return mostrarMensaje('COMPLETE TODOS LOS CAMPOS REQUERIDOS', 'error');
+  
+  const msgEmail = document.getElementById('mail').nextElementSibling;
+  const msgTel = document.getElementById('celular').nextElementSibling;
+  
+  if (msgEmail && msgEmail.classList.contains('error')) return mostrarMensaje('EMAIL INVÁLIDO', 'error');
+  if (msgTel && msgTel.classList.contains('error')) return mostrarMensaje('TELÉFONO INVÁLIDO', 'error');
+  
   const cliente = { rut, razonSocial: rs.toUpperCase(), giro: gi.toUpperCase(), direccion: di.toUpperCase(), nombreContacto: nc.toUpperCase(), celular: ce, mail: ma.toUpperCase(), medioPago: mp };
   if (modoEdicion) gestorClientes.actualizarCliente(rut, cliente);
   else gestorClientes.agregarCliente(rut, cliente);
-  mostrarMensaje(modoEdicion ? 'CLIENTE ACTUALIZADO' : 'CLIENTE GUARDADO', 'exito');
+  mostrarMensaje(modoEdicion ? 'CLIENTE ACTUALIZADO ✓' : 'CLIENTE GUARDADO ✓', 'exito');
   clienteActual = cliente;
   modoEdicion = false;
   document.getElementById('formularioCliente').classList.remove('activo');
   mostrarResumenCliente(cliente);
   habilitarProductos();
 }
-
-function validarEmail(e) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e); }
 
 function habilitarProductos() {
   if (esLecturaCotizacion || estadoCotizacionActual === 'aceptado' || estadoCotizacionActual === 'rechazado') {
@@ -761,6 +1009,9 @@ function limpiarCotizacion() {
   pdfActualDoc = null;
   numeroCotizacionActual = null;
   estadoCotizacionActual = 'pendiente';
+  descuentoGlobal = {tipo: 'porcentaje', valor: 0};
+  document.getElementById('tipoDescuento').value = 'porcentaje';
+  document.getElementById('valorDescuento').value = '';
   document.getElementById('resumenDespacho').classList.remove('activo');
   document.getElementById('resumenCompra').classList.remove('activo');
   document.getElementById('seccionCierre').classList.remove('activo');
@@ -792,7 +1043,7 @@ function buscarProducto() {
   if (!cod) return mostrarMensajeProducto('INGRESE UN CÓDIGO O DESCRIPCIÓN', 'error');
   const prod = gestorProductos.buscarPorCodigo(cod);
   if (prod) {
-    mostrarMensajeProducto('PRODUCTO ENCONTRADO', 'exito');
+    mostrarMensajeProducto('PRODUCTO ENCONTRADO ✓', 'exito');
     document.getElementById('formularioProducto').style.display = 'none';
     agregarProductoACotizacion(cod, prod);
     document.getElementById('inputCodigoProducto').value = '';
@@ -815,14 +1066,13 @@ function mostrarMensajeProducto(t, ti) {
   m.style.display = 'block';
 }
 
-// ================== GUARDAR PRODUCTO (PRECIO NETO SIN IVA) ==================
 function guardarProducto() {
-  const cod = document.getElementById('codigoProducto').value.trim(), desc = document.getElementById('descripcionProducto').value.trim(), cos = parseFloat(document.getElementById('costoProducto').value), precioNeto = parseFloat(document.getElementById('valorTotalProducto').value), por = parseFloat(document.getElementById('porcentajeProducto').value) || 0, link = document.getElementById('linkProducto').value.trim().toLowerCase();
+  const cod = document.getElementById('codigoProducto').value.trim(), desc = document.getElementById('descripcionProducto').value.trim(), cos = formatearNumero(document.getElementById('costoProducto').value), precioNeto = formatearNumero(document.getElementById('valorTotalProducto').value), por = parseFloat(document.getElementById('porcentajeProducto').value) || 0, link = document.getElementById('linkProducto').value.trim().toLowerCase();
   if (!cod || !desc || isNaN(cos) || cos <= 0 || isNaN(precioNeto) || precioNeto <= 0 || !link) return mostrarMensajeProducto('COMPLETE TODOS LOS CAMPOS REQUERIDOS', 'error');
   if (precioNeto < cos) return mostrarMensajeProducto('❌ ERROR: PRECIO NETO DEBE SER ≥ COSTO', 'error');
-  const prod = { codigo: cod, descripcion: desc.toUpperCase(), costo: +(cos.toFixed(2)), precioNeto: +(precioNeto.toFixed(2)), porcentaje: +(por.toFixed(2)), link: link };
+  const prod = { codigo: cod, descripcion: desc.toUpperCase(), costo: cos, precioNeto: precioNeto, porcentaje: +(por.toFixed(2)), link: link };
   gestorProductos.agregarProducto(cod, prod);
-  mostrarMensajeProducto('PRODUCTO GUARDADO CORRECTAMENTE', 'exito');
+  mostrarMensajeProducto('PRODUCTO GUARDADO ✓', 'exito');
   cancelarProducto();
   agregarProductoACotizacion(cod, prod);
 }
@@ -844,7 +1094,7 @@ function agregarProductoACotizacion(cod, prod) {
   const ex = productosEnCotizacion.find(p => p.codigo === cod);
   if (ex) {
     ex.cantidad++;
-    ex.totalNeto = +(ex.cantidad * ex.precioNetoConDescuento).toFixed(2);
+    ex.totalNeto = formatearNumero(ex.cantidad * ex.precioNetoConDescuento);
   } else {
     productosEnCotizacion.push({
       codigo: prod.codigo,
@@ -854,21 +1104,19 @@ function agregarProductoACotizacion(cod, prod) {
       costo: prod.costo,
       descuento: 0,
       precioNetoConDescuento: prod.precioNeto,
-      totalNeto: +(prod.precioNeto.toFixed(2)),
+      totalNeto: prod.precioNeto,
       link: prod.link
     });
   }
   actualizarTablaProductos();
 }
 
-// ================== TABLA PRODUCTOS: UTILIDAD SOBRE NETO (SIN IVA) ==================
-// FÓRMULA CORRECTA: Utilidad = Total Neto - Costo Total (AMBOS sin IVA)
-// FÓRMULA: % Margen = (Utilidad / Total Neto) × 100
 function actualizarTablaProductos() {
   const cont = document.getElementById('tablaProductosContenedor');
   if (productosEnCotizacion.length === 0) {
     cont.innerHTML = '<div class="alerta-sin-productos">NO HAY PRODUCTOS AÑADIDOS</div>';
     document.getElementById('resumenTotales').style.display = 'none';
+    mostrarSeccionDescuento();
     return;
   }
   let html = '<div style="overflow-x:auto;"><table><thead><tr><th>CÓDIGO</th><th>DESCRIPCIÓN</th><th>CANT</th><th>PRECIO UNITARIO (NETO)</th><th>DESC(%)</th><th>PRECIO DESC (NETO)</th><th>COSTO UNIT</th><th>COSTO TOTAL</th><th>TOTAL NETO</th><th>% MARGEN NETO</th><th>UTILIDAD NETA</th><th>TOTAL CON IVA</th><th>ACCIÓN</th></tr></thead><tbody>';
@@ -878,12 +1126,12 @@ function actualizarTablaProductos() {
     const inputDescuentoDisabled = bloqueado ? 'disabled' : '';
     const btnEliminarDisplay = bloqueado ? 'none' : 'block';
 
-    const costoTotal = +(parseFloat(p.costo) * p.cantidad).toFixed(2);
-    const precioUnitarioNeto = +(parseFloat(p.precioNetoConDescuento)).toFixed(2);
-    const totalNeto = +(p.totalNeto).toFixed(2);
-    const utilidadNeta = +(totalNeto - costoTotal).toFixed(2);
-    const margenPorcentaje = totalNeto > 0 ? +((utilidadNeta / totalNeto) * 100).toFixed(2) : 0;
-    const totalConIva = +(totalNeto * 1.19).toFixed(2);
+    const costoTotal = formatearNumero(parseFloat(p.costo) * p.cantidad);
+    const precioUnitarioNeto = formatearNumero(parseFloat(p.precioNetoConDescuento));
+    const totalNeto = formatearNumero(p.totalNeto);
+    const utilidadNeta = formatearNumero(totalNeto - costoTotal);
+    const margenPorcentaje = totalNeto > 0 ? formatearNumero((utilidadNeta / totalNeto) * 100) : 0;
+    const totalConIva = formatearNumero(totalNeto * 1.19);
     const claseMargen = margenPorcentaje >= 20 ? 'margen-verde' : 'margen-roja';
 
     html += `<tr>
@@ -900,7 +1148,7 @@ function actualizarTablaProductos() {
       <td class="valor-numerico">$${parseFloat(p.costo).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td>
       <td class="valor-numerico">$${costoTotal.toLocaleString('es-CL', {minimumFractionDigits: 2})}</td>
       <td class="valor-numerico">$${totalNeto.toLocaleString('es-CL', {minimumFractionDigits: 2})}</td>
-      <td class="valor-numerico ${claseMargen}">${margenPorcentaje}%</td>
+      <td class="valor-numerico ${claseMargen}">${margenPorcentaje.toFixed(2)}%</td>
       <td class="valor-numerico">$${utilidadNeta.toLocaleString('es-CL', {minimumFractionDigits: 2})}</td>
       <td class="valor-numerico">$${totalConIva.toLocaleString('es-CL', {minimumFractionDigits: 2})}</td>
       <td><button class="btn-eliminar" onclick="eliminarProducto(${i})" style="display:${btnEliminarDisplay};width:100%;">DEL</button></td>
@@ -909,57 +1157,66 @@ function actualizarTablaProductos() {
   html += '</tbody></table></div>';
   cont.innerHTML = html;
   actualizarResumenTotales();
+  mostrarSeccionDescuento();
 }
 
 function actualizarCantidad(i, cant) {
   cant = parseInt(cant);
   if (isNaN(cant) || cant < 1) { alert('❌ CANTIDAD INVÁLIDA - DEBE SER MAYOR A 0'); actualizarTablaProductos(); return; }
   productosEnCotizacion[i].cantidad = cant;
-  productosEnCotizacion[i].totalNeto = +(productosEnCotizacion[i].precioNetoConDescuento * cant).toFixed(2);
+  productosEnCotizacion[i].totalNeto = formatearNumero(productosEnCotizacion[i].precioNetoConDescuento * cant);
   actualizarTablaProductos();
 }
 
-// ================== DESCUENTO SOBRE PRECIO NETO (SIN IVA) ==================
 function actualizarDescuento(i, desc) {
   desc = parseFloat(desc) || 0;
   if (desc < 0 || desc > 100) { alert('❌ ERROR: EL DESCUENTO DEBE ESTAR ENTRE 0% Y 100%'); actualizarTablaProductos(); return; }
   productosEnCotizacion[i].descuento = desc;
   const precioConDesc = productosEnCotizacion[i].precioNeto * (1 - desc / 100);
-  productosEnCotizacion[i].precioNetoConDescuento = +(precioConDesc.toFixed(2));
-  productosEnCotizacion[i].totalNeto = +(productosEnCotizacion[i].precioNetoConDescuento * productosEnCotizacion[i].cantidad).toFixed(2);
+  productosEnCotizacion[i].precioNetoConDescuento = formatearNumero(precioConDesc);
+  productosEnCotizacion[i].totalNeto = formatearNumero(productosEnCotizacion[i].precioNetoConDescuento * productosEnCotizacion[i].cantidad);
   actualizarTablaProductos();
 }
 
 function eliminarProducto(i) {
   if (esLecturaCotizacion || estadoCotizacionActual === 'aceptado' || estadoCotizacionActual === 'rechazado') { mostrarMensaje('MODO LECTURA. NO SE PUEDEN ELIMINAR PRODUCTOS.', 'bloqueado'); return; }
+  if (!confirm('¿Está seguro de eliminar este producto?')) return;
   productosEnCotizacion.splice(i, 1);
   actualizarTablaProductos();
 }
 
-// ================== RESUMEN TOTALES (NETO + IVA) ==================
 function actualizarResumenTotales() {
-  const totalNeto = +(productosEnCotizacion.reduce((acc, p) => acc + parseFloat(p.totalNeto), 0)).toFixed(2);
-  const iva = +(totalNeto * 0.19).toFixed(2);
-  const totalConIva = +(totalNeto + iva).toFixed(2);
+  const totalNetoSinDesc = formatearNumero(productosEnCotizacion.reduce((acc, p) => acc + parseFloat(p.totalNeto), 0));
+  descuentoGlobal.valor = parseFloat(document.getElementById('valorDescuento').value) || 0;
+  descuentoGlobal.tipo = document.getElementById('tipoDescuento').value;
+  
+  const montoDescuento = obtenerMontoDescuento();
+  const totalNetoFinal = formatearNumero(totalNetoSinDesc - montoDescuento);
+  const iva = formatearNumero(totalNetoFinal * 0.19);
+  const totalConIva = formatearNumero(totalNetoFinal + iva);
 
-  document.getElementById('totalNeto').textContent = '$' + totalNeto.toLocaleString('es-CL', {minimumFractionDigits: 2});
+  document.getElementById('totalNeto').textContent = '$' + totalNetoSinDesc.toLocaleString('es-CL', {minimumFractionDigits: 2});
+  document.getElementById('totalDescuento').textContent = '$' + montoDescuento.toLocaleString('es-CL', {minimumFractionDigits: 2});
+  document.getElementById('totalNetoFinal').textContent = '$' + totalNetoFinal.toLocaleString('es-CL', {minimumFractionDigits: 2});
   document.getElementById('totalIva').textContent = '$' + iva.toLocaleString('es-CL', {minimumFractionDigits: 2});
   document.getElementById('totalGeneral').textContent = '$' + totalConIva.toLocaleString('es-CL', {minimumFractionDigits: 2});
+  
+  const textoDesc = descuentoGlobal.valor > 0 ? `${descuentoGlobal.tipo === 'porcentaje' ? descuentoGlobal.valor + '%' : '$' + descuentoGlobal.valor.toLocaleString('es-CL', {minimumFractionDigits: 2})} descuento aplicado` : '';
+  document.getElementById('textoDescuento').textContent = textoDesc;
+  
   document.getElementById('resumenTotales').style.display = 'block';
 }
 
 function abrirArticulos() {
   document.getElementById('modalArticulos').style.display = 'block';
-  restaurarCalculadora();
+  document.getElementById('inputBuscador').value = '';
   listarArticulos();
 }
 
 function cerrarArticulos() {
-  guardarCalculadora();
   document.getElementById('modalArticulos').style.display = 'none';
 }
 
-// ================== TABLA ARTÍCULOS (PRODUCTOS REGISTRADOS) ==================
 function listarArticulos() {
   const todos = gestorProductos.obtenerTodos();
   let html = '<div style="overflow-x:auto;"><table class="tabla-articulos"><thead><tr><th>CÓDIGO</th><th>DESCRIPCIÓN</th><th>COSTO (SIN IVA)</th><th>PRECIO NETO (SIN IVA)</th><th>% MARGEN NETO</th><th>UTILIDAD NETA</th><th>TOTAL CON IVA</th><th>LINK</th><th>ACCIÓN</th></tr></thead><tbody>';
@@ -969,18 +1226,18 @@ function listarArticulos() {
   } else {
     claves.forEach(codigo => {
       const art = todos[codigo], 
-            utilidadNeta = +(parseFloat(art.precioNeto) - parseFloat(art.costo)).toFixed(2),
-            margenPorcentaje = art.precioNeto > 0 ? +((utilidadNeta / art.precioNeto) * 100).toFixed(2) : 0,
-            totalConIva = +(parseFloat(art.precioNeto) * 1.19).toFixed(2);
+            utilidadNeta = formatearNumero(parseFloat(art.precioNeto) - parseFloat(art.costo)),
+            margenPorcentaje = art.precioNeto > 0 ? formatearNumero((utilidadNeta / art.precioNeto) * 100) : 0,
+            totalConIva = formatearNumero(parseFloat(art.precioNeto) * 1.19);
       html += `<tr>
         <td>${art.codigo}</td>
         <td>${art.descripcion}</td>
         <td class="valor-numerico">$${parseFloat(art.costo).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td>
         <td class="valor-numerico">$${parseFloat(art.precioNeto).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td>
-        <td class="valor-numerico">${margenPorcentaje.toLocaleString('es-CL', {minimumFractionDigits: 2})}%</td>
+        <td class="valor-numerico">${margenPorcentaje.toFixed(2)}%</td>
         <td class="valor-numerico">$${utilidadNeta.toLocaleString('es-CL', {minimumFractionDigits: 2})}</td>
         <td class="valor-numerico">$${totalConIva.toLocaleString('es-CL', {minimumFractionDigits: 2})}</td>
-        <td style="text-transform:lowercase;"><a href="${art.link}" target="_blank">${art.link}</a></td>
+        <td style="text-transform:lowercase;"><a href="${art.link.startsWith('http') ? art.link : 'https://' + art.link}" target="_blank">${art.link}</a></td>
         <td>
           <button class="btn btn-editar" onclick="editarArticulo('${art.codigo}')">EDITAR</button>
           <button class="btn btn-eliminar" onclick="eliminarArticulo('${art.codigo}')">ELIMINAR</button>
@@ -990,6 +1247,50 @@ function listarArticulos() {
   }
   html += '</tbody></table></div>';
   document.getElementById('tablaArticulosContenedor').innerHTML = html;
+}
+
+function filtrarArticulos() {
+  const termino = document.getElementById('inputBuscador').value.toUpperCase().trim();
+  if (!termino) { listarArticulos(); return; }
+  
+  const todos = gestorProductos.obtenerTodos();
+  const filtrados = Object.entries(todos).filter(([codigo, art]) => 
+    codigo.includes(termino) || art.descripcion.includes(termino)
+  ).reduce((obj, [codigo, art]) => { obj[codigo] = art; return obj; }, {});
+
+  let html = '<div style="overflow-x:auto;"><table class="tabla-articulos"><thead><tr><th>CÓDIGO</th><th>DESCRIPCIÓN</th><th>COSTO (SIN IVA)</th><th>PRECIO NETO (SIN IVA)</th><th>% MARGEN NETO</th><th>UTILIDAD NETA</th><th>TOTAL CON IVA</th><th>LINK</th><th>ACCIÓN</th></tr></thead><tbody>';
+  
+  if (Object.keys(filtrados).length === 0) {
+    html += '<tr><td colspan="9" style="text-align:center;">NO HAY RESULTADOS PARA: "' + termino + '"</td></tr>';
+  } else {
+    Object.keys(filtrados).forEach(codigo => {
+      const art = filtrados[codigo],
+            utilidadNeta = formatearNumero(parseFloat(art.precioNeto) - parseFloat(art.costo)),
+            margenPorcentaje = art.precioNeto > 0 ? formatearNumero((utilidadNeta / art.precioNeto) * 100) : 0,
+            totalConIva = formatearNumero(parseFloat(art.precioNeto) * 1.19);
+      html += `<tr>
+        <td>${art.codigo}</td>
+        <td>${art.descripcion}</td>
+        <td class="valor-numerico">$${parseFloat(art.costo).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td>
+        <td class="valor-numerico">$${parseFloat(art.precioNeto).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td>
+        <td class="valor-numerico">${margenPorcentaje.toFixed(2)}%</td>
+        <td class="valor-numerico">$${utilidadNeta.toLocaleString('es-CL', {minimumFractionDigits: 2})}</td>
+        <td class="valor-numerico">$${totalConIva.toLocaleString('es-CL', {minimumFractionDigits: 2})}</td>
+        <td style="text-transform:lowercase;"><a href="${art.link.startsWith('http') ? art.link : 'https://' + art.link}" target="_blank">${art.link}</a></td>
+        <td>
+          <button class="btn btn-editar" onclick="editarArticulo('${art.codigo}')">EDITAR</button>
+          <button class="btn btn-eliminar" onclick="eliminarArticulo('${art.codigo}')">ELIMINAR</button>
+        </td>
+      </tr>`;
+    });
+  }
+  html += '</tbody></table></div>';
+  document.getElementById('tablaArticulosContenedor').innerHTML = html;
+}
+
+function limpiarBuscadorArticulos() {
+  document.getElementById('inputBuscador').value = '';
+  listarArticulos();
 }
 
 function editarArticulo(codigo) {
@@ -1031,10 +1332,10 @@ function calcularMargenEdicion() {
 
 function guardarEdicionArticulo() {
   if (!articuloEdicion) return;
-  const codigo = articuloEdicion.codigo, desc = document.getElementById('editarDescripcion').value.trim().toUpperCase(), cos = parseFloat(document.getElementById('editarCosto').value) || 0, pn = parseFloat(document.getElementById('editarPrecioNeto').value) || 0, por = parseFloat(document.getElementById('editarPorcentaje').value) || 0, link = document.getElementById('editarLink').value.trim().toLowerCase();
+  const codigo = articuloEdicion.codigo, desc = document.getElementById('editarDescripcion').value.trim().toUpperCase(), cos = formatearNumero(document.getElementById('editarCosto').value), pn = formatearNumero(document.getElementById('editarPrecioNeto').value), por = parseFloat(document.getElementById('editarPorcentaje').value) || 0, link = document.getElementById('editarLink').value.trim().toLowerCase();
   if (!desc || !link) { alert('COMPLETE TODOS LOS CAMPOS'); return; }
   if (pn < cos) { alert('❌ ERROR: PRECIO NETO (SIN IVA) DEBE SER ≥ COSTO'); return; }
-  const nuevo = { codigo, descripcion: desc, costo: +(cos.toFixed(2)), precioNeto: +(pn.toFixed(2)), porcentaje: +(por.toFixed(2)), link: link };
+  const nuevo = { codigo, descripcion: desc, costo: cos, precioNeto: pn, porcentaje: +(por.toFixed(2)), link: link };
   gestorProductos.actualizarProducto(codigo, nuevo);
   articuloEdicion = null;
   document.getElementById('formularioEditarArticulo').style.display = 'none';
@@ -1045,7 +1346,6 @@ function cancelarEdicionArticulo() { articuloEdicion = null; document.getElement
 
 function eliminarArticulo(codigo) { if (confirm('¿ESTÁ SEGURO DE ELIMINAR ESTE ARTÍCULO?')) { gestorProductos.eliminarProducto(codigo); listarArticulos(); } }
 
-// ================== GENERAR PDF ==================
 function generarPDF() {
   if (!clienteActual) { alert('INGRESE CLIENTE'); return; }
   if (productosEnCotizacion.length === 0) { alert('AGREGUE PRODUCTOS'); return; }
@@ -1057,24 +1357,27 @@ function generarPDF() {
     numCot = gestorCotizaciones.siguienteCotizacion();
   }
   numeroCotizacionActual = numCot;
-  const totalNeto = +(productosEnCotizacion.reduce((acc, p) => acc + parseFloat(p.totalNeto), 0)).toFixed(2);
+  const totalNetoSinDesc = formatearNumero(productosEnCotizacion.reduce((acc, p) => acc + parseFloat(p.totalNeto), 0));
+  const montoDescuento = obtenerMontoDescuento();
+  const totalNetoFinal = formatearNumero(totalNetoSinDesc - montoDescuento);
   const estado = datosDespacho ? 'aceptado' : 'pendiente';
   const cotizacion = {
     numero: numCot,
     razonSocial: clienteActual.razonSocial,
-    totalNeto: totalNeto,
+    totalNeto: totalNetoFinal,
     fecha: new Date().toISOString(),
     cliente: JSON.parse(JSON.stringify(clienteActual)),
     productos: JSON.parse(JSON.stringify(productosEnCotizacion)),
     estado: estado,
-    despacho: datosDespacho || null
+    despacho: datosDespacho || null,
+    descuentoGlobal: descuentoGlobal
   };
   if (esEdicionCotizacion && cotizacionActualIndex !== null) {
     cotizacionesEmitidas[cotizacionActualIndex] = cotizacion;
-    mostrarMensaje('COTIZACIÓN ACTUALIZADA CORRECTAMENTE', 'exito');
+    mostrarMensaje('COTIZACIÓN ACTUALIZADA ✓', 'exito');
   } else {
     cotizacionesEmitidas.push(cotizacion);
-    mostrarMensaje('COTIZACIÓN GUARDADA CORRECTAMENTE', 'exito');
+    mostrarMensaje('COTIZACIÓN GUARDADA ✓', 'exito');
   }
   localStorage.setItem('cotizacionesEmitidas', JSON.stringify(cotizacionesEmitidas));
   pdfEmitido = true;
@@ -1086,10 +1389,11 @@ function generarPDFDocumento(cotizacion) {
   try {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF('p', 'mm', 'a4');
+    const config = JSON.parse(localStorage.getItem('configEmpresa')) || configEmpresaDefault;
 
-    const neto = parseFloat(cotizacion.totalNeto || 0);
-    const iva = +(neto * 0.19).toFixed(2);
-    const total = +(neto + iva).toFixed(2);
+    const netoFinal = parseFloat(cotizacion.totalNeto || 0);
+    const iva = formatearNumero(netoFinal * 0.19);
+    const total = formatearNumero(netoFinal + iva);
 
     const fechaEmision = new Date(cotizacion.fecha);
     const fechaFormateada = `${fechaEmision.getDate().toString().padStart(2, '0')}/${(fechaEmision.getMonth() + 1).toString().padStart(2, '0')}/${fechaEmision.getFullYear()}`;
@@ -1177,21 +1481,37 @@ function generarPDFDocumento(cotizacion) {
     doc.setFont(undefined, 'normal');
     doc.setTextColor(0, 0, 0);
     doc.setFontSize(11);
-    doc.text('NETO (SIN IVA):', 160, resumenY + 8, {align: 'right'});
-    doc.text(`$${Math.round(neto).toLocaleString('es-CL')}`, 195, resumenY + 8, {align: 'right'});
-    doc.text('IVA (19%):', 160, resumenY + 15, {align: 'right'});
-    doc.text(`$${Math.round(iva).toLocaleString('es-CL')}`, 195, resumenY + 15, {align: 'right'});
+    
+    let lineY = resumenY;
+    const totalNetoSinDesc = formatearNumero(cotizacion.productos.reduce((acc, p) => acc + parseFloat(p.totalNeto), 0));
+    doc.text('NETO (SIN DESC):', 160, lineY + 8, {align: 'right'});
+    doc.text(`$${Math.round(totalNetoSinDesc).toLocaleString('es-CL')}`, 195, lineY + 8, {align: 'right'});
+    
+    if (cotizacion.descuentoGlobal && cotizacion.descuentoGlobal.valor > 0) {
+      const montoDesc = cotizacion.descuentoGlobal.tipo === 'porcentaje' 
+        ? formatearNumero(totalNetoSinDesc * (cotizacion.descuentoGlobal.valor / 100))
+        : cotizacion.descuentoGlobal.valor;
+      doc.text(`DESC (${cotizacion.descuentoGlobal.tipo === 'porcentaje' ? cotizacion.descuentoGlobal.valor + '%' : '$'})`, 160, lineY + 15, {align: 'right'});
+      doc.text(`$${Math.round(montoDesc).toLocaleString('es-CL')}`, 195, lineY + 15, {align: 'right'});
+      lineY += 7;
+    }
+    
+    doc.text('NETO FINAL:', 160, lineY + 15, {align: 'right'});
+    doc.text(`$${Math.round(netoFinal).toLocaleString('es-CL')}`, 195, lineY + 15, {align: 'right'});
+    doc.text('IVA (19%):', 160, lineY + 22, {align: 'right'});
+    doc.text(`$${Math.round(iva).toLocaleString('es-CL')}`, 195, lineY + 22, {align: 'right'});
+    
     doc.setFont(undefined, 'bold');
     doc.setFontSize(13);
-    doc.text('TOTAL (CON IVA):', 160, resumenY + 24, {align: 'right'});
-    doc.text(`$${Math.round(total).toLocaleString('es-CL')}`, 195, resumenY + 24, {align: 'right'});
+    doc.text('TOTAL (CON IVA):', 160, lineY + 31, {align: 'right'});
+    doc.text(`$${Math.round(total).toLocaleString('es-CL')}`, 195, lineY + 31, {align: 'right'});
 
     doc.setFontSize(8);
     doc.setFont(undefined, 'normal');
     doc.setTextColor(100, 100, 100);
     const pageHeight = doc.internal.pageSize.height;
-    doc.text('RUT: 78000256-0 | Razón social: Empresa Servicios SPA | Dirección: Los Pepinos 287, Las Condes.', 15, pageHeight - 18);
-    doc.text('Mail: contacto@servicios.cl | Teléfono: 56 22 5510365', 15, pageHeight - 14);
+    doc.text(`RUT: ${config.rut} | ${config.nombre} | Dirección: ${config.direccion}`, 15, pageHeight - 18);
+    doc.text(`Mail: ${config.email} | Teléfono: ${config.telefono}`, 15, pageHeight - 14);
     doc.text(`Fecha de emisión: ${fechaFormateada} | Hora: ${horaFormateada}`, 15, pageHeight - 10);
     doc.setTextColor(180, 180, 180);
     doc.setFontSize(9);
@@ -1226,7 +1546,7 @@ function mostrarCotizaciones() {
     let html = '<table class="tabla-cotizaciones"><thead><tr><th>N° COTIZACIÓN</th><th>RAZÓN SOCIAL</th><th style="text-align:right;">MONTO NETO</th><th>FECHA EMISIÓN</th><th>ESTADO</th><th style="text-align:center;">ACCIONES</th></tr></thead><tbody>';
     cotizacionesEmitidas.forEach((c, index) => {
       const claseEstado = c.estado === 'aceptado' ? 'cot-aceptado' : (c.estado === 'rechazado' ? 'cot-rechazado' : 'cot-pendiente'), fechaEmision = new Date(c.fecha), fechaFormateada = `${fechaEmision.getDate().toString().padStart(2, '0')}/${(fechaEmision.getMonth() + 1).toString().padStart(2, '0')}/${fechaEmision.getFullYear()}`, badgeClase = c.estado === 'aceptado' ? 'badge-aceptado' : (c.estado === 'rechazado' ? 'badge-rechazado' : 'badge-pendiente'), btnEditarDisabled = (c.estado === 'rechazado') ? 'disabled' : '';
-      html += `<tr class="${claseEstado}"><td>${c.numero}</td><td>${c.razonSocial}</td><td style="text-align:right;">$${parseFloat(c.totalNeto).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td>${fechaFormateada}</td><td><span class="badge-estado ${badgeClase}">${c.estado}</span></td><td style="text-align:center;"><button class="btn-ver" onclick="verCotizacion(${index})">VER</button><button class="btn-editar-cot" onclick="editarCotizacionGuardada(${index})" ${btnEditarDisabled}>EDITAR</button></td></tr>`;
+      html += `<tr class="${claseEstado}"><td>${c.numero}</td><td>${c.razonSocial}</td><td style="text-align:right;">$${formatearNumero(parseFloat(c.totalNeto)).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td>${fechaFormateada}</td><td><span class="badge-estado ${badgeClase}">${c.estado}</span></td><td style="text-align:center;"><button class="btn-ver" onclick="verCotizacion(${index})">VER</button><button class="btn-editar-cot" onclick="editarCotizacionGuardada(${index})" ${btnEditarDisabled}>EDITAR</button></td></tr>`;
     });
     html += '</tbody></table>';
     cont.innerHTML = html;
@@ -1243,6 +1563,7 @@ function editarCotizacionGuardada(index) {
   clienteActual = JSON.parse(JSON.stringify(cotizacion.cliente));
   productosEnCotizacion = JSON.parse(JSON.stringify(cotizacion.productos));
   datosDespacho = cotizacion.despacho;
+  descuentoGlobal = cotizacion.descuentoGlobal || {tipo: 'porcentaje', valor: 0};
   cotizacionActualIndex = index;
   pdfEmitido = true;
   estadoCotizacionActual = cotizacion.estado;
@@ -1279,7 +1600,7 @@ function editarCotizacionGuardada(index) {
   document.getElementById('inputRut').disabled = true;
   cerrarCotizaciones();
   if (cotizacion.estado === 'aceptado') {
-    mostrarMensaje(`COTIZACIÓN ${cotizacion.numero} EN MODO LECTURA - PARA REVISAR PRODUCTOS Y COSTOS`, 'info');
+    mostrarMensaje(`COTIZACIÓN ${cotizacion.numero} EN MODO LECTURA`, 'info');
   } else {
     mostrarMensaje(`COTIZACIÓN ${cotizacion.numero} CARGADA PARA EDITAR`, 'info');
   }
@@ -1294,7 +1615,7 @@ function mostrarResumenCompra() {
     const linkSeguro = p.link.startsWith('http') ? p.link : 'https://' + p.link;
     html += `<tr><td>${p.codigo}</td><td>${p.descripcion}</td><td class="valor-numerico">${p.cantidad}</td><td class="valor-numerico">$${parseFloat(p.costo).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td><a href="${linkSeguro}" target="_blank">${p.link}</a></td></tr>`;
   });
-  html += `<tr style="background: #fff3cd; font-weight: bold;"><td colspan="4" style="text-align: right;">TOTAL COSTO DE COMPRA:</td><td class="valor-numerico">$${totalCosto.toLocaleString('es-CL', {minimumFractionDigits: 2})}</td></tr>`;
+  html += `<tr style="background: #fff3cd; font-weight: bold;"><td colspan="4" style="text-align: right;">TOTAL COSTO DE COMPRA:</td><td class="valor-numerico">$${formatearNumero(totalCosto).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td></tr>`;
   html += '</tbody></table></div>';
   document.getElementById('resumenCompra').innerHTML = html;
   document.getElementById('resumenCompra').classList.add('activo');
@@ -1383,7 +1704,7 @@ function confirmarAceptacion() {
     localStorage.setItem('cotizacionesEmitidas', JSON.stringify(cotizacionesEmitidas));
   }
   document.getElementById('btnVerArchivos').style.display = 'inline-block';
-  alert('COTIZACIÓN ACEPTADA Y GUARDADA CORRECTAMENTE');
+  alert('COTIZACIÓN ACEPTADA Y GUARDADA ✓');
 }
 
 function mostrarResumenDespacho() {
@@ -1418,7 +1739,7 @@ function marcarRechazado() {
     cotizacionesEmitidas[cotizacionActualIndex].estado = 'rechazado';
     localStorage.setItem('cotizacionesEmitidas', JSON.stringify(cotizacionesEmitidas));
   }
-  alert('COTIZACIÓN RECHAZADA Y GUARDADA');
+  alert('COTIZACIÓN RECHAZADA Y GUARDADA ✓');
 }
 
 function bloquearEdicion() {
