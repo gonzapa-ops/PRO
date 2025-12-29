@@ -1021,4 +1021,453 @@ function calcularMargenEdicion() {
   const c = parseFloat(document.getElementById('editarCosto').value) || 0;
   const pn = parseFloat(document.getElementById('editarPrecioNeto').value) || 0;
   if (c > 0 && pn > 0) {
-    if (pn < c) { document.getElementById('editarPorcentaje').value = '0.
+    if (pn < c) { document.getElementById('editarPorcentaje').value = '0.00'; return; }
+    const margen = +((pn - c) / pn * 100).toFixed(2);
+    document.getElementById('editarPorcentaje').value = margen;
+  } else {
+    document.getElementById('editarPorcentaje').value = '0.00';
+  }
+}
+
+function guardarEdicionArticulo() {
+  if (!articuloEdicion) return;
+  const codigo = articuloEdicion.codigo, desc = document.getElementById('editarDescripcion').value.trim().toUpperCase(), cos = parseFloat(document.getElementById('editarCosto').value) || 0, pn = parseFloat(document.getElementById('editarPrecioNeto').value) || 0, por = parseFloat(document.getElementById('editarPorcentaje').value) || 0, link = document.getElementById('editarLink').value.trim().toLowerCase();
+  if (!desc || !link) { alert('COMPLETE TODOS LOS CAMPOS'); return; }
+  if (pn < cos) { alert('❌ ERROR: PRECIO NETO (SIN IVA) DEBE SER ≥ COSTO'); return; }
+  const nuevo = { codigo, descripcion: desc, costo: +(cos.toFixed(2)), precioNeto: +(pn.toFixed(2)), porcentaje: +(por.toFixed(2)), link: link };
+  gestorProductos.actualizarProducto(codigo, nuevo);
+  articuloEdicion = null;
+  document.getElementById('formularioEditarArticulo').style.display = 'none';
+  listarArticulos();
+}
+
+function cancelarEdicionArticulo() { articuloEdicion = null; document.getElementById('formularioEditarArticulo').style.display = 'none'; }
+
+function eliminarArticulo(codigo) { if (confirm('¿ESTÁ SEGURO DE ELIMINAR ESTE ARTÍCULO?')) { gestorProductos.eliminarProducto(codigo); listarArticulos(); } }
+
+// ================== GENERAR PDF ==================
+function generarPDF() {
+  if (!clienteActual) { alert('INGRESE CLIENTE'); return; }
+  if (productosEnCotizacion.length === 0) { alert('AGREGUE PRODUCTOS'); return; }
+  if (estadoCotizacionActual === 'aceptado' || estadoCotizacionActual === 'rechazado') { mostrarMensaje('COTIZACIÓN BLOQUEADA. NO SE PUEDE REGENERAR PDF.', 'bloqueado'); return; }
+  let numCot;
+  if (esEdicionCotizacion && cotizacionActualIndex !== null) {
+    numCot = cotizacionesEmitidas[cotizacionActualIndex].numero;
+  } else {
+    numCot = gestorCotizaciones.siguienteCotizacion();
+  }
+  numeroCotizacionActual = numCot;
+  const totalNeto = +(productosEnCotizacion.reduce((acc, p) => acc + parseFloat(p.totalNeto), 0)).toFixed(2);
+  const estado = datosDespacho ? 'aceptado' : 'pendiente';
+  const cotizacion = {
+    numero: numCot,
+    razonSocial: clienteActual.razonSocial,
+    totalNeto: totalNeto,
+    fecha: new Date().toISOString(),
+    cliente: JSON.parse(JSON.stringify(clienteActual)),
+    productos: JSON.parse(JSON.stringify(productosEnCotizacion)),
+    estado: estado,
+    despacho: datosDespacho || null
+  };
+  if (esEdicionCotizacion && cotizacionActualIndex !== null) {
+    cotizacionesEmitidas[cotizacionActualIndex] = cotizacion;
+    mostrarMensaje('COTIZACIÓN ACTUALIZADA CORRECTAMENTE', 'exito');
+  } else {
+    cotizacionesEmitidas.push(cotizacion);
+    mostrarMensaje('COTIZACIÓN GUARDADA CORRECTAMENTE', 'exito');
+  }
+  localStorage.setItem('cotizacionesEmitidas', JSON.stringify(cotizacionesEmitidas));
+  pdfEmitido = true;
+  document.getElementById('seccionCierre').classList.add('activo');
+  generarPDFDocumento(cotizacion);
+}
+
+function generarPDFDocumento(cotizacion) {
+  try {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF('p', 'mm', 'a4');
+
+    const neto = parseFloat(cotizacion.totalNeto || 0);
+    const iva = +(neto * 0.19).toFixed(2);
+    const total = +(neto + iva).toFixed(2);
+
+    const fechaEmision = new Date(cotizacion.fecha);
+    const fechaFormateada = `${fechaEmision.getDate().toString().padStart(2, '0')}/${(fechaEmision.getMonth() + 1).toString().padStart(2, '0')}/${fechaEmision.getFullYear()}`;
+    const horaFormateada = `${fechaEmision.getHours().toString().padStart(2, '0')}:${fechaEmision.getMinutes().toString().padStart(2, '0')}:${fechaEmision.getSeconds().toString().padStart(2, '0')}`;
+
+    doc.setFillColor(31, 111, 139);
+    doc.rect(0, 0, 210, 20, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(18);
+    doc.setFont(undefined, 'bold');
+    doc.text('COTIZACIÓN', 15, 12);
+    doc.setFontSize(10);
+    doc.setFont(undefined, 'normal');
+    doc.text(`${cotizacion.numero} | ${fechaFormateada}`, 195, 12, {align: 'right'});
+
+    doc.setTextColor(0, 0, 0);
+    doc.setFontSize(12);
+    doc.setFont(undefined, 'bold');
+    doc.text('DATOS DEL CLIENTE', 15, 32);
+    doc.setDrawColor(242, 92, 5);
+    doc.setLineWidth(0.5);
+    doc.line(15, 35, 195, 35);
+
+    doc.setFontSize(10);
+    doc.setFont(undefined, 'normal');
+    let yPos = 43;
+    const clienteData = [
+      ['RUT:', cotizacion.cliente.rut, 'CONTACTO:', cotizacion.cliente.nombreContacto],
+      ['RAZÓN SOCIAL:', cotizacion.cliente.razonSocial, 'CELULAR:', cotizacion.cliente.celular],
+      ['GIRO:', cotizacion.cliente.giro, 'MAIL:', cotizacion.cliente.mail],
+      ['DIRECCIÓN:', cotizacion.cliente.direccion, 'MEDIO PAGO:', cotizacion.cliente.medioPago]
+    ];
+    clienteData.forEach(row => {
+      doc.setFont(undefined, 'bold');
+      doc.text(row[0], 15, yPos);
+      doc.setFont(undefined, 'normal');
+      doc.text(row[1], 45, yPos);
+      if (row[2]) {
+        doc.setFont(undefined, 'bold');
+        doc.text(row[2], 110, yPos);
+        doc.setFont(undefined, 'normal');
+        doc.text(row[3], 145, yPos);
+      }
+      yPos += 7;
+    });
+
+    doc.setDrawColor(242, 92, 5);
+    doc.setLineWidth(0.8);
+    doc.line(15, yPos + 3, 195, yPos + 3);
+    yPos += 10;
+    doc.setFont(undefined, 'bold');
+    doc.setFontSize(11);
+    doc.text('PRODUCTOS Y SERVICIOS', 15, yPos);
+    yPos += 5;
+
+    doc.autoTable({
+      startY: yPos,
+      head: [['CÓDIGO', 'DESCRIPCIÓN', 'CANT.', 'PRECIO UNITARIO (NETO)', 'TOTAL NETO', 'TOTAL CON IVA']],
+      body: cotizacion.productos.map(p => [
+        p.codigo,
+        p.descripcion,
+        p.cantidad.toString(),
+        `$${Math.round(parseFloat(p.precioNetoConDescuento)).toLocaleString('es-CL')}`,
+        `$${Math.round(parseFloat(p.totalNeto)).toLocaleString('es-CL')}`,
+        `$${Math.round(parseFloat(p.totalNeto) * 1.19).toLocaleString('es-CL')}`
+      ]),
+      theme: 'striped',
+      styles: {fontSize: 9, cellPadding: 4, halign: 'center', lineColor: [220, 220, 220], lineWidth: 0.1},
+      headStyles: {fillColor: [31, 111, 139], textColor: 255, fontStyle: 'bold', halign: 'center', fontSize: 10},
+      columnStyles: {
+        0: {cellWidth: 25, halign: 'center'},
+        1: {cellWidth: 70, halign: 'left'},
+        2: {cellWidth: 15, halign: 'center'},
+        3: {cellWidth: 30, halign: 'right'},
+        4: {cellWidth: 30, halign: 'right'},
+        5: {cellWidth: 30, halign: 'right'}
+      },
+      margin: {left: 15, right: 15}
+    });
+
+    const resumenY = doc.lastAutoTable.finalY + 12;
+    doc.setDrawColor(150, 150, 150);
+    doc.setLineWidth(0.5);
+    doc.line(125, resumenY, 195, resumenY);
+    doc.setFont(undefined, 'normal');
+    doc.setTextColor(0, 0, 0);
+    doc.setFontSize(11);
+    doc.text('NETO (SIN IVA):', 160, resumenY + 8, {align: 'right'});
+    doc.text(`$${Math.round(neto).toLocaleString('es-CL')}`, 195, resumenY + 8, {align: 'right'});
+    doc.text('IVA (19%):', 160, resumenY + 15, {align: 'right'});
+    doc.text(`$${Math.round(iva).toLocaleString('es-CL')}`, 195, resumenY + 15, {align: 'right'});
+    doc.setFont(undefined, 'bold');
+    doc.setFontSize(13);
+    doc.text('TOTAL (CON IVA):', 160, resumenY + 24, {align: 'right'});
+    doc.text(`$${Math.round(total).toLocaleString('es-CL')}`, 195, resumenY + 24, {align: 'right'});
+
+    doc.setFontSize(8);
+    doc.setFont(undefined, 'normal');
+    doc.setTextColor(100, 100, 100);
+    const pageHeight = doc.internal.pageSize.height;
+    doc.text('RUT: 78000256-0 | Razón social: Empresa Servicios SPA | Dirección: Los Pepinos 287, Las Condes.', 15, pageHeight - 18);
+    doc.text('Mail: contacto@servicios.cl | Teléfono: 56 22 5510365', 15, pageHeight - 14);
+    doc.text(`Fecha de emisión: ${fechaFormateada} | Hora: ${horaFormateada}`, 15, pageHeight - 10);
+    doc.setTextColor(180, 180, 180);
+    doc.setFontSize(9);
+    doc.setFont(undefined, 'italic');
+    doc.text('ERP DESARROLLADO POR ING. AGONPA', 105, pageHeight - 5, {align: 'center'});
+
+    pdfActualDoc = doc;
+    const pdfData = doc.output('datauristring');
+    const modal = document.getElementById('modalPDF'), container = document.getElementById('pdfContainer');
+    container.innerHTML = `<iframe src="${pdfData}" style="width:100%;height:1000px;border:none;"></iframe>`;
+    modal.classList.add('mostrar');
+    doc.save(`Cotizacion-${numeroCotizacionActual}.pdf`);
+  } catch (error) {
+    console.error('Error al generar PDF:', error);
+    alert('Error al generar PDF: ' + error.message);
+  }
+}
+
+function cerrarModalPDF() {
+  const modal = document.getElementById('modalPDF');
+  modal.classList.remove('mostrar');
+  document.getElementById('pdfContainer').innerHTML = '';
+  pdfActualDoc = null;
+  limpiarCotizacion();
+}
+
+function mostrarCotizaciones() {
+  const modal = document.getElementById('modalCotizaciones'), cont = document.getElementById('listaCotizaciones');
+  if (cotizacionesEmitidas.length === 0) {
+    cont.innerHTML = '<p style="text-transform:uppercase; text-align:center; padding: 15px; font-size:11px;">NO HAY COTIZACIONES EMITIDAS</p>';
+  } else {
+    let html = '<table class="tabla-cotizaciones"><thead><tr><th>N° COTIZACIÓN</th><th>RAZÓN SOCIAL</th><th style="text-align:right;">MONTO NETO</th><th>FECHA EMISIÓN</th><th>ESTADO</th><th style="text-align:center;">ACCIONES</th></tr></thead><tbody>';
+    cotizacionesEmitidas.forEach((c, index) => {
+      const claseEstado = c.estado === 'aceptado' ? 'cot-aceptado' : (c.estado === 'rechazado' ? 'cot-rechazado' : 'cot-pendiente'), fechaEmision = new Date(c.fecha), fechaFormateada = `${fechaEmision.getDate().toString().padStart(2, '0')}/${(fechaEmision.getMonth() + 1).toString().padStart(2, '0')}/${fechaEmision.getFullYear()}`, badgeClase = c.estado === 'aceptado' ? 'badge-aceptado' : (c.estado === 'rechazado' ? 'badge-rechazado' : 'badge-pendiente'), btnEditarDisabled = (c.estado === 'rechazado') ? 'disabled' : '';
+      html += `<tr class="${claseEstado}"><td>${c.numero}</td><td>${c.razonSocial}</td><td style="text-align:right;">$${parseFloat(c.totalNeto).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td>${fechaFormateada}</td><td><span class="badge-estado ${badgeClase}">${c.estado}</span></td><td style="text-align:center;"><button class="btn-ver" onclick="verCotizacion(${index})">VER</button><button class="btn-editar-cot" onclick="editarCotizacionGuardada(${index})" ${btnEditarDisabled}>EDITAR</button></td></tr>`;
+    });
+    html += '</tbody></table>';
+    cont.innerHTML = html;
+  }
+  modal.style.display = 'block';
+}
+
+function verCotizacion(index) { if (index < 0 || index >= cotizacionesEmitidas.length) { alert('ERROR: COTIZACIÓN NO ENCONTRADA'); return; } generarPDFDocumento(cotizacionesEmitidas[index]); }
+
+function editarCotizacionGuardada(index) {
+  if (index < 0 || index >= cotizacionesEmitidas.length) { alert('ERROR: COTIZACIÓN NO ENCONTRADA'); return; }
+  const cotizacion = cotizacionesEmitidas[index];
+  if (cotizacion.estado === 'rechazado') { mostrarMensaje('COTIZACIÓN RECHAZADA. NO SE PUEDE EDITAR.', 'bloqueado'); return; }
+  clienteActual = JSON.parse(JSON.stringify(cotizacion.cliente));
+  productosEnCotizacion = JSON.parse(JSON.stringify(cotizacion.productos));
+  datosDespacho = cotizacion.despacho;
+  cotizacionActualIndex = index;
+  pdfEmitido = true;
+  estadoCotizacionActual = cotizacion.estado;
+  if (cotizacion.estado === 'aceptado') {
+    esLecturaCotizacion = true;
+    esEdicionCotizacion = false;
+  } else {
+    esLecturaCotizacion = false;
+    esEdicionCotizacion = true;
+  }
+  gestorCotizaciones.establecerNumero(cotizacion.numero);
+  document.getElementById('seccionCierre').classList.add('activo');
+  cotizacionGuardada = true;
+  if (cotizacion.estado === 'aceptado') {
+    document.getElementById('seccionBloqueada').classList.add('activa');
+    document.getElementById('btnAceptado').disabled = true;
+    document.getElementById('btnRechazado').disabled = false;
+    document.getElementById('btnArticulos').disabled = false;
+    document.getElementById('btnPDF').disabled = false;
+    document.getElementById('btnCotizaciones').disabled = false;
+  } else {
+    document.getElementById('seccionBloqueada').classList.remove('activa');
+    document.getElementById('btnAceptado').disabled = false;
+    document.getElementById('btnRechazado').disabled = false;
+  }
+  mostrarResumenCliente(clienteActual);
+  actualizarTablaProductos();
+  habilitarProductos();
+  if (datosDespacho) {
+    mostrarResumenDespacho();
+    mostrarResumenCompra();
+    document.getElementById('btnVerArchivos').style.display = 'inline-block';
+  }
+  document.getElementById('inputRut').disabled = true;
+  cerrarCotizaciones();
+  if (cotizacion.estado === 'aceptado') {
+    mostrarMensaje(`COTIZACIÓN ${cotizacion.numero} EN MODO LECTURA - PARA REVISAR PRODUCTOS Y COSTOS`, 'info');
+  } else {
+    mostrarMensaje(`COTIZACIÓN ${cotizacion.numero} CARGADA PARA EDITAR`, 'info');
+  }
+}
+
+function cerrarCotizaciones() { document.getElementById('modalCotizaciones').style.display = 'none'; }
+
+function mostrarResumenCompra() {
+  const totalCosto = productosEnCotizacion.reduce((acc, p) => acc + (parseFloat(p.costo) * p.cantidad), 0);
+  let html = '<h4>📋 RESUMEN DE COMPRA</h4><div style="overflow-x:auto;"><table class="tabla-compra"><thead><tr><th>CÓDIGO</th><th>DESCRIPCIÓN</th><th>CANTIDAD</th><th>COSTO UNITARIO</th><th>LINK</th></tr></thead><tbody>';
+  productosEnCotizacion.forEach(p => {
+    const linkSeguro = p.link.startsWith('http') ? p.link : 'https://' + p.link;
+    html += `<tr><td>${p.codigo}</td><td>${p.descripcion}</td><td class="valor-numerico">${p.cantidad}</td><td class="valor-numerico">$${parseFloat(p.costo).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td><a href="${linkSeguro}" target="_blank">${p.link}</a></td></tr>`;
+  });
+  html += `<tr style="background: #fff3cd; font-weight: bold;"><td colspan="4" style="text-align: right;">TOTAL COSTO DE COMPRA:</td><td class="valor-numerico">$${totalCosto.toLocaleString('es-CL', {minimumFractionDigits: 2})}</td></tr>`;
+  html += '</tbody></table></div>';
+  document.getElementById('resumenCompra').innerHTML = html;
+  document.getElementById('resumenCompra').classList.add('activo');
+}
+
+function marcarAceptado() {
+  if (!clienteActual) { alert('DEBE SELECCIONAR UN CLIENTE PRIMERO'); return; }
+  if (productosEnCotizacion.length === 0) { alert('DEBE AGREGAR PRODUCTOS A LA COTIZACIÓN'); return; }
+  if (!pdfEmitido) { alert('DEBE GENERAR PDF PRIMERO'); return; }
+  archivosAdjuntos = [];
+  document.getElementById('tipoEntrega').value = '';
+  document.getElementById('regionSelect').value = '';
+  document.getElementById('comunaInput').value = datosDespacho ? datosDespacho.comuna : '';
+  document.getElementById('direccionDespacho').value = datosDespacho ? datosDespacho.direccion : '';
+  document.getElementById('contactoDespacho').value = datosDespacho ? datosDespacho.contacto : '';
+  document.getElementById('celularDespacho').value = datosDespacho ? datosDespacho.celular : '';
+  document.getElementById('infoArchivo').textContent = '';
+  document.getElementById('adjuntosContainer').style.display = 'none';
+  document.getElementById('listaAdjuntos').innerHTML = '';
+  if (datosDespacho && datosDespacho.archivos) {
+    archivosAdjuntos = JSON.parse(JSON.stringify(datosDespacho.archivos));
+    document.getElementById('infoArchivo').textContent = `${archivosAdjuntos.length} archivo(s) adjunto(s)`;
+    actualizarListaAdjuntos();
+  }
+  document.getElementById('modalAceptado').style.display = 'block';
+}
+
+function cerrarModalAceptado() { document.getElementById('modalAceptado').style.display = 'none'; }
+
+function abrirSelectorArchivos() { document.getElementById('inputArchivo').click(); }
+
+function agregarArchivo(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const nuevoArchivo = {nombre: file.name, tamaño: (file.size / 1024).toFixed(2), tipo: file.type, contenido: ''};
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    nuevoArchivo.contenido = e.target.result;
+    archivosAdjuntos.push(nuevoArchivo);
+    actualizarListaAdjuntos();
+    document.getElementById('inputArchivo').value = '';
+    document.getElementById('infoArchivo').textContent = `${archivosAdjuntos.length} archivo(s) adjunto(s)`;
+  };
+  reader.readAsDataURL(file);
+}
+
+function actualizarListaAdjuntos() {
+  const container = document.getElementById('adjuntosContainer'), lista = document.getElementById('listaAdjuntos');
+  if (archivosAdjuntos.length === 0) { container.style.display = 'none'; return; }
+  container.style.display = 'block';
+  lista.innerHTML = '';
+  archivosAdjuntos.forEach((archivo, index) => {
+    const li = document.createElement('li');
+    li.className = 'item-adjunto';
+    li.innerHTML = `<span class="nombre-archivo">${archivo.nombre} (${archivo.tamaño} KB)</span><button class="btn-eliminar-archivo" onclick="eliminarArchivo(${index})">ELIMINAR</button>`;
+    lista.appendChild(li);
+  });
+}
+
+function eliminarArchivo(index) {
+  archivosAdjuntos.splice(index, 1);
+  actualizarListaAdjuntos();
+  document.getElementById('infoArchivo').textContent = archivosAdjuntos.length > 0 ? `${archivosAdjuntos.length} archivo(s) adjunto(s)` : '';
+}
+
+function confirmarAceptacion() {
+  const tipoEntrega = document.getElementById('tipoEntrega').value, region = document.getElementById('regionSelect').value, comuna = document.getElementById('comunaInput').value.trim(), direccion = document.getElementById('direccionDespacho').value.trim(), contacto = document.getElementById('contactoDespacho').value.trim(), celular = document.getElementById('celularDespacho').value.trim();
+  if (!tipoEntrega) { alert('DEBE SELECCIONAR UN TIPO DE ENTREGA'); return; }
+  if (!region) { alert('DEBE INGRESAR REGIÓN'); return; }
+  if (!comuna) { alert('DEBE INGRESAR UNA COMUNA'); return; }
+  if (!direccion) { alert('DEBE INGRESAR DIRECCIÓN'); return; }
+  if (!contacto) { alert('DEBE INGRESAR CONTACTO DE DESPACHO'); return; }
+  if (!celular) { alert('DEBE INGRESAR CELULAR DE CONTACTO'); return; }
+  datosDespacho = { tipoEntrega: tipoEntrega, region: region.toUpperCase(), comuna: comuna.toUpperCase(), direccion: direccion.toUpperCase(), contacto: contacto.toUpperCase(), celular: celular, archivos: JSON.parse(JSON.stringify(archivosAdjuntos)) };
+  cotizacionGuardada = true;
+  estadoCotizacionActual = 'aceptado';
+  esLecturaCotizacion = true;
+  mostrarResumenDespacho();
+  mostrarResumenCompra();
+  cerrarModalAceptado();
+  bloquearEdicionConBotonesActivos();
+  document.getElementById('seccionBloqueada').classList.add('activa');
+  if (cotizacionActualIndex !== null) {
+    cotizacionesEmitidas[cotizacionActualIndex].estado = 'aceptado';
+    cotizacionesEmitidas[cotizacionActualIndex].despacho = datosDespacho;
+    localStorage.setItem('cotizacionesEmitidas', JSON.stringify(cotizacionesEmitidas));
+  }
+  document.getElementById('btnVerArchivos').style.display = 'inline-block';
+  alert('COTIZACIÓN ACEPTADA Y GUARDADA CORRECTAMENTE');
+}
+
+function mostrarResumenDespacho() {
+  if (!datosDespacho) return;
+  const resumen = document.getElementById('resumenDespacho');
+  resumen.className = 'resumen-despacho activo';
+  resumen.innerHTML = `<h4>✓ COTIZACIÓN ACEPTADA</h4><p><strong>TIPO ENTREGA:</strong> ${datosDespacho.tipoEntrega}</p><p><strong>REGIÓN:</strong> ${datosDespacho.region}</p><p><strong>COMUNA:</strong> ${datosDespacho.comuna}</p><p><strong>DIRECCIÓN:</strong> ${datosDespacho.direccion}</p><p><strong>CONTACTO DESPACHO:</strong> ${datosDespacho.contacto}</p><p><strong>CELULAR CONTACTO:</strong> ${datosDespacho.celular}</p><p><strong>ARCHIVOS ADJUNTOS:</strong> ${datosDespacho.archivos.length}</p>`;
+}
+
+function bloquearEdicionConBotonesActivos() {
+  document.getElementById('btnAceptado').disabled = true;
+  document.getElementById('btnRechazado').disabled = false;
+  document.getElementById('btnArticulos').disabled = false;
+  document.getElementById('btnPDF').disabled = false;
+  document.getElementById('btnCotizaciones').disabled = false;
+  document.getElementById('btnBuscarCliente').disabled = true;
+  document.getElementById('btnLimpiarCliente').disabled = false;
+  document.getElementById('btnBuscarProducto').disabled = true;
+  document.getElementById('inputCodigoProducto').disabled = true;
+  document.getElementById('inputRut').disabled = true;
+  actualizarTablaProductos();
+}
+
+function marcarRechazado() {
+  if (!clienteActual) { alert('DEBE SELECCIONAR UN CLIENTE PRIMERO'); return; }
+  if (!pdfEmitido) { alert('DEBE GENERAR PDF PRIMERO'); return; }
+  cotizacionGuardada = true;
+  estadoCotizacionActual = 'rechazado';
+  bloquearEdicion();
+  document.getElementById('seccionBloqueada').classList.add('activa');
+  if (cotizacionActualIndex !== null) {
+    cotizacionesEmitidas[cotizacionActualIndex].estado = 'rechazado';
+    localStorage.setItem('cotizacionesEmitidas', JSON.stringify(cotizacionesEmitidas));
+  }
+  alert('COTIZACIÓN RECHAZADA Y GUARDADA');
+}
+
+function bloquearEdicion() {
+  document.getElementById('btnArticulos').disabled = true;
+  document.getElementById('btnBuscarProducto').disabled = true;
+  document.getElementById('btnAceptado').disabled = true;
+  document.getElementById('btnRechazado').disabled = true;
+  document.getElementById('btnBuscarCliente').disabled = true;
+  document.getElementById('btnLimpiarCliente').disabled = false;
+  document.getElementById('btnPDF').disabled = true;
+  document.getElementById('btnCotizaciones').disabled = false;
+  document.getElementById('inputCodigoProducto').disabled = true;
+  document.getElementById('inputRut').disabled = true;
+  actualizarTablaProductos();
+}
+
+function verArchivos() {
+  if (!datosDespacho || !datosDespacho.archivos || datosDespacho.archivos.length === 0) { alert('NO HAY ARCHIVOS ADJUNTOS'); return; }
+  const modal = document.getElementById('modalArchivos'), lista = document.getElementById('listaArchivosModal');
+  let html = '<div class="seccion-adjuntos" style="display:block;"><ul class="lista-adjuntos">';
+  datosDespacho.archivos.forEach((archivo, index) => { html += `<li class="item-adjunto"><span class="nombre-archivo">${archivo.nombre} (${archivo.tamaño} KB)</span><button class="btn-ver-archivo" onclick="verArchivo(${index})">VER</button></li>`; });
+  html += '</ul></div>';
+  lista.innerHTML = html;
+  modal.style.display = 'block';
+}
+
+function verArchivo(index) {
+  if (!datosDespacho || !datosDespacho.archivos || index < 0 || index >= datosDespacho.archivos.length) { alert('ERROR: ARCHIVO NO ENCONTRADO'); return; }
+  const archivo = datosDespacho.archivos[index], modalVisualizar = document.getElementById('modalVisualizarArchivo'), contenido = document.getElementById('contenidoArchivo');
+  if (archivo.tipo.startsWith('image/')) {
+    contenido.innerHTML = `<img src="${archivo.contenido}" alt="${archivo.nombre}" />`;
+  } else if (archivo.tipo === 'application/pdf') {
+    contenido.innerHTML = `<embed src="${archivo.contenido}" type="application/pdf" width="100%" height="100%" />`;
+  } else if (archivo.tipo.startsWith('text/')) {
+    const xhr = new XMLHttpRequest();
+    xhr.responseType = 'arraybuffer';
+    xhr.onload = function() { const texto = new TextDecoder().decode(xhr.response); contenido.innerHTML = `<pre>${texto}</pre>`; };
+    xhr.onerror = function() { contenido.innerHTML = `<pre>No se pudo visualizar el contenido del archivo</pre>`; };
+    xhr.open('GET', archivo.contenido);
+    xhr.send();
+  } else {
+    contenido.innerHTML = `<p>Tipo de archivo no soportado para vista previa: ${archivo.tipo}</p>`;
+  }
+  modalVisualizar.style.display = 'block';
+}
+
+function cerrarModalArchivos() { document.getElementById('modalArchivos').style.display = 'none'; }
+
+function cerrarModalVisualizarArchivo() { document.getElementById('modalVisualizarArchivo').style.display = 'none'; document.getElementById('contenidoArchivo').innerHTML = ''; }
+</script>
+</body>
+</html>
