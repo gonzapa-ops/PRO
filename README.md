@@ -218,15 +218,19 @@ input[type="number"] {text-align: center;}
 .tabla-articulos a:hover {text-decoration: underline;}
 .form-calculo-precio {background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); padding: 15px; border-radius: 2px; border-left: 5px solid #4B732E; margin-bottom: 15px;}
 .form-calculo-precio h4 {text-transform: uppercase; color: #2E7D32; margin-bottom: 12px; font-weight: 700; font-size: 12px;}
+.form-calculo-precio p {color: #2E7D32; font-size: 10px;}
 .form-calculo-precio .campo-grupo label {color: #2E7D32;}
 .form-calculo-precio input {background-color: white;}
 .btn-calcular {background: #4B732E; color: white; padding: 8px 15px; font-size: 10px;}
 .btn-calcular:hover {background: #385525;}
+.btn-limpiar-calc {background: #9B2E00; color: white; padding: 8px 15px; font-size: 10px;}
+.btn-limpiar-calc:hover {background: #7a2300;}
 .resultado-calculo {background: white; padding: 12px; border-radius: 2px; border-left: 5px solid #4B732E; margin-top: 12px; display: none;}
 .resultado-calculo.activo {display: block;}
 .resultado-linea {display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #ddd; font-size: 11px; text-transform: uppercase; font-weight: 600;}
 .resultado-linea strong {color: #2E7D32; font-weight: 700; min-width: 150px;}
 .resultado-valor {text-align: right; font-weight: 700; color: #1F6F8B;}
+.input-solo-lectura {background-color: #f0f0f0 !important; color: #666 !important;}
 </style>
 </head>
 <body>
@@ -294,9 +298,9 @@ input[type="number"] {text-align: center;}
           <div class="campo-grupo"><label>DESCRIPCIÓN *</label><input type="text" id="descripcionProducto" /></div>
         </div>
         <div class="fila-campos-producto-tres">
-          <div class="campo-grupo"><label>COSTO *</label><input type="number" id="costoProducto" min="0" step="0.01" /></div>
-          <div class="campo-grupo"><label>PORCENTAJE (%) *</label><input type="number" id="porcentajeProducto" min="0" step="0.01" value="0" /></div>
-          <div class="campo-grupo"><label>VALOR NETO (AUTOCALCULADO)</label><input type="number" id="valorNetoProducto" disabled /></div>
+          <div class="campo-grupo"><label>COSTO (SIN IVA) *</label><input type="number" id="costoProducto" min="0" step="0.01" /></div>
+          <div class="campo-grupo"><label>VALOR TOTAL (CON IVA) *</label><input type="number" id="valorTotalProducto" min="0" step="0.01" /></div>
+          <div class="campo-grupo"><label>% UTILIDAD (AUTOCALCULADO)</label><input type="number" id="porcentajeProducto" disabled class="input-solo-lectura" /></div>
         </div>
         <div class="campo-grupo"><label>LINK *</label><input type="text" id="linkProducto" /></div>
         <div class="botones-producto">
@@ -338,7 +342,7 @@ input[type="number"] {text-align: center;}
       
       <div class="form-calculo-precio">
         <h4>💰 CALCULADORA DE PRECIO - INGRESE MONTO FINAL CON IVA</h4>
-        <p style="font-size: 10px; color: #2E7D32; margin-bottom: 12px; text-transform: uppercase;">Esta herramienta calcula automáticamente el porcentaje de utilidad que necesitas aplicar</p>
+        <p>Esta herramienta calcula automáticamente el porcentaje de utilidad que necesitas aplicar</p>
         <div class="fila-campos-dos">
           <div class="campo-grupo">
             <label>COSTO DE COMPRA (SIN IVA) *</label>
@@ -349,7 +353,10 @@ input[type="number"] {text-align: center;}
             <input type="number" id="montoTotalCalc" min="0" step="0.01" placeholder="Ej: 980.00" />
           </div>
         </div>
-        <button class="btn btn-calcular" onclick="calcularPrecioAutomatico()">🔢 CALCULAR AUTOMÁTICAMENTE</button>
+        <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+          <button class="btn btn-calcular" onclick="calcularPrecioAutomatico()">🔢 CALCULAR AUTOMÁTICAMENTE</button>
+          <button class="btn btn-limpiar-calc" onclick="limpiarCalculadora()">🗑️ LIMPIAR CALCULADORA</button>
+        </div>
         
         <div id="resultadoCalculo" class="resultado-calculo">
           <div class="resultado-linea">
@@ -454,7 +461,6 @@ function calcularPrecioAutomatico() {
   const costoCompra = parseFloat(document.getElementById('costoCompraCalc').value) || 0;
   const montoTotal = parseFloat(document.getElementById('montoTotalCalc').value) || 0;
   
-  // VALIDACIONES
   if (costoCompra <= 0) {
     alert('❌ ERROR: INGRESE UN COSTO DE COMPRA VÁLIDO (MAYOR A 0)');
     return;
@@ -470,24 +476,11 @@ function calcularPrecioAutomatico() {
     return;
   }
   
-  // ================== CÁLCULOS EXACTOS ==================
-  // PASO 1: Calcular NETO (sin IVA)
-  // FÓRMULA: Neto = Monto Total / 1.19
   const netoSinIva = montoTotal / 1.19;
-  
-  // PASO 2: Calcular IVA
-  // FÓRMULA: IVA = Neto × 0.19
   const ivaCalculado = netoSinIva * 0.19;
-  
-  // PASO 3: Calcular UTILIDAD
-  // FÓRMULA: Utilidad = Neto - Costo
   const utilidadNeta = netoSinIva - costoCompra;
-  
-  // PASO 4: Calcular % UTILIDAD
-  // FÓRMULA: % Utilidad = (Utilidad / Costo) × 100
   const porcentajeUtilidad = (utilidadNeta / costoCompra) * 100;
   
-  // ================== MOSTRAR RESULTADOS ==================
   document.getElementById('resultCosto').textContent = '$' + costoCompra.toLocaleString('es-CL', {minimumFractionDigits: 2, maximumFractionDigits: 2});
   document.getElementById('resultNeto').textContent = '$' + netoSinIva.toLocaleString('es-CL', {minimumFractionDigits: 2, maximumFractionDigits: 2});
   document.getElementById('resultIva').textContent = '$' + ivaCalculado.toLocaleString('es-CL', {minimumFractionDigits: 2, maximumFractionDigits: 2});
@@ -495,13 +488,41 @@ function calcularPrecioAutomatico() {
   document.getElementById('resultUtilidad').textContent = '$' + utilidadNeta.toLocaleString('es-CL', {minimumFractionDigits: 2, maximumFractionDigits: 2});
   document.getElementById('resultPorcentaje').textContent = porcentajeUtilidad.toFixed(2) + '%';
   
-  // MOSTRAR PANEL DE RESULTADOS
   document.getElementById('resultadoCalculo').classList.add('activo');
   
-  // VERIFICACIÓN AUTOMÁTICA
-  const verificacion = (netoSinIva + ivaCalculado).toFixed(2);
-  const esperado = montoTotal.toFixed(2);
-  console.log('VERIFICACIÓN: ' + verificacion + ' === ' + esperado + ' ✓');
+  guardarCalculadora();
+}
+
+function guardarCalculadora() {
+  const costoCompra = document.getElementById('costoCompraCalc').value;
+  const montoTotal = document.getElementById('montoTotalCalc').value;
+  localStorage.setItem('calcPrecio_costo', costoCompra);
+  localStorage.setItem('calcPrecio_monto', montoTotal);
+}
+
+function restaurarCalculadora() {
+  const costoGuardado = localStorage.getItem('calcPrecio_costo');
+  const montoGuardado = localStorage.getItem('calcPrecio_monto');
+  
+  if (costoGuardado) {
+    document.getElementById('costoCompraCalc').value = costoGuardado;
+  }
+  if (montoGuardado) {
+    document.getElementById('montoTotalCalc').value = montoGuardado;
+  }
+  
+  if (costoGuardado && montoGuardado) {
+    calcularPrecioAutomatico();
+  }
+}
+
+function limpiarCalculadora() {
+  document.getElementById('costoCompraCalc').value = '';
+  document.getElementById('montoTotalCalc').value = '';
+  document.getElementById('resultadoCalculo').classList.remove('activo');
+  localStorage.removeItem('calcPrecio_costo');
+  localStorage.removeItem('calcPrecio_monto');
+  document.getElementById('costoCompraCalc').focus();
 }
 
 class GestorCotizaciones {
@@ -560,14 +581,26 @@ document.addEventListener('DOMContentLoaded', function() {
     if (e.key === 'Enter') buscarProducto();
   });
   
-  document.getElementById('costoProducto').addEventListener('change', calcularValorNeto);
-  document.getElementById('porcentajeProducto').addEventListener('change', calcularValorNeto);
+  document.getElementById('costoProducto').addEventListener('change', calcularPorcentajeUtilidad);
+  document.getElementById('valorTotalProducto').addEventListener('change', calcularPorcentajeUtilidad);
   
   document.addEventListener('click', function(e) {
     if (!e.target.closest('.seccion-cliente')) document.getElementById('desplegableClientes').classList.remove('activo');
     if (!e.target.closest('.busqueda-producto')) document.getElementById('autocompleteLista').classList.remove('activo');
   });
 });
+
+function calcularPorcentajeUtilidad() {
+  const costo = parseFloat(document.getElementById('costoProducto').value) || 0;
+  const valorTotal = parseFloat(document.getElementById('valorTotalProducto').value) || 0;
+  
+  if (costo > 0 && valorTotal > 0) {
+    const porcentaje = ((valorTotal - costo) / costo) * 100;
+    document.getElementById('porcentajeProducto').value = porcentaje.toFixed(2);
+  } else {
+    document.getElementById('porcentajeProducto').value = '0.00';
+  }
+}
 
 function mostrarDesplegableClientes() {
   const input = document.getElementById('inputRut').value.trim(), desplegable = document.getElementById('desplegableClientes');
@@ -749,11 +782,6 @@ function limpiarCotizacion() {
   document.getElementById('inputRut').focus();
 }
 
-function calcularValorNeto() {
-  const c = parseFloat(document.getElementById('costoProducto').value) || 0, p = parseFloat(document.getElementById('porcentajeProducto').value) || 0, vn = c + (c * (p / 100));
-  document.getElementById('valorNetoProducto').value = vn.toFixed(2);
-}
-
 function mostrarAutocomplete() {
   const input = document.getElementById('inputCodigoProducto').value.trim(), lista = document.getElementById('autocompleteLista');
   if (!input || input.length < 1) { lista.classList.remove('activo'); return; }
@@ -787,8 +815,8 @@ function buscarProducto() {
     document.getElementById('codigoProducto').value = cod;
     document.getElementById('descripcionProducto').value = '';
     document.getElementById('costoProducto').value = '';
-    document.getElementById('porcentajeProducto').value = '0';
-    document.getElementById('valorNetoProducto').value = '';
+    document.getElementById('valorTotalProducto').value = '';
+    document.getElementById('porcentajeProducto').value = '';
     document.getElementById('linkProducto').value = '';
   }
 }
@@ -801,10 +829,11 @@ function mostrarMensajeProducto(t, ti) {
 }
 
 function guardarProducto() {
-  const cod = document.getElementById('codigoProducto').value.trim(), desc = document.getElementById('descripcionProducto').value.trim(), cos = parseFloat(document.getElementById('costoProducto').value), por = parseFloat(document.getElementById('porcentajeProducto').value) || 0, vn = parseFloat(document.getElementById('valorNetoProducto').value), link = document.getElementById('linkProducto').value.trim().toLowerCase();
-  if (!cod || !desc || isNaN(cos) || cos <= 0 || !link) return mostrarMensajeProducto('COMPLETE TODOS LOS CAMPOS', 'error');
-  if (isNaN(vn) || vn <= 0) return mostrarMensajeProducto('VALOR NETO INVÁLIDO', 'error');
-  const prod = { codigo: cod, descripcion: desc.toUpperCase(), costo: parseFloat(cos.toFixed(2)), porcentaje: parseFloat(por.toFixed(2)), valorNeto: parseFloat(vn.toFixed(2)), link: link };
+  const cod = document.getElementById('codigoProducto').value.trim(), desc = document.getElementById('descripcionProducto').value.trim(), cos = parseFloat(document.getElementById('costoProducto').value), vt = parseFloat(document.getElementById('valorTotalProducto').value), por = parseFloat(document.getElementById('porcentajeProducto').value) || 0, link = document.getElementById('linkProducto').value.trim().toLowerCase();
+  if (!cod || !desc || isNaN(cos) || cos <= 0 || isNaN(vt) || vt <= 0 || !link) return mostrarMensajeProducto('COMPLETE TODOS LOS CAMPOS', 'error');
+  if (vt < cos) return mostrarMensajeProducto('VALOR TOTAL NO PUEDE SER MENOR AL COSTO', 'error');
+  
+  const prod = { codigo: cod, descripcion: desc.toUpperCase(), costo: parseFloat(cos.toFixed(2)), valorTotal: parseFloat(vt.toFixed(2)), porcentaje: parseFloat(por.toFixed(2)), link: link };
   gestorProductos.agregarProducto(cod, prod);
   mostrarMensajeProducto('PRODUCTO GUARDADO', 'exito');
   cancelarProducto();
@@ -816,8 +845,8 @@ function cancelarProducto() {
   document.getElementById('codigoProducto').value = '';
   document.getElementById('descripcionProducto').value = '';
   document.getElementById('costoProducto').value = '';
-  document.getElementById('porcentajeProducto').value = '0';
-  document.getElementById('valorNetoProducto').value = '';
+  document.getElementById('valorTotalProducto').value = '';
+  document.getElementById('porcentajeProducto').value = '';
   document.getElementById('linkProducto').value = '';
   document.getElementById('inputCodigoProducto').value = '';
   document.getElementById('mensajeProducto').style.display = 'none';
@@ -830,7 +859,7 @@ function agregarProductoACotizacion(cod, prod) {
     ex.cantidad++;
     ex.total = +(ex.cantidad * ex.valorNetaConDescuento).toFixed(2);
   } else {
-    productosEnCotizacion.push({ codigo: prod.codigo, descripcion: prod.descripcion, cantidad: 1, valorNeto: prod.valorNeto, costo: prod.costo, descuento: 0, valorNetaConDescuento: prod.valorNeto, total: prod.valorNeto.toFixed(2), link: prod.link });
+    productosEnCotizacion.push({ codigo: prod.codigo, descripcion: prod.descripcion, cantidad: 1, valorNeto: prod.valorTotal, costo: prod.costo, descuento: 0, valorNetaConDescuento: prod.valorTotal, total: prod.valorTotal.toFixed(2), link: prod.link });
   }
   actualizarTablaProductos();
 }
@@ -884,19 +913,27 @@ function actualizarResumenTotales() {
   document.getElementById('resumenTotales').style.display = 'block';
 }
 
-function abrirArticulos() { document.getElementById('modalArticulos').style.display = 'block'; listarArticulos(); }
-function cerrarArticulos() { document.getElementById('modalArticulos').style.display = 'none'; }
+function abrirArticulos() {
+  document.getElementById('modalArticulos').style.display = 'block';
+  restaurarCalculadora();
+  listarArticulos();
+}
+
+function cerrarArticulos() {
+  guardarCalculadora();
+  document.getElementById('modalArticulos').style.display = 'none';
+}
 
 function listarArticulos() {
   const todos = gestorProductos.obtenerTodos();
-  let html = '<div style="overflow-x:auto;"><table class="tabla-articulos"><thead><tr><th>CÓDIGO</th><th>DESCRIPCIÓN</th><th>COSTO</th><th>PORCENTAJE (%)</th><th>VALOR NETO</th><th>UTILIDAD</th><th>LINK</th><th>ACCIÓN</th></tr></thead><tbody>';
+  let html = '<div style="overflow-x:auto;"><table class="tabla-articulos"><thead><tr><th>CÓDIGO</th><th>DESCRIPCIÓN</th><th>COSTO</th><th>PORCENTAJE (%)</th><th>VALOR NETO</th><th>TOTAL</th><th>UTILIDAD</th><th>LINK</th><th>ACCIÓN</th></tr></thead><tbody>';
   const claves = Object.keys(todos);
   if (claves.length === 0) {
-    html += '<tr><td colspan="8" style="text-align:center;">NO HAY ARTÍCULOS</td></tr>';
+    html += '<tr><td colspan="9" style="text-align:center;">NO HAY ARTÍCULOS</td></tr>';
   } else {
     claves.forEach(codigo => {
-      const art = todos[codigo], util = (parseFloat(art.valorNeto) - parseFloat(art.costo)).toFixed(2);
-      html += `<tr><td>${art.codigo}</td><td>${art.descripcion}</td><td class="valor-numerico">$${parseFloat(art.costo).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td class="valor-numerico">${parseFloat(art.porcentaje).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td class="valor-numerico">$${parseFloat(art.valorNeto).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td class="valor-numerico">$${parseFloat(util).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td style="text-transform:lowercase;"><a href="${art.link}" target="_blank">${art.link}</a></td><td><button class="btn btn-editar" onclick="editarArticulo('${art.codigo}')">EDITAR</button><button class="btn btn-eliminar" onclick="eliminarArticulo('${art.codigo}')">ELIMINAR</button></td></tr>`;
+      const art = todos[codigo], util = (parseFloat(art.valorTotal) - parseFloat(art.costo)).toFixed(2);
+      html += `<tr><td>${art.codigo}</td><td>${art.descripcion}</td><td class="valor-numerico">$${parseFloat(art.costo).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td class="valor-numerico">${parseFloat(art.porcentaje).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td class="valor-numerico">$${parseFloat(art.valorTotal).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td class="valor-numerico">$${parseFloat(art.valorTotal).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td class="valor-numerico">$${parseFloat(util).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td style="text-transform:lowercase;"><a href="${art.link}" target="_blank">${art.link}</a></td><td><button class="btn btn-editar" onclick="editarArticulo('${art.codigo}')">EDITAR</button><button class="btn btn-eliminar" onclick="eliminarArticulo('${art.codigo}')">ELIMINAR</button></td></tr>`;
     });
   }
   html += '</tbody></table></div>';
@@ -909,21 +946,28 @@ function editarArticulo(codigo) {
   articuloEdicion = art;
   const f = document.getElementById('formularioEditarArticulo');
   f.style.display = 'block';
-  f.innerHTML = `<h4>EDITAR ARTÍCULO</h4><div class="fila-campos-producto"><div class="campo-grupo"><label>CÓDIGO</label><input type="text" value="${art.codigo}" disabled></div><div class="campo-grupo"><label>DESCRIPCIÓN</label><input type="text" id="editarDescripcion" value="${art.descripcion}"></div></div><div class="fila-campos-producto-tres"><div class="campo-grupo"><label>COSTO</label><input type="number" id="editarCosto" value="${art.costo}"></div><div class="campo-grupo"><label>PORCENTAJE (%)</label><input type="number" id="editarPorcentaje" value="${art.porcentaje}"></div><div class="campo-grupo"><label>VALOR NETO</label><input type="number" id="editarValorNeto" value="${art.valorNeto}" disabled></div></div><div class="campo-grupo"><label>LINK</label><input type="text" id="editarLink" value="${art.link}"></div><div class="botones-producto"><button class="btn btn-agregar" onclick="guardarEdicionArticulo()">GUARDAR</button><button class="btn btn-cancelar" onclick="cancelarEdicionArticulo()">CANCELAR</button></div>`;
-  document.getElementById('editarCosto').addEventListener('change', calcularValorNetoEdicion);
-  document.getElementById('editarPorcentaje').addEventListener('change', calcularValorNetoEdicion);
+  f.innerHTML = `<h4>EDITAR ARTÍCULO</h4><div class="fila-campos-producto"><div class="campo-grupo"><label>CÓDIGO</label><input type="text" value="${art.codigo}" disabled></div><div class="campo-grupo"><label>DESCRIPCIÓN</label><input type="text" id="editarDescripcion" value="${art.descripcion}"></div></div><div class="fila-campos-producto-tres"><div class="campo-grupo"><label>COSTO</label><input type="number" id="editarCosto" value="${art.costo}"></div><div class="campo-grupo"><label>VALOR TOTAL</label><input type="number" id="editarValorTotal" value="${art.valorTotal}"></div><div class="campo-grupo"><label>PORCENTAJE (%)</label><input type="number" id="editarPorcentaje" value="${art.porcentaje}" disabled class="input-solo-lectura"></div></div><div class="campo-grupo"><label>LINK</label><input type="text" id="editarLink" value="${art.link}"></div><div class="botones-producto"><button class="btn btn-agregar" onclick="guardarEdicionArticulo()">GUARDAR</button><button class="btn btn-cancelar" onclick="cancelarEdicionArticulo()">CANCELAR</button></div>`;
+  document.getElementById('editarCosto').addEventListener('change', calcularPorcentajeEdicion);
+  document.getElementById('editarValorTotal').addEventListener('change', calcularPorcentajeEdicion);
 }
 
-function calcularValorNetoEdicion() {
-  const c = parseFloat(document.getElementById('editarCosto').value) || 0, p = parseFloat(document.getElementById('editarPorcentaje').value) || 0, vn = c + (c * (p / 100));
-  document.getElementById('editarValorNeto').value = vn.toFixed(2);
+function calcularPorcentajeEdicion() {
+  const c = parseFloat(document.getElementById('editarCosto').value) || 0;
+  const vt = parseFloat(document.getElementById('editarValorTotal').value) || 0;
+  if (c > 0 && vt > 0) {
+    const por = ((vt - c) / c) * 100;
+    document.getElementById('editarPorcentaje').value = por.toFixed(2);
+  } else {
+    document.getElementById('editarPorcentaje').value = '0.00';
+  }
 }
 
 function guardarEdicionArticulo() {
   if (!articuloEdicion) return;
-  const codigo = articuloEdicion.codigo, desc = document.getElementById('editarDescripcion').value.trim().toUpperCase(), cos = parseFloat(document.getElementById('editarCosto').value) || 0, por = parseFloat(document.getElementById('editarPorcentaje').value) || 0, vn = parseFloat(document.getElementById('editarValorNeto').value) || 0, link = document.getElementById('editarLink').value.trim().toLowerCase();
+  const codigo = articuloEdicion.codigo, desc = document.getElementById('editarDescripcion').value.trim().toUpperCase(), cos = parseFloat(document.getElementById('editarCosto').value) || 0, vt = parseFloat(document.getElementById('editarValorTotal').value) || 0, por = parseFloat(document.getElementById('editarPorcentaje').value) || 0, link = document.getElementById('editarLink').value.trim().toLowerCase();
   if (!desc || !link) { alert('COMPLETE TODOS'); return; }
-  const nuevo = { codigo, descripcion: desc, costo: cos, porcentaje: por, valorNeto: vn, link: link };
+  if (vt < cos) { alert('VALOR TOTAL NO PUEDE SER MENOR AL COSTO'); return; }
+  const nuevo = { codigo, descripcion: desc, costo: cos, valorTotal: vt, porcentaje: por, link: link };
   gestorProductos.actualizarProducto(codigo, nuevo);
   articuloEdicion = null;
   document.getElementById('formularioEditarArticulo').style.display = 'none';
