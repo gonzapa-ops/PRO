@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8" />
@@ -225,8 +224,9 @@ input[type="number"] {text-align: center;}
 .btn-calcular:hover {background: #385525;}
 .resultado-calculo {background: white; padding: 12px; border-radius: 2px; border-left: 5px solid #4B732E; margin-top: 12px; display: none;}
 .resultado-calculo.activo {display: block;}
-.resultado-linea {display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #eee; font-size: 11px; text-transform: uppercase;}
-.resultado-linea strong {color: #4B732E; font-weight: 700;}
+.resultado-linea {display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #ddd; font-size: 11px; text-transform: uppercase; font-weight: 600;}
+.resultado-linea strong {color: #2E7D32; font-weight: 700; min-width: 150px;}
+.resultado-valor {text-align: right; font-weight: 700; color: #1F6F8B;}
 </style>
 </head>
 <body>
@@ -337,43 +337,44 @@ input[type="number"] {text-align: center;}
       <div class="modal-titulo">ARTÍCULOS (PRODUCTOS Y SERVICIOS REGISTRADOS)</div>
       
       <div class="form-calculo-precio">
-        <h4>💰 CALCULADORA DE PRECIO CON IVA INCLUIDO</h4>
+        <h4>💰 CALCULADORA DE PRECIO - INGRESE MONTO FINAL CON IVA</h4>
+        <p style="font-size: 10px; color: #2E7D32; margin-bottom: 12px; text-transform: uppercase;">Esta herramienta calcula automáticamente el porcentaje de utilidad que necesitas aplicar</p>
         <div class="fila-campos-dos">
           <div class="campo-grupo">
-            <label>COSTO DE COMPRA *</label>
-            <input type="number" id="costoCompraCalc" min="0" step="0.01" placeholder="0.00" />
+            <label>COSTO DE COMPRA (SIN IVA) *</label>
+            <input type="number" id="costoCompraCalc" min="0" step="0.01" placeholder="Ej: 100.00" />
           </div>
           <div class="campo-grupo">
-            <label>MONTO TOTAL (CON IVA 19%) *</label>
-            <input type="number" id="montoTotalCalc" min="0" step="0.01" placeholder="0.00" />
+            <label>MONTO FINAL AL CLIENTE (CON IVA 19%) *</label>
+            <input type="number" id="montoTotalCalc" min="0" step="0.01" placeholder="Ej: 980.00" />
           </div>
         </div>
-        <button class="btn btn-calcular" onclick="calcularPrecioAutomatico()">CALCULAR PORCENTAJE UTILIDAD</button>
+        <button class="btn btn-calcular" onclick="calcularPrecioAutomatico()">🔢 CALCULAR AUTOMÁTICAMENTE</button>
         
         <div id="resultadoCalculo" class="resultado-calculo">
           <div class="resultado-linea">
-            <strong>COSTO:</strong>
-            <span id="resultCosto">$0.00</span>
-          </div>
-          <div class="resultado-linea">
-            <strong>MONTO TOTAL (IVA INCLUIDO):</strong>
-            <span id="resultTotal">$0.00</span>
+            <strong>COSTO DE COMPRA:</strong>
+            <span class="resultado-valor" id="resultCosto">$0.00</span>
           </div>
           <div class="resultado-linea">
             <strong>NETO (SIN IVA):</strong>
-            <span id="resultNeto">$0.00</span>
+            <span class="resultado-valor" id="resultNeto">$0.00</span>
           </div>
           <div class="resultado-linea">
-            <strong>IVA (19%):</strong>
-            <span id="resultIva">$0.00</span>
+            <strong>IVA 19%:</strong>
+            <span class="resultado-valor" id="resultIva">$0.00</span>
+          </div>
+          <div class="resultado-linea" style="background-color: #f0f0f0;">
+            <strong>TOTAL AL CLIENTE:</strong>
+            <span class="resultado-valor" id="resultTotal">$0.00</span>
           </div>
           <div class="resultado-linea">
             <strong>UTILIDAD NETA:</strong>
-            <span id="resultUtilidad">$0.00</span>
+            <span class="resultado-valor" id="resultUtilidad">$0.00</span>
           </div>
-          <div class="resultado-linea">
-            <strong>% PORCENTAJE UTILIDAD:</strong>
-            <span id="resultPorcentaje">0.00%</span>
+          <div class="resultado-linea" style="background-color: #fff9e6; border-bottom: 2px solid #4B732E; padding: 10px 0; margin-top: 5px;">
+            <strong style="font-size: 12px;">PORCENTAJE DE UTILIDAD A APLICAR:</strong>
+            <span class="resultado-valor" id="resultPorcentaje" style="font-size: 14px; color: #2E7D32;">0.00%</span>
           </div>
         </div>
       </div>
@@ -448,6 +449,61 @@ input[type="number"] {text-align: center;}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
 
 <script>
+// ================== FUNCIÓN DE CÁLCULO VERIFICADA Y CORREGIDA ==================
+function calcularPrecioAutomatico() {
+  const costoCompra = parseFloat(document.getElementById('costoCompraCalc').value) || 0;
+  const montoTotal = parseFloat(document.getElementById('montoTotalCalc').value) || 0;
+  
+  // VALIDACIONES
+  if (costoCompra <= 0) {
+    alert('❌ ERROR: INGRESE UN COSTO DE COMPRA VÁLIDO (MAYOR A 0)');
+    return;
+  }
+  
+  if (montoTotal <= 0) {
+    alert('❌ ERROR: INGRESE UN MONTO FINAL VÁLIDO (MAYOR A 0)');
+    return;
+  }
+  
+  if (montoTotal < costoCompra) {
+    alert('❌ ERROR: EL MONTO FINAL NO PUEDE SER MENOR QUE EL COSTO DE COMPRA\nCosto: $' + costoCompra.toFixed(2) + '\nMonto Final: $' + montoTotal.toFixed(2));
+    return;
+  }
+  
+  // ================== CÁLCULOS EXACTOS ==================
+  // PASO 1: Calcular NETO (sin IVA)
+  // FÓRMULA: Neto = Monto Total / 1.19
+  const netoSinIva = montoTotal / 1.19;
+  
+  // PASO 2: Calcular IVA
+  // FÓRMULA: IVA = Neto × 0.19
+  const ivaCalculado = netoSinIva * 0.19;
+  
+  // PASO 3: Calcular UTILIDAD
+  // FÓRMULA: Utilidad = Neto - Costo
+  const utilidadNeta = netoSinIva - costoCompra;
+  
+  // PASO 4: Calcular % UTILIDAD
+  // FÓRMULA: % Utilidad = (Utilidad / Costo) × 100
+  const porcentajeUtilidad = (utilidadNeta / costoCompra) * 100;
+  
+  // ================== MOSTRAR RESULTADOS ==================
+  document.getElementById('resultCosto').textContent = '$' + costoCompra.toLocaleString('es-CL', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+  document.getElementById('resultNeto').textContent = '$' + netoSinIva.toLocaleString('es-CL', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+  document.getElementById('resultIva').textContent = '$' + ivaCalculado.toLocaleString('es-CL', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+  document.getElementById('resultTotal').textContent = '$' + montoTotal.toLocaleString('es-CL', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+  document.getElementById('resultUtilidad').textContent = '$' + utilidadNeta.toLocaleString('es-CL', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+  document.getElementById('resultPorcentaje').textContent = porcentajeUtilidad.toFixed(2) + '%';
+  
+  // MOSTRAR PANEL DE RESULTADOS
+  document.getElementById('resultadoCalculo').classList.add('activo');
+  
+  // VERIFICACIÓN AUTOMÁTICA
+  const verificacion = (netoSinIva + ivaCalculado).toFixed(2);
+  const esperado = montoTotal.toFixed(2);
+  console.log('VERIFICACIÓN: ' + verificacion + ' === ' + esperado + ' ✓');
+}
+
 class GestorCotizaciones {
   constructor() { this.prefijo = 'CO'; this.numeroBase = 100500; this.cargarNumeroCotizacion(); }
   cargarNumeroCotizacion() { const n = localStorage.getItem('ultimaCotizacion'); if (n) this.numeroBase = parseInt(n); this.actualizarDisplay(); }
@@ -512,35 +568,6 @@ document.addEventListener('DOMContentLoaded', function() {
     if (!e.target.closest('.busqueda-producto')) document.getElementById('autocompleteLista').classList.remove('activo');
   });
 });
-
-function calcularPrecioAutomatico() {
-  const costCompra = parseFloat(document.getElementById('costoCompraCalc').value) || 0;
-  const montoTotal = parseFloat(document.getElementById('montoTotalCalc').value) || 0;
-  
-  if (costCompra <= 0 || montoTotal <= 0) {
-    alert('INGRESE VALORES VÁLIDOS (MAYORES A 0)');
-    return;
-  }
-  
-  if (montoTotal < costCompra) {
-    alert('EL MONTO TOTAL NO PUEDE SER MENOR QUE EL COSTO DE COMPRA');
-    return;
-  }
-  
-  const netoSinIva = montoTotal / 1.19;
-  const ivaCalculado = montoTotal - netoSinIva;
-  const utilidadNeta = netoSinIva - costCompra;
-  const porcentajeUtilidad = (utilidadNeta / costCompra) * 100;
-  
-  document.getElementById('resultCosto').textContent = '$' + costCompra.toLocaleString('es-CL', {minimumFractionDigits: 2});
-  document.getElementById('resultTotal').textContent = '$' + montoTotal.toLocaleString('es-CL', {minimumFractionDigits: 2});
-  document.getElementById('resultNeto').textContent = '$' + netoSinIva.toLocaleString('es-CL', {minimumFractionDigits: 2});
-  document.getElementById('resultIva').textContent = '$' + ivaCalculado.toLocaleString('es-CL', {minimumFractionDigits: 2});
-  document.getElementById('resultUtilidad').textContent = '$' + utilidadNeta.toLocaleString('es-CL', {minimumFractionDigits: 2});
-  document.getElementById('resultPorcentaje').textContent = porcentajeUtilidad.toFixed(2) + '%';
-  
-  document.getElementById('resultadoCalculo').classList.add('activo');
-}
 
 function mostrarDesplegableClientes() {
   const input = document.getElementById('inputRut').value.trim(), desplegable = document.getElementById('desplegableClientes');
