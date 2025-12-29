@@ -301,7 +301,7 @@ input[type="number"] {text-align: center;}
         <div class="fila-campos-producto-tres">
           <div class="campo-grupo"><label>COSTO (SIN IVA) *</label><input type="number" id="costoProducto" min="0" step="0.01" /></div>
           <div class="campo-grupo"><label>VALOR TOTAL (CON IVA) *</label><input type="number" id="valorTotalProducto" min="0" step="0.01" /></div>
-          <div class="campo-grupo"><label>% MARGEN (AUTOCALCULADO)</label><input type="number" id="porcentajeProducto" disabled class="input-solo-lectura" /></div>
+          <div class="campo-grupo"><label>% MARGEN (SOBRE TOTAL)</label><input type="number" id="porcentajeProducto" disabled class="input-solo-lectura" /></div>
         </div>
         <div class="campo-grupo"><label>LINK *</label><input type="text" id="linkProducto" /></div>
         <div class="botones-producto">
@@ -343,7 +343,7 @@ input[type="number"] {text-align: center;}
       
       <div class="form-calculo-precio">
         <h4>💰 CALCULADORA DE PRECIO - INGRESE MONTO FINAL CON IVA</h4>
-        <p>Esta herramienta calcula automáticamente el porcentaje de utilidad que necesitas aplicar</p>
+        <p>Calcula el margen considerando que el precio que cobras al cliente incluye IVA 19%.</p>
         <div class="fila-campos-dos">
           <div class="campo-grupo">
             <label>COSTO DE COMPRA (SIN IVA) *</label>
@@ -351,7 +351,7 @@ input[type="number"] {text-align: center;}
           </div>
           <div class="campo-grupo">
             <label>MONTO FINAL AL CLIENTE (CON IVA 19%) *</label>
-            <input type="number" id="montoTotalCalc" min="0" step="0.01" placeholder="Ej: 980.00" />
+            <input type="number" id="montoTotalCalc" min="0" step="0.01" placeholder="Ej: 119.00" />
           </div>
         </div>
         <div style="display: flex; gap: 6px; flex-wrap: wrap;">
@@ -361,11 +361,11 @@ input[type="number"] {text-align: center;}
         
         <div id="resultadoCalculo" class="resultado-calculo">
           <div class="resultado-linea">
-            <strong>COSTO DE COMPRA:</strong>
+            <strong>COSTO DE COMPRA (SIN IVA):</strong>
             <span class="resultado-valor" id="resultCosto">$0.00</span>
           </div>
           <div class="resultado-linea">
-            <strong>NETO (SIN IVA):</strong>
+            <strong>PRECIO NETO (SIN IVA):</strong>
             <span class="resultado-valor" id="resultNeto">$0.00</span>
           </div>
           <div class="resultado-linea">
@@ -373,15 +373,19 @@ input[type="number"] {text-align: center;}
             <span class="resultado-valor" id="resultIva">$0.00</span>
           </div>
           <div class="resultado-linea" style="background-color: #f0f0f0;">
-            <strong>TOTAL AL CLIENTE:</strong>
+            <strong>TOTAL AL CLIENTE (CON IVA):</strong>
             <span class="resultado-valor" id="resultTotal">$0.00</span>
           </div>
           <div class="resultado-linea">
-            <strong>UTILIDAD NETA:</strong>
-            <span class="resultado-valor" id="resultUtilidad">$0.00</span>
+            <strong>UTILIDAD NETA (SOBRE NETO):</strong>
+            <span class="resultado-valor" id="resultUtilidadNeta">$0.00</span>
+          </div>
+          <div class="resultado-linea">
+            <strong>UTILIDAD SOBRE TOTAL (CON IVA):</strong>
+            <span class="resultado-valor" id="resultUtilidadTotal">$0.00</span>
           </div>
           <div class="resultado-linea" style="background-color: #fff9e6; border-bottom: 2px solid #4B732E; padding: 10px 0; margin-top: 5px;">
-            <strong style="font-size: 12px;">PORCENTAJE DE MARGEN A APLICAR:</strong>
+            <strong style="font-size: 12px;">MARGEN % SOBRE TOTAL (CON IVA):</strong>
             <span class="resultado-valor" id="resultPorcentaje" style="font-size: 14px; color: #2E7D32;">0.00%</span>
           </div>
         </div>
@@ -457,81 +461,49 @@ input[type="number"] {text-align: center;}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
 
 <script>
-// ================== FUNCIÓN CALCULADORA DE PRECIOS - MEJORADA ==================
-// FÓRMULA: Neto = Monto Total / 1.19
-// FÓRMULA: IVA = Neto × 0.19
-// FÓRMULA: Utilidad = Neto - Costo
-// FÓRMULA: % Margen = (Utilidad / Costo) × 100
+// ================== CALCULADORA DE PRECIOS (CON IVA) ==================
+// Precio final incluye IVA 19%. [web:16][web:12]
+// Neto = Total / 1.19
+// IVA = Total - Neto
+// Utilidad neta = Neto - Costo
+// Utilidad sobre total = Total - Costo
+// Margen % sobre total = UtilidadTotal / Total * 100 [web:11]
 function calcularPrecioAutomatico() {
   const costoCompra = parseFloat(document.getElementById('costoCompraCalc').value) || 0;
   const montoTotal = parseFloat(document.getElementById('montoTotalCalc').value) || 0;
-  
-  // VALIDACIÓN: Costo debe ser mayor a 0
-  if (costoCompra <= 0) {
-    alert('❌ ERROR: INGRESE UN COSTO DE COMPRA VÁLIDO (MAYOR A 0)');
-    return;
-  }
-  
-  // VALIDACIÓN: Monto Total debe ser mayor a 0
-  if (montoTotal <= 0) {
-    alert('❌ ERROR: INGRESE UN MONTO FINAL VÁLIDO (MAYOR A 0)');
-    return;
-  }
-  
-  // VALIDACIÓN: Monto Total debe ser >= Costo
-  if (montoTotal < costoCompra) {
-    alert('❌ ERROR: EL MONTO FINAL NO PUEDE SER MENOR QUE EL COSTO DE COMPRA\nCosto: $' + costoCompra.toFixed(2) + '\nMonto Final: $' + montoTotal.toFixed(2));
-    return;
-  }
-  
-  // CÁLCULO 1: Extraer Neto sin IVA
+  if (costoCompra <= 0) { alert('❌ Ingrese un costo de compra válido (> 0)'); return; }
+  if (montoTotal <= 0) { alert('❌ Ingrese un monto final válido (> 0)'); return; }
+  if (montoTotal < costoCompra) { alert('❌ El monto final no puede ser menor que el costo de compra'); return; }
+
   const netoSinIva = +(montoTotal / 1.19).toFixed(2);
-  
-  // CÁLCULO 2: Calcular IVA
-  const ivaCalculado = +(netoSinIva * 0.19).toFixed(2);
-  
-  // CÁLCULO 3: Calcular Utilidad Neta
+  const ivaCalculado = +(montoTotal - netoSinIva).toFixed(2);
   const utilidadNeta = +(netoSinIva - costoCompra).toFixed(2);
-  
-  // CÁLCULO 4: Calcular % Margen
-  const porcentajeMargen = +(utilidadNeta / costoCompra * 100).toFixed(2);
-  
-  // MOSTRAR RESULTADOS CON FORMATO MONETARIO
-  document.getElementById('resultCosto').textContent = '$' + costoCompra.toLocaleString('es-CL', {minimumFractionDigits: 2, maximumFractionDigits: 2});
-  document.getElementById('resultNeto').textContent = '$' + netoSinIva.toLocaleString('es-CL', {minimumFractionDigits: 2, maximumFractionDigits: 2});
-  document.getElementById('resultIva').textContent = '$' + ivaCalculado.toLocaleString('es-CL', {minimumFractionDigits: 2, maximumFractionDigits: 2});
-  document.getElementById('resultTotal').textContent = '$' + montoTotal.toLocaleString('es-CL', {minimumFractionDigits: 2, maximumFractionDigits: 2});
-  document.getElementById('resultUtilidad').textContent = '$' + utilidadNeta.toLocaleString('es-CL', {minimumFractionDigits: 2, maximumFractionDigits: 2});
-  document.getElementById('resultPorcentaje').textContent = porcentajeMargen.toFixed(2) + '%';
-  
-  // MOSTRAR PANEL DE RESULTADOS
+  const utilidadSobreTotal = +(montoTotal - costoCompra).toFixed(2);
+  const margenSobreTotal = +((utilidadSobreTotal / montoTotal) * 100).toFixed(2);
+
+  document.getElementById('resultCosto').textContent = '$' + costoCompra.toLocaleString('es-CL', {minimumFractionDigits: 2});
+  document.getElementById('resultNeto').textContent = '$' + netoSinIva.toLocaleString('es-CL', {minimumFractionDigits: 2});
+  document.getElementById('resultIva').textContent = '$' + ivaCalculado.toLocaleString('es-CL', {minimumFractionDigits: 2});
+  document.getElementById('resultTotal').textContent = '$' + montoTotal.toLocaleString('es-CL', {minimumFractionDigits: 2});
+  document.getElementById('resultUtilidadNeta').textContent = '$' + utilidadNeta.toLocaleString('es-CL', {minimumFractionDigits: 2});
+  document.getElementById('resultUtilidadTotal').textContent = '$' + utilidadSobreTotal.toLocaleString('es-CL', {minimumFractionDigits: 2});
+  document.getElementById('resultPorcentaje').textContent = margenSobreTotal.toFixed(2) + '%';
+
   document.getElementById('resultadoCalculo').classList.add('activo');
-  
-  // GUARDAR DATOS AUTOMÁTICAMENTE
   guardarCalculadora();
 }
 
 function guardarCalculadora() {
-  const costoCompra = document.getElementById('costoCompraCalc').value;
-  const montoTotal = document.getElementById('montoTotalCalc').value;
-  localStorage.setItem('calcPrecio_costo', costoCompra);
-  localStorage.setItem('calcPrecio_monto', montoTotal);
+  localStorage.setItem('calcPrecio_costo', document.getElementById('costoCompraCalc').value);
+  localStorage.setItem('calcPrecio_monto', document.getElementById('montoTotalCalc').value);
 }
 
 function restaurarCalculadora() {
-  const costoGuardado = localStorage.getItem('calcPrecio_costo');
-  const montoGuardado = localStorage.getItem('calcPrecio_monto');
-  
-  if (costoGuardado) {
-    document.getElementById('costoCompraCalc').value = costoGuardado;
-  }
-  if (montoGuardado) {
-    document.getElementById('montoTotalCalc').value = montoGuardado;
-  }
-  
-  if (costoGuardado && montoGuardado) {
-    calcularPrecioAutomatico();
-  }
+  const c = localStorage.getItem('calcPrecio_costo');
+  const m = localStorage.getItem('calcPrecio_monto');
+  if (c) document.getElementById('costoCompraCalc').value = c;
+  if (m) document.getElementById('montoTotalCalc').value = m;
+  if (c && m) calcularPrecioAutomatico();
 }
 
 function limpiarCalculadora() {
@@ -610,20 +582,14 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 
-// ================== FUNCIÓN CALCULAR % MARGEN - MEJORADA ==================
-// FÓRMULA: % Margen = ((Valor Total - Costo) / Costo) × 100
-// VALIDACIÓN: Valor Total debe ser >= Costo
+// ================== CÁLCULO % MARGEN SOBRE TOTAL (CON IVA) ==================
+// Margen % = (PrecioTotalConIVA - Costo) / PrecioTotalConIVA * 100 [web:11]
 function calcularMargenUtilidad() {
   const costo = parseFloat(document.getElementById('costoProducto').value) || 0;
   const valorTotal = parseFloat(document.getElementById('valorTotalProducto').value) || 0;
-  
   if (costo > 0 && valorTotal > 0) {
-    // VALIDACIÓN: Valor Total >= Costo
-    if (valorTotal < costo) {
-      document.getElementById('porcentajeProducto').value = '0.00';
-      return;
-    }
-    const margen = +((valorTotal - costo) / costo * 100).toFixed(2);
+    if (valorTotal < costo) { document.getElementById('porcentajeProducto').value = '0.00'; return; }
+    const margen = +((valorTotal - costo) / valorTotal * 100).toFixed(2);
     document.getElementById('porcentajeProducto').value = margen;
   } else {
     document.getElementById('porcentajeProducto').value = '0.00';
@@ -856,15 +822,11 @@ function mostrarMensajeProducto(t, ti) {
   m.style.display = 'block';
 }
 
-// ================== GUARDAR PRODUCTO - MEJORADO CON VALIDACIONES ==================
-// VALIDACIÓN: Valor Total >= Costo (crítico para márgenes válidos)
+// ================== GUARDAR PRODUCTO (VALOR TOTAL CON IVA) ==================
 function guardarProducto() {
   const cod = document.getElementById('codigoProducto').value.trim(), desc = document.getElementById('descripcionProducto').value.trim(), cos = parseFloat(document.getElementById('costoProducto').value), vt = parseFloat(document.getElementById('valorTotalProducto').value), por = parseFloat(document.getElementById('porcentajeProducto').value) || 0, link = document.getElementById('linkProducto').value.trim().toLowerCase();
   if (!cod || !desc || isNaN(cos) || cos <= 0 || isNaN(vt) || vt <= 0 || !link) return mostrarMensajeProducto('COMPLETE TODOS LOS CAMPOS REQUERIDOS', 'error');
-  
-  // VALIDACIÓN MEJORADA: Valor Total >= Costo
-  if (vt < cos) return mostrarMensajeProducto('❌ ERROR: VALOR TOTAL DEBE SER MAYOR O IGUAL AL COSTO\nCosto: $' + cos.toFixed(2) + ' | Valor Total: $' + vt.toFixed(2), 'error');
-  
+  if (vt < cos) return mostrarMensajeProducto('❌ ERROR: VALOR TOTAL (CON IVA) DEBE SER ≥ COSTO', 'error');
   const prod = { codigo: cod, descripcion: desc.toUpperCase(), costo: +(cos.toFixed(2)), valorTotal: +(vt.toFixed(2)), porcentaje: +(por.toFixed(2)), link: link };
   gestorProductos.agregarProducto(cod, prod);
   mostrarMensajeProducto('PRODUCTO GUARDADO CORRECTAMENTE', 'exito');
@@ -891,16 +853,22 @@ function agregarProductoACotizacion(cod, prod) {
     ex.cantidad++;
     ex.total = +(ex.cantidad * ex.valorNetaConDescuento).toFixed(2);
   } else {
-    productosEnCotizacion.push({ codigo: prod.codigo, descripcion: prod.descripcion, cantidad: 1, valorNeto: prod.valorTotal, costo: prod.costo, descuento: 0, valorNetaConDescuento: prod.valorTotal, total: +(prod.valorTotal.toFixed(2)), link: prod.link });
+    productosEnCotizacion.push({
+      codigo: prod.codigo,
+      descripcion: prod.descripcion,
+      cantidad: 1,
+      valorNeto: prod.valorTotal,             // Valor total con IVA por unidad
+      costo: prod.costo,                      // Costo neto por unidad
+      descuento: 0,
+      valorNetaConDescuento: prod.valorTotal, // Precio con IVA y descuento por unidad
+      total: +(prod.valorTotal.toFixed(2)),   // Total línea con IVA
+      link: prod.link
+    });
   }
   actualizarTablaProductos();
 }
 
-// ================== ACTUALIZAR TABLA PRODUCTOS - MEJORADO ==================
-// FÓRMULA: Costo Total = Costo × Cantidad
-// FÓRMULA: Utilidad Unitaria = (Total / Cantidad) - Costo
-// FÓRMULA: Utilidad Total = Utilidad Unitaria × Cantidad
-// FÓRMULA: % Margen = ((Precio Unitario - Costo) / Precio Unitario) × 100
+// ================== TABLA PRODUCTOS: UTILIDAD Y MARGEN SOBRE TOTAL (CON IVA) ==================
 function actualizarTablaProductos() {
   const cont = document.getElementById('tablaProductosContenedor');
   if (productosEnCotizacion.length === 0) {
@@ -908,10 +876,38 @@ function actualizarTablaProductos() {
     document.getElementById('resumenTotales').style.display = 'none';
     return;
   }
-  let html = '<div style="overflow-x:auto;"><table><thead><tr><th style="min-width:60px;">CÓDIGO</th><th style="min-width:100px;">DESCRIPCIÓN</th><th style="width:80px;">CANT</th><th style="min-width:70px;">V.UNITARIO</th><th style="width:50px;">DESC(%)</th><th style="min-width:70px;">V.DESC</th><th style="min-width:70px;">COSTO</th><th style="min-width:70px;">COSTO TOT</th><th style="min-width:70px;">% MARGEN</th><th style="min-width:70px;">UTILIDAD TOT</th><th style="min-width:70px;">TOTAL</th><th style="width:60px;">ACCIÓN</th></tr></thead><tbody>';
+  let html = '<div style="overflow-x:auto;"><table><thead><tr><th>CÓDIGO</th><th>DESCRIPCIÓN</th><th>CANT</th><th>V.UNITARIO (C/IVA)</th><th>DESC(%)</th><th>V.UNIT. DESC (C/IVA)</th><th>COSTO UNIT.</th><th>COSTO TOTAL</th><th>% MARGEN SOBRE TOTAL</th><th>UTILIDAD TOTAL</th><th>TOTAL (C/IVA)</th><th>ACCIÓN</th></tr></thead><tbody>';
   productosEnCotizacion.forEach((p, i) => {
-    const bloqueado = esLecturaCotizacion || estadoCotizacionActual === 'aceptado' || estadoCotizacionActual === 'rechazado', inputQuantityDisabled = bloqueado ? 'disabled' : '', inputDescuentoDisabled = bloqueado ? 'disabled' : '', btnEliminarDisplay = bloqueado ? 'none' : 'block', costoTotal = +(parseFloat(p.costo) * p.cantidad).toFixed(2), utilidadUnitaria = +(parseFloat(p.total) / p.cantidad - parseFloat(p.costo)).toFixed(2), utilidadTotal = +(utilidadUnitaria * p.cantidad).toFixed(2), precioUnitario = +(parseFloat(p.total) / p.cantidad).toFixed(2), margenPorcentaje = precioUnitario > 0 ? +((precioUnitario - parseFloat(p.costo)) / precioUnitario * 100).toFixed(2) : 0, claseMargen = margenPorcentaje > 20 ? 'margen-verde' : 'margen-roja';
-    html += `<tr><td>${p.codigo}</td><td>${p.descripcion}</td><td class="texto-centrado"><input type="number" min="1" value="${p.cantidad}" onchange="actualizarCantidad(${i}, this.value)" ${inputQuantityDisabled} style="width:100%;text-align:center;border:1px solid #ddd;padding:4px;"></td><td class="valor-numerico">$${precioUnitario.toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td class="texto-centrado"><input type="number" min="0" max="100" step="0.01" value="${p.descuento}" style="width:100%;padding:4px;text-align:center;border:1px solid #ddd;" onchange="actualizarDescuento(${i}, this.value)" ${inputDescuentoDisabled}></td><td class="valor-numerico">$${parseFloat(p.valorNetaConDescuento).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td class="valor-numerico">$${parseFloat(p.costo).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td class="valor-numerico">$${costoTotal.toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td class="valor-numerico ${claseMargen}">${margenPorcentaje}%</td><td class="valor-numerico">$${utilidadTotal.toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td class="valor-numerico">$${parseFloat(p.total).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td><button class="btn-eliminar" onclick="eliminarProducto(${i})" style="display:${btnEliminarDisplay};width:100%;">DEL</button></td></tr>`;
+    const bloqueado = esLecturaCotizacion || estadoCotizacionActual === 'aceptado' || estadoCotizacionActual === 'rechazado';
+    const inputQuantityDisabled = bloqueado ? 'disabled' : '';
+    const inputDescuentoDisabled = bloqueado ? 'disabled' : '';
+    const btnEliminarDisplay = bloqueado ? 'none' : 'block';
+
+    const costoTotal = +(parseFloat(p.costo) * p.cantidad).toFixed(2);
+    const precioUnitarioConIva = +(parseFloat(p.valorNetaConDescuento)).toFixed(2);
+    const totalLinea = +(p.total).toFixed(2);
+    const utilidadTotal = +(totalLinea - costoTotal).toFixed(2);
+    const margenPorcentaje = totalLinea > 0 ? +((utilidadTotal / totalLinea) * 100).toFixed(2) : 0;
+    const claseMargen = margenPorcentaje >= 20 ? 'margen-verde' : 'margen-roja';
+
+    html += `<tr>
+      <td>${p.codigo}</td>
+      <td>${p.descripcion}</td>
+      <td class="texto-centrado">
+        <input type="number" min="1" value="${p.cantidad}" onchange="actualizarCantidad(${i}, this.value)" ${inputQuantityDisabled} style="width:100%;text-align:center;border:1px solid #ddd;padding:4px;">
+      </td>
+      <td class="valor-numerico">$${precioUnitarioConIva.toLocaleString('es-CL', {minimumFractionDigits: 2})}</td>
+      <td class="texto-centrado">
+        <input type="number" min="0" max="100" step="0.01" value="${p.descuento}" style="width:100%;padding:4px;text-align:center;border:1px solid #ddd;" onchange="actualizarDescuento(${i}, this.value)" ${inputDescuentoDisabled}>
+      </td>
+      <td class="valor-numerico">$${parseFloat(p.valorNetaConDescuento).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td>
+      <td class="valor-numerico">$${parseFloat(p.costo).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td>
+      <td class="valor-numerico">$${costoTotal.toLocaleString('es-CL', {minimumFractionDigits: 2})}</td>
+      <td class="valor-numerico ${claseMargen}">${margenPorcentaje}%</td>
+      <td class="valor-numerico">$${utilidadTotal.toLocaleString('es-CL', {minimumFractionDigits: 2})}</td>
+      <td class="valor-numerico">$${totalLinea.toLocaleString('es-CL', {minimumFractionDigits: 2})}</td>
+      <td><button class="btn-eliminar" onclick="eliminarProducto(${i})" style="display:${btnEliminarDisplay};width:100%;">DEL</button></td>
+    </tr>`;
   });
   html += '</tbody></table></div>';
   cont.innerHTML = html;
@@ -926,22 +922,11 @@ function actualizarCantidad(i, cant) {
   actualizarTablaProductos();
 }
 
-// ================== ACTUALIZAR DESCUENTO - MEJORADO CON VALIDACIÓN ==================
-// VALIDACIÓN: Rango 0-100, sin descuentos negativos
-// FÓRMULA: Valor con Descuento = Valor Original × (1 - Descuento / 100)
+// ================== DESCUENTO SOBRE PRECIO CON IVA ==================
 function actualizarDescuento(i, desc) {
   desc = parseFloat(desc) || 0;
-  
-  // VALIDACIÓN MEJORADA: Descuento debe estar entre 0 y 100
-  if (desc < 0 || desc > 100) { 
-    alert('❌ ERROR: EL DESCUENTO DEBE ESTAR ENTRE 0% Y 100%\nValor ingresado: ' + desc + '%'); 
-    actualizarTablaProductos(); 
-    return; 
-  }
-  
+  if (desc < 0 || desc > 100) { alert('❌ ERROR: EL DESCUENTO DEBE ESTAR ENTRE 0% Y 100%'); actualizarTablaProductos(); return; }
   productosEnCotizacion[i].descuento = desc;
-  
-  // CÁLCULO: Aplicar descuento al valor original
   const valorConDesc = productosEnCotizacion[i].valorNeto * (1 - desc / 100);
   productosEnCotizacion[i].valorNetaConDescuento = +(valorConDesc.toFixed(2));
   productosEnCotizacion[i].total = +(productosEnCotizacion[i].valorNetaConDescuento * productosEnCotizacion[i].cantidad).toFixed(2);
@@ -954,18 +939,17 @@ function eliminarProducto(i) {
   actualizarTablaProductos();
 }
 
-// ================== RESUMEN TOTALES - MEJORADO ==================
-// FÓRMULA: Neto Total = Suma de todos los totales de productos
-// FÓRMULA: IVA = Neto Total × 0.19
-// FÓRMULA: Total Final = Neto Total + IVA
+// ================== RESUMEN TOTALES (NETO + IVA) ==================
+// Neto = TotalConIVA / 1.19
+// IVA = TotalConIVA - Neto [web:16]
 function actualizarResumenTotales() {
-  const net = +(productosEnCotizacion.reduce((acc, p) => acc + parseFloat(p.total), 0)).toFixed(2);
-  const iva = +(net * 0.19).toFixed(2);
-  const tot = +(net + iva).toFixed(2);
-  
-  document.getElementById('totalNeto').textContent = '$' + net.toLocaleString('es-CL', {minimumFractionDigits: 2});
+  const totalConIva = +(productosEnCotizacion.reduce((acc, p) => acc + parseFloat(p.total), 0)).toFixed(2);
+  const neto = +(totalConIva / 1.19).toFixed(2);
+  const iva = +(totalConIva - neto).toFixed(2);
+
+  document.getElementById('totalNeto').textContent = '$' + neto.toLocaleString('es-CL', {minimumFractionDigits: 2});
   document.getElementById('totalIva').textContent = '$' + iva.toLocaleString('es-CL', {minimumFractionDigits: 2});
-  document.getElementById('totalGeneral').textContent = '$' + tot.toLocaleString('es-CL', {minimumFractionDigits: 2});
+  document.getElementById('totalGeneral').textContent = '$' + totalConIva.toLocaleString('es-CL', {minimumFractionDigits: 2});
   document.getElementById('resumenTotales').style.display = 'block';
 }
 
@@ -980,16 +964,29 @@ function cerrarArticulos() {
   document.getElementById('modalArticulos').style.display = 'none';
 }
 
+// ================== TABLA ARTÍCULOS (PRODUCTOS REGISTRADOS) ==================
 function listarArticulos() {
   const todos = gestorProductos.obtenerTodos();
-  let html = '<div style="overflow-x:auto;"><table class="tabla-articulos"><thead><tr><th>CÓDIGO</th><th>DESCRIPCIÓN</th><th>COSTO</th><th>% MARGEN</th><th>VALOR UNITARIO</th><th>TOTAL</th><th>UTILIDAD</th><th>LINK</th><th>ACCIÓN</th></tr></thead><tbody>';
+  let html = '<div style="overflow-x:auto;"><table class="tabla-articulos"><thead><tr><th>CÓDIGO</th><th>DESCRIPCIÓN</th><th>COSTO (SIN IVA)</th><th>VALOR UNITARIO (C/IVA)</th><th>% MARGEN SOBRE TOTAL</th><th>UTILIDAD UNITARIA</th><th>LINK</th><th>ACCIÓN</th></tr></thead><tbody>';
   const claves = Object.keys(todos);
   if (claves.length === 0) {
-    html += '<tr><td colspan="9" style="text-align:center;">NO HAY ARTÍCULOS</td></tr>';
+    html += '<tr><td colspan="8" style="text-align:center;">NO HAY ARTÍCULOS</td></tr>';
   } else {
     claves.forEach(codigo => {
-      const art = todos[codigo], util = +(parseFloat(art.valorTotal) - parseFloat(art.costo)).toFixed(2), total = +(art.valorTotal).toFixed(2);
-      html += `<tr><td>${art.codigo}</td><td>${art.descripcion}</td><td class="valor-numerico">$${parseFloat(art.costo).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td class="valor-numerico">${parseFloat(art.porcentaje).toLocaleString('es-CL', {minimumFractionDigits: 2})}%</td><td class="valor-numerico">$${parseFloat(art.valorTotal).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td class="valor-numerico">$${total.toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td class="valor-numerico">$${util.toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td style="text-transform:lowercase;"><a href="${art.link}" target="_blank">${art.link}</a></td><td><button class="btn btn-editar" onclick="editarArticulo('${art.codigo}')">EDITAR</button><button class="btn btn-eliminar" onclick="eliminarArticulo('${art.codigo}')">ELIMINAR</button></td></tr>`;
+      const art = todos[codigo], utilidadUnitaria = +(parseFloat(art.valorTotal) - parseFloat(art.costo)).toFixed(2), margenPorcentaje = art.valorTotal > 0 ? +((utilidadUnitaria / art.valorTotal) * 100).toFixed(2) : 0;
+      html += `<tr>
+        <td>${art.codigo}</td>
+        <td>${art.descripcion}</td>
+        <td class="valor-numerico">$${parseFloat(art.costo).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td>
+        <td class="valor-numerico">$${parseFloat(art.valorTotal).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td>
+        <td class="valor-numerico">${margenPorcentaje.toLocaleString('es-CL', {minimumFractionDigits: 2})}%</td>
+        <td class="valor-numerico">$${utilidadUnitaria.toLocaleString('es-CL', {minimumFractionDigits: 2})}</td>
+        <td style="text-transform:lowercase;"><a href="${art.link}" target="_blank">${art.link}</a></td>
+        <td>
+          <button class="btn btn-editar" onclick="editarArticulo('${art.codigo}')">EDITAR</button>
+          <button class="btn btn-eliminar" onclick="eliminarArticulo('${art.codigo}')">ELIMINAR</button>
+        </td>
+      </tr>`;
     });
   }
   html += '</tbody></table></div>';
@@ -1002,22 +999,31 @@ function editarArticulo(codigo) {
   articuloEdicion = art;
   const f = document.getElementById('formularioEditarArticulo');
   f.style.display = 'block';
-  f.innerHTML = `<h4>EDITAR ARTÍCULO</h4><div class="fila-campos-producto"><div class="campo-grupo"><label>CÓDIGO</label><input type="text" value="${art.codigo}" disabled></div><div class="campo-grupo"><label>DESCRIPCIÓN</label><input type="text" id="editarDescripcion" value="${art.descripcion}"></div></div><div class="fila-campos-producto-tres"><div class="campo-grupo"><label>COSTO</label><input type="number" id="editarCosto" value="${art.costo}"></div><div class="campo-grupo"><label>VALOR TOTAL</label><input type="number" id="editarValorTotal" value="${art.valorTotal}"></div><div class="campo-grupo"><label>% MARGEN (AUTOCALCULADO)</label><input type="number" id="editarPorcentaje" value="${art.porcentaje}" disabled class="input-solo-lectura"></div></div><div class="campo-grupo"><label>LINK</label><input type="text" id="editarLink" value="${art.link}"></div><div class="botones-producto"><button class="btn btn-agregar" onclick="guardarEdicionArticulo()">GUARDAR</button><button class="btn btn-cancelar" onclick="cancelarEdicionArticulo()">CANCELAR</button></div>`;
+  f.innerHTML = `<h4>EDITAR ARTÍCULO</h4>
+    <div class="fila-campos-producto">
+      <div class="campo-grupo"><label>CÓDIGO</label><input type="text" value="${art.codigo}" disabled></div>
+      <div class="campo-grupo"><label>DESCRIPCIÓN</label><input type="text" id="editarDescripcion" value="${art.descripcion}"></div>
+    </div>
+    <div class="fila-campos-producto-tres">
+      <div class="campo-grupo"><label>COSTO (SIN IVA)</label><input type="number" id="editarCosto" value="${art.costo}"></div>
+      <div class="campo-grupo"><label>VALOR TOTAL (CON IVA)</label><input type="number" id="editarValorTotal" value="${art.valorTotal}"></div>
+      <div class="campo-grupo"><label>% MARGEN (SOBRE TOTAL)</label><input type="number" id="editarPorcentaje" value="${art.porcentaje}" disabled class="input-solo-lectura"></div>
+    </div>
+    <div class="campo-grupo"><label>LINK</label><input type="text" id="editarLink" value="${art.link}"></div>
+    <div class="botones-producto">
+      <button class="btn btn-agregar" onclick="guardarEdicionArticulo()">GUARDAR</button>
+      <button class="btn btn-cancelar" onclick="cancelarEdicionArticulo()">CANCELAR</button>
+    </div>`;
   document.getElementById('editarCosto').addEventListener('change', calcularMargenEdicion);
   document.getElementById('editarValorTotal').addEventListener('change', calcularMargenEdicion);
 }
 
-// ================== CALCULAR % MARGEN EN EDICIÓN - MEJORADO ==================
-// FÓRMULA: % Margen = ((Valor Total - Costo) / Costo) × 100
 function calcularMargenEdicion() {
   const c = parseFloat(document.getElementById('editarCosto').value) || 0;
   const vt = parseFloat(document.getElementById('editarValorTotal').value) || 0;
   if (c > 0 && vt > 0) {
-    if (vt < c) {
-      document.getElementById('editarPorcentaje').value = '0.00';
-      return;
-    }
-    const margen = +((vt - c) / c * 100).toFixed(2);
+    if (vt < c) { document.getElementById('editarPorcentaje').value = '0.00'; return; }
+    const margen = +((vt - c) / vt * 100).toFixed(2);
     document.getElementById('editarPorcentaje').value = margen;
   } else {
     document.getElementById('editarPorcentaje').value = '0.00';
@@ -1028,10 +1034,7 @@ function guardarEdicionArticulo() {
   if (!articuloEdicion) return;
   const codigo = articuloEdicion.codigo, desc = document.getElementById('editarDescripcion').value.trim().toUpperCase(), cos = parseFloat(document.getElementById('editarCosto').value) || 0, vt = parseFloat(document.getElementById('editarValorTotal').value) || 0, por = parseFloat(document.getElementById('editarPorcentaje').value) || 0, link = document.getElementById('editarLink').value.trim().toLowerCase();
   if (!desc || !link) { alert('COMPLETE TODOS LOS CAMPOS'); return; }
-  
-  // VALIDACIÓN: Valor Total >= Costo
-  if (vt < cos) { alert('❌ ERROR: VALOR TOTAL DEBE SER MAYOR O IGUAL AL COSTO'); return; }
-  
+  if (vt < cos) { alert('❌ ERROR: VALOR TOTAL (CON IVA) DEBE SER ≥ COSTO'); return; }
   const nuevo = { codigo, descripcion: desc, costo: +(cos.toFixed(2)), valorTotal: +(vt.toFixed(2)), porcentaje: +(por.toFixed(2)), link: link };
   gestorProductos.actualizarProducto(codigo, nuevo);
   articuloEdicion = null;
@@ -1043,6 +1046,7 @@ function cancelarEdicionArticulo() { articuloEdicion = null; document.getElement
 
 function eliminarArticulo(codigo) { if (confirm('¿ESTÁ SEGURO DE ELIMINAR ESTE ARTÍCULO?')) { gestorProductos.eliminarProducto(codigo); listarArticulos(); } }
 
+// ================== GENERAR PDF USA NETO/IVA DESDE TOTAL CON IVA ==================
 function generarPDF() {
   if (!clienteActual) { alert('INGRESE CLIENTE'); return; }
   if (productosEnCotizacion.length === 0) { alert('AGREGUE PRODUCTOS'); return; }
@@ -1054,7 +1058,20 @@ function generarPDF() {
     numCot = gestorCotizaciones.siguienteCotizacion();
   }
   numeroCotizacionActual = numCot;
-  const net = +(productosEnCotizacion.reduce((acc, p) => acc + parseFloat(p.total), 0)).toFixed(2), estado = datosDespacho ? 'aceptado' : 'pendiente', cotizacion = { numero: numCot, razonSocial: clienteActual.razonSocial, neto: net, fecha: new Date().toISOString(), cliente: JSON.parse(JSON.stringify(clienteActual)), productos: JSON.parse(JSON.stringify(productosEnCotizacion)), estado: estado, despacho: datosDespacho || null };
+  const totalConIva = +(productosEnCotizacion.reduce((acc, p) => acc + parseFloat(p.total), 0)).toFixed(2);
+  const neto = +(totalConIva / 1.19).toFixed(2);
+  const estado = datosDespacho ? 'aceptado' : 'pendiente';
+  const cotizacion = {
+    numero: numCot,
+    razonSocial: clienteActual.razonSocial,
+    neto: neto,
+    totalConIva: totalConIva,
+    fecha: new Date().toISOString(),
+    cliente: JSON.parse(JSON.stringify(clienteActual)),
+    productos: JSON.parse(JSON.stringify(productosEnCotizacion)),
+    estado: estado,
+    despacho: datosDespacho || null
+  };
   if (esEdicionCotizacion && cotizacionActualIndex !== null) {
     cotizacionesEmitidas[cotizacionActualIndex] = cotizacion;
     mostrarMensaje('COTIZACIÓN ACTUALIZADA CORRECTAMENTE', 'exito');
@@ -1072,7 +1089,15 @@ function generarPDFDocumento(cotizacion) {
   try {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF('p', 'mm', 'a4');
-    const net = parseFloat(cotizacion.neto), iva = +(net * 0.19).toFixed(2), tot = +(net + iva).toFixed(2), fechaEmision = new Date(cotizacion.fecha), fechaFormateada = `${fechaEmision.getDate().toString().padStart(2, '0')}/${(fechaEmision.getMonth() + 1).toString().padStart(2, '0')}/${fechaEmision.getFullYear()}`, horaFormateada = `${fechaEmision.getHours().toString().padStart(2, '0')}:${fechaEmision.getMinutes().toString().padStart(2, '0')}:${fechaEmision.getSeconds().toString().padStart(2, '0')}`;
+
+    const totalConIva = parseFloat(cotizacion.totalConIva || 0);
+    const net = cotizacion.neto != null ? parseFloat(cotizacion.neto) : +(totalConIva / 1.19).toFixed(2);
+    const iva = +(totalConIva - net).toFixed(2);
+
+    const fechaEmision = new Date(cotizacion.fecha);
+    const fechaFormateada = `${fechaEmision.getDate().toString().padStart(2, '0')}/${(fechaEmision.getMonth() + 1).toString().padStart(2, '0')}/${fechaEmision.getFullYear()}`;
+    const horaFormateada = `${fechaEmision.getHours().toString().padStart(2, '0')}:${fechaEmision.getMinutes().toString().padStart(2, '0')}:${fechaEmision.getSeconds().toString().padStart(2, '0')}`;
+
     doc.setFillColor(31, 111, 139);
     doc.rect(0, 0, 210, 20, 'F');
     doc.setTextColor(255, 255, 255);
@@ -1082,6 +1107,7 @@ function generarPDFDocumento(cotizacion) {
     doc.setFontSize(10);
     doc.setFont(undefined, 'normal');
     doc.text(`${cotizacion.numero} | ${fechaFormateada}`, 195, 12, {align: 'right'});
+
     doc.setTextColor(0, 0, 0);
     doc.setFontSize(12);
     doc.setFont(undefined, 'bold');
@@ -1089,10 +1115,16 @@ function generarPDFDocumento(cotizacion) {
     doc.setDrawColor(242, 92, 5);
     doc.setLineWidth(0.5);
     doc.line(15, 35, 195, 35);
+
     doc.setFontSize(10);
     doc.setFont(undefined, 'normal');
     let yPos = 43;
-    const clienteData = [['RUT:', cotizacion.cliente.rut, 'CONTACTO:', cotizacion.cliente.nombreContacto], ['RAZÓN SOCIAL:', cotizacion.cliente.razonSocial, 'CELULAR:', cotizacion.cliente.celular], ['GIRO:', cotizacion.cliente.giro, 'MAIL:', cotizacion.cliente.mail], ['DIRECCIÓN:', cotizacion.cliente.direccion, 'MEDIO PAGO:', cotizacion.cliente.medioPago]];
+    const clienteData = [
+      ['RUT:', cotizacion.cliente.rut, 'CONTACTO:', cotizacion.cliente.nombreContacto],
+      ['RAZÓN SOCIAL:', cotizacion.cliente.razonSocial, 'CELULAR:', cotizacion.cliente.celular],
+      ['GIRO:', cotizacion.cliente.giro, 'MAIL:', cotizacion.cliente.mail],
+      ['DIRECCIÓN:', cotizacion.cliente.direccion, 'MEDIO PAGO:', cotizacion.cliente.medioPago]
+    ];
     clienteData.forEach(row => {
       doc.setFont(undefined, 'bold');
       doc.text(row[0], 15, yPos);
@@ -1106,6 +1138,7 @@ function generarPDFDocumento(cotizacion) {
       }
       yPos += 7;
     });
+
     doc.setDrawColor(242, 92, 5);
     doc.setLineWidth(0.8);
     doc.line(15, yPos + 3, 195, yPos + 3);
@@ -1114,16 +1147,30 @@ function generarPDFDocumento(cotizacion) {
     doc.setFontSize(11);
     doc.text('PRODUCTOS Y SERVICIOS', 15, yPos);
     yPos += 5;
+
     doc.autoTable({
       startY: yPos,
-      head: [['CÓDIGO', 'DESCRIPCIÓN', 'CANT.', 'VALOR UNITARIO', 'TOTAL']],
-      body: cotizacion.productos.map(p => [p.codigo, p.descripcion, p.cantidad.toString(), `$${Math.round(parseFloat(p.valorNetaConDescuento)).toLocaleString('es-CL')}`, `$${Math.round(parseFloat(p.total)).toLocaleString('es-CL')}`]),
+      head: [['CÓDIGO', 'DESCRIPCIÓN', 'CANT.', 'VALOR UNITARIO (C/IVA)', 'TOTAL (C/IVA)']],
+      body: cotizacion.productos.map(p => [
+        p.codigo,
+        p.descripcion,
+        p.cantidad.toString(),
+        `$${Math.round(parseFloat(p.valorNetaConDescuento)).toLocaleString('es-CL')}`,
+        `$${Math.round(parseFloat(p.total)).toLocaleString('es-CL')}`
+      ]),
       theme: 'striped',
       styles: {fontSize: 9, cellPadding: 4, halign: 'center', lineColor: [220, 220, 220], lineWidth: 0.1},
       headStyles: {fillColor: [31, 111, 139], textColor: 255, fontStyle: 'bold', halign: 'center', fontSize: 10},
-      columnStyles: {0: {cellWidth: 25, halign: 'center'}, 1: {cellWidth: 80, halign: 'left'}, 2: {cellWidth: 20, halign: 'center'}, 3: {cellWidth: 35, halign: 'right'}, 4: {cellWidth: 35, halign: 'right'}},
+      columnStyles: {
+        0: {cellWidth: 25, halign: 'center'},
+        1: {cellWidth: 80, halign: 'left'},
+        2: {cellWidth: 20, halign: 'center'},
+        3: {cellWidth: 35, halign: 'right'},
+        4: {cellWidth: 35, halign: 'right'}
+      },
       margin: {left: 15, right: 15}
     });
+
     const resumenY = doc.lastAutoTable.finalY + 12;
     doc.setDrawColor(150, 150, 150);
     doc.setLineWidth(0.5);
@@ -1138,7 +1185,8 @@ function generarPDFDocumento(cotizacion) {
     doc.setFont(undefined, 'bold');
     doc.setFontSize(13);
     doc.text('TOTAL:', 160, resumenY + 24, {align: 'right'});
-    doc.text(`$${Math.round(tot).toLocaleString('es-CL')}`, 195, resumenY + 24, {align: 'right'});
+    doc.text(`$${Math.round(totalConIva).toLocaleString('es-CL')}`, 195, resumenY + 24, {align: 'right'});
+
     doc.setFontSize(8);
     doc.setFont(undefined, 'normal');
     doc.setTextColor(100, 100, 100);
@@ -1150,19 +1198,26 @@ function generarPDFDocumento(cotizacion) {
     doc.setFontSize(9);
     doc.setFont(undefined, 'italic');
     doc.text('ERP DESARROLLADO POR ING. AGONPA', 105, pageHeight - 5, {align: 'center'});
+
     pdfActualDoc = doc;
     const pdfData = doc.output('datauristring');
     const modal = document.getElementById('modalPDF'), container = document.getElementById('pdfContainer');
     container.innerHTML = `<iframe src="${pdfData}" style="width:100%;height:1000px;border:none;"></iframe>`;
     modal.classList.add('mostrar');
     doc.save(`Cotizacion-${numeroCotizacionActual}.pdf`);
-  } catch(error) {
+  } catch (error) {
     console.error('Error al generar PDF:', error);
     alert('Error al generar PDF: ' + error.message);
   }
 }
 
-function cerrarModalPDF() { const modal = document.getElementById('modalPDF'); modal.classList.remove('mostrar'); document.getElementById('pdfContainer').innerHTML = ''; pdfActualDoc = null; limpiarCotizacion(); }
+function cerrarModalPDF() {
+  const modal = document.getElementById('modalPDF');
+  modal.classList.remove('mostrar');
+  document.getElementById('pdfContainer').innerHTML = '';
+  pdfActualDoc = null;
+  limpiarCotizacion();
+}
 
 function mostrarCotizaciones() {
   const modal = document.getElementById('modalCotizaciones'), cont = document.getElementById('listaCotizaciones');
