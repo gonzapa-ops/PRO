@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8" />
@@ -55,6 +56,7 @@ button {cursor: pointer; border: none; border-radius: 2px; font-weight: 700; tex
 .campo-grupo input:disabled, .campo-grupo select:disabled, .campo-grupo textarea:disabled {background-color: #F5F5F5; cursor: not-allowed; color: #777;}
 .fila-campos {display: grid; grid-template-columns: 1fr 1fr; gap: 12px;}
 .fila-campos-tres {display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px;}
+.fila-campos-dos {display: grid; grid-template-columns: 1fr 1fr; gap: 12px;}
 @media (max-width: 768px) {
   .fila-campos, .fila-campos-tres {grid-template-columns: 1fr;}
   .cotizador-header {padding: 8px 12px;}
@@ -209,6 +211,22 @@ button {cursor: pointer; border: none; border-radius: 2px; font-weight: 700; tex
 input[type="number"] {text-align: center;}
 .utilidad-verde {color: #2E7D32; font-weight: 700;}
 .utilidad-roja {color: #C62828; font-weight: 700;}
+.tabla-articulos {width: 100%; border-collapse: collapse;}
+.tabla-articulos th {background: #1F6F8B; color: white; padding: 8px; text-align: left; font-weight: 700; font-size: 10px; text-transform: uppercase;}
+.tabla-articulos td {border: 1px solid #ddd; padding: 8px; text-transform: uppercase; color: #3B3B3B; font-size: 10px;}
+.tabla-articulos tr:nth-child(even) {background: #E9F0EA;}
+.tabla-articulos a {color: #1976d2; text-decoration: none; font-weight: 600; font-size: 9px; text-transform: lowercase;}
+.tabla-articulos a:hover {text-decoration: underline;}
+.form-calculo-precio {background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); padding: 15px; border-radius: 2px; border-left: 5px solid #4B732E; margin-bottom: 15px;}
+.form-calculo-precio h4 {text-transform: uppercase; color: #2E7D32; margin-bottom: 12px; font-weight: 700; font-size: 12px;}
+.form-calculo-precio .campo-grupo label {color: #2E7D32;}
+.form-calculo-precio input {background-color: white;}
+.btn-calcular {background: #4B732E; color: white; padding: 8px 15px; font-size: 10px;}
+.btn-calcular:hover {background: #385525;}
+.resultado-calculo {background: white; padding: 12px; border-radius: 2px; border-left: 5px solid #4B732E; margin-top: 12px; display: none;}
+.resultado-calculo.activo {display: block;}
+.resultado-linea {display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #eee; font-size: 11px; text-transform: uppercase;}
+.resultado-linea strong {color: #4B732E; font-weight: 700;}
 </style>
 </head>
 <body>
@@ -317,6 +335,49 @@ input[type="number"] {text-align: center;}
     <div class="articulos-content">
       <button class="btn-cerrar-modal" onclick="cerrarArticulos()">×</button>
       <div class="modal-titulo">ARTÍCULOS (PRODUCTOS Y SERVICIOS REGISTRADOS)</div>
+      
+      <div class="form-calculo-precio">
+        <h4>💰 CALCULADORA DE PRECIO CON IVA INCLUIDO</h4>
+        <div class="fila-campos-dos">
+          <div class="campo-grupo">
+            <label>COSTO DE COMPRA *</label>
+            <input type="number" id="costoCompraCalc" min="0" step="0.01" placeholder="0.00" />
+          </div>
+          <div class="campo-grupo">
+            <label>MONTO TOTAL (CON IVA 19%) *</label>
+            <input type="number" id="montoTotalCalc" min="0" step="0.01" placeholder="0.00" />
+          </div>
+        </div>
+        <button class="btn btn-calcular" onclick="calcularPrecioAutomatico()">CALCULAR PORCENTAJE UTILIDAD</button>
+        
+        <div id="resultadoCalculo" class="resultado-calculo">
+          <div class="resultado-linea">
+            <strong>COSTO:</strong>
+            <span id="resultCosto">$0.00</span>
+          </div>
+          <div class="resultado-linea">
+            <strong>MONTO TOTAL (IVA INCLUIDO):</strong>
+            <span id="resultTotal">$0.00</span>
+          </div>
+          <div class="resultado-linea">
+            <strong>NETO (SIN IVA):</strong>
+            <span id="resultNeto">$0.00</span>
+          </div>
+          <div class="resultado-linea">
+            <strong>IVA (19%):</strong>
+            <span id="resultIva">$0.00</span>
+          </div>
+          <div class="resultado-linea">
+            <strong>UTILIDAD NETA:</strong>
+            <span id="resultUtilidad">$0.00</span>
+          </div>
+          <div class="resultado-linea">
+            <strong>% PORCENTAJE UTILIDAD:</strong>
+            <span id="resultPorcentaje">0.00%</span>
+          </div>
+        </div>
+      </div>
+
       <div id="tablaArticulosContenedor"></div>
       <div id="formularioEditarArticulo" class="formulario-editar-articulo" style="display: none;"></div>
     </div>
@@ -451,6 +512,35 @@ document.addEventListener('DOMContentLoaded', function() {
     if (!e.target.closest('.busqueda-producto')) document.getElementById('autocompleteLista').classList.remove('activo');
   });
 });
+
+function calcularPrecioAutomatico() {
+  const costCompra = parseFloat(document.getElementById('costoCompraCalc').value) || 0;
+  const montoTotal = parseFloat(document.getElementById('montoTotalCalc').value) || 0;
+  
+  if (costCompra <= 0 || montoTotal <= 0) {
+    alert('INGRESE VALORES VÁLIDOS (MAYORES A 0)');
+    return;
+  }
+  
+  if (montoTotal < costCompra) {
+    alert('EL MONTO TOTAL NO PUEDE SER MENOR QUE EL COSTO DE COMPRA');
+    return;
+  }
+  
+  const netoSinIva = montoTotal / 1.19;
+  const ivaCalculado = montoTotal - netoSinIva;
+  const utilidadNeta = netoSinIva - costCompra;
+  const porcentajeUtilidad = (utilidadNeta / costCompra) * 100;
+  
+  document.getElementById('resultCosto').textContent = '$' + costCompra.toLocaleString('es-CL', {minimumFractionDigits: 2});
+  document.getElementById('resultTotal').textContent = '$' + montoTotal.toLocaleString('es-CL', {minimumFractionDigits: 2});
+  document.getElementById('resultNeto').textContent = '$' + netoSinIva.toLocaleString('es-CL', {minimumFractionDigits: 2});
+  document.getElementById('resultIva').textContent = '$' + ivaCalculado.toLocaleString('es-CL', {minimumFractionDigits: 2});
+  document.getElementById('resultUtilidad').textContent = '$' + utilidadNeta.toLocaleString('es-CL', {minimumFractionDigits: 2});
+  document.getElementById('resultPorcentaje').textContent = porcentajeUtilidad.toFixed(2) + '%';
+  
+  document.getElementById('resultadoCalculo').classList.add('activo');
+}
 
 function mostrarDesplegableClientes() {
   const input = document.getElementById('inputRut').value.trim(), desplegable = document.getElementById('desplegableClientes');
@@ -655,7 +745,7 @@ function seleccionarProductoAutocomplete(codigo) {
 }
 
 function buscarProducto() {
-  if (esLecturaCotizacion || estadoCotizacionActual === 'aceptado' || estadoCotizacionActual === 'rechazado') { mostrarMensaje('MODO LECTURA. NO SE PUEDEN AGREGAR PRODUCTOS.', 'bloqueado'); return; }
+  if (esLecturaCotizacion || estadoCotizacionActual === 'aceptado' || estadoCotizacionActual === 'rechazado') { mostrarMensajeProducto('MODO LECTURA. NO SE PUEDEN AGREGAR PRODUCTOS.', 'bloqueado'); return; }
   const cod = document.getElementById('inputCodigoProducto').value.trim();
   if (!cod) return mostrarMensajeProducto('INGRESE UN CÓDIGO O DESCRIPCIÓN', 'error');
   const prod = gestorProductos.buscarPorCodigo(cod);
