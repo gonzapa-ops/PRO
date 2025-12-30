@@ -2,7 +2,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-<title>Cotizador</title>
+<title>Cotizador - ESTEC</title>
 <style>
 * {margin: 0; padding: 0; box-sizing: border-box;}
 html, body {width: 100%; height: 100%;}
@@ -46,6 +46,8 @@ button {cursor: pointer; border: none; border-radius: 2px; font-weight: 700; tex
 .btn-editar-cot:hover {background: #b36e1e;}
 .btn-eliminar-cot {background: #9B2E00; color: white; padding: 4px 5px; font-size: 8px; margin-left: 2px;}
 .btn-eliminar-cot:hover {background: #7a2300;}
+.btn-descargar-pdf {background: #2E7D32; color: white; padding: 6px 10px; font-size: 9px; margin-left: 5px;}
+.btn-descargar-pdf:hover {background: #1a5e2c;}
 .btn-ver-archivo {background: #4B732E; color: white; padding: 4px 5px; font-size: 8px;}
 .btn-ver-archivo:hover {background: #385525;}
 .formulario-cliente, .formulario-producto, .formulario-editar-articulo {display: none;}
@@ -197,15 +199,6 @@ button {cursor: pointer; border: none; border-radius: 2px; font-weight: 700; tex
 .badge-aceptado {background: #4B732E; color: white;}
 .badge-rechazado {background: #9B2E00; color: white;}
 .badge-pendiente {background: #F25C05; color: white;}
-#modalPDF {display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 10005; overflow: hidden;}
-#modalPDF.mostrar {display: flex; flex-direction: column;}
-.pdf-header {background: #1F6F8B; color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 12px rgba(0,0,0,0.5); flex-shrink: 0; z-index: 100;}
-.pdf-header h3 {margin: 0; font-size: 18px; font-weight: 700; letter-spacing: 1px;}
-.btn-cerrar-pdf {background: #9B2E00; color: white; font-size: 14px; border: none; border-radius: 3px; cursor: pointer; padding: 10px 18px; font-weight: 700; transition: all 0.2s ease;}
-.btn-cerrar-pdf:hover {background: #7a2300; transform: scale(1.05);}
-.pdf-viewer {flex: 1; width: 100%; background: #525252; overflow: auto; display: flex; justify-content: center; align-items: flex-start; padding: 30px 20px;}
-.pdf-container {width: 100%; max-width: 850px; background: white; box-shadow: 0 0 40px rgba(0,0,0,0.7);}
-.pdf-container iframe {width: 100%; height: 1000px; border: none; display: block; background: white;}
 .seccion-bloqueada {background-color: #fff3cd; padding: 12px; border-radius: 2px; border-left: 5px solid #FFA500; margin-bottom: 15px; display: none;}
 .seccion-bloqueada.activa {display: block;}
 .seccion-bloqueada h4 {color: #856404; text-transform: uppercase; font-weight: 700; margin-bottom: 4px; font-size: 12px;}
@@ -220,6 +213,8 @@ input[type="number"] {text-align: center;}
 .tabla-articulos a {color: #1976d2; text-decoration: none; font-weight: 600; font-size: 9px; text-transform: lowercase;}
 .tabla-articulos a:hover {text-decoration: underline;}
 .input-solo-lectura {background-color: #f0f0f0 !important; color: #666 !important;}
+.pdf-preview {border: 2px solid #ddd; border-radius: 8px; padding: 15px; margin: 15px 0; background: #f9f9f9; text-align: center;}
+.pdf-preview iframe {width: 100%; height: 600px; border: 1px solid #ccc;}
 </style>
 </head>
 <body>
@@ -311,8 +306,10 @@ input[type="number"] {text-align: center;}
       </div>
       
       <div class="seccion-botones-pdf">
-        <button class="btn btn-pdf" onclick="generarPDF()" id="btnPDF">GENERAR PDF</button>
+        <button class="btn btn-pdf" onclick="generarPDF()" id="btnPDF">📄 GENERAR PDF</button>
+        <button class="btn btn-descargar-pdf" onclick="descargarPDF()" id="btnDescargarPDF" style="display:none;">⬇️ DESCARGAR PDF</button>
       </div>
+      <div id="previewPDF"></div>
     </section>
 
     <section class="seccion-cierre" id="seccionCierre">
@@ -388,16 +385,6 @@ input[type="number"] {text-align: center;}
     </div>
   </div>
 
-  <div id="modalPDF">
-    <div class="pdf-header">
-      <h3>📄 COTIZACIÓN EN PDF</h3>
-      <button class="btn-cerrar-pdf" onclick="cerrarModalPDF()">✕ CERRAR</button>
-    </div>
-    <div class="pdf-viewer">
-      <div class="pdf-container" id="pdfContainer"></div>
-    </div>
-  </div>
-
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
 
@@ -414,11 +401,9 @@ function calcularPrecioNeto() {
     return;
   }
 
-  // Calcular Precio Neto
   const precioNeto = +(precioConIva / 1.19).toFixed(2);
   document.getElementById('valorTotalProducto').value = precioNeto;
 
-  // Calcular % Margen sobre Neto
   if (costo > 0) {
     const utilidadNeta = +(precioNeto - costo).toFixed(2);
     const margenPorcentaje = precioNeto > 0 ? +((utilidadNeta / precioNeto) * 100).toFixed(2) : 0;
@@ -674,6 +659,8 @@ function limpiarCotizacion() {
   document.getElementById('resumenDespacho').classList.remove('activo');
   document.getElementById('resumenCompra').classList.remove('activo');
   document.getElementById('seccionCierre').classList.remove('activo');
+  document.getElementById('previewPDF').innerHTML = '';
+  document.getElementById('btnDescargarPDF').style.display = 'none';
   deshabilitarProductos();
   actualizarTablaProductos();
   document.getElementById('inputRut').focus();
@@ -966,12 +953,14 @@ function generarPDF() {
   if (!clienteActual) { alert('INGRESE CLIENTE'); return; }
   if (productosEnCotizacion.length === 0) { alert('AGREGUE PRODUCTOS'); return; }
   if (estadoCotizacionActual === 'aceptado' || estadoCotizacionActual === 'rechazado') { mostrarMensaje('COTIZACIÓN BLOQUEADA. NO SE PUEDE REGENERAR PDF.', 'bloqueado'); return; }
+  
   let numCot;
   if (esEdicionCotizacion && cotizacionActualIndex !== null) {
     numCot = cotizacionesEmitidas[cotizacionActualIndex].numero;
   } else {
     numCot = gestorCotizaciones.siguienteCotizacion();
   }
+  
   numeroCotizacionActual = numCot;
   const totalNeto = +(productosEnCotizacion.reduce((acc, p) => acc + parseFloat(p.totalNeto), 0)).toFixed(2);
   const estado = datosDespacho ? 'aceptado' : 'pendiente';
@@ -985,6 +974,7 @@ function generarPDF() {
     estado: estado,
     despacho: datosDespacho || null
   };
+  
   if (esEdicionCotizacion && cotizacionActualIndex !== null) {
     cotizacionesEmitidas[cotizacionActualIndex] = cotizacion;
     mostrarMensaje('COTIZACIÓN ACTUALIZADA CORRECTAMENTE', 'exito');
@@ -992,134 +982,153 @@ function generarPDF() {
     cotizacionesEmitidas.push(cotizacion);
     mostrarMensaje('COTIZACIÓN GUARDADA CORRECTAMENTE', 'exito');
   }
+  
   localStorage.setItem('cotizacionesEmitidas', JSON.stringify(cotizacionesEmitidas));
   pdfEmitido = true;
   document.getElementById('seccionCierre').classList.add('activo');
+  document.getElementById('btnDescargarPDF').style.display = 'inline-block';
   generarPDFDocumento(cotizacion);
 }
 
 function generarPDFDocumento(cotizacion) {
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-  
-  const colorPrincipal = [31, 111, 139];
-  const colorSecundario = [242, 92, 5];
-  
-  let yPos = 15;
-  
-  doc.setFillColor(colorPrincipal[0], colorPrincipal[1], colorPrincipal[2]);
-  doc.rect(0, 0, 210, 25, 'F');
-  doc.setTextColor(255, 255, 255);
-  doc.setFontSize(18);
-  doc.setFont(undefined, 'bold');
-  doc.text('COTIZADOR - ESTEC', 15, 10);
-  doc.setFontSize(10);
-  doc.text(`Cotización N° ${cotizacion.numero}`, 15, 18);
-  
-  doc.setDrawColor(colorSecundario[0], colorSecundario[1], colorSecundario[2]);
-  doc.setLineWidth(1);
-  doc.line(15, 27, 195, 27);
-  
-  yPos = 35;
-  
-  doc.setTextColor(0, 0, 0);
-  doc.setFontSize(9);
-  doc.setFont(undefined, 'bold');
-  doc.text('DATOS DEL CLIENTE:', 15, yPos);
-  
-  yPos += 6;
-  doc.setFont(undefined, 'normal');
-  doc.setFontSize(8);
-  const cliente = cotizacion.cliente;
-  doc.text(`RUT: ${cliente.rut}`, 15, yPos);
-  yPos += 4;
-  doc.text(`Razón Social: ${cliente.razonSocial}`, 15, yPos);
-  yPos += 4;
-  doc.text(`Giro: ${cliente.giro}`, 15, yPos);
-  yPos += 4;
-  doc.text(`Dirección: ${cliente.direccion}`, 15, yPos);
-  yPos += 4;
-  doc.text(`Contacto: ${cliente.nombreContacto} | Celular: ${cliente.celular}`, 15, yPos);
-  yPos += 4;
-  doc.text(`Email: ${cliente.mail} | Medio Pago: ${cliente.medioPago}`, 15, yPos);
-  
-  yPos += 8;
-  
-  const columnasProductos = [
-    { header: 'Código', dataKey: 'codigo', width: 18 },
-    { header: 'Descripción', dataKey: 'descripcion', width: 45 },
-    { header: 'Cant', dataKey: 'cantidad', width: 12 },
-    { header: 'P.Neto', dataKey: 'precioNeto', width: 22 },
-    { header: 'Desc%', dataKey: 'descuento', width: 12 },
-    { header: 'P.Desc', dataKey: 'precioDesc', width: 22 },
-    { header: 'Costo', dataKey: 'costo', width: 18 },
-    { header: 'Total Neto', dataKey: 'totalNeto', width: 25 }
-  ];
-  
-  const filasProductos = cotizacion.productos.map(p => ({
-    codigo: p.codigo,
-    descripcion: p.descripcion,
-    cantidad: p.cantidad.toString(),
-    precioNeto: `$${parseFloat(p.precioNeto).toLocaleString('es-CL', {minimumFractionDigits: 2})}`,
-    descuento: `${p.descuento}%`,
-    precioDesc: `$${parseFloat(p.precioNetoConDescuento).toLocaleString('es-CL', {minimumFractionDigits: 2})}`,
-    costo: `$${parseFloat(p.costo).toLocaleString('es-CL', {minimumFractionDigits: 2})}`,
-    totalNeto: `$${parseFloat(p.totalNeto).toLocaleString('es-CL', {minimumFractionDigits: 2})}`
-  }));
-  
-  doc.autoTable({
-    columns: columnasProductos,
-    body: filasProductos,
-    startY: yPos,
-    margin: { left: 15, right: 15 },
-    styles: { fontSize: 7, cellPadding: 2, overflow: 'linebreak' },
-    headStyles: { fillColor: colorPrincipal, textColor: [255, 255, 255], fontStyle: 'bold', fontSize: 8 },
-    alternateRowStyles: { fillColor: [233, 240, 234] },
-    didDrawPage: (data) => { yPos = data.lastAutoTable.finalY; }
-  });
-  
-  yPos += 5;
-  
-  const totalNeto = cotizacion.productos.reduce((acc, p) => acc + parseFloat(p.totalNeto), 0);
-  const totalIva = totalNeto * 0.19;
-  const totalConIva = totalNeto + totalIva;
-  
-  doc.setFontSize(8);
-  doc.setFont(undefined, 'bold');
-  doc.text(`TOTAL NETO (SIN IVA): $${totalNeto.toLocaleString('es-CL', {minimumFractionDigits: 2})}`, 135, yPos);
-  yPos += 5;
-  doc.text(`IVA 19%: $${totalIva.toLocaleString('es-CL', {minimumFractionDigits: 2})}`, 135, yPos);
-  yPos += 5;
-  doc.setFont(undefined, 'bold');
-  doc.setFillColor(colorSecundario[0], colorSecundario[1], colorSecundario[2]);
-  doc.rect(135, yPos - 3, 60, 6, 'F');
-  doc.setTextColor(255, 255, 255);
-  doc.text(`TOTAL CON IVA: $${totalConIva.toLocaleString('es-CL', {minimumFractionDigits: 2})}`, 137, yPos + 1);
-  
-  yPos += 12;
-  
-  doc.setTextColor(0, 0, 0);
-  doc.setFontSize(7);
-  doc.setFont(undefined, 'italic');
-  doc.text('Cotización válida por 30 días desde su emisión. Sujeto a cambios sin previo aviso.', 15, yPos);
-  
-  yPos += 4;
-  const fechaEmision = new Date(cotizacion.fecha);
-  const fechaFormato = `${fechaEmision.getDate()}/${fechaEmision.getMonth() + 1}/${fechaEmision.getFullYear()}`;
-  doc.text(`Emitida: ${fechaFormato}`, 15, yPos);
-  
-  pdfActualDoc = doc;
-  
-  const pdfBlob = doc.output('blob');
-  const pdfUrl = URL.createObjectURL(pdfBlob);
-  const pdfContainer = document.getElementById('pdfContainer');
-  pdfContainer.innerHTML = `<iframe src="${pdfUrl}" style="width:100%; height:1000px; border:none;"></iframe>`;
-  document.getElementById('modalPDF').classList.add('mostrar');
+  try {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+    
+    const colorPrincipal = [31, 111, 139];
+    const colorSecundario = [242, 92, 5];
+    
+    let yPos = 15;
+    
+    // HEADER
+    doc.setFillColor(colorPrincipal[0], colorPrincipal[1], colorPrincipal[2]);
+    doc.rect(0, 0, 210, 25, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(16);
+    doc.setFont(undefined, 'bold');
+    doc.text('COTIZADOR - ESTEC', 15, 10);
+    doc.setFontSize(10);
+    doc.text(`Cotización N° ${cotizacion.numero}`, 15, 18);
+    
+    // LÍNEA SEPARADORA
+    doc.setDrawColor(colorSecundario[0], colorSecundario[1], colorSecundario[2]);
+    doc.setLineWidth(1);
+    doc.line(15, 27, 195, 27);
+    
+    yPos = 35;
+    
+    // DATOS DEL CLIENTE
+    doc.setTextColor(0, 0, 0);
+    doc.setFontSize(9);
+    doc.setFont(undefined, 'bold');
+    doc.text('DATOS DEL CLIENTE:', 15, yPos);
+    
+    yPos += 6;
+    doc.setFont(undefined, 'normal');
+    doc.setFontSize(7.5);
+    const cliente = cotizacion.cliente;
+    doc.text(`RUT: ${cliente.rut}`, 15, yPos);
+    yPos += 3.5;
+    doc.text(`Razón Social: ${cliente.razonSocial}`, 15, yPos);
+    yPos += 3.5;
+    doc.text(`Giro: ${cliente.giro}`, 15, yPos);
+    yPos += 3.5;
+    doc.text(`Dirección: ${cliente.direccion}`, 15, yPos);
+    yPos += 3.5;
+    doc.text(`Contacto: ${cliente.nombreContacto} | Celular: ${cliente.celular}`, 15, yPos);
+    yPos += 3.5;
+    doc.text(`Email: ${cliente.mail} | Medio Pago: ${cliente.medioPago}`, 15, yPos);
+    
+    yPos += 7;
+    
+    // TABLA DE PRODUCTOS
+    const columnasProductos = [
+      { header: 'Código', dataKey: 'codigo', width: 14 },
+      { header: 'Descripción', dataKey: 'descripcion', width: 35 },
+      { header: 'Cant', dataKey: 'cantidad', width: 10 },
+      { header: 'P.Neto', dataKey: 'precioNeto', width: 16 },
+      { header: 'Desc%', dataKey: 'descuento', width: 10 },
+      { header: 'P.Desc', dataKey: 'precioDesc', width: 16 },
+      { header: 'Costo', dataKey: 'costo', width: 14 },
+      { header: 'Total Neto', dataKey: 'totalNeto', width: 20 }
+    ];
+    
+    const filasProductos = cotizacion.productos.map(p => ({
+      codigo: p.codigo,
+      descripcion: p.descripcion.length > 25 ? p.descripcion.substring(0, 25) + '...' : p.descripcion,
+      cantidad: p.cantidad.toString(),
+      precioNeto: `$${parseFloat(p.precioNeto).toLocaleString('es-CL', {minimumFractionDigits: 2})}`,
+      descuento: `${p.descuento}%`,
+      precioDesc: `$${parseFloat(p.precioNetoConDescuento).toLocaleString('es-CL', {minimumFractionDigits: 2})}`,
+      costo: `$${parseFloat(p.costo).toLocaleString('es-CL', {minimumFractionDigits: 2})}`,
+      totalNeto: `$${parseFloat(p.totalNeto).toLocaleString('es-CL', {minimumFractionDigits: 2})}`
+    }));
+    
+    doc.autoTable({
+      columns: columnasProductos,
+      body: filasProductos,
+      startY: yPos,
+      margin: { left: 15, right: 15 },
+      styles: { fontSize: 6.5, cellPadding: 1.5, overflow: 'linebreak' },
+      headStyles: { fillColor: colorPrincipal, textColor: [255, 255, 255], fontStyle: 'bold', fontSize: 7 },
+      alternateRowStyles: { fillColor: [233, 240, 234] },
+      didDrawPage: (data) => { yPos = data.lastAutoTable.finalY; }
+    });
+    
+    yPos += 4;
+    
+    // TOTALES
+    const totalNeto = cotizacion.productos.reduce((acc, p) => acc + parseFloat(p.totalNeto), 0);
+    const totalIva = totalNeto * 0.19;
+    const totalConIva = totalNeto + totalIva;
+    
+    doc.setFontSize(7.5);
+    doc.setFont(undefined, 'bold');
+    doc.text(`TOTAL NETO (SIN IVA): $${totalNeto.toLocaleString('es-CL', {minimumFractionDigits: 2})}`, 130, yPos);
+    yPos += 4;
+    doc.text(`IVA 19%: $${totalIva.toLocaleString('es-CL', {minimumFractionDigits: 2})}`, 130, yPos);
+    yPos += 4;
+    doc.setFillColor(colorSecundario[0], colorSecundario[1], colorSecundario[2]);
+    doc.rect(130, yPos - 3, 55, 5, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.text(`TOTAL CON IVA: $${totalConIva.toLocaleString('es-CL', {minimumFractionDigits: 2})}`, 132, yPos + 0.5);
+    
+    yPos += 8;
+    
+    // NOTA FINAL
+    doc.setTextColor(0, 0, 0);
+    doc.setFontSize(6);
+    doc.setFont(undefined, 'italic');
+    doc.text('Cotización válida por 30 días desde su emisión. Sujeto a cambios sin previo aviso.', 15, yPos);
+    
+    yPos += 3;
+    const fechaEmision = new Date(cotizacion.fecha);
+    const fechaFormato = `${fechaEmision.getDate()}/${fechaEmision.getMonth() + 1}/${fechaEmision.getFullYear()}`;
+    doc.text(`Emitida: ${fechaFormato}`, 15, yPos);
+    
+    pdfActualDoc = doc;
+    
+    // MOSTRAR PREVIEW EN HTML (no en modal)
+    mostrarPreviewPDF(doc);
+    mostrarMensaje('PDF GENERADO CORRECTAMENTE - LISTO PARA DESCARGAR', 'exito');
+    
+  } catch (error) {
+    console.error('Error en generación PDF:', error);
+    mostrarMensaje('ERROR AL GENERAR PDF: ' + error.message, 'error');
+  }
 }
 
-function cerrarModalPDF() {
-  document.getElementById('modalPDF').classList.remove('mostrar');
-  document.getElementById('pdfContainer').innerHTML = '';
+function mostrarPreviewPDF(doc) {
+  const pdfString = doc.output('datauristring');
+  const previewDiv = document.getElementById('previewPDF');
+  previewDiv.className = 'pdf-preview';
+  previewDiv.innerHTML = `<iframe src="${pdfString}" type="application/pdf"></iframe>`;
+}
+
+function descargarPDF() {
+  if (!pdfActualDoc) { alert('PRIMERO GENERA EL PDF'); return; }
+  pdfActualDoc.save(`COTIZACION_${numeroCotizacionActual}.pdf`);
+  mostrarMensaje('PDF DESCARGADO CORRECTAMENTE', 'exito');
 }
 
 function mostrarCotizaciones() {
