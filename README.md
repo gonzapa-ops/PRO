@@ -1,8 +1,9 @@
+<EN EDITION>
 <html lang="es">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-<title>Cotizador - ESTEC</title>
+<title>Cotizador</title>
 <style>
 * {margin: 0; padding: 0; box-sizing: border-box;}
 html, body {width: 100%; height: 100%;}
@@ -59,7 +60,6 @@ button {cursor: pointer; border: none; border-radius: 2px; font-weight: 700; tex
 .campo-grupo input:disabled, .campo-grupo select:disabled, .campo-grupo textarea:disabled {background-color: #f0f0f0; cursor: not-allowed; color: #777;}
 .fila-campos {display: grid; grid-template-columns: 1fr 1fr; gap: 12px;}
 .fila-campos-tres {display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px;}
-.fila-campos-dos {display: grid; grid-template-columns: 1fr 1fr; gap: 12px;}
 @media (max-width: 768px) {
   .fila-campos, .fila-campos-tres {grid-template-columns: 1fr;}
   .cotizador-header {padding: 8px 12px;}
@@ -134,29 +134,23 @@ button {cursor: pointer; border: none; border-radius: 2px; font-weight: 700; tex
 .tabla-cotizaciones tr.cot-rechazado td {background-color: #FFCDD2 !important; color: #C62828;}
 .tabla-cotizaciones tr.cot-pendiente {background-color: #FFF9C4 !important;}
 .tabla-cotizaciones tr.cot-pendiente td {background-color: #FFF9C4 !important; color: #F57F17;}
-.tabla-clientes {width: 100%; border-collapse: collapse; background: white;}
-.tabla-clientes th {background: #1F6F8B; color: white; padding: 8px; text-align: left; text-transform: uppercase; font-weight: 700; font-size: 10px;}
-.tabla-clientes td {border: 1px solid #ddd; padding: 8px; text-transform: uppercase; color: #3B3B3B; font-size: 10px;}
-.tabla-clientes tr:nth-child(even) {background: #E9F0EA;}
 .seccion-cierre {margin-top: 20px; border: 1px solid #ddd; border-radius: 2px; padding: 15px; background-color: #fafafa; display: none;}
 .seccion-cierre.activo {display: block;}
 .botones-cierre {display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap;}
-.btn-aceptado {background: #4B732E; color: white; padding: 8px 12px; font-size: 10px;}
+.btn-aceptado {background: #4B732E; color: white; padding: 8px 12px; font-size: 10px; cursor: pointer; border: none; border-radius: 2px;}
 .btn-aceptado:hover {background: #385525;}
 .btn-aceptado:disabled {background: #a0a0a0; cursor: not-allowed;}
-.btn-rechazado {background: #9B2E00; color: white; padding: 8px 12px; font-size: 10px;}
+.btn-rechazado {background: #9B2E00; color: white; padding: 8px 12px; font-size: 10px; cursor: pointer; border: none; border-radius: 2px;}
 .btn-rechazado:hover {background: #7a2300;}
 .btn-rechazado:disabled {background: #a0a0a0; cursor: not-allowed;}
-.btn-limpiar-cot {background: #556B2F; color: white; padding: 8px 12px; font-size: 10px;}
+.btn-limpiar-cot {background: #556B2F; color: white; padding: 8px 12px; font-size: 10px; cursor: pointer; border: none; border-radius: 2px;}
 .btn-limpiar-cot:hover {background: #3f4f20;}
-.btn-archivo {background: #D9822B; color: white; padding: 8px 12px; font-size: 10px; display: none;}
-.btn-archivo:hover {background: #b36e1e;}
 #modalAceptado {display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.4); z-index: 10002; overflow: auto; padding: 10px;}
 .modal-aceptado-content {background: white; max-width: 90%; margin: 20px auto; padding: 15px; border-radius: 2px; position: relative; box-shadow: 0 8px 16px rgba(0,0,0,0.15); max-height: 90vh; overflow-y: auto;}
 .modal-aceptado-titulo {font-size: 16px; font-weight: 700; margin-bottom: 15px; text-transform: uppercase; color: #3B3B3B; border-bottom: 3px solid #4B732E; padding-bottom: 8px;}
 .btn-cerrar-aceptado {position: absolute; top: 10px; right: 15px; background: #9B2E00; color: white; font-size: 14px; border: none; border-radius: 2px; cursor: pointer; padding: 4px 6px; font-weight: 700;}
 .botones-archivo {display: flex; gap: 6px; align-items: center; margin-bottom: 12px; flex-wrap: wrap;}
-.btn-adjuntar {background: #F25C05; color: white; padding: 6px 10px; font-size: 10px;}
+.btn-adjuntar {background: #F25C05; color: white; padding: 6px 10px; font-size: 10px; cursor: pointer; border: none; border-radius: 2px;}
 .btn-adjuntar:hover {background: #cb4a04;}
 #inputArchivo {display: none;}
 .archivo-info {font-size: 10px; color: #4B732E; font-weight: 600; text-transform: uppercase;}
@@ -165,10 +159,10 @@ button {cursor: pointer; border: none; border-radius: 2px; font-weight: 700; tex
 .lista-adjuntos {list-style: none;}
 .item-adjunto {display: flex; justify-content: space-between; align-items: center; padding: 6px; background: white; margin: 4px 0; border-radius: 2px; border-left: 3px solid #4B732E; flex-wrap: wrap; gap: 5px;}
 .nombre-archivo {font-size: 10px; color: #3B3B3B; font-weight: 600; text-transform: uppercase; word-break: break-all;}
-.btn-eliminar-archivo {background: #9B2E00; color: white; padding: 3px 5px; font-size: 8px;}
+.btn-eliminar-archivo {background: #9B2E00; color: white; padding: 3px 5px; font-size: 8px; cursor: pointer; border: none; border-radius: 2px;}
 .btn-eliminar-archivo:hover {background: #7a2300;}
 .botones-modal-aceptado {display: flex; gap: 6px; margin-top: 15px; justify-content: flex-end; flex-wrap: wrap;}
-.btn-confirmar {background: #4B732E; color: white; padding: 6px 10px; font-size: 10px;}
+.btn-confirmar {background: #4B732E; color: white; padding: 6px 10px; font-size: 10px; cursor: pointer; border: none; border-radius: 2px;}
 .btn-confirmar:hover {background: #385525;}
 .resumen-despacho {display: none; background-color: #e8f0e4; padding: 12px; border-radius: 2px; border-left: 5px solid #4B732E; margin-top: 15px;}
 .resumen-despacho.activo {display: block;}
@@ -194,15 +188,10 @@ button {cursor: pointer; border: none; border-radius: 2px; font-weight: 700; tex
 .contenido-archivo iframe {width: 100%; height: 70vh; border: none;}
 .contenido-archivo embed {width: 100%; height: 70vh; border: none;}
 .contenido-archivo pre {background: #f5f5f5; padding: 12px; border-radius: 2px; overflow-x: auto; text-align: left; font-size: 10px;}
-.seccion-botones-pdf {margin-bottom: 15px; text-align: center;}
 .badge-estado {display: inline-block; padding: 3px 6px; border-radius: 2px; font-size: 9px; font-weight: 700; text-transform: uppercase;}
 .badge-aceptado {background: #4B732E; color: white;}
 .badge-rechazado {background: #9B2E00; color: white;}
 .badge-pendiente {background: #F25C05; color: white;}
-.seccion-bloqueada {background-color: #fff3cd; padding: 12px; border-radius: 2px; border-left: 5px solid #FFA500; margin-bottom: 15px; display: none;}
-.seccion-bloqueada.activa {display: block;}
-.seccion-bloqueada h4 {color: #856404; text-transform: uppercase; font-weight: 700; margin-bottom: 4px; font-size: 12px;}
-.seccion-bloqueada p {color: #856404; font-size: 10px; text-transform: uppercase;}
 input[type="number"] {text-align: center;}
 .margen-verde {color: #2E7D32; font-weight: 700;}
 .margen-roja {color: #C62828; font-weight: 700;}
@@ -215,23 +204,20 @@ input[type="number"] {text-align: center;}
 .input-solo-lectura {background-color: #f0f0f0 !important; color: #666 !important;}
 .pdf-preview {border: 2px solid #ddd; border-radius: 8px; padding: 15px; margin: 15px 0; background: #f9f9f9; text-align: center;}
 .pdf-preview iframe {width: 100%; height: 600px; border: 1px solid #ccc;}
+.btn-archivo {background: #D9822B; color: white; padding: 8px 12px; font-size: 10px; display: none; cursor: pointer; border: none; border-radius: 2px;}
+.btn-archivo:hover {background: #b36e1e;}
 </style>
 </head>
 <body>
   <div class="cotizador-container">
     <header class="cotizador-header">
-      <div class="empresa-nombre">ESTEC - COTIZADOR</div>
-      <div class="numero-cotizacion">N° <span id="numeroCotizacion" style="color: white;">CO100500</span></div>
+      <div class="empresa-nombre">COTIZADOR</div>
+      <div class="numero-cotizacion">N° <span id="numeroCotizacion">CO100500</span></div>
     </header>
 
     <div class="botones-superiores">
       <button class="btn btn-articulos" onclick="abrirArticulos()" id="btnArticulos">ARTICULOS</button>
       <button class="btn btn-buscar" onclick="mostrarCotizaciones()" id="btnCotizaciones">COTIZACIONES</button>
-    </div>
-
-    <div id="seccionBloqueada" class="seccion-bloqueada">
-      <h4>🔒 COTIZACIÓN EN MODO LECTURA</h4>
-      <p>Puede revisar productos, costos y proveedores. No se pueden hacer modificaciones.</p>
     </div>
 
     <section class="seccion-cliente">
@@ -305,7 +291,7 @@ input[type="number"] {text-align: center;}
         <div class="resumen-linea total"><div>TOTAL</div><div id="totalGeneral">$0.00</div></div>
       </div>
       
-      <div class="seccion-botones-pdf">
+      <div style="text-align: center; margin-bottom: 15px;">
         <button class="btn btn-pdf" onclick="generarPDF()" id="btnPDF">📄 GENERAR PDF</button>
         <button class="btn btn-descargar-pdf" onclick="descargarPDF()" id="btnDescargarPDF" style="display:none;">⬇️ DESCARGAR PDF</button>
       </div>
@@ -317,10 +303,10 @@ input[type="number"] {text-align: center;}
       <div id="resumenDespacho" class="resumen-despacho"></div>
       <div id="resumenCompra" class="resumen-compra"></div>
       <div class="botones-cierre">
-        <button class="btn-aceptado" onclick="marcarAceptado()" id="btnAceptado">ACEPTADO</button>
-        <button class="btn-rechazado" onclick="marcarRechazado()" id="btnRechazado">RECHAZADO</button>
-        <button class="btn-limpiar-cot" onclick="limpiarCotizacion()" id="btnLimpiarCotizacion">LIMPIAR</button>
-        <button class="btn-archivo" onclick="verArchivos()" id="btnVerArchivos">ARCHIVOS</button>
+        <button class="btn-aceptado" onclick="marcarAceptado()" id="btnAceptado">✓ ACEPTADO</button>
+        <button class="btn-rechazado" onclick="marcarRechazado()" id="btnRechazado">✗ RECHAZADO</button>
+        <button class="btn-limpiar-cot" onclick="limpiarCotizacion()" id="btnLimpiarCotizacion">LIMPIAR TODO</button>
+        <button class="btn-archivo" onclick="verArchivos()" id="btnVerArchivos">📎 ARCHIVOS</button>
       </div>
     </section>
   </div>
@@ -389,7 +375,6 @@ input[type="number"] {text-align: center;}
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
 
 <script>
-// ================== NUEVO: CALCULAR PRECIO NETO DESDE PRECIO CON IVA ==================
 function calcularPrecioNeto() {
   const costo = parseFloat(document.getElementById('costoProducto').value) || 0;
   const precioConIva = parseFloat(document.getElementById('precioConIvaProducto').value) || 0;
@@ -523,8 +508,6 @@ function seleccionarClienteDelModal(rut) {
 function cerrarModalClientes() { document.getElementById('modalClientes').style.display = 'none'; }
 
 function buscarCliente() {
-  if (esLecturaCotizacion) { mostrarMensaje('MODO LECTURA. NO SE PUEDEN HACER MODIFICACIONES.', 'bloqueado'); return; }
-  if (cotizacionGuardada && (estadoCotizacionActual === 'aceptado' || estadoCotizacionActual === 'rechazado')) { mostrarMensaje('COTIZACIÓN BLOQUEADA. NO SE PUEDEN HACER MODIFICACIONES.', 'bloqueado'); return; }
   const rut = document.getElementById('inputRut').value.trim();
   if (!rut) return mostrarMensaje('POR FAVOR INGRESE UN RUT', 'error');
   if (!validarRut(rut)) return mostrarMensaje('EL FORMATO DEL RUT NO ES VÁLIDO', 'error');
@@ -564,13 +547,12 @@ function mostrarMensaje(texto, tipo) {
 }
 
 function mostrarResumenCliente(cliente) {
-  const r = document.getElementById('resumenCliente'), btnEditarDisabled = (esLecturaCotizacion || estadoCotizacionActual === 'aceptado' || estadoCotizacionActual === 'rechazado') ? 'disabled' : '';
+  const r = document.getElementById('resumenCliente');
   r.className = 'resumen-cliente activo';
-  r.innerHTML = `<h4>✓ CLIENTE REGISTRADO</h4><p><strong>RUT:</strong> ${cliente.rut}</p><p><strong>RAZÓN SOCIAL:</strong> ${cliente.razonSocial}</p><p><strong>GIRO:</strong> ${cliente.giro}</p><p><strong>DIRECCIÓN:</strong> ${cliente.direccion}</p><p><strong>CONTACTO:</strong> ${cliente.nombreContacto}</p><p><strong>CELULAR:</strong> ${cliente.celular}</p><p><strong>MAIL:</strong> ${cliente.mail}</p><p><strong>MEDIO DE PAGO:</strong> ${cliente.medioPago}</p><div class="botones-resumen"><button class="btn btn-editar" onclick="editarCliente()" ${btnEditarDisabled}>✏️ EDITAR</button></div>`;
+  r.innerHTML = `<h4>✓ CLIENTE REGISTRADO</h4><p><strong>RUT:</strong> ${cliente.rut}</p><p><strong>RAZÓN SOCIAL:</strong> ${cliente.razonSocial}</p><p><strong>GIRO:</strong> ${cliente.giro}</p><p><strong>DIRECCIÓN:</strong> ${cliente.direccion}</p><p><strong>CONTACTO:</strong> ${cliente.nombreContacto}</p><p><strong>CELULAR:</strong> ${cliente.celular}</p><p><strong>MAIL:</strong> ${cliente.mail}</p><p><strong>MEDIO DE PAGO:</strong> ${cliente.medioPago}</p><div class="botones-resumen"><button class="btn btn-editar" onclick="editarCliente()">✏️ EDITAR</button></div>`;
 }
 
 function editarCliente() {
-  if (esLecturaCotizacion || estadoCotizacionActual === 'aceptado' || estadoCotizacionActual === 'rechazado') { mostrarMensaje('MODO LECTURA. NO SE PUEDEN HACER MODIFICACIONES.', 'bloqueado'); return; }
   if (!clienteActual) return;
   modoEdicion = true;
   document.getElementById('formularioCliente').classList.add('activo');
@@ -595,7 +577,6 @@ function cancelarEdicion() {
 }
 
 function guardarCliente() {
-  if (esLecturaCotizacion) { mostrarMensaje('MODO LECTURA. NO SE PUEDEN HACER MODIFICACIONES.', 'bloqueado'); return; }
   const rut = document.getElementById('rut').value, rs = document.getElementById('razonSocial').value.trim(), gi = document.getElementById('giro').value.trim(), di = document.getElementById('direccion').value.trim(), nc = document.getElementById('nombreContacto').value.trim(), ce = document.getElementById('celular').value.trim(), ma = document.getElementById('mail').value.trim(), mp = document.getElementById('medioPago').value;
   if (!rs || !gi || !di || !nc || !ce || !ma || !mp) return mostrarMensaje('COMPLETE TODOS LOS CAMPOS', 'error');
   if (!validarEmail(ma)) return mostrarMensaje('EMAIL INVÁLIDO', 'error');
@@ -613,11 +594,6 @@ function guardarCliente() {
 function validarEmail(e) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e); }
 
 function habilitarProductos() {
-  if (esLecturaCotizacion || estadoCotizacionActual === 'aceptado' || estadoCotizacionActual === 'rechazado') {
-    document.getElementById('inputCodigoProducto').disabled = true;
-    document.getElementById('btnBuscarProducto').disabled = true;
-    return;
-  }
   document.getElementById('inputCodigoProducto').disabled = false;
   document.getElementById('btnBuscarProducto').disabled = false;
 }
@@ -631,7 +607,6 @@ function deshabilitarProductos() {
 function limpiarCotizacion() {
   document.getElementById('inputRut').value = '';
   document.getElementById('mensaje').style.display = 'none';
-  document.getElementById('seccionBloqueada').classList.remove('activa');
   document.getElementById('resumenCliente').classList.remove('activo');
   document.getElementById('formularioCliente').classList.remove('activo');
   document.getElementById('rut').value = '';
@@ -661,6 +636,7 @@ function limpiarCotizacion() {
   document.getElementById('seccionCierre').classList.remove('activo');
   document.getElementById('previewPDF').innerHTML = '';
   document.getElementById('btnDescargarPDF').style.display = 'none';
+  document.getElementById('btnVerArchivos').style.display = 'none';
   deshabilitarProductos();
   actualizarTablaProductos();
   document.getElementById('inputRut').focus();
@@ -684,7 +660,6 @@ function seleccionarProductoAutocomplete(codigo) {
 }
 
 function buscarProducto() {
-  if (esLecturaCotizacion || estadoCotizacionActual === 'aceptado' || estadoCotizacionActual === 'rechazado') { mostrarMensajeProducto('MODO LECTURA. NO SE PUEDEN AGREGAR PRODUCTOS.', 'bloqueado'); return; }
   const cod = document.getElementById('inputCodigoProducto').value.trim();
   if (!cod) return mostrarMensajeProducto('INGRESE UN CÓDIGO O DESCRIPCIÓN', 'error');
   const prod = gestorProductos.buscarPorCodigo(cod);
@@ -740,7 +715,6 @@ function cancelarProducto() {
 }
 
 function agregarProductoACotizacion(cod, prod) {
-  if (esLecturaCotizacion || estadoCotizacionActual === 'aceptado' || estadoCotizacionActual === 'rechazado') { mostrarMensaje('MODO LECTURA. NO SE PUEDEN AGREGAR PRODUCTOS.', 'bloqueado'); return; }
   const ex = productosEnCotizacion.find(p => p.codigo === cod);
   if (ex) {
     ex.cantidad++;
@@ -770,11 +744,6 @@ function actualizarTablaProductos() {
   }
   let html = '<div style="overflow-x:auto;"><table><thead><tr><th>CÓDIGO</th><th>DESCRIPCIÓN</th><th>CANT</th><th>PRECIO UNITARIO (NETO)</th><th>DESC(%)</th><th>PRECIO DESC (NETO)</th><th>COSTO UNIT</th><th>COSTO TOTAL</th><th>TOTAL NETO</th><th>% MARGEN NETO</th><th>UTILIDAD NETA</th><th>TOTAL CON IVA</th><th>ACCIÓN</th></tr></thead><tbody>';
   productosEnCotizacion.forEach((p, i) => {
-    const bloqueado = esLecturaCotizacion || estadoCotizacionActual === 'aceptado' || estadoCotizacionActual === 'rechazado';
-    const inputQuantityDisabled = bloqueado ? 'disabled' : '';
-    const inputDescuentoDisabled = bloqueado ? 'disabled' : '';
-    const btnEliminarDisplay = bloqueado ? 'none' : 'block';
-
     const costoTotal = +(parseFloat(p.costo) * p.cantidad).toFixed(2);
     const precioUnitarioNeto = +(parseFloat(p.precioNetoConDescuento)).toFixed(2);
     const totalNeto = +(p.totalNeto).toFixed(2);
@@ -786,13 +755,9 @@ function actualizarTablaProductos() {
     html += `<tr>
       <td>${p.codigo}</td>
       <td>${p.descripcion}</td>
-      <td class="texto-centrado">
-        <input type="number" min="1" value="${p.cantidad}" onchange="actualizarCantidad(${i}, this.value)" ${inputQuantityDisabled} style="width:100%;text-align:center;border:1px solid #ddd;padding:4px;">
-      </td>
+      <td class="texto-centrado"><input type="number" min="1" value="${p.cantidad}" onchange="actualizarCantidad(${i}, this.value)" style="width:100%;text-align:center;border:1px solid #ddd;padding:4px;"></td>
       <td class="valor-numerico">$${precioUnitarioNeto.toLocaleString('es-CL', {minimumFractionDigits: 2})}</td>
-      <td class="texto-centrado">
-        <input type="number" min="0" max="100" step="0.01" value="${p.descuento}" style="width:100%;padding:4px;text-align:center;border:1px solid #ddd;" onchange="actualizarDescuento(${i}, this.value)" ${inputDescuentoDisabled}>
-      </td>
+      <td class="texto-centrado"><input type="number" min="0" max="100" step="0.01" value="${p.descuento}" style="width:100%;padding:4px;text-align:center;border:1px solid #ddd;" onchange="actualizarDescuento(${i}, this.value)"></td>
       <td class="valor-numerico">$${parseFloat(p.precioNetoConDescuento).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td>
       <td class="valor-numerico">$${parseFloat(p.costo).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td>
       <td class="valor-numerico">$${costoTotal.toLocaleString('es-CL', {minimumFractionDigits: 2})}</td>
@@ -800,7 +765,7 @@ function actualizarTablaProductos() {
       <td class="valor-numerico ${claseMargen}">${margenPorcentaje}%</td>
       <td class="valor-numerico">$${utilidadNeta.toLocaleString('es-CL', {minimumFractionDigits: 2})}</td>
       <td class="valor-numerico">$${totalConIva.toLocaleString('es-CL', {minimumFractionDigits: 2})}</td>
-      <td><button class="btn-eliminar" onclick="eliminarProducto(${i})" style="display:${btnEliminarDisplay};width:100%;">DEL</button></td>
+      <td><button class="btn-eliminar" onclick="eliminarProducto(${i})" style="width:100%;">DEL</button></td>
     </tr>`;
   });
   html += '</tbody></table></div>';
@@ -827,7 +792,6 @@ function actualizarDescuento(i, desc) {
 }
 
 function eliminarProducto(i) {
-  if (esLecturaCotizacion || estadoCotizacionActual === 'aceptado' || estadoCotizacionActual === 'rechazado') { mostrarMensaje('MODO LECTURA. NO SE PUEDEN ELIMINAR PRODUCTOS.', 'bloqueado'); return; }
   productosEnCotizacion.splice(i, 1);
   actualizarTablaProductos();
 }
@@ -952,18 +916,11 @@ function eliminarArticulo(codigo) { if (confirm('¿ESTÁ SEGURO DE ELIMINAR ESTE
 function generarPDF() {
   if (!clienteActual) { alert('INGRESE CLIENTE'); return; }
   if (productosEnCotizacion.length === 0) { alert('AGREGUE PRODUCTOS'); return; }
-  if (estadoCotizacionActual === 'aceptado' || estadoCotizacionActual === 'rechazado') { mostrarMensaje('COTIZACIÓN BLOQUEADA. NO SE PUEDE REGENERAR PDF.', 'bloqueado'); return; }
   
-  let numCot;
-  if (esEdicionCotizacion && cotizacionActualIndex !== null) {
-    numCot = cotizacionesEmitidas[cotizacionActualIndex].numero;
-  } else {
-    numCot = gestorCotizaciones.siguienteCotizacion();
-  }
-  
+  let numCot = gestorCotizaciones.siguienteCotizacion();
   numeroCotizacionActual = numCot;
+  
   const totalNeto = +(productosEnCotizacion.reduce((acc, p) => acc + parseFloat(p.totalNeto), 0)).toFixed(2);
-  const estado = datosDespacho ? 'aceptado' : 'pendiente';
   const cotizacion = {
     numero: numCot,
     razonSocial: clienteActual.razonSocial,
@@ -971,23 +928,17 @@ function generarPDF() {
     fecha: new Date().toISOString(),
     cliente: JSON.parse(JSON.stringify(clienteActual)),
     productos: JSON.parse(JSON.stringify(productosEnCotizacion)),
-    estado: estado,
-    despacho: datosDespacho || null
+    estado: 'pendiente',
+    despacho: null
   };
   
-  if (esEdicionCotizacion && cotizacionActualIndex !== null) {
-    cotizacionesEmitidas[cotizacionActualIndex] = cotizacion;
-    mostrarMensaje('COTIZACIÓN ACTUALIZADA CORRECTAMENTE', 'exito');
-  } else {
-    cotizacionesEmitidas.push(cotizacion);
-    mostrarMensaje('COTIZACIÓN GUARDADA CORRECTAMENTE', 'exito');
-  }
-  
+  cotizacionesEmitidas.push(cotizacion);
   localStorage.setItem('cotizacionesEmitidas', JSON.stringify(cotizacionesEmitidas));
   pdfEmitido = true;
   document.getElementById('seccionCierre').classList.add('activo');
   document.getElementById('btnDescargarPDF').style.display = 'inline-block';
   generarPDFDocumento(cotizacion);
+  mostrarMensaje('PDF GENERADO CORRECTAMENTE - LISTO PARA DESCARGAR', 'exito');
 }
 
 function generarPDFDocumento(cotizacion) {
@@ -1000,24 +951,21 @@ function generarPDFDocumento(cotizacion) {
     
     let yPos = 15;
     
-    // HEADER
     doc.setFillColor(colorPrincipal[0], colorPrincipal[1], colorPrincipal[2]);
     doc.rect(0, 0, 210, 25, 'F');
     doc.setTextColor(255, 255, 255);
     doc.setFontSize(16);
     doc.setFont(undefined, 'bold');
-    doc.text('COTIZADOR - ESTEC', 15, 10);
+    doc.text('COTIZACION', 15, 10);
     doc.setFontSize(10);
-    doc.text(`Cotización N° ${cotizacion.numero}`, 15, 18);
+    doc.text(`N° ${cotizacion.numero}`, 15, 18);
     
-    // LÍNEA SEPARADORA
     doc.setDrawColor(colorSecundario[0], colorSecundario[1], colorSecundario[2]);
     doc.setLineWidth(1);
     doc.line(15, 27, 195, 27);
     
     yPos = 35;
     
-    // DATOS DEL CLIENTE
     doc.setTextColor(0, 0, 0);
     doc.setFontSize(9);
     doc.setFont(undefined, 'bold');
@@ -1041,7 +989,6 @@ function generarPDFDocumento(cotizacion) {
     
     yPos += 7;
     
-    // TABLA DE PRODUCTOS
     const columnasProductos = [
       { header: 'Código', dataKey: 'codigo', width: 14 },
       { header: 'Descripción', dataKey: 'descripcion', width: 35 },
@@ -1077,7 +1024,6 @@ function generarPDFDocumento(cotizacion) {
     
     yPos += 4;
     
-    // TOTALES
     const totalNeto = cotizacion.productos.reduce((acc, p) => acc + parseFloat(p.totalNeto), 0);
     const totalIva = totalNeto * 0.19;
     const totalConIva = totalNeto + totalIva;
@@ -1095,7 +1041,6 @@ function generarPDFDocumento(cotizacion) {
     
     yPos += 8;
     
-    // NOTA FINAL
     doc.setTextColor(0, 0, 0);
     doc.setFontSize(6);
     doc.setFont(undefined, 'italic');
@@ -1107,13 +1052,10 @@ function generarPDFDocumento(cotizacion) {
     doc.text(`Emitida: ${fechaFormato}`, 15, yPos);
     
     pdfActualDoc = doc;
-    
-    // MOSTRAR PREVIEW EN HTML (no en modal)
     mostrarPreviewPDF(doc);
-    mostrarMensaje('PDF GENERADO CORRECTAMENTE - LISTO PARA DESCARGAR', 'exito');
     
   } catch (error) {
-    console.error('Error en generación PDF:', error);
+    console.error('Error PDF:', error);
     mostrarMensaje('ERROR AL GENERAR PDF: ' + error.message, 'error');
   }
 }
@@ -1138,8 +1080,8 @@ function mostrarCotizaciones() {
   } else {
     let html = '<table class="tabla-cotizaciones"><thead><tr><th>N° COTIZACIÓN</th><th>RAZÓN SOCIAL</th><th style="text-align:right;">MONTO NETO</th><th>FECHA EMISIÓN</th><th>ESTADO</th><th style="text-align:center;">ACCIONES</th></tr></thead><tbody>';
     cotizacionesEmitidas.forEach((c, index) => {
-      const claseEstado = c.estado === 'aceptado' ? 'cot-aceptado' : (c.estado === 'rechazado' ? 'cot-rechazado' : 'cot-pendiente'), fechaEmision = new Date(c.fecha), fechaFormateada = `${fechaEmision.getDate().toString().padStart(2, '0')}/${(fechaEmision.getMonth() + 1).toString().padStart(2, '0')}/${fechaEmision.getFullYear()}`, badgeClase = c.estado === 'aceptado' ? 'badge-aceptado' : (c.estado === 'rechazado' ? 'badge-rechazado' : 'badge-pendiente'), btnEditarDisabled = (c.estado === 'rechazado') ? 'disabled' : '';
-      html += `<tr class="${claseEstado}"><td>${c.numero}</td><td>${c.razonSocial}</td><td style="text-align:right;">$${parseFloat(c.totalNeto).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td>${fechaFormateada}</td><td><span class="badge-estado ${badgeClase}">${c.estado}</span></td><td style="text-align:center;"><button class="btn-ver" onclick="verCotizacion(${index})">VER</button><button class="btn-editar-cot" onclick="editarCotizacionGuardada(${index})" ${btnEditarDisabled}>EDITAR</button><button class="btn-eliminar-cot" onclick="eliminarCotizacion(${index})">ELIMINAR</button></td></tr>`;
+      const claseEstado = c.estado === 'aceptado' ? 'cot-aceptado' : (c.estado === 'rechazado' ? 'cot-rechazado' : 'cot-pendiente'), fechaEmision = new Date(c.fecha), fechaFormateada = `${fechaEmision.getDate().toString().padStart(2, '0')}/${(fechaEmision.getMonth() + 1).toString().padStart(2, '0')}/${fechaEmision.getFullYear()}`, badgeClase = c.estado === 'aceptado' ? 'badge-aceptado' : (c.estado === 'rechazado' ? 'badge-rechazado' : 'badge-pendiente');
+      html += `<tr class="${claseEstado}"><td>${c.numero}</td><td>${c.razonSocial}</td><td style="text-align:right;">$${parseFloat(c.totalNeto).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td>${fechaFormateada}</td><td><span class="badge-estado ${badgeClase}">${c.estado}</span></td><td style="text-align:center;"><button class="btn-ver" onclick="verCotizacion(${index})">VER</button><button class="btn-editar-cot" onclick="editarCotizacionGuardada(${index})">EDITAR</button><button class="btn-eliminar-cot" onclick="eliminarCotizacion(${index})">ELIMINAR</button></td></tr>`;
     });
     html += '</tbody></table>';
     cont.innerHTML = html;
@@ -1162,35 +1104,15 @@ function eliminarCotizacion(index) {
 function editarCotizacionGuardada(index) {
   if (index < 0 || index >= cotizacionesEmitidas.length) { alert('ERROR: COTIZACIÓN NO ENCONTRADA'); return; }
   const cotizacion = cotizacionesEmitidas[index];
-  if (cotizacion.estado === 'rechazado') { mostrarMensaje('COTIZACIÓN RECHAZADA. NO SE PUEDE EDITAR.', 'bloqueado'); return; }
   clienteActual = JSON.parse(JSON.stringify(cotizacion.cliente));
   productosEnCotizacion = JSON.parse(JSON.stringify(cotizacion.productos));
   datosDespacho = cotizacion.despacho;
   cotizacionActualIndex = index;
   pdfEmitido = true;
   estadoCotizacionActual = cotizacion.estado;
-  if (cotizacion.estado === 'aceptado') {
-    esLecturaCotizacion = true;
-    esEdicionCotizacion = false;
-  } else {
-    esLecturaCotizacion = false;
-    esEdicionCotizacion = true;
-  }
   gestorCotizaciones.establecerNumero(cotizacion.numero);
   document.getElementById('seccionCierre').classList.add('activo');
   cotizacionGuardada = true;
-  if (cotizacion.estado === 'aceptado') {
-    document.getElementById('seccionBloqueada').classList.add('activa');
-    document.getElementById('btnAceptado').disabled = true;
-    document.getElementById('btnRechazado').disabled = false;
-    document.getElementById('btnArticulos').disabled = false;
-    document.getElementById('btnPDF').disabled = false;
-    document.getElementById('btnCotizaciones').disabled = false;
-  } else {
-    document.getElementById('seccionBloqueada').classList.remove('activa');
-    document.getElementById('btnAceptado').disabled = false;
-    document.getElementById('btnRechazado').disabled = false;
-  }
   mostrarResumenCliente(clienteActual);
   actualizarTablaProductos();
   habilitarProductos();
@@ -1201,11 +1123,7 @@ function editarCotizacionGuardada(index) {
   }
   document.getElementById('inputRut').disabled = true;
   cerrarCotizaciones();
-  if (cotizacion.estado === 'aceptado') {
-    mostrarMensaje(`COTIZACIÓN ${cotizacion.numero} EN MODO LECTURA - PARA REVISAR PRODUCTOS Y COSTOS`, 'info');
-  } else {
-    mostrarMensaje(`COTIZACIÓN ${cotizacion.numero} CARGADA PARA EDITAR`, 'info');
-  }
+  mostrarMensaje(`COTIZACIÓN ${cotizacion.numero} CARGADA PARA REVISAR`, 'info');
 }
 
 function cerrarCotizaciones() { document.getElementById('modalCotizaciones').style.display = 'none'; }
@@ -1290,7 +1208,9 @@ function confirmarAceptacion() {
   if (!tipoEntrega || !direccion || !region || !comuna || !contacto || !celular) return alert('COMPLETE TODOS LOS CAMPOS');
   datosDespacho = { tipoEntrega, direccion: direccion.toUpperCase(), region: region.toUpperCase(), comuna: comuna.toUpperCase(), contacto: contacto.toUpperCase(), celular, archivos: archivosAdjuntos };
   estadoCotizacionActual = 'aceptado';
-  generarPDF();
+  cotizacionesEmitidas[cotizacionesEmitidas.length - 1].estado = 'aceptado';
+  cotizacionesEmitidas[cotizacionesEmitidas.length - 1].despacho = datosDespacho;
+  localStorage.setItem('cotizacionesEmitidas', JSON.stringify(cotizacionesEmitidas));
   mostrarResumenDespacho();
   cerrarModalAceptado();
   mostrarMensaje('COTIZACIÓN ACEPTADA Y GUARDADA', 'exito');
@@ -1308,7 +1228,8 @@ function marcarRechazado() {
   if (productosEnCotizacion.length === 0) { alert('DEBE AGREGAR PRODUCTOS A LA COTIZACIÓN'); return; }
   if (!pdfEmitido) { alert('DEBE GENERAR PDF PRIMERO'); return; }
   estadoCotizacionActual = 'rechazado';
-  generarPDF();
+  cotizacionesEmitidas[cotizacionesEmitidas.length - 1].estado = 'rechazado';
+  localStorage.setItem('cotizacionesEmitidas', JSON.stringify(cotizacionesEmitidas));
   mostrarMensaje('COTIZACIÓN MARCADA COMO RECHAZADA', 'exito');
   document.getElementById('btnAceptado').disabled = true;
   document.getElementById('btnRechazado').disabled = true;
@@ -1333,13 +1254,6 @@ function verArchivo(index) {
     contenido.innerHTML = `<img src="${archivo.contenido}" alt="${archivo.nombre}" />`;
   } else if (archivo.tipo === 'application/pdf') {
     contenido.innerHTML = `<embed src="${archivo.contenido}" type="application/pdf" width="100%" height="100%" />`;
-  } else if (archivo.tipo.startsWith('text/')) {
-    const xhr = new XMLHttpRequest();
-    xhr.responseType = 'arraybuffer';
-    xhr.onload = function() { const texto = new TextDecoder().decode(xhr.response); contenido.innerHTML = `<pre>${texto}</pre>`; };
-    xhr.onerror = function() { contenido.innerHTML = `<pre>No se pudo visualizar el contenido del archivo</pre>`; };
-    xhr.open('GET', archivo.contenido);
-    xhr.send();
   } else {
     contenido.innerHTML = `<p>Tipo de archivo no soportado para vista previa: ${archivo.tipo}</p>`;
   }
