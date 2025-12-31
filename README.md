@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8" />
@@ -57,6 +58,8 @@ button {cursor: pointer; border: none; border-radius: 2px; font-weight: 700; tex
 .campo-grupo input, .campo-grupo select, .campo-grupo textarea {width: 100%; padding: 8px; font-size: 11px; border: 2px solid #ddd; border-radius: 2px; text-transform: uppercase; font-family: inherit;}
 .campo-grupo input:focus, .campo-grupo select:focus, .campo-grupo textarea:focus {outline: none; border-color: #F25C05;}
 .campo-grupo input:disabled, .campo-grupo select:disabled, .campo-grupo textarea:disabled {background-color: #f0f0f0; cursor: not-allowed; color: #777;}
+.campo-grupo input.validacion-correcta {border: 2px solid #4CAF50; background-color: #f1f8f6;}
+.campo-grupo input.validacion-incorrecta {border: 2px solid #f44336; background-color: #fef5f5;}
 .fila-campos {display: grid; grid-template-columns: 1fr 1fr; gap: 12px;}
 .fila-campos-tres {display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px;}
 .fila-campos-dos {display: grid; grid-template-columns: 1fr 1fr; gap: 12px;}
@@ -389,7 +392,6 @@ input[type="number"] {text-align: center;}
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
 
 <script>
-// ================== NUEVO: CALCULAR PRECIO NETO DESDE PRECIO CON IVA ==================
 function calcularPrecioNeto() {
   const costo = parseFloat(document.getElementById('costoProducto').value) || 0;
   const precioConIva = parseFloat(document.getElementById('precioConIvaProducto').value) || 0;
@@ -531,12 +533,16 @@ function buscarCliente() {
   const cliente = gestorClientes.buscarPorRut(rut);
   if (cliente) {
     clienteActual = cliente;
-    mostrarMensaje('CLIENTE ENCONTRADO EN LA BASE DE DATOS', 'exito');
+    document.getElementById('inputRut').classList.add('validacion-correcta');
+    document.getElementById('inputRut').classList.remove('validacion-incorrecta');
+    mostrarMensaje('✓ CLIENTE ENCONTRADO EN LA BASE DE DATOS', 'exito');
     mostrarResumenCliente(cliente);
     document.getElementById('formularioCliente').classList.remove('activo');
     habilitarProductos();
   } else {
-    mostrarMensaje('CLIENTE NO ENCONTRADO. COMPLETE LOS DATOS PARA CREAR.', 'info');
+    document.getElementById('inputRut').classList.add('validacion-incorrecta');
+    document.getElementById('inputRut').classList.remove('validacion-correcta');
+    mostrarMensaje('✗ CLIENTE NO ENCONTRADO. COMPLETE LOS DATOS PARA CREAR.', 'info');
     mostrarFormularioNuevo(rut);
   }
 }
@@ -647,6 +653,7 @@ function bloquearEdicion() {
 
 function limpiarCotizacion() {
   document.getElementById('inputRut').value = '';
+  document.getElementById('inputRut').classList.remove('validacion-correcta', 'validacion-incorrecta');
   document.getElementById('mensaje').style.display = 'none';
   document.getElementById('seccionBloqueada').classList.remove('activa');
   document.getElementById('resumenCliente').classList.remove('activo');
@@ -706,15 +713,20 @@ function seleccionarProductoAutocomplete(codigo) {
 function buscarProducto() {
   if (esLecturaCotizacion || estadoCotizacionActual === 'aceptado' || estadoCotizacionActual === 'rechazado') { mostrarMensajeProducto('MODO LECTURA. NO SE PUEDEN AGREGAR PRODUCTOS.', 'bloqueado'); return; }
   const cod = document.getElementById('inputCodigoProducto').value.trim();
+  const inputProducto = document.getElementById('inputCodigoProducto');
   if (!cod) return mostrarMensajeProducto('INGRESE UN CÓDIGO O DESCRIPCIÓN', 'error');
   const prod = gestorProductos.buscarPorCodigo(cod);
   if (prod) {
-    mostrarMensajeProducto('PRODUCTO ENCONTRADO', 'exito');
+    inputProducto.classList.add('validacion-correcta');
+    inputProducto.classList.remove('validacion-incorrecta');
+    mostrarMensajeProducto('✓ PRODUCTO ENCONTRADO', 'exito');
     document.getElementById('formularioProducto').style.display = 'none';
     agregarProductoACotizacion(cod, prod);
     document.getElementById('inputCodigoProducto').value = '';
   } else {
-    mostrarMensajeProducto('NO ENCONTRADO. CREE UNO NUEVO.', 'info');
+    inputProducto.classList.add('validacion-incorrecta');
+    inputProducto.classList.remove('validacion-correcta');
+    mostrarMensajeProducto('✗ NO ENCONTRADO. CREE UNO NUEVO.', 'info');
     document.getElementById('formularioProducto').style.display = 'block';
     document.getElementById('codigoProducto').value = cod;
     document.getElementById('descripcionProducto').value = '';
@@ -756,6 +768,7 @@ function cancelarProducto() {
   document.getElementById('utilidadNetaProducto').value = '';
   document.getElementById('linkProducto').value = '';
   document.getElementById('inputCodigoProducto').value = '';
+  document.getElementById('inputCodigoProducto').classList.remove('validacion-correcta', 'validacion-incorrecta');
   document.getElementById('mensajeProducto').style.display = 'none';
 }
 
@@ -1021,109 +1034,104 @@ function generarPDFDocumento(cotizacion) {
     
     let yPos = 10;
     
-    // HEADER PROFESIONAL
+    // ===== HEADER PROFESIONAL =====
     doc.setFillColor(31, 111, 139);
-    doc.rect(0, 0, 210, 35, 'F');
+    doc.rect(0, 0, 210, 40, 'F');
     
     doc.setTextColor(255, 255, 255);
-    doc.setFontSize(22);
+    doc.setFontSize(24);
     doc.setFont(undefined, 'bold');
-    doc.text('CUNDO SPA', 15, 15);
+    doc.text('CUNDO SPA', 15, 18);
     
     doc.setFontSize(10);
     doc.setFont(undefined, 'normal');
-    doc.text('Soluciones Comerciales Integrales', 15, 21);
-    doc.text('www.cundospa.cl', 15, 26);
+    doc.text('Soluciones Comerciales Integrales', 15, 26);
+    doc.text('www.cundospa.cl | info@cundospa.cl', 15, 32);
+    
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(12);
+    doc.setFont(undefined, 'bold');
+    doc.text('COTIZACIÓN', 140, 18);
     
     doc.setFontSize(11);
     doc.setFont(undefined, 'bold');
-    doc.text(`COTIZACIÓN #${cotizacion.numero}`, 140, 15);
+    doc.text(`#${cotizacion.numero}`, 140, 26);
     
     doc.setFontSize(9);
     doc.setFont(undefined, 'normal');
     const fechaEmision = new Date(cotizacion.fecha);
     const fechaFormato = `${fechaEmision.getDate().toString().padStart(2, '0')}/${(fechaEmision.getMonth() + 1).toString().padStart(2, '0')}/${fechaEmision.getFullYear()}`;
-    doc.text(`Fecha: ${fechaFormato}`, 140, 21);
-    doc.text(`Vigencia: 30 días`, 140, 26);
+    doc.text(`Fecha: ${fechaFormato}`, 140, 33);
     
-    // LÍNEA SEPARADORA
-    doc.setDrawColor(242, 92, 5);
-    doc.setLineWidth(1.5);
-    doc.line(15, 36, 195, 36);
+    yPos = 45;
     
-    yPos = 42;
-    
-    // DATOS DEL CLIENTE - Diseño Profesional
+    // ===== SECCIÓN CLIENTE =====
     doc.setFillColor(242, 92, 5);
-    doc.rect(15, yPos - 4, 180, 6, 'F');
+    doc.rect(15, yPos - 5, 180, 7, 'F');
     
     doc.setTextColor(255, 255, 255);
-    doc.setFontSize(10);
+    doc.setFontSize(11);
     doc.setFont(undefined, 'bold');
     doc.text('INFORMACIÓN DEL CLIENTE', 17, yPos);
     
-    yPos += 8;
+    yPos += 10;
     
     doc.setTextColor(0, 0, 0);
     doc.setFontSize(9);
-    doc.setFont(undefined, 'bold');
     
     const cliente = cotizacion.cliente;
-    doc.text(`RUT:`, 15, yPos);
+    
+    // Columna 1
+    doc.setFont(undefined, 'bold');
+    doc.text('RUT:', 15, yPos);
     doc.setFont(undefined, 'normal');
     doc.text(cliente.rut, 35, yPos);
     
     doc.setFont(undefined, 'bold');
-    doc.text(`RAZÓN SOCIAL:`, 95, yPos);
+    doc.text('CONTACTO:', 15, yPos + 6);
     doc.setFont(undefined, 'normal');
-    doc.text(cliente.razonSocial, 125, yPos);
-    
-    yPos += 6;
+    doc.text(cliente.nombreContacto, 35, yPos + 6);
     
     doc.setFont(undefined, 'bold');
-    doc.text(`GIRO:`, 15, yPos);
+    doc.text('CELULAR:', 15, yPos + 12);
     doc.setFont(undefined, 'normal');
-    doc.text(cliente.giro, 35, yPos);
+    doc.text(cliente.celular, 35, yPos + 12);
+    
+    // Columna 2
+    doc.setFont(undefined, 'bold');
+    doc.text('RAZÓN SOCIAL:', 105, yPos);
+    doc.setFont(undefined, 'normal');
+    doc.text(cliente.razonSocial.substring(0, 35), 135, yPos);
     
     doc.setFont(undefined, 'bold');
-    doc.text(`DIRECCIÓN:`, 95, yPos);
+    doc.text('EMAIL:', 105, yPos + 6);
     doc.setFont(undefined, 'normal');
-    doc.text(cliente.direccion, 125, yPos);
-    
-    yPos += 6;
+    doc.text(cliente.mail.substring(0, 30), 135, yPos + 6);
     
     doc.setFont(undefined, 'bold');
-    doc.text(`CONTACTO:`, 15, yPos);
+    doc.text('PAGO:', 105, yPos + 12);
     doc.setFont(undefined, 'normal');
-    doc.text(cliente.nombreContacto, 35, yPos);
+    doc.text(cliente.medioPago, 135, yPos + 12);
     
+    yPos += 22;
+    
+    // Dirección
     doc.setFont(undefined, 'bold');
-    doc.text(`TELÉFONO:`, 95, yPos);
+    doc.setFontSize(8);
+    doc.text('DIRECCIÓN:', 15, yPos);
     doc.setFont(undefined, 'normal');
-    doc.text(cliente.celular, 125, yPos);
-    
-    yPos += 6;
-    
-    doc.setFont(undefined, 'bold');
-    doc.text(`EMAIL:`, 15, yPos);
-    doc.setFont(undefined, 'normal');
-    doc.text(cliente.mail, 35, yPos);
-    
-    doc.setFont(undefined, 'bold');
-    doc.text(`MEDIO PAGO:`, 95, yPos);
-    doc.setFont(undefined, 'normal');
-    doc.text(cliente.medioPago, 125, yPos);
+    doc.text(cliente.direccion.substring(0, 80), 15, yPos + 4);
     
     yPos += 12;
     
-    // TABLA DE PRODUCTOS - Diseño Profesional
+    // ===== TABLA PRODUCTOS =====
     const columnasProductos = [
-      { header: 'CÓDIGO', dataKey: 'codigo', width: 18 },
-      { header: 'DESCRIPCIÓN', dataKey: 'descripcion', width: 55 },
-      { header: 'CANT.', dataKey: 'cantidad', width: 12 },
-      { header: 'V. UNIT.', dataKey: 'precioNeto', width: 20 },
-      { header: 'DESC.%', dataKey: 'descuento', width: 12 },
-      { header: 'SUBTOTAL', dataKey: 'totalNeto', width: 28 }
+      { header: 'CÓDIGO', dataKey: 'codigo', width: 14 },
+      { header: 'DESCRIPCIÓN', dataKey: 'descripcion', width: 45 },
+      { header: 'CANT', dataKey: 'cantidad', width: 10 },
+      { header: 'V.UNITARIO', dataKey: 'precioNeto', width: 18 },
+      { header: 'DESC%', dataKey: 'descuento', width: 10 },
+      { header: 'SUBTOTAL', dataKey: 'totalNeto', width: 25 }
     ];
     
     const filasProductos = cotizacion.productos.map(p => {
@@ -1143,96 +1151,85 @@ function generarPDFDocumento(cotizacion) {
       body: filasProductos,
       startY: yPos,
       margin: { left: 15, right: 15 },
-      styles: { fontSize: 8, cellPadding: 2.5, overflow: 'linebreak', halign: 'center' },
+      styles: { fontSize: 8, cellPadding: 3, overflow: 'linebreak', halign: 'center' },
       headStyles: { 
         fillColor: colorPrincipal, 
         textColor: [255, 255, 255], 
-        fontStyle: 'bold', 
-        fontSize: 9,
+        fontStyle: 'bold',
         halign: 'center'
       },
-      bodyStyles: { textColor: [0, 0, 0] },
-      alternateRowStyles: { fillColor: [240, 240, 240] },
+      bodyStyles: { textColor: [0, 0, 0], halign: 'center' },
+      alternateRowStyles: { fillColor: [240, 245, 240] },
       didDrawPage: (data) => { 
         if (data && data.lastAutoTable && data.lastAutoTable.finalY) {
-          yPos = data.lastAutoTable.finalY + 5;
+          yPos = data.lastAutoTable.finalY + 3;
         }
       }
     });
     
-    yPos += 5;
-    
-    // TOTALES - Diseño Premium
+    // ===== TOTALES PROFESIONALES =====
     const totalNeto = cotizacion.productos.reduce((acc, p) => acc + parseFloat(p.totalNeto), 0);
     const totalIva = totalNeto * 0.19;
     const totalConIva = totalNeto + totalIva;
     
-    // Línea separadora antes de totales
-    doc.setDrawColor(200, 200, 200);
-    doc.setLineWidth(0.5);
-    doc.line(15, yPos, 195, yPos);
-    
-    yPos += 4;
-    
-    // Totales con alineación a derecha
-    const xValores = 140;
+    yPos += 2;
     
     doc.setFontSize(9);
     doc.setFont(undefined, 'normal');
     doc.setTextColor(100, 100, 100);
-    doc.text(`SUBTOTAL (SIN IVA):`, 15, yPos);
+    doc.text('SUBTOTAL (SIN IVA):', 15, yPos);
     doc.setTextColor(0, 0, 0);
     doc.setFont(undefined, 'bold');
-    doc.text(`$${totalNeto.toLocaleString('es-CL', {minimumFractionDigits: 0})}`, xValores, yPos, { align: 'right' });
+    doc.text(`$${totalNeto.toLocaleString('es-CL', {minimumFractionDigits: 0})}`, 193, yPos, { align: 'right' });
     
     yPos += 6;
     
     doc.setFont(undefined, 'normal');
     doc.setTextColor(100, 100, 100);
-    doc.text(`IVA (19%):`, 15, yPos);
+    doc.text('IVA (19%):', 15, yPos);
     doc.setTextColor(0, 0, 0);
     doc.setFont(undefined, 'bold');
-    doc.text(`$${totalIva.toLocaleString('es-CL', {minimumFractionDigits: 0})}`, xValores, yPos, { align: 'right' });
+    doc.text(`$${totalIva.toLocaleString('es-CL', {minimumFractionDigits: 0})}`, 193, yPos, { align: 'right' });
     
-    yPos += 7;
+    yPos += 8;
     
-    // TOTAL GENERAL CON FONDO
+    // TOTAL DESTACADO
     doc.setFillColor(242, 92, 5);
-    doc.rect(15, yPos - 4, 180, 8, 'F');
+    doc.rect(15, yPos - 5, 180, 10, 'F');
     
     doc.setTextColor(255, 255, 255);
-    doc.setFontSize(11);
+    doc.setFontSize(10);
     doc.setFont(undefined, 'bold');
-    doc.text(`TOTAL CON IVA:`, 17, yPos + 1);
+    doc.text('TOTAL CON IVA:', 17, yPos);
     doc.setFontSize(12);
-    doc.text(`$${totalConIva.toLocaleString('es-CL', {minimumFractionDigits: 0})}`, 193, yPos + 1, { align: 'right' });
+    doc.text(`$${totalConIva.toLocaleString('es-CL', {minimumFractionDigits: 0})}`, 193, yPos, { align: 'right' });
     
     yPos += 15;
     
-    // NOTAS Y CONDICIONES
+    // ===== TÉRMINOS Y CONDICIONES =====
     doc.setTextColor(0, 0, 0);
     doc.setFontSize(9);
     doc.setFont(undefined, 'bold');
-    doc.text('OBSERVACIONES:', 15, yPos);
+    doc.text('TÉRMINOS Y CONDICIONES:', 15, yPos);
     
     yPos += 5;
-    doc.setFontSize(8);
+    doc.setFontSize(7);
     doc.setFont(undefined, 'normal');
-    const observaciones = [
+    const terminos = [
       '• Cotización válida por 30 días desde su emisión.',
       '• Precios sujetos a cambios sin previo aviso.',
       '• Requiere confirmación para proceder con despacho.',
       '• Condiciones de pago según lo pactado.'
     ];
-    observaciones.forEach(obs => {
-      doc.text(obs, 17, yPos);
+    terminos.forEach(termino => {
+      doc.text(termino, 17, yPos);
       yPos += 4;
     });
     
-    yPos += 3;
+    yPos += 2;
     
     // LÍNEA FINAL
-    doc.setDrawColor(242, 92, 5);
+    doc.setDrawColor(200, 200, 200);
     doc.setLineWidth(0.5);
     doc.line(15, yPos, 195, yPos);
     
@@ -1241,11 +1238,12 @@ function generarPDFDocumento(cotizacion) {
     // PIE DE PÁGINA
     doc.setFontSize(7);
     doc.setTextColor(150, 150, 150);
-    doc.text('CUNDO SPA - www.cundospa.cl | Documento generado automáticamente', 105, yPos, { align: 'center' });
+    doc.setFont(undefined, 'italic');
+    doc.text('Documento generado automáticamente por CUNDO SPA - Cotizador', 105, yPos, { align: 'center' });
     
     pdfActualDoc = doc;
     mostrarPreviewPDF(doc);
-    mostrarMensaje('PDF GENERADO CORRECTAMENTE - LISTO PARA DESCARGAR', 'exito');
+    mostrarMensaje('✓ PDF GENERADO CORRECTAMENTE', 'exito');
     
   } catch (error) {
     console.error('Error en generación PDF:', error);
@@ -1263,7 +1261,7 @@ function mostrarPreviewPDF(doc) {
 function descargarPDF() {
   if (!pdfActualDoc) { alert('PRIMERO GENERA EL PDF'); return; }
   pdfActualDoc.save(`CUNDO_COTIZACION_${numeroCotizacionActual}.pdf`);
-  mostrarMensaje('PDF DESCARGADO CORRECTAMENTE', 'exito');
+  mostrarMensaje('✓ PDF DESCARGADO CORRECTAMENTE', 'exito');
 }
 
 function mostrarCotizaciones() {
@@ -1273,7 +1271,11 @@ function mostrarCotizaciones() {
   } else {
     let html = '<table class="tabla-cotizaciones"><thead><tr><th>N° COTIZACIÓN</th><th>RAZÓN SOCIAL</th><th style="text-align:right;">MONTO NETO</th><th>FECHA EMISIÓN</th><th>ESTADO</th><th style="text-align:center;">ACCIONES</th></tr></thead><tbody>';
     cotizacionesEmitidas.forEach((c, index) => {
-      const claseEstado = c.estado === 'aceptado' ? 'cot-aceptado' : (c.estado === 'rechazado' ? 'cot-rechazado' : 'cot-pendiente'), fechaEmision = new Date(c.fecha), fechaFormateada = `${fechaEmision.getDate().toString().padStart(2, '0')}/${(fechaEmision.getMonth() + 1).toString().padStart(2, '0')}/${fechaEmision.getFullYear()}`, badgeClase = c.estado === 'aceptado' ? 'badge-aceptado' : (c.estado === 'rechazado' ? 'badge-rechazado' : 'badge-pendiente'), btnEditarDisabled = (c.estado === 'rechazado') ? 'disabled' : '';
+      const claseEstado = c.estado === 'aceptado' ? 'cot-aceptado' : (c.estado === 'rechazado' ? 'cot-rechazado' : 'cot-pendiente');
+      const fechaEmision = new Date(c.fecha);
+      const fechaFormateada = `${fechaEmision.getDate().toString().padStart(2, '0')}/${(fechaEmision.getMonth() + 1).toString().padStart(2, '0')}/${fechaEmision.getFullYear()}`;
+      const badgeClase = c.estado === 'aceptado' ? 'badge-aceptado' : (c.estado === 'rechazado' ? 'badge-rechazado' : 'badge-pendiente');
+      const btnEditarDisabled = (c.estado === 'rechazado') ? 'disabled' : '';
       html += `<tr class="${claseEstado}"><td>${c.numero}</td><td>${c.razonSocial}</td><td style="text-align:right;">$${parseFloat(c.totalNeto).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td>${fechaFormateada}</td><td><span class="badge-estado ${badgeClase}">${c.estado}</span></td><td style="text-align:center;"><button class="btn-ver" onclick="verCotizacion(${index})">VER</button><button class="btn-editar-cot" onclick="editarCotizacionGuardada(${index})" ${btnEditarDisabled}>EDITAR</button><button class="btn-eliminar-cot" onclick="eliminarCotizacion(${index})">ELIMINAR</button></td></tr>`;
     });
     html += '</tbody></table>';
@@ -1337,7 +1339,7 @@ function editarCotizacionGuardada(index) {
   document.getElementById('inputRut').disabled = true;
   cerrarCotizaciones();
   if (cotizacion.estado === 'aceptado') {
-    mostrarMensaje(`COTIZACIÓN ${cotizacion.numero} EN MODO LECTURA - PARA REVISAR PRODUCTOS Y COSTOS`, 'info');
+    mostrarMensaje(`COTIZACIÓN ${cotizacion.numero} EN MODO LECTURA`, 'info');
   } else {
     mostrarMensaje(`COTIZACIÓN ${cotizacion.numero} CARGADA PARA EDITAR`, 'info');
   }
@@ -1429,7 +1431,7 @@ function confirmarAceptacion() {
   mostrarResumenDespacho();
   cerrarModalAceptado();
   bloquearEdicion();
-  mostrarMensaje('COTIZACIÓN ACEPTADA Y GUARDADA', 'exito');
+  mostrarMensaje('✓ COTIZACIÓN ACEPTADA Y GUARDADA', 'exito');
 }
 
 function mostrarResumenDespacho() {
@@ -1448,7 +1450,7 @@ function marcarRechazado() {
   bloquearEdicion();
   document.getElementById('btnAceptado').disabled = true;
   document.getElementById('btnRechazado').disabled = true;
-  mostrarMensaje('COTIZACIÓN MARCADA COMO RECHAZADA - BLOQUEADA COMPLETAMENTE', 'exito');
+  mostrarMensaje('✓ COTIZACIÓN MARCADA COMO RECHAZADA - BLOQUEADA COMPLETAMENTE', 'exito');
 }
 
 function verArchivos() {
