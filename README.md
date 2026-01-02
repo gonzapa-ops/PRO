@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8" />
@@ -358,9 +357,9 @@ input[type="number"] {text-align: center;}
       <button class="btn-cerrar-aceptado" onclick="cerrarModalAceptado()">×</button>
       <h2 class="modal-aceptado-titulo">ACEPTACIÓN DE COTIZACIÓN</h2>
       <div class="campo-grupo"><label>TIPO DE ENTREGA *</label><select id="tipoEntrega"><option value="">SELECCIONE TIPO DE ENTREGA</option><option value="RETIRO">RETIRO</option><option value="DESPACHO RM">DESPACHO RM</option><option value="STARKEN">STARKEN</option><option value="CHILEXPRESS">CHILEXPRESS</option><option value="PDQ">PDQ</option><option value="BLUEXPRESS">BLUEXPRESS</option><option value="OTRO">OTRO</option></select></div>
-      <div class="campo-grupo"><label>DIRECCIÓN *</label><input type="text" id="direccionDespacho" placeholder="INGRESE DIRECCIÓN" /></div>
-      <div class="campo-grupo"><label>REGIÓN *</label><input type="text" id="regionSelect" placeholder="INGRESE REGIÓN" /></div>
-      <div class="campo-grupo"><label>COMUNA *</label><input type="text" id="comunaInput" placeholder="INGRESE COMUNA" /></div>
+      <div class="campo-grupo"><label>DIRECCIÓN *</label><input type="text" id="direccionDespacho" placeholder="Quilicura, Región Metropolitana, CL" value="Quilicura, Región Metropolitana, CL" /></div>
+      <div class="campo-grupo"><label>REGIÓN *</label><input type="text" id="regionSelect" placeholder="Región Metropolitana" value="Región Metropolitana" /></div>
+      <div class="campo-grupo"><label>COMUNA *</label><input type="text" id="comunaInput" placeholder="Quilicura" value="Quilicura" /></div>
       <div class="fila-campos">
         <div class="campo-grupo"><label>CONTACTO DE DESPACHO *</label><input type="text" id="contactoDespacho" placeholder="NOMBRE DE CONTACTO" /></div>
         <div class="campo-grupo"><label>CELULAR CONTACTO DESPACHO *</label><input type="tel" id="celularDespacho" placeholder="+56912345678" /></div>
@@ -492,7 +491,7 @@ function mostrarDesplegableClientes() {
   const resultados = gestorClientes.buscarPorCoincidencia(input);
   if (resultados.length === 0) { desplegable.classList.remove('activo'); return; }
   let html = '';
-  resultados.forEach(cliente => { html += `<div class="item-cliente" onclick="seleccionarClienteDesplegable('${cliente.rut}', '${cliente.razonSocial}')" ><strong>${cliente.rut}</strong> - ${cliente.razonSocial}</div>`; });
+  resultados.forEach(cliente => { html += `<div class="item-cliente" onclick="seleccionarClienteDesplegable('${cliente.rut}', '${cliente.razonSocial}')"><strong>${cliente.rut}</strong> - ${cliente.razonSocial}</div>`; });
   desplegable.innerHTML = html;
   desplegable.classList.add('activo');
 }
@@ -699,7 +698,7 @@ function mostrarAutocomplete() {
   const resultados = gestorProductos.buscarPorCodigoODescripcion(input);
   if (resultados.length === 0) { lista.classList.remove('activo'); return; }
   let html = '';
-  resultados.forEach(prod => { html += `<div class="autocomplete-item" onclick="seleccionarProductoAutocomplete('${prod.codigo}')" ><strong>${prod.codigo}</strong> - ${prod.descripcion}</div>`; });
+  resultados.forEach(prod => { html += `<div class="autocomplete-item" onclick="seleccionarProductoAutocomplete('${prod.codigo}')"><strong>${prod.codigo}</strong> - ${prod.descripcion}</div>`; });
   lista.innerHTML = html;
   lista.classList.add('activo');
 }
@@ -1081,7 +1080,7 @@ function generarPDFDocumento(cotizacion) {
     
     const cliente = cotizacion.cliente;
     
-    // Columna 1
+    // Información cliente en dos columnas
     doc.setFont(undefined, 'bold');
     doc.text('RUT:', 15, yPos);
     doc.setFont(undefined, 'normal');
@@ -1097,16 +1096,15 @@ function generarPDFDocumento(cotizacion) {
     doc.setFont(undefined, 'normal');
     doc.text(cliente.celular, 35, yPos + 12);
     
-    // Columna 2
     doc.setFont(undefined, 'bold');
     doc.text('RAZÓN SOCIAL:', 105, yPos);
     doc.setFont(undefined, 'normal');
-    doc.text(cliente.razonSocial.substring(0, 35), 135, yPos);
+    doc.text(cliente.razonSocial.substring(0, 50), 135, yPos);
     
     doc.setFont(undefined, 'bold');
     doc.text('EMAIL:', 105, yPos + 6);
     doc.setFont(undefined, 'normal');
-    doc.text(cliente.mail.substring(0, 30), 135, yPos + 6);
+    doc.text(cliente.mail.substring(0, 40), 135, yPos + 6);
     
     doc.setFont(undefined, 'bold');
     doc.text('PAGO:', 105, yPos + 12);
@@ -1120,29 +1118,36 @@ function generarPDFDocumento(cotizacion) {
     doc.setFontSize(8);
     doc.text('DIRECCIÓN:', 15, yPos);
     doc.setFont(undefined, 'normal');
-    doc.text(cliente.direccion.substring(0, 80), 15, yPos + 4);
+    const direccion = cliente.direccion.substring(0, 70);
+    doc.text(direccion, 15, yPos + 4);
     
     yPos += 12;
     
-    // ===== TABLA PRODUCTOS =====
+    // ===== TABLA PRODUCTOS MEJORADA =====
     const columnasProductos = [
-      { header: 'CÓDIGO', dataKey: 'codigo', width: 14 },
-      { header: 'DESCRIPCIÓN', dataKey: 'descripcion', width: 45 },
-      { header: 'CANT', dataKey: 'cantidad', width: 10 },
-      { header: 'V.UNITARIO', dataKey: 'precioNeto', width: 18 },
-      { header: 'DESC%', dataKey: 'descuento', width: 10 },
-      { header: 'SUBTOTAL', dataKey: 'totalNeto', width: 25 }
+      { header: 'COD', dataKey: 'codigo', halign: 'center', width: 12 },
+      { header: 'DESCRIPCIÓN', dataKey: 'descripcion', halign: 'left', width: 40 },
+      { header: 'CANT', dataKey: 'cantidad', halign: 'center', width: 10 },
+      { header: 'V.UNI', dataKey: 'precioNeto', halign: 'right', width: 18 },
+      { header: 'DESC%', dataKey: 'descuento', halign: 'center', width: 10 },
+      { header: 'SUBTOTAL', dataKey: 'totalNeto', halign: 'right', width: 22 },
+      { header: '%MARGEN', dataKey: 'margen', halign: 'center', width: 14 }
     ];
     
     const filasProductos = cotizacion.productos.map(p => {
-      const desc = p.descripcion.length > 30 ? p.descripcion.substring(0, 30) + '...' : p.descripcion;
+      const desc = p.descripcion.length > 35 ? p.descripcion.substring(0, 35) + '..' : p.descripcion;
+      const costoTotal = +(parseFloat(p.costo) * p.cantidad).toFixed(2);
+      const utilidadNeta = +(p.totalNeto - costoTotal).toFixed(2);
+      const margen = p.totalNeto > 0 ? +((utilidadNeta / p.totalNeto) * 100).toFixed(1) : 0;
+      
       return {
         codigo: p.codigo,
         descripcion: desc,
         cantidad: p.cantidad.toString(),
-        precioNeto: `$${parseFloat(p.precioNeto).toLocaleString('es-CL', {minimumFractionDigits: 0})}`,
+        precioNeto: `$${parseFloat(p.precioNetoConDescuento).toLocaleString('es-CL', {minimumFractionDigits: 0})}`,
         descuento: p.descuento > 0 ? `${p.descuento}%` : '-',
-        totalNeto: `$${parseFloat(p.totalNeto).toLocaleString('es-CL', {minimumFractionDigits: 0})}`
+        totalNeto: `$${parseFloat(p.totalNeto).toLocaleString('es-CL', {minimumFractionDigits: 0})}`,
+        margen: `${margen}%`
       };
     });
     
@@ -1151,58 +1156,88 @@ function generarPDFDocumento(cotizacion) {
       body: filasProductos,
       startY: yPos,
       margin: { left: 15, right: 15 },
-      styles: { fontSize: 8, cellPadding: 3, overflow: 'linebreak', halign: 'center' },
+      styles: { 
+        fontSize: 8, 
+        cellPadding: 3.5, 
+        overflow: 'linebreak',
+        valign: 'middle'
+      },
       headStyles: { 
         fillColor: colorPrincipal, 
         textColor: [255, 255, 255], 
         fontStyle: 'bold',
-        halign: 'center'
+        fontSize: 8
       },
-      bodyStyles: { textColor: [0, 0, 0], halign: 'center' },
-      alternateRowStyles: { fillColor: [240, 245, 240] },
+      bodyStyles: { textColor: [0, 0, 0] },
+      alternateRowStyles: { fillColor: [245, 248, 250] },
       didDrawPage: (data) => { 
-        if (data && data.lastAutoTable && data.lastAutoTable.finalY) {
-          yPos = data.lastAutoTable.finalY + 3;
+        if (data && data.lastAutoTable) {
+          yPos = data.lastAutoTable.finalY + 5;
         }
       }
     });
     
     // ===== TOTALES PROFESIONALES =====
     const totalNeto = cotizacion.productos.reduce((acc, p) => acc + parseFloat(p.totalNeto), 0);
-    const totalIva = totalNeto * 0.19;
-    const totalConIva = totalNeto + totalIva;
+    const costoTotalGeneral = cotizacion.productos.reduce((acc, p) => {
+      const costoTotal = parseFloat(p.costo) * p.cantidad;
+      return acc + costoTotal;
+    }, 0);
+    const utilidadTotalGeneral = +(totalNeto - costoTotalGeneral).toFixed(2);
+    const totalIva = +(totalNeto * 0.19).toFixed(2);
+    const totalConIva = +(totalNeto + totalIva).toFixed(2);
     
-    yPos += 2;
+    yPos += 3;
+    
+    // Fondo para sección de totales
+    doc.setDrawColor(240, 240, 240);
+    doc.setLineWidth(0.3);
+    doc.rect(15, yPos - 2, 180, 28, 'S');
     
     doc.setFontSize(9);
     doc.setFont(undefined, 'normal');
-    doc.setTextColor(100, 100, 100);
-    doc.text('SUBTOTAL (SIN IVA):', 15, yPos);
-    doc.setTextColor(0, 0, 0);
+    doc.setTextColor(80, 80, 80);
+    
+    // Fila 1: Subtotal
+    doc.text('SUBTOTAL (SIN IVA):', 20, yPos + 2);
     doc.setFont(undefined, 'bold');
-    doc.text(`$${totalNeto.toLocaleString('es-CL', {minimumFractionDigits: 0})}`, 193, yPos, { align: 'right' });
+    doc.text(`$${totalNeto.toLocaleString('es-CL', {minimumFractionDigits: 0})}`, 190, yPos + 2, { align: 'right' });
     
-    yPos += 6;
-    
+    // Fila 2: Costo Total
     doc.setFont(undefined, 'normal');
-    doc.setTextColor(100, 100, 100);
-    doc.text('IVA (19%):', 15, yPos);
-    doc.setTextColor(0, 0, 0);
-    doc.setFont(undefined, 'bold');
-    doc.text(`$${totalIva.toLocaleString('es-CL', {minimumFractionDigits: 0})}`, 193, yPos, { align: 'right' });
+    doc.setTextColor(80, 80, 80);
+    doc.text('COSTO TOTAL:', 20, yPos + 8);
+    doc.setFont(undefined, 'normal');
+    doc.setTextColor(180, 0, 0);
+    doc.text(`$${costoTotalGeneral.toLocaleString('es-CL', {minimumFractionDigits: 0})}`, 190, yPos + 8, { align: 'right' });
     
-    yPos += 8;
+    // Fila 3: Utilidad Neta
+    doc.setFont(undefined, 'normal');
+    doc.setTextColor(80, 80, 80);
+    doc.text('UTILIDAD NETA:', 20, yPos + 14);
+    doc.setFont(undefined, 'bold');
+    doc.setTextColor(0, 120, 0);
+    doc.text(`$${utilidadTotalGeneral.toLocaleString('es-CL', {minimumFractionDigits: 0})}`, 190, yPos + 14, { align: 'right' });
+    
+    // Fila 4: IVA
+    doc.setFont(undefined, 'normal');
+    doc.setTextColor(80, 80, 80);
+    doc.text('IVA (19%):', 20, yPos + 20);
+    doc.setFont(undefined, 'bold');
+    doc.text(`$${totalIva.toLocaleString('es-CL', {minimumFractionDigits: 0})}`, 190, yPos + 20, { align: 'right' });
+    
+    yPos += 28;
     
     // TOTAL DESTACADO
     doc.setFillColor(242, 92, 5);
-    doc.rect(15, yPos - 5, 180, 10, 'F');
+    doc.rect(15, yPos - 2, 180, 10, 'F');
     
     doc.setTextColor(255, 255, 255);
     doc.setFontSize(10);
     doc.setFont(undefined, 'bold');
-    doc.text('TOTAL CON IVA:', 17, yPos);
-    doc.setFontSize(12);
-    doc.text(`$${totalConIva.toLocaleString('es-CL', {minimumFractionDigits: 0})}`, 193, yPos, { align: 'right' });
+    doc.text('TOTAL CON IVA:', 20, yPos + 3);
+    doc.setFontSize(13);
+    doc.text(`$${totalConIva.toLocaleString('es-CL', {minimumFractionDigits: 0})}`, 190, yPos + 3, { align: 'right' });
     
     yPos += 15;
     
@@ -1213,20 +1248,27 @@ function generarPDFDocumento(cotizacion) {
     doc.text('TÉRMINOS Y CONDICIONES:', 15, yPos);
     
     yPos += 5;
-    doc.setFontSize(7);
+    doc.setFontSize(7.5);
     doc.setFont(undefined, 'normal');
+    doc.setTextColor(60, 60, 60);
+    
     const terminos = [
       '• Cotización válida por 30 días desde su emisión.',
       '• Precios sujetos a cambios sin previo aviso.',
       '• Requiere confirmación para proceder con despacho.',
       '• Condiciones de pago según lo pactado.'
     ];
+    
     terminos.forEach(termino => {
+      if (yPos > 270) {
+        doc.addPage();
+        yPos = 15;
+      }
       doc.text(termino, 17, yPos);
       yPos += 4;
     });
     
-    yPos += 2;
+    yPos += 3;
     
     // LÍNEA FINAL
     doc.setDrawColor(200, 200, 200);
@@ -1347,147 +1389,138 @@ function editarCotizacionGuardada(index) {
 
 function cerrarCotizaciones() { document.getElementById('modalCotizaciones').style.display = 'none'; }
 
-function mostrarResumenCompra() {
-  const totalCosto = productosEnCotizacion.reduce((acc, p) => acc + (parseFloat(p.costo) * p.cantidad), 0);
-  let html = '<h4>📋 RESUMEN DE COMPRA</h4><div style="overflow-x:auto;"><table class="tabla-compra"><thead><tr><th>CÓDIGO</th><th>DESCRIPCIÓN</th><th>CANTIDAD</th><th>COSTO UNITARIO</th><th>LINK</th></tr></thead><tbody>';
-  productosEnCotizacion.forEach(p => {
-    const linkSeguro = p.link.startsWith('http') ? p.link : 'https://' + p.link;
-    html += `<tr><td>${p.codigo}</td><td>${p.descripcion}</td><td class="valor-numerico">${p.cantidad}</td><td class="valor-numerico">$${parseFloat(p.costo).toLocaleString('es-CL', {minimumFractionDigits: 2})}</td><td><a href="${linkSeguro}" target="_blank">${p.link}</a></td></tr>`;
-  });
-  html += `<tr style="background: #fff3cd; font-weight: bold;"><td colspan="4" style="text-align: right;">TOTAL COSTO DE COMPRA:</td><td class="valor-numerico">$${totalCosto.toLocaleString('es-CL', {minimumFractionDigits: 2})}</td></tr>`;
-  html += '</tbody></table></div>';
-  document.getElementById('resumenCompra').innerHTML = html;
-  document.getElementById('resumenCompra').classList.add('activo');
-}
-
-function marcarAceptado() {
-  if (!clienteActual) { alert('DEBE SELECCIONAR UN CLIENTE PRIMERO'); return; }
-  if (productosEnCotizacion.length === 0) { alert('DEBE AGREGAR PRODUCTOS A LA COTIZACIÓN'); return; }
-  if (!pdfEmitido) { alert('DEBE GENERAR PDF PRIMERO'); return; }
-  archivosAdjuntos = [];
-  document.getElementById('tipoEntrega').value = '';
-  document.getElementById('regionSelect').value = '';
-  document.getElementById('comunaInput').value = datosDespacho ? datosDespacho.comuna : '';
-  document.getElementById('direccionDespacho').value = datosDespacho ? datosDespacho.direccion : '';
-  document.getElementById('contactoDespacho').value = datosDespacho ? datosDespacho.contacto : '';
-  document.getElementById('celularDespacho').value = datosDespacho ? datosDespacho.celular : '';
-  document.getElementById('infoArchivo').textContent = '';
-  document.getElementById('adjuntosContainer').style.display = 'none';
-  document.getElementById('listaAdjuntos').innerHTML = '';
-  if (datosDespacho && datosDespacho.archivos) {
-    archivosAdjuntos = JSON.parse(JSON.stringify(datosDespacho.archivos));
-    document.getElementById('infoArchivo').textContent = `${archivosAdjuntos.length} archivo(s) adjunto(s)`;
-    actualizarListaAdjuntos();
-  }
-  document.getElementById('modalAceptado').style.display = 'block';
-}
+function marcarAceptado() { document.getElementById('modalAceptado').style.display = 'block'; }
 
 function cerrarModalAceptado() { document.getElementById('modalAceptado').style.display = 'none'; }
 
 function abrirSelectorArchivos() { document.getElementById('inputArchivo').click(); }
 
 function agregarArchivo(event) {
-  const archivos = event.target.files;
-  if (!archivos || archivos.length === 0) return;
-  const archivo = archivos[0];
+  const archivo = event.target.files[0];
+  if (!archivo) return;
   const reader = new FileReader();
   reader.onload = function(e) {
-    archivosAdjuntos.push({
-      nombre: archivo.name,
-      tipo: archivo.type,
-      contenido: e.target.result
-    });
-    document.getElementById('infoArchivo').textContent = `${archivosAdjuntos.length} archivo(s) adjunto(s)`;
-    actualizarListaAdjuntos();
+    const nombreArchivo = archivo.name;
+    const contenidoBase64 = e.target.result;
+    const objetoArchivo = { nombre: nombreArchivo, contenido: contenidoBase64, tipo: archivo.type };
+    archivosAdjuntos.push(objetoArchivo);
+    document.getElementById('infoArchivo').textContent = `✓ ${nombreArchivo} cargado`;
+    mostrarListaAdjuntos();
+    document.getElementById('adjuntosContainer').style.display = 'block';
   };
   reader.readAsDataURL(archivo);
-  event.target.value = '';
 }
 
-function actualizarListaAdjuntos() {
-  const lista = document.getElementById('listaAdjuntos'), cont = document.getElementById('adjuntosContainer');
+function mostrarListaAdjuntos() {
+  const lista = document.getElementById('listaAdjuntos');
   lista.innerHTML = '';
-  archivosAdjuntos.forEach((arch, idx) => {
+  archivosAdjuntos.forEach((archivo, index) => {
     const item = document.createElement('li');
     item.className = 'item-adjunto';
-    item.innerHTML = `<span class="nombre-archivo">${arch.nombre}</span><button class="btn-eliminar-archivo" onclick="eliminarArchivoAdjunto(${idx})">ELIMINAR</button>`;
+    item.innerHTML = `<span class="nombre-archivo">${archivo.nombre}</span><button class="btn-eliminar-archivo" onclick="eliminarArchivo(${index})">ELIMINAR</button>`;
     lista.appendChild(item);
   });
-  if (archivosAdjuntos.length > 0) cont.style.display = 'block';
 }
 
-function eliminarArchivoAdjunto(idx) {
-  archivosAdjuntos.splice(idx, 1);
-  document.getElementById('infoArchivo').textContent = `${archivosAdjuntos.length} archivo(s) adjunto(s)`;
-  actualizarListaAdjuntos();
+function eliminarArchivo(index) {
+  archivosAdjuntos.splice(index, 1);
+  mostrarListaAdjuntos();
+  if (archivosAdjuntos.length === 0) {
+    document.getElementById('adjuntosContainer').style.display = 'none';
+    document.getElementById('infoArchivo').textContent = '';
+  }
 }
 
 function confirmarAceptacion() {
   const tipoEntrega = document.getElementById('tipoEntrega').value, direccion = document.getElementById('direccionDespacho').value.trim(), region = document.getElementById('regionSelect').value.trim(), comuna = document.getElementById('comunaInput').value.trim(), contacto = document.getElementById('contactoDespacho').value.trim(), celular = document.getElementById('celularDespacho').value.trim();
-  if (!tipoEntrega || !direccion || !region || !comuna || !contacto || !celular) return alert('COMPLETE TODOS LOS CAMPOS');
-  datosDespacho = { tipoEntrega, direccion: direccion.toUpperCase(), region: region.toUpperCase(), comuna: comuna.toUpperCase(), contacto: contacto.toUpperCase(), celular, archivos: archivosAdjuntos };
-  estadoCotizacionActual = 'aceptado';
+  if (!tipoEntrega || !direccion || !region || !comuna || !contacto || !celular) return alert('COMPLETE TODOS LOS CAMPOS REQUERIDOS');
+  datosDespacho = { tipoEntrega, direccion, region, comuna, contacto, celular, archivos: JSON.parse(JSON.stringify(archivosAdjuntos)) };
   generarPDF();
   mostrarResumenDespacho();
+  mostrarResumenCompra();
+  document.getElementById('btnVerArchivos').style.display = 'inline-block';
   cerrarModalAceptado();
-  bloquearEdicion();
-  mostrarMensaje('✓ COTIZACIÓN ACEPTADA Y GUARDADA', 'exito');
 }
 
 function mostrarResumenDespacho() {
   if (!datosDespacho) return;
-  const r = document.getElementById('resumenDespacho');
-  r.className = 'resumen-despacho activo';
-  r.innerHTML = `<h4>✓ DATOS DE DESPACHO</h4><p><strong>TIPO ENTREGA:</strong> ${datosDespacho.tipoEntrega}</p><p><strong>DIRECCIÓN:</strong> ${datosDespacho.direccion}</p><p><strong>REGIÓN:</strong> ${datosDespacho.region}</p><p><strong>COMUNA:</strong> ${datosDespacho.comuna}</p><p><strong>CONTACTO:</strong> ${datosDespacho.contacto}</p><p><strong>CELULAR:</strong> ${datosDespacho.celular}</p><p><strong>ARCHIVOS:</strong> ${datosDespacho.archivos ? datosDespacho.archivos.length : 0}</p>`;
+  const resumen = document.getElementById('resumenDespacho');
+  resumen.className = 'resumen-despacho activo';
+  resumen.innerHTML = `<h4>✓ DATOS DE DESPACHO CONFIRMADOS</h4><p><strong>TIPO DE ENTREGA:</strong> ${datosDespacho.tipoEntrega}</p><p><strong>DIRECCIÓN:</strong> ${datosDespacho.direccion}</p><p><strong>REGIÓN:</strong> ${datosDespacho.region}</p><p><strong>COMUNA:</strong> ${datosDespacho.comuna}</p><p><strong>CONTACTO:</strong> ${datosDespacho.contacto}</p><p><strong>CELULAR:</strong> ${datosDespacho.celular}</p>`;
+}
+
+function mostrarResumenCompra() {
+  if (!datosDespacho) return;
+  const resumen = document.getElementById('resumenCompra');
+  resumen.className = 'resumen-compra activo';
+  let html = `<h4>DETALLE DE COMPRA CONFIRMADA</h4><table class="tabla-compra"><thead><tr><th>CÓDIGO</th><th>DESCRIPCIÓN</th><th>CANTIDAD</th><th>PRECIO UNI</th><th>TOTAL</th><th>PROVEEDOR</th></tr></thead><tbody>`;
+  productosEnCotizacion.forEach(p => {
+    html += `<tr><td>${p.codigo}</td><td>${p.descripcion.substring(0, 20)}</td><td>${p.cantidad}</td><td>$${parseFloat(p.precioNetoConDescuento).toLocaleString('es-CL', {minimumFractionDigits: 0})}</td><td>$${parseFloat(p.totalNeto).toLocaleString('es-CL', {minimumFractionDigits: 0})}</td><td><a href="${p.link}" target="_blank">Ver proveedor</a></td></tr>`;
+  });
+  html += '</tbody></table>';
+  resumen.innerHTML = html;
 }
 
 function marcarRechazado() {
-  if (!clienteActual) { alert('DEBE SELECCIONAR UN CLIENTE PRIMERO'); return; }
-  if (productosEnCotizacion.length === 0) { alert('DEBE AGREGAR PRODUCTOS A LA COTIZACIÓN'); return; }
-  if (!pdfEmitido) { alert('DEBE GENERAR PDF PRIMERO'); return; }
-  estadoCotizacionActual = 'rechazado';
-  generarPDF();
-  bloquearEdicion();
-  document.getElementById('btnAceptado').disabled = true;
-  document.getElementById('btnRechazado').disabled = true;
-  mostrarMensaje('✓ COTIZACIÓN MARCADA COMO RECHAZADA - BLOQUEADA COMPLETAMENTE', 'exito');
+  if (confirm('¿ESTÁ SEGURO DE RECHAZAR ESTA COTIZACIÓN?')) {
+    estadoCotizacionActual = 'rechazado';
+    if (esEdicionCotizacion && cotizacionActualIndex !== null) {
+      cotizacionesEmitidas[cotizacionActualIndex].estado = 'rechazado';
+      localStorage.setItem('cotizacionesEmitidas', JSON.stringify(cotizacionesEmitidas));
+    }
+    mostrarMensaje('COTIZACIÓN RECHAZADA CORRECTAMENTE', 'exito');
+    document.getElementById('btnAceptado').disabled = true;
+    document.getElementById('btnRechazado').disabled = true;
+    document.getElementById('seccionBloqueada').classList.add('activa');
+    limpiarCotizacion();
+  }
 }
 
 function verArchivos() {
-  if (!datosDespacho || !datosDespacho.archivos || datosDespacho.archivos.length === 0) { alert('NO HAY ARCHIVOS ADJUNTOS'); return; }
-  const modal = document.getElementById('modalArchivos'), cont = document.getElementById('listaArchivosModal');
-  let html = '<table style="width:100%; border-collapse:collapse;"><thead><tr style="background:#1F6F8B; color:white;"><th style="padding:8px; text-align:left;">ARCHIVO</th><th style="text-align:center;">ACCIONES</th></tr></thead><tbody>';
-  datosDespacho.archivos.forEach((arch, idx) => {
-    html += `<tr style="border:1px solid #ddd;"><td style="padding:8px;">${arch.nombre}</td><td style="text-align:center;"><button class="btn-ver-archivo" onclick="verArchivo(${idx})">VER</button></td></tr>`;
-  });
-  html += '</tbody></table>';
-  cont.innerHTML = html;
+  const modal = document.getElementById('modalArchivos'), listado = document.getElementById('listaArchivosModal');
+  if (!datosDespacho || datosDespacho.archivos.length === 0) {
+    listado.innerHTML = '<p style="text-transform:uppercase; text-align:center; padding: 15px; font-size:11px;">NO HAY ARCHIVOS ADJUNTOS</p>';
+  } else {
+    let html = '<div style="overflow-x:auto;"><table class="tabla-clientes-modal"><thead><tr><th>NOMBRE ARCHIVO</th><th>ACCIÓN</th></tr></thead><tbody>';
+    datosDespacho.archivos.forEach((archivo, index) => {
+      html += `<tr><td>${archivo.nombre}</td><td><button class="btn-ver-archivo" onclick="visualizarArchivo(${index})">VER</button></td></tr>`;
+    });
+    html += '</tbody></table></div>';
+    listado.innerHTML = html;
+  }
   modal.style.display = 'block';
 }
 
-function verArchivo(index) {
-  if (!datosDespacho || !datosDespacho.archivos || index < 0 || index >= datosDespacho.archivos.length) { alert('ARCHIVO NO ENCONTRADO'); return; }
-  const archivo = datosDespacho.archivos[index], modalVisualizar = document.getElementById('modalVisualizarArchivo'), contenido = document.getElementById('contenidoArchivo');
-  if (archivo.tipo.startsWith('image/')) {
-    contenido.innerHTML = `<img src="${archivo.contenido}" alt="${archivo.nombre}" />`;
-  } else if (archivo.tipo === 'application/pdf') {
-    contenido.innerHTML = `<embed src="${archivo.contenido}" type="application/pdf" width="100%" height="100%" />`;
-  } else if (archivo.tipo.startsWith('text/')) {
-    const xhr = new XMLHttpRequest();
-    xhr.responseType = 'arraybuffer';
-    xhr.onload = function() { const texto = new TextDecoder().decode(xhr.response); contenido.innerHTML = `<pre>${texto}</pre>`; };
-    xhr.onerror = function() { contenido.innerHTML = `<pre>No se pudo visualizar el contenido del archivo</pre>`; };
-    xhr.open('GET', archivo.contenido);
-    xhr.send();
+function visualizarArchivo(index) {
+  if (!datosDespacho || index < 0 || index >= datosDespacho.archivos.length) { alert('ERROR: ARCHIVO NO ENCONTRADO'); return; }
+  const archivo = datosDespacho.archivos[index], contenidoDiv = document.getElementById('contenidoArchivo'), modal = document.getElementById('modalVisualizarArchivo');
+  const tipoArchivo = archivo.tipo.toLowerCase();
+  if (tipoArchivo.includes('image')) {
+    contenidoDiv.innerHTML = `<img src="${archivo.contenido}" style="max-width:100%; max-height:70vh; object-fit:contain;">`;
+  } else if (tipoArchivo.includes('pdf')) {
+    contenidoDiv.innerHTML = `<embed src="${archivo.contenido}" type="application/pdf" style="width:100%; height:70vh;">`;
+  } else if (tipoArchivo.includes('text')) {
+    fetch(archivo.contenido).then(r => r.text()).then(text => { contenidoDiv.innerHTML = `<pre>${text.substring(0, 2000)}</pre>`; });
   } else {
-    contenido.innerHTML = `<p>Tipo de archivo no soportado para vista previa: ${archivo.tipo}</p>`;
+    contenidoDiv.innerHTML = `<p>Archivo: ${archivo.nombre}<br>Tipo: ${archivo.tipo}<br>No se puede visualizar este tipo de archivo</p>`;
   }
-  modalVisualizar.style.display = 'block';
+  modal.style.display = 'block';
 }
 
 function cerrarModalArchivos() { document.getElementById('modalArchivos').style.display = 'none'; }
 
-function cerrarModalVisualizarArchivo() { document.getElementById('modalVisualizarArchivo').style.display = 'none'; document.getElementById('contenidoArchivo').innerHTML = ''; }
+function cerrarModalVisualizarArchivo() { document.getElementById('modalVisualizarArchivo').style.display = 'none'; }
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    document.getElementById('modalArticulos').style.display = 'none';
+    document.getElementById('modalCotizaciones').style.display = 'none';
+    document.getElementById('modalClientes').style.display = 'none';
+    document.getElementById('modalAceptado').style.display = 'none';
+    document.getElementById('modalArchivos').style.display = 'none';
+    document.getElementById('modalVisualizarArchivo').style.display = 'none';
+  }
+});
 </script>
 </body>
 </html>
