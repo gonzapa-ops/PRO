@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SISTEMA PRO V8 - CUNDO SPA</title>
+    <title>SISTEMA PRO V9 - MASTER SUITE</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
 
     <style>
-        /* --- ESTILOS GENERALES --- */
+        /* --- ESTILOS MASTER --- */
         :root {
             --primary: #1F6F8B;
             --secondary: #F25C05;
@@ -17,134 +17,129 @@
             --text: #2C3E50;
             --dark: #17202A;
             --green: #27AE60;
-            --blue-util: #2980B9;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; text-transform: uppercase; }
         body { background: var(--bg); padding: 15px; color: var(--text); font-size: 11px; padding-bottom: 80px; }
         
-        .main-container { max-width: 1400px; margin: 0 auto; background: white; min-height: 100vh; box-shadow: 0 5px 25px rgba(0,0,0,0.1); border-radius: 6px; overflow: hidden; display: flex; flex-direction: column; }
+        .main-container { max-width: 1400px; margin: 0 auto; background: white; min-height: 100vh; box-shadow: 0 5px 30px rgba(0,0,0,0.15); border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; }
+
+        /* TOP BAR */
+        .top-bar { background: var(--dark); color: white; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; }
+        .top-menu { display: flex; gap: 8px; }
+        .btn-nav { background: #34495E; border: 1px solid #566573; color: white; padding: 6px 12px; cursor: pointer; border-radius: 3px; font-size: 10px; font-weight: bold; transition: 0.2s; display: flex; align-items: center; gap: 5px; }
+        .btn-nav:hover { background: var(--secondary); border-color: var(--secondary); }
+        .btn-backup { background: #27AE60; border-color: #1E8449; } /* Botón verde para respaldo */
 
         /* HEADER */
-        .top-bar { background: var(--dark); color: white; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; }
-        .top-menu { display: flex; gap: 10px; }
-        .top-menu button { background: #34495E; border: 1px solid #566573; color: white; padding: 6px 15px; cursor: pointer; border-radius: 3px; font-size: 10px; font-weight: bold; transition: 0.2s; display: flex; align-items: center; gap: 5px; }
-        .top-menu button:hover { background: var(--secondary); border-color: var(--secondary); }
+        .header { padding: 25px 30px; display: flex; justify-content: space-between; border-bottom: 3px solid var(--secondary); background: white; align-items: center; }
+        
+        /* LOGO UPLOAD */
+        .brand-area { display: flex; align-items: center; gap: 15px; }
+        .logo-placeholder { width: 60px; height: 60px; background: #eee; border: 2px dashed #ccc; display: flex; align-items: center; justify-content: center; cursor: pointer; overflow: hidden; border-radius: 4px; }
+        .logo-placeholder img { width: 100%; height: 100%; object-fit: contain; }
+        .logo-placeholder:hover { border-color: var(--primary); }
 
-        .header { padding: 25px 30px; display: flex; justify-content: space-between; border-bottom: 3px solid var(--secondary); background: white; }
-        .brand h1 { color: var(--primary); font-size: 26px; font-weight: 900; letter-spacing: -0.5px; margin: 0; }
-        .brand p { color: #7F8C8D; font-size: 10px; font-weight: 600; margin-top: 4px; }
+        .brand h1 { color: var(--primary); font-size: 24px; font-weight: 900; margin: 0; }
+        .brand p { color: #7F8C8D; font-size: 10px; font-weight: 600; }
 
         .quote-data { text-align: right; }
-        .quote-number { font-size: 20px; font-weight: bold; color: var(--secondary); display: block; }
-        .quote-date { font-size: 11px; font-weight: bold; color: var(--primary); margin-top: 5px; display: block; }
-
-        /* AVISO DE EDICIÓN */
-        #avisoEdicion { display: none; background: #FFF3CD; color: #856404; padding: 10px; text-align: center; border-bottom: 1px solid #FFEEBA; font-weight: bold; font-size: 12px; }
+        .quote-number { font-size: 22px; font-weight: bold; color: var(--secondary); }
+        
+        /* AVISO EDICIÓN */
+        #bar-edicion { display: none; background: #FFF3CD; color: #856404; text-align: center; padding: 8px; font-weight: bold; border-bottom: 1px solid #FFEEBA; }
 
         /* CONTENIDO */
         .content { padding: 25px; }
         .section-box { margin-bottom: 25px; border: 1px solid #D5DBDB; border-radius: 5px; padding: 20px; background: #FBFCFC; position: relative; }
-        .section-label { position: absolute; top: -10px; left: 15px; background: var(--primary); color: white; padding: 3px 10px; font-size: 10px; font-weight: bold; border-radius: 3px; letter-spacing: 0.5px; }
+        .section-label { position: absolute; top: -10px; left: 15px; background: var(--primary); color: white; padding: 3px 10px; font-size: 10px; font-weight: bold; border-radius: 3px; }
 
-        /* INPUTS Y FORMULARIOS */
+        /* INPUTS */
         .grid-form { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
         .input-group label { display: block; font-size: 9px; font-weight: bold; color: #7F8C8D; margin-bottom: 4px; }
-        .input-group input { width: 100%; padding: 6px 10px; border: 1px solid #D5DBDB; border-radius: 3px; font-size: 11px; font-weight: 600; color: var(--dark); height: 30px; }
-        .input-group input:focus { border-color: var(--secondary); outline: none; background: #fff; }
-        .input-group input[readonly] { background: #F2F4F4; color: #777; cursor: default; border-color: #E5E7E9; }
+        .input-group input, .input-group textarea { width: 100%; padding: 6px 10px; border: 1px solid #D5DBDB; border-radius: 3px; font-size: 11px; font-weight: 600; color: var(--dark); }
+        .input-group input:focus, .input-group textarea:focus { border-color: var(--secondary); outline: none; background: #fff; }
+        .input-group input[readonly] { background: #F2F4F4; color: #777; cursor: default; }
 
         /* BUSCADOR */
         .search-container { position: relative; margin-bottom: 15px; }
-        .search-results { 
-            position: absolute; top: 100%; left: 0; width: 100%; 
-            background: white; border: 1px solid #3498DB; box-shadow: 0 8px 20px rgba(0,0,0,0.15); 
-            z-index: 500; display: none; max-height: 250px; overflow-y: auto; border-radius: 0 0 5px 5px;
-        }
-        .search-item { padding: 10px; cursor: pointer; border-bottom: 1px solid #eee; font-size: 11px; color: #333; }
-        .search-item:hover { background: #EBF5FB; color: var(--primary); font-weight: bold; }
-        .create-new-option { background: #FDEDEC; color: #C0392B; font-weight: bold; border-top: 1px solid #F5B7B1; }
+        .search-results { position: absolute; top: 100%; left: 0; width: 100%; background: white; border: 1px solid #3498DB; box-shadow: 0 8px 20px rgba(0,0,0,0.15); z-index: 500; display: none; max-height: 250px; overflow-y: auto; }
+        .search-item { padding: 10px; cursor: pointer; border-bottom: 1px solid #eee; font-size: 11px; }
+        .search-item:hover { background: #EBF5FB; color: var(--primary); }
+        .create-new { background: #FDEDEC; color: #C0392B; font-weight: bold; }
 
-        /* TABLA DETALLE */
+        /* TABLA */
         table { width: 100%; border-collapse: collapse; font-size: 10px; }
-        th { background: var(--primary); color: white; padding: 10px; text-align: left; font-weight: 700; border-right: 1px solid rgba(255,255,255,0.1); }
-        td { border: 1px solid #D5DBDB; padding: 0; vertical-align: middle; height: 32px; }
-        
-        input.cell-edit { width: 100%; height: 100%; border: none; padding: 0 8px; font-size: 11px; font-family: inherit; color: #333; background: transparent; }
+        th { background: var(--primary); color: white; padding: 10px; text-align: left; }
+        td { border: 1px solid #D5DBDB; padding: 0; height: 32px; }
+        input.cell-edit { width: 100%; height: 100%; border: none; padding: 0 8px; font-size: 11px; background: transparent; }
         input.cell-edit:focus { outline: 2px solid var(--secondary); background: white; z-index: 10; position: relative; }
-        input.cell-locked { background: #F8F9F9; color: #7F8C8D; text-align: right; cursor: not-allowed; }
+        input.cell-locked { background: #F8F9F9; color: #777; text-align: right; cursor: not-allowed; }
         input.cell-qty { text-align: center; font-weight: bold; color: var(--primary); }
 
-        /* TOTALES REVISADOS */
-        .totals-wrapper { display: flex; justify-content: flex-end; margin-top: 20px; }
-        .totals-card { width: 450px; background: white; border: 1px solid #D5DBDB; padding: 15px; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .t-row { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 11px; font-weight: 600; color: #555; }
+        /* TOTALES Y NOTAS */
+        .bottom-area { display: grid; grid-template-columns: 1fr 350px; gap: 20px; margin-top: 20px; }
         
-        /* Fila final especial con Utilidad a la izquierda */
-        .final-row-container { 
-            display: grid; 
-            grid-template-columns: 1fr 1fr; 
-            gap: 15px; 
-            margin-top: 15px; 
-            padding-top: 15px; 
-            border-top: 2px solid var(--secondary); 
-        }
+        .notes-box textarea { width: 100%; height: 100px; resize: none; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-family: inherit; }
         
-        .util-box { text-align: right; color: var(--blue-util); }
-        .util-box span { display: block; font-size: 9px; color: #7f8c8d; }
-        .util-box strong { font-size: 16px; font-weight: 900; }
-
-        .total-box { text-align: right; color: var(--primary); }
-        .total-box span { display: block; font-size: 9px; color: #7f8c8d; }
-        .total-box strong { font-size: 18px; font-weight: 900; }
+        .totals-card { background: white; border: 1px solid #D5DBDB; padding: 15px; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .t-row { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 11px; font-weight: 600; color: #555; align-items: center; }
+        
+        .final-row { border-top: 2px solid var(--secondary); padding-top: 10px; margin-top: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .total-price { font-size: 20px; font-weight: 900; color: var(--primary); }
+        .util-label { font-size: 10px; color: var(--green); font-weight: bold; display: block; text-align: right; }
 
         /* BOTONES */
         .action-area { text-align: center; margin-top: 30px; border-top: 1px dashed #BDC3C7; padding-top: 20px; }
-        .btn-main { background: var(--secondary); color: white; padding: 12px 50px; font-size: 14px; font-weight: 800; border: none; border-radius: 4px; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 10px rgba(242, 92, 5, 0.3); }
+        .btn-main { background: var(--secondary); color: white; padding: 14px 60px; font-size: 15px; font-weight: 800; border: none; border-radius: 4px; cursor: pointer; box-shadow: 0 4px 15px rgba(242, 92, 5, 0.3); }
         .btn-main:hover { background: #D35400; transform: translateY(-1px); }
-        .btn-add { padding: 8px 15px; background: #34495E; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 10px; font-weight: bold; }
 
         /* MODALES */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 2000; align-items: center; justify-content: center; backdrop-filter: blur(2px); }
-        .modal-box { background: white; width: 95%; max-width: 900px; max-height: 90vh; overflow-y: auto; padding: 25px; border-radius: 6px; box-shadow: 0 10px 40px rgba(0,0,0,0.4); }
-        .close-btn { float: right; font-size: 24px; cursor: pointer; color: #E74C3C; font-weight: bold; }
-        
+        .modal-box { background: white; width: 95%; max-width: 900px; max-height: 90vh; overflow-y: auto; padding: 25px; border-radius: 6px; }
         .manage-table { width: 100%; margin-top: 15px; border: 1px solid #ddd; }
-        .manage-table th { padding: 8px; font-size: 10px; background: #2C3E50; color: white; }
+        .manage-table th { padding: 8px; background: #2C3E50; color: white; font-size: 10px; }
         .manage-table td { padding: 6px; font-size: 10px; border-bottom: 1px solid #eee; }
-        
-        .btn-small { padding: 4px 8px; border: none; color: white; border-radius: 2px; cursor: pointer; font-size: 9px; margin-right: 4px; font-weight: bold; }
-        .btn-edit { background: #F39C12; color: white; }
-        .btn-del { background: #C0392B; }
-        .btn-new { background: var(--primary); padding: 6px 15px; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 10px; font-weight: bold; float: right; }
+        .btn-small { padding: 3px 6px; border: none; color: white; border-radius: 2px; cursor: pointer; font-size: 9px; margin-right: 3px; font-weight: bold; }
 
     </style>
 </head>
 <body>
 
 <div class="main-container">
-    
-    <div id="avisoEdicion">⚠️ ESTÁS EDITANDO UNA COTIZACIÓN ANTIGUA. AL GUARDAR SE ACTUALIZARÁ EL REGISTRO EXISTENTE.</div>
+
+    <div id="bar-edicion">⚠️ MODO EDICIÓN ACTIVO: Estás modificando una cotización existente del historial.</div>
 
     <div class="top-bar">
-        <div style="font-weight: 800; font-size: 12px; color: #BDC3C7;">PANEL ADMINISTRATIVO</div>
+        <div style="font-weight: 800; font-size: 12px; opacity: 0.8;">SISTEMA DE GESTIÓN PRO</div>
         <div class="top-menu">
-            <button onclick="abrirGestor('clientes')">👥 CLIENTES</button>
-            <button onclick="abrirGestor('productos')">📦 PRODUCTOS</button>
-            <button onclick="abrirGestor('historial')">📜 HISTORIAL</button>
-            <button onclick="limpiarYRecargar()" style="background:#C0392B;">🔄 LIMPIAR / NUEVA</button>
+            <button class="btn-nav" onclick="abrirGestor('clientes')">👥 CLIENTES</button>
+            <button class="btn-nav" onclick="abrirGestor('productos')">📦 PRODUCTOS</button>
+            <button class="btn-nav" onclick="abrirGestor('historial')">📜 HISTORIAL</button>
+            <button class="btn-nav btn-backup" onclick="descargarRespaldo()">⬇️ RESPALDAR</button>
+            <label for="inputImport" class="btn-nav btn-backup" style="cursor:pointer;">⬆️ RESTAURAR</label>
+            <input type="file" id="inputImport" style="display:none" onchange="importarRespaldo(this)">
+            <button class="btn-nav" onclick="nuevaCotizacion()" style="background:#C0392B;">🔄 LIMPIAR</button>
         </div>
     </div>
 
     <div class="header">
-        <div class="brand">
-            <h1>CUNDO SPA</h1>
-            <p>INGENIERÍA, SERVICIOS Y SOLUCIONES INTEGRALES</p>
+        <div class="brand-area">
+            <div class="logo-placeholder" onclick="document.getElementById('logoInput').click()">
+                <img id="logoPreview" src="" alt="SUBIR LOGO" style="display:none">
+                <span id="logoText" style="font-size:9px; text-align:center; color:#999;">+ LOGO</span>
+            </div>
+            <input type="file" id="logoInput" style="display:none" accept="image/*" onchange="cargarLogo(this)">
+            
+            <div class="brand">
+                <h1>CUNDO SPA</h1>
+                <p>SOLUCIONES INTEGRALES</p>
+            </div>
         </div>
         <div class="quote-data">
-            <span style="font-size:9px; color:#999;">N° COTIZACIÓN</span>
+            <span style="font-size:9px; color:#999;">FOLIO COTIZACIÓN</span>
             <span class="quote-number" id="lblCorrelativo">...</span>
-            <span class="quote-date" id="lblFecha"></span>
+            <span style="font-size:11px; font-weight:bold; color:var(--primary); display:block;" id="lblFecha"></span>
         </div>
     </div>
 
@@ -154,7 +149,7 @@
             <span class="section-label">1. INFORMACIÓN DEL CLIENTE</span>
             
             <div class="input-group search-container">
-                <input type="text" id="buscadorCliente" placeholder="🔍 BUSCAR POR RUT O NOMBRE..." onkeyup="buscarCliente(this)" autocomplete="off" style="border: 2px solid var(--primary); background:#fff;">
+                <input type="text" id="buscadorCliente" placeholder="🔍 BUSCAR (Escribe 2 letras, RUT o Nombre)..." onkeyup="buscarCliente(this)" autocomplete="off" style="border: 2px solid var(--primary);">
                 <div id="listaClientes" class="search-results"></div>
             </div>
 
@@ -164,656 +159,578 @@
                 <div class="input-group"><label>GIRO</label><input type="text" id="cliGiro" readonly></div>
                 <div class="input-group"><label>DIRECCIÓN</label><input type="text" id="cliDir" readonly></div>
                 <div class="input-group"><label>COMUNA</label><input type="text" id="cliComuna" readonly></div>
-                <div class="input-group"><label>REGIÓN</label><input type="text" id="cliRegion" readonly></div>
                 <div class="input-group"><label>CONTACTO</label><input type="text" id="cliContacto" readonly></div>
                 <div class="input-group"><label>EMAIL</label><input type="text" id="cliEmail" readonly></div>
             </div>
         </div>
 
         <div class="section-box">
-            <span class="section-label">2. DETALLE ECONÓMICO</span>
+            <span class="section-label">2. ÍTEMS Y COSTOS</span>
             
             <table id="tablaItems">
                 <thead>
                     <tr>
-                        <th style="width: 35px; text-align:center;">X</th>
-                        <th style="width: 40%;">CÓDIGO / DESCRIPCIÓN (BUSCADOR)</th>
-                        <th style="width: 60px; text-align:center;">CANT.</th>
+                        <th style="width: 30px; text-align:center;">X</th>
+                        <th>DESCRIPCIÓN / CÓDIGO</th>
+                        <th style="width: 60px; text-align:center;">CANT</th>
                         
                         <th style="width: 90px; background:#EBEDEF; color:#555;">COSTO U.</th>
-                        <th style="width: 90px; background:#EBEDEF; color:#555;">TOTAL COSTO</th>
+                        <th style="width: 90px; background:#EBEDEF; color:#555;">T. COSTO</th>
                         
-                        <th style="width: 90px;">VENTA U.</th>
-                        <th style="width: 90px;">TOTAL VENTA</th>
-                        <th style="width: 70px;">UTILIDAD</th>
+                        <th style="width: 90px;">PRECIO U.</th>
+                        <th style="width: 90px;">TOTAL</th>
+                        <th style="width: 70px;">UTIL.</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
             </table>
             
-            <div style="margin-top: 15px; display:flex; justify-content:space-between; align-items:center;">
-                <button onclick="agregarFila()" class="btn-add">+ AGREGAR LÍNEA</button>
-                <span style="font-size:10px; color:#C0392B; font-weight:bold;">* PRECIOS SE EDITAN EN BASE DE PRODUCTOS</span>
+            <div style="margin-top: 15px; display:flex; justify-content:space-between;">
+                <button onclick="agregarFila()" class="btn-nav" style="background:#34495E;">+ AGREGAR LÍNEA</button>
+                <span style="font-size:10px; color:#C0392B;">* Edita los precios en el botón "Productos"</span>
             </div>
         </div>
 
-        <div class="totals-wrapper">
+        <div class="bottom-area">
+            <div class="section-box notes-box" style="margin-bottom:0;">
+                <span class="section-label">OBSERVACIONES / NOTAS</span>
+                <textarea id="txtObservaciones" placeholder="Ej: Forma de pago 50% anticipo. Entrega en 10 días hábiles..."></textarea>
+            </div>
+
             <div class="totals-card">
-                <div class="t-row"><span>SUBTOTAL NETO:</span><span id="txtNeto">$0</span></div>
-                <div class="t-row"><span>IVA (19%):</span><span id="txtIva">$0</span></div>
+                <div class="t-row">
+                    <span>SUBTOTAL NETO:</span>
+                    <span id="txtNeto">$0</span>
+                </div>
+                <div class="t-row">
+                    <span>DESCUENTO (%):</span>
+                    <input type="number" id="txtDescPorc" value="0" min="0" max="100" style="width:50px; text-align:right;" onchange="calcular()">
+                </div>
+                <div class="t-row">
+                    <span>MONTO DESC.:</span>
+                    <span id="txtDescMonto">$0</span>
+                </div>
+                <div class="t-row" style="border-top:1px dashed #ddd; padding-top:5px;">
+                    <span>NETO FINAL:</span>
+                    <span id="txtNetoFinal">$0</span>
+                </div>
+                <div class="t-row">
+                    <span>IVA (19%):</span>
+                    <span id="txtIva">$0</span>
+                </div>
                 
-                <div class="final-row-container">
-                    <div class="util-box">
-                        <span>UTILIDAD PROYECTO</span>
-                        <strong id="txtUtilidad">$0</strong>
-                    </div>
-                    <div class="total-box">
-                        <span>TOTAL A PAGAR</span>
-                        <strong id="txtTotal">$0</strong>
+                <div class="final-row">
+                    <div style="text-align:right; width:100%;">
+                        <span style="font-size:9px; color:#777;">TOTAL A PAGAR</span>
+                        <div class="total-price" id="txtTotal">$0</div>
+                        <span class="util-label">UTILIDAD: <span id="txtUtilidad">$0</span></span>
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="action-area">
-            <input type="hidden" id="indiceEdicionHistorial" value="-1">
-            <button class="btn-main" onclick="finalizarCotizacion()">📄 GUARDAR Y GENERAR PDF</button>
+            <input type="hidden" id="editIndex" value="-1">
+            <button class="btn-main" onclick="guardarYGenerar()">💾 GUARDAR Y GENERAR PDF</button>
         </div>
+
     </div>
 </div>
 
-<div id="modalGestorClientes" class="modal">
+<div id="modalGestor" class="modal">
     <div class="modal-box">
-        <span class="close-btn" onclick="cerrarGestor('clientes')">&times;</span>
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-            <h3>BASE DE CLIENTES</h3>
-            <button class="btn-new" onclick="prepararFormulario('cliente')">+ NUEVO</button>
+        <span class="close-btn" onclick="document.getElementById('modalGestor').style.display='none'" style="float:right; cursor:pointer; font-size:20px;">&times;</span>
+        <h3 id="modalTitle">GESTIÓN</h3>
+        <div style="margin-bottom:10px; text-align:right;">
+             <button id="btnModalNew" class="btn-nav" style="background:var(--primary); float:right;">+ NUEVO</button>
+             <div style="clear:both;"></div>
         </div>
         <table class="manage-table">
-            <thead>
-                <tr>
-                    <th>RUT</th>
-                    <th>RAZÓN SOCIAL</th>
-                    <th>GIRO</th>
-                    <th>CONTACTO</th>
-                    <th>ACCIONES</th>
-                </tr>
-            </thead>
-            <tbody id="bodyGestorClientes"></tbody>
+            <thead id="modalHead"></thead>
+            <tbody id="modalBody"></tbody>
         </table>
     </div>
 </div>
 
-<div id="modalGestorProductos" class="modal">
-    <div class="modal-box">
-        <span class="close-btn" onclick="cerrarGestor('productos')">&times;</span>
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-            <h3>BASE DE PRODUCTOS</h3>
-            <button class="btn-new" onclick="prepararFormulario('producto')">+ NUEVO</button>
-        </div>
-        <table class="manage-table">
-            <thead>
-                <tr>
-                    <th>CÓDIGO</th>
-                    <th>DESCRIPCIÓN</th>
-                    <th>COSTO</th>
-                    <th>VENTA</th>
-                    <th>ACCIONES</th>
-                </tr>
-            </thead>
-            <tbody id="bodyGestorProductos"></tbody>
-        </table>
-    </div>
-</div>
-
-<div id="modalHistorial" class="modal">
-    <div class="modal-box">
-        <span class="close-btn" onclick="cerrarGestor('historial')">&times;</span>
-        <h3>HISTORIAL DE COTIZACIONES</h3>
-        <p style="font-size:10px; margin-bottom:10px;">AQUÍ PUEDES VOLVER A CARGAR COTIZACIONES ANTIGUAS PARA EDITARLAS O BORRARLAS.</p>
-        <table class="manage-table">
-            <thead>
-                <tr>
-                    <th>N°</th>
-                    <th>FECHA</th>
-                    <th>CLIENTE</th>
-                    <th>TOTAL</th>
-                    <th>ACCIONES</th>
-                </tr>
-            </thead>
-            <tbody id="bodyHistorial"></tbody>
-        </table>
-    </div>
-</div>
-
-<div id="modalFormulario" class="modal" style="z-index: 2100;">
-    <div class="modal-box" style="max-width: 500px;">
-        <span class="close-btn" onclick="document.getElementById('modalFormulario').style.display='none'">&times;</span>
-        <h3 id="tituloFormulario" style="margin-bottom:20px; color:var(--primary);">...</h3>
-        <input type="hidden" id="editIndex">
-        <input type="hidden" id="editType">
-        <div id="contenidoFormulario" class="grid-form" style="grid-template-columns: 1fr;"></div>
-        <button onclick="guardarDatos()" class="btn-main" style="width:100%; margin-top:20px;">GUARDAR</button>
+<div id="modalForm" class="modal" style="z-index:2100;">
+    <div class="modal-box" style="max-width:500px;">
+        <h3 id="formTitle">...</h3>
+        <input type="hidden" id="formType">
+        <input type="hidden" id="formIdx">
+        <div id="formContent" class="grid-form" style="grid-template-columns:1fr; margin-top:15px;"></div>
+        <button onclick="guardarCRUD()" class="btn-main" style="width:100%; margin-top:15px;">GUARDAR</button>
+        <button onclick="document.getElementById('modalForm').style.display='none'" style="width:100%; margin-top:5px; background:#999; border:none; padding:10px; color:white; border-radius:4px; cursor:pointer;">CANCELAR</button>
     </div>
 </div>
 
 <script>
-    // --- 1. CONFIGURACIÓN ---
-    const formatMoney = num => new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP' }).format(num);
+    // --- 1. CORE & CONFIG ---
+    const DB_KEYS = { CLI: 'db_clients', PROD: 'db_products', HIST: 'db_history', SEQ: 'db_seq', LOGO: 'db_logo' };
+    const formatMoney = n => new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP' }).format(n);
     const upper = e => e.value = e.value.toUpperCase();
     
-    const formatearRut = (input) => {
-        let val = input.value.replace(/[^0-9kK]/g, '').toUpperCase();
-        if (val.length > 1) {
-            const dv = val.slice(-1);
-            const cuerpo = val.slice(0, -1);
-            input.value = `${cuerpo}-${dv}`;
-        } else {
-            input.value = val;
-        }
+    // Rut Formatter
+    const formatRut = i => {
+        let v = i.value.replace(/[^0-9kK]/g, '').toUpperCase();
+        if(v.length > 1) i.value = v.slice(0,-1) + '-' + v.slice(-1);
     };
 
-    // --- 2. BASE DE DATOS ---
-    const DB = {
-        get: k => JSON.parse(localStorage.getItem(k) || "[]"),
-        set: (k, v) => localStorage.setItem(k, JSON.stringify(v)),
-        init: () => {
-            document.getElementById('lblFecha').innerText = new Date().toLocaleDateString('es-CL');
-            // Solo carga el siguiente si NO estamos editando
-            if(document.getElementById('indiceEdicionHistorial').value == "-1") {
-                let seq = localStorage.getItem('cundo_seq') || 50100;
-                document.getElementById('lblCorrelativo').innerText = "CN" + seq;
-            }
-        }
-    };
+    // DB Helpers
+    const getDB = k => JSON.parse(localStorage.getItem(k) || "[]");
+    const setDB = (k,v) => localStorage.setItem(k, JSON.stringify(v));
 
     window.onload = () => {
-        DB.init();
-        agregarFila(); 
+        document.getElementById('lblFecha').innerText = new Date().toLocaleDateString('es-CL');
+        // Cargar Logo si existe
+        const savedLogo = localStorage.getItem(DB_KEYS.LOGO);
+        if(savedLogo) {
+            document.getElementById('logoPreview').src = savedLogo;
+            document.getElementById('logoPreview').style.display = 'block';
+            document.getElementById('logoText').style.display = 'none';
+        }
+        // Inicializar
+        if(document.getElementById('editIndex').value === "-1") {
+             let s = localStorage.getItem(DB_KEYS.SEQ) || 50100;
+             document.getElementById('lblCorrelativo').innerText = "CN" + s;
+        }
+        agregarFila();
     };
 
-    function limpiarYRecargar() {
-        if(confirm("¿Limpiar todo y comenzar una nueva cotización?")) {
-            location.reload();
-        }
-    }
-
-    // --- 3. BUSCADOR CLIENTES ---
+    // --- 2. LOGIC: SEARCH & TABLE ---
     function buscarCliente(input) {
         upper(input);
         const term = input.value.trim();
         const list = document.getElementById('listaClientes');
         list.innerHTML = '';
+        if(term.length < 2) { list.style.display='none'; return; }
+
+        const hits = getDB(DB_KEYS.CLI).filter(c => c.razon.includes(term) || c.rut.includes(term));
         
-        if (term.length < 2) { list.style.display = 'none'; return; }
-
-        const clientes = DB.get('cundo_clientes');
-        const results = clientes.filter(c => c.razon.toUpperCase().includes(term) || c.rut.toUpperCase().includes(term));
-
-        list.style.display = 'block';
-        if (results.length > 0) {
-            results.forEach(c => {
-                const div = document.createElement('div');
-                div.className = 'search-item';
-                div.innerHTML = `<strong>${c.rut}</strong> - ${c.razon}`;
-                div.onclick = () => {
-                    cargarDatosCliente(c);
-                    list.style.display = 'none';
+        // Render results
+        if(hits.length > 0) {
+            hits.forEach(c => {
+                const d = document.createElement('div');
+                d.className = 'search-item';
+                d.innerHTML = `<strong>${c.rut}</strong> ${c.razon}`;
+                d.onclick = () => { 
+                    ['Razon','Rut','Giro','Dir','Comuna','Email','Contacto'].forEach(f => {
+                         if(document.getElementById('cli'+f)) document.getElementById('cli'+f).value = c[f.toLowerCase()]||'';
+                    });
+                    list.style.display='none'; 
                 };
-                list.appendChild(div);
+                list.appendChild(d);
             });
-        } 
+        }
         
-        const btnCrear = document.createElement('div');
-        btnCrear.className = 'search-item create-new-option';
-        btnCrear.innerHTML = `⛔ NO EXISTE. <strong>+ CREAR CLIENTE</strong>`;
-        btnCrear.onclick = () => { list.style.display = 'none'; prepararFormulario('cliente'); };
-        list.appendChild(btnCrear);
+        // Option Create
+        const create = document.createElement('div');
+        create.className = 'search-item create-new';
+        create.innerHTML = `+ CREAR NUEVO: "${term}"`;
+        create.onclick = () => { list.style.display='none'; openForm('CLI', -1); };
+        list.appendChild(create);
+        list.style.display='block';
     }
 
-    function cargarDatosCliente(c) {
-        document.getElementById('buscadorCliente').value = c.razon;
-        ['cliRazon','cliRut','cliGiro','cliDir','cliComuna','cliRegion','cliContacto','cliEmail'].forEach(id => {
-            document.getElementById(id).value = c[id.replace('cli','').toLowerCase()] || '';
-        });
-    }
-
-    // --- 4. TABLA PRODUCTOS ---
     function agregarFila() {
-        const tbody = document.querySelector('#tablaItems tbody');
         const tr = document.createElement('tr');
         tr.innerHTML = `
-            <td style="text-align:center;"><button onclick="this.closest('tr').remove(); calcular();" style="color:red; background:none; border:none; font-weight:bold; cursor:pointer;">X</button></td>
-            <td style="position:relative;">
-                <input type="text" class="cell-edit" placeholder="BUSCAR..." onkeyup="buscarProductoFila(this)" oninput="upper(this)">
+            <td style="text-align:center"><button onclick="this.closest('tr').remove();calcular()" style="color:red;border:none;background:none;font-weight:bold;cursor:pointer">X</button></td>
+            <td style="position:relative">
+                <input type="text" class="cell-edit" placeholder="BUSCAR..." onkeyup="buscarProd(this)" oninput="upper(this)">
                 <div class="search-results"></div>
             </td>
             <td><input type="number" class="cell-edit cell-qty" value="1" min="1" oninput="calcular()"></td>
-            <td><input type="text" class="cell-edit cell-locked costo-unit" readonly value="$0"></td>
-            <td><input type="text" class="cell-edit cell-locked costo-total" readonly value="$0"></td>
-            <td><input type="text" class="cell-edit cell-locked venta-unit" readonly value="$0"></td>
-            <td><input type="text" class="cell-edit cell-locked venta-total" readonly value="$0"></td>
-            <td><input type="text" class="cell-edit cell-locked utilidad" readonly value="$0" style="font-size:9px;"></td>
-            <input type="hidden" class="val-costo" value="0">
-            <input type="hidden" class="val-venta" value="0">
+            <td><input type="text" class="cell-edit cell-locked u-cost" readonly></td>
+            <td><input type="text" class="cell-edit cell-locked t-cost" readonly></td>
+            <td><input type="text" class="cell-edit cell-locked u-price" readonly></td>
+            <td><input type="text" class="cell-edit cell-locked t-price" readonly></td>
+            <td><input type="text" class="cell-edit cell-locked util" readonly style="font-size:9px"></td>
+            <input type="hidden" class="raw-cost" value="0"><input type="hidden" class="raw-price" value="0">
         `;
-        tbody.appendChild(tr);
+        document.querySelector('#tablaItems tbody').appendChild(tr);
     }
 
-    function buscarProductoFila(input) {
+    function buscarProd(input) {
         const term = input.value.trim().toUpperCase();
         const list = input.nextElementSibling;
-        list.innerHTML = '';
-        if(term.length === 0) { limpiarFila(input.closest('tr')); list.style.display = 'none'; return; }
+        list.innerHTML='';
+        if(term.length === 0) { list.style.display='none'; return; }
 
-        const prods = DB.get('cundo_productos');
-        const results = prods.filter(p => p.cod.toUpperCase().includes(term) || p.desc.toUpperCase().includes(term));
-
-        list.style.display = 'block';
-        if (results.length > 0) {
-            results.forEach(p => {
-                const div = document.createElement('div');
-                div.className = 'search-item';
-                div.innerHTML = `<strong>${p.cod}</strong> - ${p.desc}`;
-                div.onclick = () => {
-                    input.value = `${p.cod} - ${p.desc}`;
-                    llenarFila(input.closest('tr'), p);
-                    list.style.display = 'none';
+        const hits = getDB(DB_KEYS.PROD).filter(p => p.cod.includes(term) || p.desc.includes(term));
+        
+        if(hits.length>0) {
+            hits.forEach(p => {
+                const d = document.createElement('div');
+                d.className='search-item';
+                d.innerHTML=`<strong>${p.cod}</strong> ${p.desc}`;
+                d.onclick=()=>{
+                    input.value=`${p.cod} - ${p.desc}`;
+                    const row = input.closest('tr');
+                    row.querySelector('.raw-cost').value=p.costo;
+                    row.querySelector('.raw-price').value=p.precio;
+                    row.querySelector('.u-cost').value=formatMoney(p.costo);
+                    row.querySelector('.u-price').value=formatMoney(p.precio);
+                    list.style.display='none';
+                    calcular();
                 };
-                list.appendChild(div);
+                list.appendChild(d);
             });
         }
-        const btnCrear = document.createElement('div');
-        btnCrear.className = 'search-item create-new-option';
-        btnCrear.innerHTML = `📦 NO EXISTE. <strong>+ CREAR PRODUCTO</strong>`;
-        btnCrear.onclick = () => { list.style.display = 'none'; prepararFormulario('producto'); };
-        list.appendChild(btnCrear);
-    }
-
-    function llenarFila(tr, prod) {
-        tr.querySelector('.val-costo').value = prod.costo;
-        tr.querySelector('.val-venta').value = prod.precio;
-        tr.querySelector('.costo-unit').value = formatMoney(prod.costo);
-        tr.querySelector('.venta-unit').value = formatMoney(prod.precio);
-        calcular();
-    }
-
-    function limpiarFila(tr) {
-        tr.querySelector('.val-costo').value = 0;
-        tr.querySelector('.val-venta').value = 0;
-        tr.querySelector('.costo-unit').value = "$0";
-        tr.querySelector('.venta-unit').value = "$0";
-        calcular();
+        const create = document.createElement('div');
+        create.className='search-item create-new';
+        create.innerHTML=`+ CREAR PROD: "${term}"`;
+        create.onclick=()=>{ list.style.display='none'; openForm('PROD', -1); };
+        list.appendChild(create);
+        list.style.display='block';
     }
 
     function calcular() {
-        let neto = 0;
-        let utilTotal = 0;
-
+        let neto = 0, util = 0;
         document.querySelectorAll('#tablaItems tbody tr').forEach(tr => {
-            const cant = parseFloat(tr.querySelector('.cell-qty').value) || 0;
-            const costo = parseFloat(tr.querySelector('.val-costo').value) || 0;
-            const venta = parseFloat(tr.querySelector('.val-venta').value) || 0;
-
-            const tCosto = cant * costo;
-            const tVenta = cant * venta;
-            const util = tVenta - tCosto;
-
-            tr.querySelector('.costo-total').value = formatMoney(tCosto);
-            tr.querySelector('.venta-total').value = formatMoney(tVenta);
-            tr.querySelector('.utilidad').value = formatMoney(util);
-
-            neto += tVenta;
-            utilTotal += util;
+            const q = parseFloat(tr.querySelector('.cell-qty').value)||0;
+            const c = parseFloat(tr.querySelector('.raw-cost').value)||0;
+            const p = parseFloat(tr.querySelector('.raw-price').value)||0;
+            
+            const tc = q*c; const tp = q*p;
+            tr.querySelector('.t-cost').value=formatMoney(tc);
+            tr.querySelector('.t-price').value=formatMoney(tp);
+            tr.querySelector('.util').value=formatMoney(tp-tc);
+            
+            neto += tp; util += (tp-tc);
         });
 
-        const iva = neto * 0.19;
+        // Descuentos
+        const descPorc = parseFloat(document.getElementById('txtDescPorc').value)||0;
+        const descMonto = neto * (descPorc/100);
+        const netoFinal = neto - descMonto;
+        const iva = netoFinal * 0.19;
+        
         document.getElementById('txtNeto').innerText = formatMoney(neto);
+        document.getElementById('txtDescMonto').innerText = formatMoney(descMonto);
+        document.getElementById('txtNetoFinal').innerText = formatMoney(netoFinal);
         document.getElementById('txtIva').innerText = formatMoney(iva);
-        document.getElementById('txtTotal').innerText = formatMoney(neto + iva);
-        document.getElementById('txtUtilidad').innerText = formatMoney(utilTotal);
+        document.getElementById('txtTotal').innerText = formatMoney(netoFinal + iva);
+        document.getElementById('txtUtilidad').innerText = formatMoney(util - descMonto);
     }
 
-    // --- 5. GESTIÓN MODALES CRUD ---
-    function abrirGestor(id) {
-        document.querySelectorAll('.modal').forEach(m => m.style.display = 'none');
-        if(id === 'clientes') { document.getElementById('modalGestorClientes').style.display = 'flex'; renderClientes(); }
-        if(id === 'productos') { document.getElementById('modalGestorProductos').style.display = 'flex'; renderProductos(); }
-        if(id === 'historial') { document.getElementById('modalHistorial').style.display = 'flex'; renderHistorial(); }
-    }
-    
-    function cerrarGestor(id) { 
-        if(id === 'clientes') document.getElementById('modalGestorClientes').style.display = 'none';
-        if(id === 'productos') document.getElementById('modalGestorProductos').style.display = 'none';
-        if(id === 'historial') document.getElementById('modalHistorial').style.display = 'none';
-    }
-
-    function renderClientes() {
-        const tbody = document.getElementById('bodyGestorClientes');
-        tbody.innerHTML = '';
-        DB.get('cundo_clientes').forEach((c, i) => {
-            tbody.innerHTML += `<tr><td>${c.rut}</td><td>${c.razon}</td><td>${c.giro}</td><td>${c.contacto}</td>
-            <td><button class="btn-small btn-edit" onclick="prepararFormulario('cliente',${i})">✏️</button><button class="btn-small btn-del" onclick="borrar('cundo_clientes',${i})">🗑️</button></td></tr>`;
-        });
-    }
-
-    function renderProductos() {
-        const tbody = document.getElementById('bodyGestorProductos');
-        tbody.innerHTML = '';
-        DB.get('cundo_productos').forEach((p, i) => {
-            tbody.innerHTML += `<tr><td>${p.cod}</td><td>${p.desc}</td><td>${formatMoney(p.costo)}</td><td>${formatMoney(p.precio)}</td>
-            <td><button class="btn-small btn-edit" onclick="prepararFormulario('producto',${i})">✏️</button><button class="btn-small btn-del" onclick="borrar('cundo_productos',${i})">🗑️</button></td></tr>`;
-        });
-    }
-
-    // --- LÓGICA DE HISTORIAL AVANZADO (EDITAR/BORRAR) ---
-    function renderHistorial() {
-        const tbody = document.getElementById('bodyHistorial');
-        tbody.innerHTML = '';
-        const data = DB.get('cundo_historial');
+    // --- 3. MANAGERS (CRUD) ---
+    function abrirGestor(type) {
+        const modal = document.getElementById('modalGestor');
+        const thead = document.getElementById('modalHead');
+        const tbody = document.getElementById('modalBody');
+        const btn = document.getElementById('btnModalNew');
         
-        // Iteramos para mostrar (usamos índice real para poder editar/borrar correctamente)
-        data.forEach((h, i) => {
-            tbody.innerHTML += `
-            <tr>
-                <td><strong>${h.n}</strong></td>
-                <td>${h.fecha}</td>
-                <td>${h.cliente}</td>
-                <td>${h.total}</td>
-                <td>
-                    <button class="btn-small btn-edit" onclick="cargarCotizacionDesdeHistorial(${i})">✏️ EDITAR</button>
-                    <button class="btn-small btn-del" onclick="borrarHistorial(${i})">🗑️ BORRAR</button>
-                </td>
-            </tr>`;
-        });
-    }
-
-    function borrarHistorial(index) {
-        if(confirm("¿Estás seguro de ELIMINAR permanentemente esta cotización del historial?")) {
-            const h = DB.get('cundo_historial');
-            h.splice(index, 1);
-            DB.set('cundo_historial', h);
-            renderHistorial();
-        }
-    }
-
-    function cargarCotizacionDesdeHistorial(index) {
-        if(!confirm("Esto cargará la cotización en la pantalla principal para editarla. ¿Continuar?")) return;
+        modal.style.display='flex';
+        tbody.innerHTML='';
         
-        const h = DB.get('cundo_historial');
-        const cot = h[index];
-
-        // 1. Marcar modo edición
-        document.getElementById('indiceEdicionHistorial').value = index;
-        document.getElementById('avisoEdicion').style.display = 'block';
-        document.getElementById('lblCorrelativo').innerText = cot.n; // Mantener ID original
-        document.getElementById('lblFecha').innerText = cot.fecha;
-
-        // 2. Cargar Cliente
-        if(cot.datosCliente) {
-            cargarDatosCliente(cot.datosCliente);
-        }
-
-        // 3. Cargar Productos
-        const tbody = document.querySelector('#tablaItems tbody');
-        tbody.innerHTML = ''; // Limpiar tabla actual
-        
-        if(cot.items && cot.items.length > 0) {
-            cot.items.forEach(item => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td style="text-align:center;"><button onclick="this.closest('tr').remove(); calcular();" style="color:red; background:none; border:none; font-weight:bold; cursor:pointer;">X</button></td>
-                    <td style="position:relative;">
-                        <input type="text" class="cell-edit" value="${item.desc}" onkeyup="buscarProductoFila(this)" oninput="upper(this)">
-                        <div class="search-results"></div>
-                    </td>
-                    <td><input type="number" class="cell-edit cell-qty" value="${item.cant}" min="1" oninput="calcular()"></td>
-                    <td><input type="text" class="cell-edit cell-locked costo-unit" readonly></td>
-                    <td><input type="text" class="cell-edit cell-locked costo-total" readonly></td>
-                    <td><input type="text" class="cell-edit cell-locked venta-unit" readonly></td>
-                    <td><input type="text" class="cell-edit cell-locked venta-total" readonly></td>
-                    <td><input type="text" class="cell-edit cell-locked utilidad" readonly style="font-size:9px;"></td>
-                    <input type="hidden" class="val-costo" value="${item.costo}">
-                    <input type="hidden" class="val-venta" value="${item.precio}">
-                `;
-                tbody.appendChild(tr);
-                
-                // Formatear visualmente
-                tr.querySelector('.costo-unit').value = formatMoney(item.costo);
-                tr.querySelector('.venta-unit').value = formatMoney(item.precio);
+        if(type==='clientes') {
+            document.getElementById('modalTitle').innerText="BASE DE CLIENTES";
+            thead.innerHTML=`<tr><th>RUT</th><th>RAZÓN</th><th>CONTACTO</th><th>ACCIÓN</th></tr>`;
+            getDB(DB_KEYS.CLI).forEach((c,i)=> {
+                tbody.innerHTML+=`<tr><td>${c.rut}</td><td>${c.razon}</td><td>${c.contacto}</td><td>
+                <button class="btn-small" style="background:#F39C12" onclick="openForm('CLI',${i})">EDIT</button>
+                <button class="btn-small" style="background:#C0392B" onclick="delItem('${DB_KEYS.CLI}',${i},'clientes')">DEL</button></td></tr>`;
             });
-            calcular();
-        }
-
-        cerrarGestor('historial');
-    }
-
-    function borrar(key, idx) {
-        if(confirm("¿Eliminar?")) {
-            const d = DB.get(key); d.splice(idx,1); DB.set(key,d);
-            if(key.includes('clientes')) renderClientes(); else renderProductos();
-        }
-    }
-
-    // --- 6. GUARDAR DATOS MODALES ---
-    function prepararFormulario(tipo, idx = null) {
-        const modal = document.getElementById('modalFormulario');
-        const cont = document.getElementById('contenidoFormulario');
-        const tit = document.getElementById('tituloFormulario');
-        document.getElementById('editIndex').value = idx !== null ? idx : -1;
-        document.getElementById('editType').value = tipo;
-        
-        modal.style.display = 'flex';
-        cont.innerHTML = '';
-        
-        if(tipo === 'cliente') {
-            tit.innerText = idx !== null ? "EDITAR CLIENTE" : "NUEVO CLIENTE";
-            const d = idx !== null ? DB.get('cundo_clientes')[idx] : {};
-            const fields = [
-                { id:'rut', lbl:'RUT', val:d.rut||'', fn:'formatearRut(this)' },
-                { id:'razon', lbl:'RAZÓN SOCIAL', val:d.razon||'' },
-                { id:'giro', lbl:'GIRO', val:d.giro||'' },
-                { id:'dir', lbl:'DIRECCIÓN', val:d.dir||'' },
-                { id:'comuna', lbl:'COMUNA', val:d.comuna||'' },
-                { id:'region', lbl:'REGIÓN', val:d.region||'' },
-                { id:'contacto', lbl:'CONTACTO', val:d.contacto||'' },
-                { id:'email', lbl:'EMAIL', val:d.email||'' }
-            ];
-            fields.forEach(f => cont.innerHTML += `<div class="input-group"><label>${f.lbl}</label><input type="text" id="f_${f.id}" value="${f.val}" oninput="upper(this);${f.fn||''}"></div>`);
+            btn.onclick = () => openForm('CLI', -1);
+        } else if(type==='productos') {
+            document.getElementById('modalTitle').innerText="BASE DE PRODUCTOS";
+            thead.innerHTML=`<tr><th>COD</th><th>DESC</th><th>VENTA</th><th>ACCIÓN</th></tr>`;
+            getDB(DB_KEYS.PROD).forEach((p,i)=> {
+                tbody.innerHTML+=`<tr><td>${p.cod}</td><td>${p.desc}</td><td>${formatMoney(p.precio)}</td><td>
+                <button class="btn-small" style="background:#F39C12" onclick="openForm('PROD',${i})">EDIT</button>
+                <button class="btn-small" style="background:#C0392B" onclick="delItem('${DB_KEYS.PROD}',${i},'productos')">DEL</button></td></tr>`;
+            });
+            btn.onclick = () => openForm('PROD', -1);
         } else {
-            tit.innerText = idx !== null ? "EDITAR PRODUCTO" : "NUEVO PRODUCTO";
-            const d = idx !== null ? DB.get('cundo_productos')[idx] : {};
-            cont.innerHTML += `
-                <div class="input-group"><label>CÓDIGO</label><input type="text" id="f_cod" value="${d.cod||''}" oninput="upper(this)"></div>
-                <div class="input-group"><label>DESCRIPCIÓN</label><input type="text" id="f_desc" value="${d.desc||''}" oninput="upper(this)"></div>
-                <div class="input-group"><label>COSTO NETO</label><input type="number" id="f_costo" value="${d.costo||''}"></div>
-                <div class="input-group"><label>VENTA NETO</label><input type="number" id="f_precio" value="${d.precio||''}"></div>
+            // Historial
+            document.getElementById('modalTitle').innerText="HISTORIAL DE COTIZACIONES";
+            btn.style.display='none';
+            thead.innerHTML=`<tr><th>FOLIO</th><th>FECHA</th><th>CLIENTE</th><th>TOTAL</th><th>ACCIÓN</th></tr>`;
+            getDB(DB_KEYS.HIST).forEach((h,i)=> {
+                tbody.innerHTML+=`<tr><td><b>${h.n}</b></td><td>${h.fecha}</td><td>${h.cli.razon}</td><td>${h.total}</td><td>
+                <button class="btn-small" style="background:#2980B9" onclick="loadHistory(${i})">EDITAR</button>
+                <button class="btn-small" style="background:#C0392B" onclick="delItem('${DB_KEYS.HIST}',${i},'historial')">DEL</button></td></tr>`;
+            });
+        }
+    }
+
+    function delItem(k,i,refresh) {
+        if(confirm("¿Eliminar?")) {
+            const d=getDB(k); d.splice(i,1); setDB(k,d);
+            abrirGestor(refresh);
+        }
+    }
+
+    function openForm(type, idx) {
+        const modal = document.getElementById('modalForm');
+        const content = document.getElementById('formContent');
+        modal.style.display='flex';
+        document.getElementById('formType').value=type;
+        document.getElementById('formIdx').value=idx;
+        content.innerHTML='';
+        
+        const isNew = idx===-1;
+        document.getElementById('formTitle').innerText = isNew ? "NUEVO REGISTRO" : "EDITAR REGISTRO";
+        
+        let data = {};
+        if(!isNew) data = getDB(type==='CLI'?DB_KEYS.CLI:DB_KEYS.PROD)[idx];
+
+        if(type==='CLI') {
+            const fields = [
+                {id:'rut',l:'RUT',fn:'formatearRut(this)'}, {id:'razon',l:'RAZÓN SOCIAL'},
+                {id:'giro',l:'GIRO'}, {id:'dir',l:'DIRECCIÓN'}, {id:'comuna',l:'COMUNA'},
+                {id:'email',l:'EMAIL'}, {id:'contacto',l:'CONTACTO'}
+            ];
+            fields.forEach(f => content.innerHTML+=`<div class="input-group"><label>${f.l}</label><input id="f_${f.id}" value="${data[f.id]||''}" oninput="upper(this);${f.fn||''}"></div>`);
+        } else {
+            content.innerHTML+=`
+            <div class="input-group"><label>CÓDIGO</label><input id="f_cod" value="${data.cod||''}" oninput="upper(this)"></div>
+            <div class="input-group"><label>DESCRIPCIÓN</label><input id="f_desc" value="${data.desc||''}" oninput="upper(this)"></div>
+            <div class="input-group"><label>COSTO NETO</label><input type="number" id="f_costo" value="${data.costo||''}"></div>
+            <div class="input-group"><label>PRECIO VENTA NETO</label><input type="number" id="f_precio" value="${data.precio||''}"></div>
             `;
         }
     }
 
-    function guardarDatos() {
-        const tipo = document.getElementById('editType').value;
-        const idx = parseInt(document.getElementById('editIndex').value);
-        const dbName = tipo === 'cliente' ? 'cundo_clientes' : 'cundo_productos';
-        const db = DB.get(dbName);
+    function guardarCRUD() {
+        const type = document.getElementById('formType').value;
+        const idx = parseInt(document.getElementById('formIdx').value);
+        const key = type==='CLI'?DB_KEYS.CLI:DB_KEYS.PROD;
+        const db = getDB(key);
         
-        let nuevo = {};
-        if(tipo === 'cliente') {
-            nuevo = {
-                rut: document.getElementById('f_rut').value,
-                razon: document.getElementById('f_razon').value,
-                giro: document.getElementById('f_giro').value,
-                dir: document.getElementById('f_dir').value,
-                comuna: document.getElementById('f_comuna').value,
-                region: document.getElementById('f_region').value,
-                contacto: document.getElementById('f_contacto').value,
-                email: document.getElementById('f_email').value
-            };
-            if(!nuevo.rut) return alert("RUT Obligatorio");
+        let obj = {};
+        if(type==='CLI') {
+            obj = { rut:document.getElementById('f_rut').value, razon:document.getElementById('f_razon').value, 
+                    giro:document.getElementById('f_giro').value, dir:document.getElementById('f_dir').value,
+                    comuna:document.getElementById('f_comuna').value, email:document.getElementById('f_email').value,
+                    contacto:document.getElementById('f_contacto').value };
+            if(!obj.rut) return alert("RUT Obligatorio");
         } else {
-            nuevo = {
-                cod: document.getElementById('f_cod').value,
-                desc: document.getElementById('f_desc').value,
-                costo: parseFloat(document.getElementById('f_costo').value)||0,
-                precio: parseFloat(document.getElementById('f_precio').value)||0
-            };
-            if(!nuevo.cod) return alert("Código Obligatorio");
+            obj = { cod:document.getElementById('f_cod').value, desc:document.getElementById('f_desc').value,
+                    costo:parseFloat(document.getElementById('f_costo').value)||0, precio:parseFloat(document.getElementById('f_precio').value)||0 };
+            if(!obj.cod) return alert("Código Obligatorio");
         }
 
-        if(idx === -1) db.push(nuevo); else db[idx] = nuevo;
-        DB.set(dbName, db);
+        if(idx===-1) db.push(obj); else db[idx]=obj;
+        setDB(key, db);
+        document.getElementById('modalForm').style.display='none';
         
-        if(document.getElementById('modalGestorClientes').style.display === 'flex') renderClientes();
-        if(document.getElementById('modalGestorProductos').style.display === 'flex') renderProductos();
-        document.getElementById('modalFormulario').style.display = 'none';
+        // Refrescar si está abierto el gestor
+        if(document.getElementById('modalGestor').style.display!=='none') {
+            abrirGestor(type==='CLI'?'clientes':'productos');
+        }
     }
 
-    // --- 7. FINALIZAR Y PDF ---
-    function finalizarCotizacion() {
+    // --- 4. BACKUP & LOGO ---
+    function cargarLogo(input) {
+        if(input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = e => {
+                localStorage.setItem(DB_KEYS.LOGO, e.target.result);
+                document.getElementById('logoPreview').src = e.target.result;
+                document.getElementById('logoPreview').style.display = 'block';
+                document.getElementById('logoText').style.display = 'none';
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function descargarRespaldo() {
+        const data = JSON.stringify(localStorage);
+        const blob = new Blob([data], {type: "application/json"});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `RESPALDO_CUNDO_${new Date().toISOString().slice(0,10)}.json`;
+        a.click();
+    }
+
+    function importarRespaldo(input) {
+        const file = input.files[0];
+        if(!file) return;
+        const reader = new FileReader();
+        reader.onload = e => {
+            try {
+                const data = JSON.parse(e.target.result);
+                Object.keys(data).forEach(k => localStorage.setItem(k, data[k]));
+                alert("Respaldo cargado correctamente. La página se recargará.");
+                location.reload();
+            } catch(err) { alert("Error al leer archivo"); }
+        };
+        reader.readAsText(file);
+    }
+
+    // --- 5. GUARDAR Y PDF ---
+    function loadHistory(i) {
+        const h = getDB(DB_KEYS.HIST)[i];
+        document.getElementById('editIndex').value = i;
+        document.getElementById('bar-edicion').style.display='block';
+        document.getElementById('modalGestor').style.display='none';
+        
+        document.getElementById('lblCorrelativo').innerText = h.n;
+        document.getElementById('txtObservaciones').value = h.obs || "";
+        document.getElementById('txtDescPorc').value = h.descPorc || 0;
+        
+        // Cargar Cliente
+        ['Razon','Rut','Giro','Dir','Comuna','Email','Contacto'].forEach(f => {
+            if(document.getElementById('cli'+f)) document.getElementById('cli'+f).value = h.cli[f.toLowerCase()]||'';
+        });
+
+        // Cargar Items
+        const tbody = document.querySelector('#tablaItems tbody');
+        tbody.innerHTML='';
+        h.items.forEach(it => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+            <td style="text-align:center"><button onclick="this.closest('tr').remove();calcular()" style="color:red;border:none;background:none;font-weight:bold">X</button></td>
+            <td><input type="text" class="cell-edit" value="${it.d}" onkeyup="buscarProd(this)" oninput="upper(this)"><div class="search-results"></div></td>
+            <td><input type="number" class="cell-edit cell-qty" value="${it.q}" oninput="calcular()"></td>
+            <td><input type="text" class="cell-edit cell-locked u-cost" readonly></td>
+            <td><input type="text" class="cell-edit cell-locked t-cost" readonly></td>
+            <td><input type="text" class="cell-edit cell-locked u-price" readonly></td>
+            <td><input type="text" class="cell-edit cell-locked t-price" readonly></td>
+            <td><input type="text" class="cell-edit cell-locked util" readonly style="font-size:9px"></td>
+            <input type="hidden" class="raw-cost" value="${it.c}"><input type="hidden" class="raw-price" value="${it.p}">`;
+            tbody.appendChild(tr);
+            tr.querySelector('.u-cost').value=formatMoney(it.c);
+            tr.querySelector('.u-price').value=formatMoney(it.p);
+        });
+        calcular();
+    }
+    
+    function nuevaCotizacion() {
+        if(confirm("¿Limpiar formulario?")) location.reload();
+    }
+
+    function guardarYGenerar() {
         if(!document.getElementById('cliRazon').value) return alert("Falta Cliente");
-        
-        const nCot = document.getElementById('lblCorrelativo').innerText;
-        const tot = document.getElementById('txtTotal').innerText;
-        const editIdx = parseInt(document.getElementById('indiceEdicionHistorial').value);
-        
-        // Recopilar datos completos para guardar en historial
-        const clienteData = {
+
+        // Datos
+        const cli = {
             razon: document.getElementById('cliRazon').value,
             rut: document.getElementById('cliRut').value,
             giro: document.getElementById('cliGiro').value,
             dir: document.getElementById('cliDir').value,
             comuna: document.getElementById('cliComuna').value,
-            region: document.getElementById('cliRegion').value,
-            contacto: document.getElementById('cliContacto').value,
-            email: document.getElementById('cliEmail').value
+            email: document.getElementById('cliEmail').value,
+            contacto: document.getElementById('cliContacto').value
         };
 
-        const itemsData = [];
+        const items = [];
         document.querySelectorAll('#tablaItems tbody tr').forEach(tr => {
             const desc = tr.querySelector('.cell-edit').value;
-            if(desc) {
-                itemsData.push({
-                    desc: desc,
-                    cant: parseFloat(tr.querySelector('.cell-qty').value) || 0,
-                    costo: parseFloat(tr.querySelector('.val-costo').value) || 0,
-                    precio: parseFloat(tr.querySelector('.val-venta').value) || 0
-                });
-            }
+            if(desc) items.push({
+                d: desc,
+                q: parseFloat(tr.querySelector('.cell-qty').value)||0,
+                c: parseFloat(tr.querySelector('.raw-cost').value)||0,
+                p: parseFloat(tr.querySelector('.raw-price').value)||0
+            });
         });
 
-        const registro = { 
-            n: nCot, 
-            fecha: document.getElementById('lblFecha').innerText, 
-            cliente: clienteData.razon, 
-            total: tot,
-            datosCliente: clienteData,
-            items: itemsData
-        };
+        if(items.length===0) return alert("Agregue al menos 1 item");
+
+        const nCot = document.getElementById('lblCorrelativo').innerText;
+        const total = document.getElementById('txtTotal').innerText;
+        const obs = document.getElementById('txtObservaciones').value;
+        const descPorc = document.getElementById('txtDescPorc').value;
         
-        const h = DB.get('cundo_historial');
+        const registro = { n: nCot, fecha: document.getElementById('lblFecha').innerText, cli, items, total, obs, descPorc };
+        
+        const hist = getDB(DB_KEYS.HIST);
+        const editIdx = parseInt(document.getElementById('editIndex').value);
 
         if(editIdx > -1) {
-            // ACTUALIZAR EXISTENTE
-            h[editIdx] = registro;
-            alert("Cotización actualizada correctamente.");
+            hist[editIdx] = registro;
         } else {
-            // CREAR NUEVA
-            h.push(registro);
-            // Solo incrementar secuencia si es nueva
-            let seq = parseInt(nCot.replace('CN',''));
-            localStorage.setItem('cundo_seq', seq + 1);
+            hist.push(registro);
+            let s = parseInt(nCot.replace('CN',''));
+            localStorage.setItem(DB_KEYS.SEQ, s+1);
         }
         
-        DB.set('cundo_historial', h);
-        generarPDF(nCot);
+        setDB(DB_KEYS.HIST, hist);
+        generarPDF(registro);
     }
 
-    function generarPDF(numero) {
+    function generarPDF(data) {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
         const azul = [31, 111, 139];
-        const naranja = [242, 92, 5];
-        const grisClaro = [245, 245, 245];
-
-        doc.setFillColor(...azul); doc.rect(0,0,10,297,'F'); 
-        doc.setFontSize(22); doc.setTextColor(...azul); doc.setFont("helvetica","bold");
-        doc.text("CUNDO SPA", 18, 20);
-        doc.setFontSize(8); doc.setTextColor(100); doc.setFont("helvetica","normal");
-        doc.text("INGENIERÍA, SERVICIOS Y SOLUCIONES INTEGRALES", 18, 25);
-        doc.text("WEB: WWW.CUNDOSPA.CL | CONTACTO@CUNDOSPA.CL", 18, 29);
-
-        doc.setFillColor(...grisClaro); doc.rect(145, 10, 55, 18, 'F');
-        doc.setFontSize(10); doc.setTextColor(...naranja); doc.setFont("helvetica","bold");
-        doc.text("COTIZACIÓN", 172, 16, {align:"center"});
-        doc.setTextColor(0); doc.text(numero, 172, 23, {align:"center"});
-
-        const startY = 40;
-        doc.setDrawColor(200); doc.setFillColor(252, 252, 252);
-        doc.roundedRect(18, startY, 182, 35, 2, 2, 'FD');
-        doc.setFillColor(...azul); doc.rect(18, startY, 182, 6, 'F');
-        doc.setTextColor(255); doc.setFontSize(8); doc.setFont("helvetica","bold");
-        doc.text("DATOS DEL CLIENTE", 20, startY + 4);
-
-        doc.setTextColor(0); doc.setFontSize(8);
-        const r1 = startY + 12; const r2 = startY + 18; const r3 = startY + 24; const r4 = startY + 30;
         
-        doc.setFont("helvetica", "bold");
-        doc.text("RAZÓN SOCIAL:", 22, r1); doc.text("RUT:", 110, r1);
-        doc.text("DIRECCIÓN:", 22, r2); doc.text("COMUNA:", 110, r2);
-        doc.text("CONTACTO:", 22, r3); doc.text("EMAIL:", 110, r3);
-        doc.text("GIRO:", 22, r4);
+        // Logo
+        const logo = localStorage.getItem(DB_KEYS.LOGO);
+        if(logo) doc.addImage(logo, 'PNG', 15, 15, 25, 25);
+        
+        // Header
+        doc.setFontSize(22); doc.setTextColor(...azul); doc.setFont("helvetica","bold");
+        doc.text("CUNDO SPA", 50, 25);
+        doc.setFontSize(9); doc.setTextColor(100); doc.setFont("helvetica","normal");
+        doc.text("INGENIERÍA Y SERVICIOS INTEGRALES", 50, 30);
+        doc.text("WEB: WWW.CUNDOSPA.CL | CONTACTO@CUNDOSPA.CL", 50, 35);
+        
+        // Caja Info
+        doc.setFillColor(245,245,245); doc.rect(140, 15, 55, 20, 'F');
+        doc.setFontSize(10); doc.setTextColor(242, 92, 5); doc.setFont("helvetica","bold");
+        doc.text("COTIZACIÓN", 167, 22, {align:"center"});
+        doc.setTextColor(0); doc.text(data.n, 167, 30, {align:"center"});
 
-        doc.setFont("helvetica", "normal");
-        const cR = document.getElementById('cliRazon').value;
-        const cRu = document.getElementById('cliRut').value;
-        doc.text(cR.substring(0,35), 50, r1); doc.text(cRu, 130, r1);
-        doc.text(document.getElementById('cliDir').value.substring(0,35), 50, r2); doc.text(document.getElementById('cliComuna').value, 130, r2);
-        doc.text(document.getElementById('cliContacto').value.substring(0,25), 50, r3); doc.text(document.getElementById('cliEmail').value.substring(0,30), 130, r3);
-        doc.text(document.getElementById('cliGiro').value.substring(0,35), 50, r4);
+        // Cliente
+        doc.setDrawColor(31, 111, 139); doc.setLineWidth(0.5);
+        doc.line(15, 45, 195, 45);
+        
+        doc.setFontSize(8); doc.setTextColor(...azul); doc.setFont("helvetica","bold");
+        doc.text("INFORMACIÓN DEL CLIENTE", 15, 50);
+        
+        doc.setTextColor(0); doc.setFontSize(8); doc.setFont("helvetica","normal");
+        const c = data.cli;
+        doc.text(`RAZÓN SOCIAL: ${c.razon}`, 15, 56); doc.text(`RUT: ${c.rut}`, 120, 56);
+        doc.text(`DIRECCIÓN: ${c.dir}`, 15, 61); doc.text(`COMUNA: ${c.comuna}`, 120, 61);
+        doc.text(`ATENCIÓN: ${c.contacto}`, 15, 66); doc.text(`EMAIL: ${c.email}`, 120, 66);
 
-        const rows = [];
-        document.querySelectorAll('#tablaItems tbody tr').forEach(tr => {
-            const desc = tr.querySelector('.cell-edit').value;
-            if(desc) {
-                const cant = tr.querySelector('.cell-qty').value;
-                const unit = tr.querySelector('.val-venta').value;
-                rows.push([cant, desc, formatMoney(unit), formatMoney(cant*unit)]);
-            }
-        });
-
+        // Tabla
+        const rows = data.items.map(i => [i.q, i.d, formatMoney(i.p), formatMoney(i.q*i.p)]);
         doc.autoTable({
-            startY: 85,
-            head: [['CANT', 'DESCRIPCIÓN', 'P. UNITARIO', 'TOTAL']],
+            startY: 75,
+            head: [['CANT', 'DESCRIPCIÓN', 'P.UNITARIO', 'TOTAL']],
             body: rows,
             theme: 'plain',
-            styles: { fontSize: 8, cellPadding: 3, lineColor: 220, lineWidth: 0.1 },
-            headStyles: { fillColor: azul, textColor: 255, fontSize: 8, fontStyle: 'bold', halign:'center' },
-            columnStyles: { 0: {halign:'center', cellWidth: 15}, 2: {halign:'right', cellWidth: 35}, 3: {halign:'right', cellWidth: 35, fontStyle:'bold'} },
-            margin: { left: 18, right: 10 },
+            styles: { fontSize: 8, cellPadding: 3 },
+            headStyles: { fillColor: azul, textColor: 255, fontStyle:'bold' },
+            columnStyles: { 0:{halign:'center'}, 2:{halign:'right'}, 3:{halign:'right', fontStyle:'bold'} },
             didParseCell: d => { if(d.section==='body' && d.row.index%2===0) d.cell.styles.fillColor=[250,250,250]; }
         });
 
         const finalY = doc.lastAutoTable.finalY + 5;
-        const boxX = 140;
+        
+        // Totales y Obs
+        if(data.obs) {
+            doc.setFontSize(8); doc.setTextColor(0); doc.setFont("helvetica","bold");
+            doc.text("OBSERVACIONES:", 15, finalY + 5);
+            doc.setFont("helvetica","normal");
+            doc.text(doc.splitTextToSize(data.obs, 100), 15, finalY + 10);
+        }
+
+        const boxX = 130;
+        let y = finalY + 5;
         doc.setFontSize(8); doc.setTextColor(0);
-        doc.text("SUBTOTAL NETO:", boxX, finalY + 5);
-        doc.text(document.getElementById('txtNeto').innerText, 195, finalY + 5, {align:'right'});
-        doc.text("IVA (19%):", boxX, finalY + 10);
-        doc.text(document.getElementById('txtIva').innerText, 195, finalY + 10, {align:'right'});
+        
+        // Recalcular para PDF limpio
+        const neto = data.items.reduce((a,b)=>a+(b.q*b.p),0);
+        const desc = neto * (data.descPorc/100);
+        const netoF = neto - desc;
+        const iva = netoF * 0.19;
 
-        doc.setFillColor(...azul); doc.rect(boxX - 5, finalY + 14, 65, 12, 'F');
+        doc.text("SUBTOTAL:", boxX, y); doc.text(formatMoney(neto), 195, y, {align:'right'}); y+=5;
+        if(desc > 0) {
+            doc.text(`DESCUENTO (${data.descPorc}%):`, boxX, y); doc.text("- "+formatMoney(desc), 195, y, {align:'right'}); y+=5;
+        }
+        doc.text("NETO:", boxX, y); doc.text(formatMoney(netoF), 195, y, {align:'right'}); y+=5;
+        doc.text("IVA (19%):", boxX, y); doc.text(formatMoney(iva), 195, y, {align:'right'}); y+=7;
+        
+        doc.setFillColor(...azul); doc.rect(boxX-5, y-4, 75, 12, 'F');
         doc.setTextColor(255); doc.setFontSize(10); doc.setFont("helvetica","bold");
-        doc.text("TOTAL A PAGAR:", boxX, finalY + 21);
-        doc.text(document.getElementById('txtTotal').innerText, 195, finalY + 21, {align:'right'});
+        doc.text("TOTAL:", boxX, y+3); doc.text(formatMoney(netoF+iva), 195, y+3, {align:'right'});
 
-        const pageHeight = doc.internal.pageSize.height;
-        doc.setTextColor(150); doc.setFontSize(7); doc.setFont("helvetica","normal");
-        doc.text("DOCUMENTO VÁLIDO POR 15 DÍAS HÁBILES DESDE SU EMISIÓN", 105, pageHeight - 15, {align:"center"});
-        doc.text("GENERADO POR SISTEMA INTERNO CUNDO SPA", 105, pageHeight - 10, {align:"center"});
-
-        doc.save(`Cotizacion_${numero}.pdf`);
-        // Recargar para limpiar
+        doc.save(`Cotizacion_${data.n}.pdf`);
         setTimeout(() => location.reload(), 2000);
     }
 </script>
