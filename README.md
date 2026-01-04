@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SISTEMA PRO V9 - MASTER SUITE</title>
+    <title>SISTEMA PRO V10 - INGENIERIA CUNTEL SPA</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
 
     <style>
-        /* --- ESTILOS MASTER --- */
+        /* --- ESTILOS GENERALES --- */
         :root {
             --primary: #1F6F8B;
             --secondary: #F25C05;
@@ -29,17 +29,15 @@
         .top-menu { display: flex; gap: 8px; }
         .btn-nav { background: #34495E; border: 1px solid #566573; color: white; padding: 6px 12px; cursor: pointer; border-radius: 3px; font-size: 10px; font-weight: bold; transition: 0.2s; display: flex; align-items: center; gap: 5px; }
         .btn-nav:hover { background: var(--secondary); border-color: var(--secondary); }
-        .btn-backup { background: #27AE60; border-color: #1E8449; } /* Botón verde para respaldo */
+        .btn-backup { background: #27AE60; border-color: #1E8449; }
 
         /* HEADER */
         .header { padding: 25px 30px; display: flex; justify-content: space-between; border-bottom: 3px solid var(--secondary); background: white; align-items: center; }
         
-        /* LOGO UPLOAD */
         .brand-area { display: flex; align-items: center; gap: 15px; }
         .logo-placeholder { width: 60px; height: 60px; background: #eee; border: 2px dashed #ccc; display: flex; align-items: center; justify-content: center; cursor: pointer; overflow: hidden; border-radius: 4px; }
         .logo-placeholder img { width: 100%; height: 100%; object-fit: contain; }
-        .logo-placeholder:hover { border-color: var(--primary); }
-
+        
         .brand h1 { color: var(--primary); font-size: 24px; font-weight: 900; margin: 0; }
         .brand p { color: #7F8C8D; font-size: 10px; font-weight: 600; }
 
@@ -57,8 +55,8 @@
         /* INPUTS */
         .grid-form { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
         .input-group label { display: block; font-size: 9px; font-weight: bold; color: #7F8C8D; margin-bottom: 4px; }
-        .input-group input, .input-group textarea { width: 100%; padding: 6px 10px; border: 1px solid #D5DBDB; border-radius: 3px; font-size: 11px; font-weight: 600; color: var(--dark); }
-        .input-group input:focus, .input-group textarea:focus { border-color: var(--secondary); outline: none; background: #fff; }
+        .input-group input, .input-group select { width: 100%; padding: 6px 10px; border: 1px solid #D5DBDB; border-radius: 3px; font-size: 11px; font-weight: 600; color: var(--dark); height: 30px; }
+        .input-group input:focus, .input-group select:focus { border-color: var(--secondary); outline: none; background: #fff; }
         .input-group input[readonly] { background: #F2F4F4; color: #777; cursor: default; }
 
         /* BUSCADOR */
@@ -77,10 +75,8 @@
         input.cell-locked { background: #F8F9F9; color: #777; text-align: right; cursor: not-allowed; }
         input.cell-qty { text-align: center; font-weight: bold; color: var(--primary); }
 
-        /* TOTALES Y NOTAS */
+        /* TOTALES Y PAGO */
         .bottom-area { display: grid; grid-template-columns: 1fr 350px; gap: 20px; margin-top: 20px; }
-        
-        .notes-box textarea { width: 100%; height: 100px; resize: none; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-family: inherit; }
         
         .totals-card { background: white; border: 1px solid #D5DBDB; padding: 15px; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .t-row { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 11px; font-weight: 600; color: #555; align-items: center; }
@@ -96,7 +92,7 @@
 
         /* MODALES */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 2000; align-items: center; justify-content: center; backdrop-filter: blur(2px); }
-        .modal-box { background: white; width: 95%; max-width: 900px; max-height: 90vh; overflow-y: auto; padding: 25px; border-radius: 6px; }
+        .modal-box { background: white; width: 95%; max-width: 1000px; max-height: 90vh; overflow-y: auto; padding: 25px; border-radius: 6px; }
         .manage-table { width: 100%; margin-top: 15px; border: 1px solid #ddd; }
         .manage-table th { padding: 8px; background: #2C3E50; color: white; font-size: 10px; }
         .manage-table td { padding: 6px; font-size: 10px; border-bottom: 1px solid #eee; }
@@ -108,7 +104,7 @@
 
 <div class="main-container">
 
-    <div id="bar-edicion">⚠️ MODO EDICIÓN ACTIVO: Estás modificando una cotización existente del historial.</div>
+    <div id="bar-edicion">⚠️ MODO EDICIÓN ACTIVO</div>
 
     <div class="top-bar">
         <div style="font-weight: 800; font-size: 12px; opacity: 0.8;">SISTEMA DE GESTIÓN PRO</div>
@@ -126,7 +122,7 @@
     <div class="header">
         <div class="brand-area">
             <div class="logo-placeholder" onclick="document.getElementById('logoInput').click()">
-                <img id="logoPreview" src="" alt="SUBIR LOGO" style="display:none">
+                <img id="logoPreview" src="" alt="LOGO" style="display:none">
                 <span id="logoText" style="font-size:9px; text-align:center; color:#999;">+ LOGO</span>
             </div>
             <input type="file" id="logoInput" style="display:none" accept="image/*" onchange="cargarLogo(this)">
@@ -159,6 +155,7 @@
                 <div class="input-group"><label>GIRO</label><input type="text" id="cliGiro" readonly></div>
                 <div class="input-group"><label>DIRECCIÓN</label><input type="text" id="cliDir" readonly></div>
                 <div class="input-group"><label>COMUNA</label><input type="text" id="cliComuna" readonly></div>
+                <div class="input-group"><label>REGIÓN</label><input type="text" id="cliRegion" readonly></div>
                 <div class="input-group"><label>CONTACTO</label><input type="text" id="cliContacto" readonly></div>
                 <div class="input-group"><label>EMAIL</label><input type="text" id="cliEmail" readonly></div>
             </div>
@@ -171,7 +168,7 @@
                 <thead>
                     <tr>
                         <th style="width: 30px; text-align:center;">X</th>
-                        <th>DESCRIPCIÓN / CÓDIGO</th>
+                        <th>CÓDIGO / DESCRIPCIÓN</th>
                         <th style="width: 60px; text-align:center;">CANT</th>
                         
                         <th style="width: 90px; background:#EBEDEF; color:#555;">COSTO U.</th>
@@ -187,14 +184,20 @@
             
             <div style="margin-top: 15px; display:flex; justify-content:space-between;">
                 <button onclick="agregarFila()" class="btn-nav" style="background:#34495E;">+ AGREGAR LÍNEA</button>
-                <span style="font-size:10px; color:#C0392B;">* Edita los precios en el botón "Productos"</span>
             </div>
         </div>
 
         <div class="bottom-area">
-            <div class="section-box notes-box" style="margin-bottom:0;">
-                <span class="section-label">OBSERVACIONES / NOTAS</span>
-                <textarea id="txtObservaciones" placeholder="Ej: Forma de pago 50% anticipo. Entrega en 10 días hábiles..."></textarea>
+            <div class="section-box" style="margin-bottom:0;">
+                <span class="section-label">MODALIDAD DE PAGO</span>
+                <select id="cmbPago">
+                    <option value="TRANSFERENCIA">TRANSFERENCIA</option>
+                    <option value="WEBPAY">WEBPAY</option>
+                    <option value="EFECTIVO">EFECTIVO</option>
+                    <option value="CHEQUE 30 DÍAS">CHEQUE 30 DÍAS</option>
+                    <option value="CHEQUE AL DÍA">CHEQUE AL DÍA</option>
+                    <option value="OC 30 DÍAS">OC 30 DÍAS</option>
+                </select>
             </div>
 
             <div class="totals-card">
@@ -275,20 +278,16 @@
         if(v.length > 1) i.value = v.slice(0,-1) + '-' + v.slice(-1);
     };
 
-    // DB Helpers
     const getDB = k => JSON.parse(localStorage.getItem(k) || "[]");
     const setDB = (k,v) => localStorage.setItem(k, JSON.stringify(v));
 
     window.onload = () => {
         document.getElementById('lblFecha').innerText = new Date().toLocaleDateString('es-CL');
-        // Cargar Logo si existe
         const savedLogo = localStorage.getItem(DB_KEYS.LOGO);
         if(savedLogo) {
             document.getElementById('logoPreview').src = savedLogo;
             document.getElementById('logoPreview').style.display = 'block';
-            document.getElementById('logoText').style.display = 'none';
         }
-        // Inicializar
         if(document.getElementById('editIndex').value === "-1") {
              let s = localStorage.getItem(DB_KEYS.SEQ) || 50100;
              document.getElementById('lblCorrelativo').innerText = "CN" + s;
@@ -306,14 +305,13 @@
 
         const hits = getDB(DB_KEYS.CLI).filter(c => c.razon.includes(term) || c.rut.includes(term));
         
-        // Render results
         if(hits.length > 0) {
             hits.forEach(c => {
                 const d = document.createElement('div');
                 d.className = 'search-item';
                 d.innerHTML = `<strong>${c.rut}</strong> ${c.razon}`;
                 d.onclick = () => { 
-                    ['Razon','Rut','Giro','Dir','Comuna','Email','Contacto'].forEach(f => {
+                    ['Razon','Rut','Giro','Dir','Comuna','Region','Email','Contacto'].forEach(f => {
                          if(document.getElementById('cli'+f)) document.getElementById('cli'+f).value = c[f.toLowerCase()]||'';
                     });
                     list.style.display='none'; 
@@ -321,8 +319,6 @@
                 list.appendChild(d);
             });
         }
-        
-        // Option Create
         const create = document.createElement('div');
         create.className = 'search-item create-new';
         create.innerHTML = `+ CREAR NUEVO: "${term}"`;
@@ -345,7 +341,9 @@
             <td><input type="text" class="cell-edit cell-locked u-price" readonly></td>
             <td><input type="text" class="cell-edit cell-locked t-price" readonly></td>
             <td><input type="text" class="cell-edit cell-locked util" readonly style="font-size:9px"></td>
-            <input type="hidden" class="raw-cost" value="0"><input type="hidden" class="raw-price" value="0">
+            <input type="hidden" class="raw-cost" value="0">
+            <input type="hidden" class="raw-price" value="0">
+            <input type="hidden" class="raw-cod" value="">
         `;
         document.querySelector('#tablaItems tbody').appendChild(tr);
     }
@@ -366,6 +364,7 @@
                 d.onclick=()=>{
                     input.value=`${p.cod} - ${p.desc}`;
                     const row = input.closest('tr');
+                    row.querySelector('.raw-cod').value=p.cod;
                     row.querySelector('.raw-cost').value=p.costo;
                     row.querySelector('.raw-price').value=p.precio;
                     row.querySelector('.u-cost').value=formatMoney(p.costo);
@@ -399,7 +398,6 @@
             neto += tp; util += (tp-tc);
         });
 
-        // Descuentos
         const descPorc = parseFloat(document.getElementById('txtDescPorc').value)||0;
         const descMonto = neto * (descPorc/100);
         const netoFinal = neto - descMonto;
@@ -433,17 +431,17 @@
             });
             btn.onclick = () => openForm('CLI', -1);
         } else if(type==='productos') {
-            document.getElementById('modalTitle').innerText="BASE DE PRODUCTOS";
-            thead.innerHTML=`<tr><th>COD</th><th>DESC</th><th>VENTA</th><th>ACCIÓN</th></tr>`;
+            document.getElementById('modalTitle').innerText="BASE DE PRODUCTOS (COMPLETO)";
+            // CORRECCIÓN SOLICITADA: MOSTRAR TODOS LOS DATOS
+            thead.innerHTML=`<tr><th>COD</th><th>DESC</th><th>COSTO</th><th>VENTA</th><th>ACCIÓN</th></tr>`;
             getDB(DB_KEYS.PROD).forEach((p,i)=> {
-                tbody.innerHTML+=`<tr><td>${p.cod}</td><td>${p.desc}</td><td>${formatMoney(p.precio)}</td><td>
+                tbody.innerHTML+=`<tr><td>${p.cod}</td><td>${p.desc}</td><td>${formatMoney(p.costo)}</td><td>${formatMoney(p.precio)}</td><td>
                 <button class="btn-small" style="background:#F39C12" onclick="openForm('PROD',${i})">EDIT</button>
                 <button class="btn-small" style="background:#C0392B" onclick="delItem('${DB_KEYS.PROD}',${i},'productos')">DEL</button></td></tr>`;
             });
             btn.onclick = () => openForm('PROD', -1);
         } else {
-            // Historial
-            document.getElementById('modalTitle').innerText="HISTORIAL DE COTIZACIONES";
+            document.getElementById('modalTitle').innerText="HISTORIAL";
             btn.style.display='none';
             thead.innerHTML=`<tr><th>FOLIO</th><th>FECHA</th><th>CLIENTE</th><th>TOTAL</th><th>ACCIÓN</th></tr>`;
             getDB(DB_KEYS.HIST).forEach((h,i)=> {
@@ -469,19 +467,17 @@
         document.getElementById('formIdx').value=idx;
         content.innerHTML='';
         
-        const isNew = idx===-1;
-        document.getElementById('formTitle').innerText = isNew ? "NUEVO REGISTRO" : "EDITAR REGISTRO";
-        
         let data = {};
-        if(!isNew) data = getDB(type==='CLI'?DB_KEYS.CLI:DB_KEYS.PROD)[idx];
+        if(idx!==-1) data = getDB(type==='CLI'?DB_KEYS.CLI:DB_KEYS.PROD)[idx];
 
         if(type==='CLI') {
             const fields = [
-                {id:'rut',l:'RUT',fn:'formatearRut(this)'}, {id:'razon',l:'RAZÓN SOCIAL'},
-                {id:'giro',l:'GIRO'}, {id:'dir',l:'DIRECCIÓN'}, {id:'comuna',l:'COMUNA'},
+                {id:'rut',l:'RUT'}, {id:'razon',l:'RAZÓN SOCIAL'},
+                {id:'giro',l:'GIRO'}, {id:'dir',l:'DIRECCIÓN'}, 
+                {id:'comuna',l:'COMUNA'}, {id:'region',l:'REGIÓN'},
                 {id:'email',l:'EMAIL'}, {id:'contacto',l:'CONTACTO'}
             ];
-            fields.forEach(f => content.innerHTML+=`<div class="input-group"><label>${f.l}</label><input id="f_${f.id}" value="${data[f.id]||''}" oninput="upper(this);${f.fn||''}"></div>`);
+            fields.forEach(f => content.innerHTML+=`<div class="input-group"><label>${f.l}</label><input id="f_${f.id}" value="${data[f.id]||''}" oninput="upper(this)"></div>`);
         } else {
             content.innerHTML+=`
             <div class="input-group"><label>CÓDIGO</label><input id="f_cod" value="${data.cod||''}" oninput="upper(this)"></div>
@@ -502,8 +498,8 @@
         if(type==='CLI') {
             obj = { rut:document.getElementById('f_rut').value, razon:document.getElementById('f_razon').value, 
                     giro:document.getElementById('f_giro').value, dir:document.getElementById('f_dir').value,
-                    comuna:document.getElementById('f_comuna').value, email:document.getElementById('f_email').value,
-                    contacto:document.getElementById('f_contacto').value };
+                    comuna:document.getElementById('f_comuna').value, region:document.getElementById('f_region').value,
+                    email:document.getElementById('f_email').value, contacto:document.getElementById('f_contacto').value };
             if(!obj.rut) return alert("RUT Obligatorio");
         } else {
             obj = { cod:document.getElementById('f_cod').value, desc:document.getElementById('f_desc').value,
@@ -514,14 +510,9 @@
         if(idx===-1) db.push(obj); else db[idx]=obj;
         setDB(key, db);
         document.getElementById('modalForm').style.display='none';
-        
-        // Refrescar si está abierto el gestor
-        if(document.getElementById('modalGestor').style.display!=='none') {
-            abrirGestor(type==='CLI'?'clientes':'productos');
-        }
+        if(document.getElementById('modalGestor').style.display!=='none') abrirGestor(type==='CLI'?'clientes':'productos');
     }
 
-    // --- 4. BACKUP & LOGO ---
     function cargarLogo(input) {
         if(input.files && input.files[0]) {
             const reader = new FileReader();
@@ -529,7 +520,6 @@
                 localStorage.setItem(DB_KEYS.LOGO, e.target.result);
                 document.getElementById('logoPreview').src = e.target.result;
                 document.getElementById('logoPreview').style.display = 'block';
-                document.getElementById('logoText').style.display = 'none';
             };
             reader.readAsDataURL(input.files[0]);
         }
@@ -538,10 +528,9 @@
     function descargarRespaldo() {
         const data = JSON.stringify(localStorage);
         const blob = new Blob([data], {type: "application/json"});
-        const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
-        a.href = url;
-        a.download = `RESPALDO_CUNDO_${new Date().toISOString().slice(0,10)}.json`;
+        a.href = URL.createObjectURL(blob);
+        a.download = `CUNTEL_BACKUP_${new Date().toISOString().slice(0,10)}.json`;
         a.click();
     }
 
@@ -553,14 +542,13 @@
             try {
                 const data = JSON.parse(e.target.result);
                 Object.keys(data).forEach(k => localStorage.setItem(k, data[k]));
-                alert("Respaldo cargado correctamente. La página se recargará.");
+                alert("Restauración completada.");
                 location.reload();
-            } catch(err) { alert("Error al leer archivo"); }
+            } catch(err) { alert("Error archivo"); }
         };
         reader.readAsText(file);
     }
 
-    // --- 5. GUARDAR Y PDF ---
     function loadHistory(i) {
         const h = getDB(DB_KEYS.HIST)[i];
         document.getElementById('editIndex').value = i;
@@ -568,15 +556,13 @@
         document.getElementById('modalGestor').style.display='none';
         
         document.getElementById('lblCorrelativo').innerText = h.n;
-        document.getElementById('txtObservaciones').value = h.obs || "";
+        document.getElementById('cmbPago').value = h.pago || "TRANSFERENCIA";
         document.getElementById('txtDescPorc').value = h.descPorc || 0;
         
-        // Cargar Cliente
-        ['Razon','Rut','Giro','Dir','Comuna','Email','Contacto'].forEach(f => {
+        ['Razon','Rut','Giro','Dir','Comuna','Region','Email','Contacto'].forEach(f => {
             if(document.getElementById('cli'+f)) document.getElementById('cli'+f).value = h.cli[f.toLowerCase()]||'';
         });
 
-        // Cargar Items
         const tbody = document.querySelector('#tablaItems tbody');
         tbody.innerHTML='';
         h.items.forEach(it => {
@@ -590,7 +576,7 @@
             <td><input type="text" class="cell-edit cell-locked u-price" readonly></td>
             <td><input type="text" class="cell-edit cell-locked t-price" readonly></td>
             <td><input type="text" class="cell-edit cell-locked util" readonly style="font-size:9px"></td>
-            <input type="hidden" class="raw-cost" value="${it.c}"><input type="hidden" class="raw-price" value="${it.p}">`;
+            <input type="hidden" class="raw-cost" value="${it.c}"><input type="hidden" class="raw-price" value="${it.p}"><input type="hidden" class="raw-cod" value="${it.cd||''}">`;
             tbody.appendChild(tr);
             tr.querySelector('.u-cost').value=formatMoney(it.c);
             tr.querySelector('.u-price').value=formatMoney(it.p);
@@ -598,20 +584,18 @@
         calcular();
     }
     
-    function nuevaCotizacion() {
-        if(confirm("¿Limpiar formulario?")) location.reload();
-    }
+    function nuevaCotizacion() { if(confirm("¿Limpiar?")) location.reload(); }
 
     function guardarYGenerar() {
         if(!document.getElementById('cliRazon').value) return alert("Falta Cliente");
 
-        // Datos
         const cli = {
             razon: document.getElementById('cliRazon').value,
             rut: document.getElementById('cliRut').value,
             giro: document.getElementById('cliGiro').value,
             dir: document.getElementById('cliDir').value,
             comuna: document.getElementById('cliComuna').value,
+            region: document.getElementById('cliRegion').value,
             email: document.getElementById('cliEmail').value,
             contacto: document.getElementById('cliContacto').value
         };
@@ -621,27 +605,27 @@
             const desc = tr.querySelector('.cell-edit').value;
             if(desc) items.push({
                 d: desc,
+                cd: tr.querySelector('.raw-cod').value || '',
                 q: parseFloat(tr.querySelector('.cell-qty').value)||0,
                 c: parseFloat(tr.querySelector('.raw-cost').value)||0,
                 p: parseFloat(tr.querySelector('.raw-price').value)||0
             });
         });
 
-        if(items.length===0) return alert("Agregue al menos 1 item");
+        if(items.length===0) return alert("Agregue Items");
 
         const nCot = document.getElementById('lblCorrelativo').innerText;
         const total = document.getElementById('txtTotal').innerText;
-        const obs = document.getElementById('txtObservaciones').value;
+        const pago = document.getElementById('cmbPago').value;
         const descPorc = document.getElementById('txtDescPorc').value;
         
-        const registro = { n: nCot, fecha: document.getElementById('lblFecha').innerText, cli, items, total, obs, descPorc };
+        const registro = { n: nCot, fecha: document.getElementById('lblFecha').innerText, cli, items, total, pago, descPorc };
         
         const hist = getDB(DB_KEYS.HIST);
         const editIdx = parseInt(document.getElementById('editIndex').value);
 
-        if(editIdx > -1) {
-            hist[editIdx] = registro;
-        } else {
+        if(editIdx > -1) hist[editIdx] = registro;
+        else {
             hist.push(registro);
             let s = parseInt(nCot.replace('CN',''));
             localStorage.setItem(DB_KEYS.SEQ, s+1);
@@ -656,64 +640,65 @@
         const doc = new jsPDF();
         const azul = [31, 111, 139];
         
-        // Logo
         const logo = localStorage.getItem(DB_KEYS.LOGO);
         if(logo) doc.addImage(logo, 'PNG', 15, 15, 25, 25);
         
-        // Header
         doc.setFontSize(22); doc.setTextColor(...azul); doc.setFont("helvetica","bold");
-        doc.text("CUNDO SPA", 50, 25);
+        doc.text("INGENIERIA CUNTEL SPA", 50, 25);
         doc.setFontSize(9); doc.setTextColor(100); doc.setFont("helvetica","normal");
-        doc.text("INGENIERÍA Y SERVICIOS INTEGRALES", 50, 30);
-        doc.text("WEB: WWW.CUNDOSPA.CL | CONTACTO@CUNDOSPA.CL", 50, 35);
+        doc.text("SOLUCIONES INTEGRALES", 50, 30);
+        doc.text("WEB: WWW.CUNTEL.CL | CONTACTO@CUNTEL.CL", 50, 35);
         
-        // Caja Info
         doc.setFillColor(245,245,245); doc.rect(140, 15, 55, 20, 'F');
         doc.setFontSize(10); doc.setTextColor(242, 92, 5); doc.setFont("helvetica","bold");
         doc.text("COTIZACIÓN", 167, 22, {align:"center"});
         doc.setTextColor(0); doc.text(data.n, 167, 30, {align:"center"});
 
-        // Cliente
         doc.setDrawColor(31, 111, 139); doc.setLineWidth(0.5);
         doc.line(15, 45, 195, 45);
         
         doc.setFontSize(8); doc.setTextColor(...azul); doc.setFont("helvetica","bold");
         doc.text("INFORMACIÓN DEL CLIENTE", 15, 50);
         
+        // CORRECCIÓN SOLICITADA: MOSTRAR TODOS LOS DATOS EN PDF
         doc.setTextColor(0); doc.setFontSize(8); doc.setFont("helvetica","normal");
         const c = data.cli;
         doc.text(`RAZÓN SOCIAL: ${c.razon}`, 15, 56); doc.text(`RUT: ${c.rut}`, 120, 56);
-        doc.text(`DIRECCIÓN: ${c.dir}`, 15, 61); doc.text(`COMUNA: ${c.comuna}`, 120, 61);
-        doc.text(`ATENCIÓN: ${c.contacto}`, 15, 66); doc.text(`EMAIL: ${c.email}`, 120, 66);
+        doc.text(`GIRO: ${c.giro}`, 15, 61); doc.text(`DIRECCIÓN: ${c.dir}`, 120, 61);
+        doc.text(`COMUNA: ${c.comuna}`, 15, 66); doc.text(`REGIÓN: ${c.region}`, 120, 66);
+        doc.text(`CONTACTO: ${c.contacto}`, 15, 71); doc.text(`EMAIL: ${c.email}`, 120, 71);
 
-        // Tabla
-        const rows = data.items.map(i => [i.q, i.d, formatMoney(i.p), formatMoney(i.q*i.p)]);
+        // CORRECCIÓN SOLICITADA: COLUMNAS PDF (ITEM, COD, DESC, P.UNIT, TOTAL)
+        // Nota: Agrego la cantidad en la descripción para que tenga sentido matemático
+        const rows = data.items.map((i, idx) => [
+            idx + 1,
+            i.cd,
+            `(CANT: ${i.q}) ${i.d}`, 
+            formatMoney(i.p), 
+            formatMoney(i.q*i.p)
+        ]);
+
         doc.autoTable({
-            startY: 75,
-            head: [['CANT', 'DESCRIPCIÓN', 'P.UNITARIO', 'TOTAL']],
+            startY: 80,
+            head: [['ITEM', 'CÓDIGO', 'DESCRIPCIÓN', 'P.UNITARIO', 'TOTAL']],
             body: rows,
             theme: 'plain',
             styles: { fontSize: 8, cellPadding: 3 },
             headStyles: { fillColor: azul, textColor: 255, fontStyle:'bold' },
-            columnStyles: { 0:{halign:'center'}, 2:{halign:'right'}, 3:{halign:'right', fontStyle:'bold'} },
+            columnStyles: { 0:{halign:'center', cellWidth:10}, 1:{cellWidth:25}, 3:{halign:'right'}, 4:{halign:'right', fontStyle:'bold'} },
             didParseCell: d => { if(d.section==='body' && d.row.index%2===0) d.cell.styles.fillColor=[250,250,250]; }
         });
 
         const finalY = doc.lastAutoTable.finalY + 5;
         
-        // Totales y Obs
-        if(data.obs) {
-            doc.setFontSize(8); doc.setTextColor(0); doc.setFont("helvetica","bold");
-            doc.text("OBSERVACIONES:", 15, finalY + 5);
-            doc.setFont("helvetica","normal");
-            doc.text(doc.splitTextToSize(data.obs, 100), 15, finalY + 10);
-        }
+        doc.setFontSize(8); doc.setTextColor(0); doc.setFont("helvetica","bold");
+        doc.text("MODALIDAD DE PAGO:", 15, finalY + 5);
+        doc.setFont("helvetica","normal");
+        doc.text(data.pago, 50, finalY + 5);
 
         const boxX = 130;
         let y = finalY + 5;
-        doc.setFontSize(8); doc.setTextColor(0);
         
-        // Recalcular para PDF limpio
         const neto = data.items.reduce((a,b)=>a+(b.q*b.p),0);
         const desc = neto * (data.descPorc/100);
         const netoF = neto - desc;
@@ -729,6 +714,11 @@
         doc.setFillColor(...azul); doc.rect(boxX-5, y-4, 75, 12, 'F');
         doc.setTextColor(255); doc.setFontSize(10); doc.setFont("helvetica","bold");
         doc.text("TOTAL:", boxX, y+3); doc.text(formatMoney(netoF+iva), 195, y+3, {align:'right'});
+
+        // CORRECCIÓN SOLICITADA: PIE DE FIRMA
+        const pageHeight = doc.internal.pageSize.height;
+        doc.setTextColor(150); doc.setFontSize(7); doc.setFont("helvetica","normal");
+        doc.text("Generado por INGENIERIA CUNTEL SPA", 105, pageHeight - 10, {align:"center"});
 
         doc.save(`Cotizacion_${data.n}.pdf`);
         setTimeout(() => location.reload(), 2000);
