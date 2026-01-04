@@ -1,15 +1,14 @@
-<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SISTEMA PRO V13 - INGENIERIA CUNTEL SPA</title>
+    <title>SISTEMA PRO V14 - CUNTEL SPA</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
 
     <style>
-        /* --- ESTILOS GENERALES (V12 Base) --- */
+        /* --- ESTILOS GENERALES --- */
         :root {
             --primary: #1F6F8B;
             --secondary: #F25C05;
@@ -58,7 +57,7 @@
         .input-group input:focus, .input-group select:focus { border-color: var(--secondary); outline: none; background: #fff; }
         .input-group input[readonly] { background: #F2F4F4; color: #777; cursor: default; }
 
-        /* === RESTAURADO: SMART SEARCH BAR (V11) === */
+        /* === SMART SEARCH BAR === */
         .smart-search-wrapper { position: relative; margin-bottom: 15px; display: flex; gap: 10px; flex-wrap: wrap; }
         .smart-search-input { 
             flex: 1; padding: 10px 15px; font-size: 12px; 
@@ -758,4 +757,93 @@
         doc.text("SOLUCIONES INTEGRALES", 50, 30);
         doc.text("WEB: WWW.CUNTEL.CL | CONTACTO@CUNTEL.CL", 50, 35);
         
-        doc.setFillColor(245,
+        doc.setFillColor(245,245,245); doc.rect(140, 15, 55, 20, 'F');
+        doc.setFontSize(10); doc.setTextColor(242, 92, 5); doc.setFont("helvetica","bold");
+        doc.text("COTIZACIÓN", 167, 22, {align:"center"});
+        doc.setTextColor(0); doc.text(data.n, 167, 30, {align:"center"});
+
+        doc.setDrawColor(31, 111, 139); doc.setLineWidth(0.5);
+        doc.line(15, 45, 195, 45);
+        
+        doc.setFontSize(8); doc.setTextColor(...azul); doc.setFont("helvetica","bold");
+        doc.text("INFORMACIÓN DEL CLIENTE", 15, 50);
+        
+        doc.setTextColor(0); doc.setFontSize(8); doc.setFont("helvetica","normal");
+        const c = data.cli;
+        doc.text(`RAZÓN SOCIAL: ${c.razon}`, 15, 56); doc.text(`RUT: ${c.rut}`, 120, 56);
+        doc.text(`GIRO: ${c.giro}`, 15, 61); doc.text(`DIRECCIÓN: ${c.dir}`, 120, 61);
+        doc.text(`COMUNA: ${c.comuna}`, 15, 66); doc.text(`REGIÓN: ${c.region}`, 120, 66);
+        doc.text(`CONTACTO: ${c.contacto}`, 15, 71); doc.text(`EMAIL: ${c.email}`, 120, 71);
+
+        // Columnas Solicitadas: Nº | CÓDIGO | DESCRIPCIÓN | CANTIDAD | P. UNITARIO | TOTAL
+        const rows = data.items.map((i, idx) => [
+            idx + 1,
+            i.cd === "MANUAL" ? "-" : i.cd,
+            i.d,
+            i.q, 
+            formatMoney(i.p), 
+            formatMoney(i.q*i.p)
+        ]);
+
+        doc.autoTable({
+            startY: 80,
+            head: [['Nº', 'CÓDIGO', 'DESCRIPCIÓN', 'CANTIDAD', 'P. UNITARIO', 'TOTAL']],
+            body: rows,
+            theme: 'plain',
+            styles: { fontSize: 8, cellPadding: 3 },
+            headStyles: { fillColor: azul, textColor: 255, fontStyle:'bold' },
+            columnStyles: { 
+                0:{halign:'center', cellWidth:10}, 
+                1:{cellWidth:20}, 
+                3:{halign:'center', cellWidth:20}, 
+                4:{halign:'right'}, 
+                5:{halign:'right', fontStyle:'bold'} 
+            },
+            didParseCell: d => { if(d.section==='body' && d.row.index%2===0) d.cell.styles.fillColor=[250,250,250]; }
+        });
+
+        const finalY = doc.lastAutoTable.finalY + 5;
+        
+        doc.setFontSize(8); doc.setTextColor(0); doc.setFont("helvetica","bold");
+        doc.text("MODALIDAD DE PAGO:", 15, finalY + 5);
+        doc.setFont("helvetica","normal");
+        doc.text(data.pago, 50, finalY + 5);
+        
+        if(data.obs) {
+             const obsY = finalY + 12;
+             doc.setFont("helvetica","bold");
+             doc.text("OBSERVACIONES:", 15, obsY);
+             doc.setFont("helvetica","normal");
+             const splitObs = doc.splitTextToSize(data.obs, 100);
+             doc.text(splitObs, 15, obsY + 5);
+        }
+
+        const boxX = 130;
+        let y = finalY + 5;
+        
+        const neto = data.items.reduce((a,b)=>a+(b.q*b.p),0);
+        const desc = neto * (data.descPorc/100);
+        const netoF = neto - desc;
+        const iva = netoF * 0.19;
+
+        doc.text("SUBTOTAL:", boxX, y); doc.text(formatMoney(neto), 195, y, {align:'right'}); y+=5;
+        if(desc > 0) {
+            doc.text(`DESCUENTO (${data.descPorc}%):`, boxX, y); doc.text("- "+formatMoney(desc), 195, y, {align:'right'}); y+=5;
+        }
+        doc.text("NETO:", boxX, y); doc.text(formatMoney(netoF), 195, y, {align:'right'}); y+=5;
+        doc.text("IVA (19%):", boxX, y); doc.text(formatMoney(iva), 195, y, {align:'right'}); y+=7;
+        
+        doc.setFillColor(...azul); doc.rect(boxX-5, y-4, 75, 12, 'F');
+        doc.setTextColor(255); doc.setFontSize(10); doc.setFont("helvetica","bold");
+        doc.text("TOTAL:", boxX, y+3); doc.text(formatMoney(netoF+iva), 195, y+3, {align:'right'});
+
+        const pageHeight = doc.internal.pageSize.height;
+        doc.setTextColor(150); doc.setFontSize(7); doc.setFont("helvetica","normal");
+        doc.text("Generado por INGENIERIA CUNTEL SPA", 105, pageHeight - 10, {align:"center"});
+
+        doc.save(`Cotizacion_${data.n}.pdf`);
+        setTimeout(() => location.reload(), 2000);
+    }
+</script>
+</body>
+</html>
