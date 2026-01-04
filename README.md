@@ -1,9 +1,8 @@
-<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SISTEMA PRO V11 - INGENIERIA CUNTEL SPA</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SISTEMA PRO V12 - INGENIERIA CUNTEL SPA</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
@@ -13,111 +12,107 @@
         :root {
             --primary: #1F6F8B;
             --secondary: #F25C05;
-            --bg: #F0F2F5;
+            --bg: #EAEDED;
             --text: #2C3E50;
             --dark: #17202A;
             --green: #27AE60;
-            --light-white: #ffffff;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; text-transform: uppercase; }
         body { background: var(--bg); padding: 15px; color: var(--text); font-size: 11px; padding-bottom: 80px; }
         
-        .main-container { max-width: 1400px; margin: 0 auto; background: white; min-height: 100vh; box-shadow: 0 10px 40px rgba(0,0,0,0.08); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; }
+        .main-container { max-width: 1400px; margin: 0 auto; background: white; min-height: 100vh; box-shadow: 0 5px 30px rgba(0,0,0,0.15); border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; }
 
         /* TOP BAR */
-        .top-bar { background: var(--dark); color: white; padding: 12px 25px; display: flex; justify-content: space-between; align-items: center; }
-        .top-menu { display: flex; gap: 10px; }
-        .btn-nav { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 8px 15px; cursor: pointer; border-radius: 6px; font-size: 10px; font-weight: bold; transition: 0.2s; display: flex; align-items: center; gap: 6px; }
+        .top-bar { background: var(--dark); color: white; padding: 10px 20px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; }
+        .top-menu { display: flex; gap: 8px; flex-wrap: wrap; }
+        .btn-nav { background: #34495E; border: 1px solid #566573; color: white; padding: 6px 12px; cursor: pointer; border-radius: 3px; font-size: 10px; font-weight: bold; transition: 0.2s; display: flex; align-items: center; gap: 5px; white-space: nowrap; }
         .btn-nav:hover { background: var(--secondary); border-color: var(--secondary); }
+        .btn-backup { background: #27AE60; border-color: #1E8449; }
 
         /* HEADER */
-        .header { padding: 30px 40px; display: flex; justify-content: space-between; border-bottom: 3px solid var(--secondary); background: white; align-items: center; }
-        .brand-area { display: flex; align-items: center; gap: 20px; }
-        .logo-placeholder { width: 70px; height: 70px; background: #f8f9fa; border: 2px dashed #cbd5e0; display: flex; align-items: center; justify-content: center; cursor: pointer; overflow: hidden; border-radius: 8px; transition: 0.3s; }
-        .logo-placeholder:hover { border-color: var(--primary); background: #fff; }
+        .header { padding: 20px; display: flex; flex-wrap: wrap; justify-content: space-between; border-bottom: 3px solid var(--secondary); background: white; align-items: center; gap: 20px; }
+        
+        .brand-area { display: flex; align-items: center; gap: 15px; }
+        .logo-placeholder { width: 60px; height: 60px; background: #eee; border: 2px dashed #ccc; display: flex; align-items: center; justify-content: center; cursor: pointer; overflow: hidden; border-radius: 4px; flex-shrink: 0; }
         .logo-placeholder img { width: 100%; height: 100%; object-fit: contain; }
         
-        .brand h1 { color: var(--primary); font-size: 26px; font-weight: 900; margin: 0; letter-spacing: -0.5px; }
-        .brand p { color: #7F8C8D; font-size: 10px; font-weight: 700; margin-top: 4px; }
-        .quote-number { font-size: 24px; font-weight: 800; color: var(--secondary); }
+        .brand h1 { color: var(--primary); font-size: 20px; font-weight: 900; margin: 0; word-break: break-word; }
+        .brand p { color: #7F8C8D; font-size: 10px; font-weight: 600; }
+
+        .quote-data { text-align: right; }
+        .quote-number { font-size: 18px; font-weight: bold; color: var(--secondary); white-space: nowrap; }
+        
+        #bar-edicion { display: none; background: #FFF3CD; color: #856404; text-align: center; padding: 8px; font-weight: bold; border-bottom: 1px solid #FFEEBA; }
 
         /* CONTENIDO */
-        .content { padding: 30px 40px; }
-        .section-box { margin-bottom: 30px; border: 1px solid #E2E8F0; border-radius: 8px; padding: 25px; background: #fff; position: relative; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
-        .section-label { position: absolute; top: -12px; left: 20px; background: var(--primary); color: white; padding: 4px 12px; font-size: 10px; font-weight: bold; border-radius: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        .content { padding: 20px; }
+        .section-box { margin-bottom: 25px; border: 1px solid #D5DBDB; border-radius: 5px; padding: 15px; background: #FBFCFC; position: relative; }
+        .section-label { position: absolute; top: -10px; left: 15px; background: var(--primary); color: white; padding: 3px 10px; font-size: 10px; font-weight: bold; border-radius: 3px; }
 
         /* INPUTS */
-        .grid-form { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
-        .input-group label { display: block; font-size: 9px; font-weight: 700; color: #64748B; margin-bottom: 5px; }
-        .input-group input, .input-group select { width: 100%; padding: 8px 12px; border: 1px solid #CBD5E1; border-radius: 6px; font-size: 11px; font-weight: 600; color: var(--dark); height: 36px; transition: 0.2s; }
-        .input-group input:focus, .input-group select:focus { border-color: var(--secondary); outline: none; box-shadow: 0 0 0 3px rgba(242, 92, 5, 0.1); }
-        .input-group input[readonly] { background: #F1F5F9; color: #64748B; cursor: default; }
+        .grid-form { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+        .input-group label { display: block; font-size: 9px; font-weight: bold; color: #7F8C8D; margin-bottom: 4px; }
+        .input-group input, .input-group select { width: 100%; padding: 6px 10px; border: 1px solid #D5DBDB; border-radius: 3px; font-size: 11px; font-weight: 600; color: var(--dark); height: 35px; }
+        .input-group input:focus, .input-group select:focus { border-color: var(--secondary); outline: none; background: #fff; }
+        .input-group input[readonly] { background: #F2F4F4; color: #777; cursor: default; }
 
-        /* === NUEVA SECCIÓN: SMART SEARCH === */
-        .smart-search-wrapper { position: relative; margin-bottom: 20px; display: flex; gap: 10px; }
-        .smart-search-input { 
-            width: 100%; padding: 12px 15px; font-size: 12px; 
-            border: 2px solid #E2E8F0; border-radius: 8px; 
-            background: #F8FAFC url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="%23999" viewBox="0 0 16 16"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/></svg>') no-repeat 15px center;
-            padding-left: 40px; transition: 0.3s;
-        }
-        .smart-search-input:focus { border-color: var(--primary); background-color: #fff; box-shadow: 0 5px 15px rgba(31, 111, 139, 0.1); }
-        
-        .smart-results { 
-            position: absolute; top: 110%; left: 0; width: 100%; 
-            background: white; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); 
-            z-index: 100; max-height: 300px; overflow-y: auto; display: none; border: 1px solid #E2E8F0;
-        }
-        .smart-item { padding: 12px 15px; border-bottom: 1px solid #F1F5F9; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: 0.1s; }
-        .smart-item:hover { background: #F0F9FF; }
-        .smart-item .main-text { font-weight: bold; color: var(--dark); font-size: 11px; }
-        .smart-item .sub-text { font-size: 10px; color: #64748B; margin-left: 10px; }
-        .smart-item .price-tag { background: #E0F2FE; color: var(--primary); padding: 3px 8px; border-radius: 4px; font-weight: bold; font-size: 10px; }
-        
-        /* TABLE MODERN */
-        .table-container { border: 1px solid #E2E8F0; border-radius: 8px; overflow: hidden; }
-        table { width: 100%; border-collapse: collapse; font-size: 11px; }
-        th { background: #F8FAFC; color: #475569; padding: 12px 10px; text-align: left; font-weight: 700; border-bottom: 2px solid #E2E8F0; }
-        td { border-bottom: 1px solid #F1F5F9; padding: 0; height: 38px; vertical-align: middle; }
-        tr:hover td { background: #FAFAFA; }
+        /* BUSCADOR */
+        .search-container { position: relative; margin-bottom: 15px; }
+        .search-results { position: absolute; top: 100%; left: 0; width: 100%; background: white; border: 1px solid #3498DB; box-shadow: 0 8px 20px rgba(0,0,0,0.15); z-index: 500; display: none; max-height: 250px; overflow-y: auto; }
+        .search-item { padding: 10px; cursor: pointer; border-bottom: 1px solid #eee; font-size: 11px; }
+        .search-item:hover { background: #EBF5FB; color: var(--primary); }
+        .create-new { background: #FDEDEC; color: #C0392B; font-weight: bold; }
 
-        input.cell-edit { width: 100%; height: 100%; border: none; padding: 0 10px; font-size: 11px; background: transparent; transition: 0.2s; }
-        input.cell-edit:focus { background: white; outline: 2px solid var(--secondary); z-index: 2; position: relative; }
+        /* TABLA RESPONSIVE */
+        .table-responsive { overflow-x: auto; -webkit-overflow-scrolling: touch; margin-bottom: 15px; border: 1px solid #D5DBDB; border-radius: 4px; }
+        table { width: 100%; border-collapse: collapse; font-size: 10px; min-width: 800px; } /* Min width para evitar colapso */
+        th { background: var(--primary); color: white; padding: 10px; text-align: left; white-space: nowrap; }
+        td { border: 1px solid #D5DBDB; padding: 0; height: 32px; }
         
-        /* Colores de columnas */
-        .col-cost { background: #FEF2F2; color: #991B1B; } /* Rojo suave para costos */
-        .col-price { background: #F0FDF4; color: #166534; } /* Verde suave para venta */
-        .col-locked { pointer-events: none; }
+        input.cell-edit { width: 100%; height: 100%; border: none; padding: 0 8px; font-size: 11px; background: transparent; }
+        input.cell-edit:focus { outline: 2px solid var(--secondary); background: white; z-index: 10; position: relative; }
+        input.cell-locked { background: #F8F9F9; color: #777; text-align: right; cursor: not-allowed; }
+        input.cell-qty { text-align: center; font-weight: bold; color: var(--primary); }
+        
+        .col-util-porc { background: #E8F8F5; color: #117864; font-weight: bold; text-align: right; }
 
-        /* Margen Indicator */
-        .margin-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 5px; }
-        .dot-green { background: #22C55E; }
-        .dot-red { background: #EF4444; }
+        /* BOTTOM AREA (Layout Cambiante) */
+        .bottom-area { display: grid; grid-template-columns: 1fr 350px; gap: 20px; margin-top: 20px; }
+        
+        /* OBSERVACIONES LIMITADO */
+        .notes-box textarea { width: 100%; height: 100px; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-family: inherit; resize: none; box-sizing: border-box; }
 
-        /* TOTALS AREA */
-        .bottom-area { display: grid; grid-template-columns: 1fr 380px; gap: 30px; margin-top: 30px; }
-        .notes-box textarea { width: 100%; height: 120px; border: 1px solid #CBD5E1; border-radius: 6px; padding: 10px; resize: none; font-size: 11px; }
+        .totals-card { background: white; border: 1px solid #D5DBDB; padding: 15px; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .t-row { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 11px; font-weight: 600; color: #555; align-items: center; }
         
-        .totals-card { background: #F8FAFC; border: 1px solid #E2E8F0; padding: 20px; border-radius: 8px; }
-        .t-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 11px; font-weight: 600; color: #475569; align-items: center; }
-        
-        .final-total { background: var(--primary); color: white; padding: 15px; border-radius: 6px; margin-top: 15px; display: flex; justify-content: space-between; align-items: center; }
-        .final-total .label { font-size: 12px; font-weight: bold; }
-        .final-total .value { font-size: 20px; font-weight: 900; }
+        .final-row { border-top: 2px solid var(--secondary); padding-top: 10px; margin-top: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .total-price { font-size: 20px; font-weight: 900; color: var(--primary); }
+        .util-label { font-size: 10px; color: var(--green); font-weight: bold; display: block; text-align: right; }
 
         /* BOTONES */
-        .action-area { text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px dashed #CBD5E1; }
-        .btn-main { background: linear-gradient(135deg, var(--secondary) 0%, #D35400 100%); color: white; padding: 15px 50px; font-size: 14px; font-weight: 800; border: none; border-radius: 50px; cursor: pointer; box-shadow: 0 10px 20px rgba(242, 92, 5, 0.3); transition: transform 0.2s; }
-        .btn-main:hover { transform: translateY(-2px); }
+        .action-area { text-align: center; margin-top: 30px; border-top: 1px dashed #BDC3C7; padding-top: 20px; }
+        .btn-main { background: var(--secondary); color: white; padding: 14px 40px; font-size: 14px; font-weight: 800; border: none; border-radius: 4px; cursor: pointer; box-shadow: 0 4px 15px rgba(242, 92, 5, 0.3); width: 100%; max-width: 400px; }
+        .btn-main:hover { background: #D35400; transform: translateY(-1px); }
+
+        /* MEDIA QUERIES (RESPONSIVE) */
+        @media (max-width: 768px) {
+            .header { flex-direction: column; text-align: center; }
+            .brand-area { flex-direction: column; }
+            .quote-data { text-align: center; width: 100%; margin-top: 10px; }
+            .bottom-area { grid-template-columns: 1fr; }
+            .totals-card { width: 100%; }
+            .top-bar { justify-content: center; }
+            .btn-nav { flex: 1 1 auto; justify-content: center; }
+        }
 
         /* MODALES */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 2000; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
-        .modal-box { background: white; width: 95%; max-width: 1000px; max-height: 90vh; overflow-y: auto; padding: 30px; border-radius: 12px; box-shadow: 0 20px 60px rgba(0,0,0,0.2); }
-        
-        .manage-table { width: 100%; margin-top: 15px; border: 1px solid #E2E8F0; }
-        .manage-table th { padding: 10px; background: #334155; color: white; font-size: 10px; }
-        .manage-table td { padding: 8px; font-size: 10px; border-bottom: 1px solid #F1F5F9; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 2000; align-items: center; justify-content: center; backdrop-filter: blur(2px); }
+        .modal-box { background: white; width: 95%; max-width: 1000px; max-height: 90vh; overflow-y: auto; padding: 20px; border-radius: 6px; }
+        .manage-table { width: 100%; margin-top: 15px; border: 1px solid #ddd; }
+        .manage-table th { padding: 8px; background: #2C3E50; color: white; font-size: 10px; }
+        .manage-table td { padding: 6px; font-size: 10px; border-bottom: 1px solid #eee; }
+        .btn-small { padding: 3px 6px; border: none; color: white; border-radius: 2px; cursor: pointer; font-size: 9px; margin-right: 3px; font-weight: bold; }
 
     </style>
 </head>
@@ -125,16 +120,18 @@
 
 <div class="main-container">
 
+    <div id="bar-edicion">⚠️ MODO EDICIÓN ACTIVO</div>
+
     <div class="top-bar">
-        <div style="font-weight: 800; font-size: 12px; letter-spacing: 1px;">SISTEMA PRO V10</div>
+        <div style="font-weight: 800; font-size: 12px; opacity: 0.8; margin-bottom: 5px;">PANEL DE CONTROL</div>
         <div class="top-menu">
             <button class="btn-nav" onclick="abrirGestor('clientes')">👥 CLIENTES</button>
             <button class="btn-nav" onclick="abrirGestor('productos')">📦 PRODUCTOS</button>
             <button class="btn-nav" onclick="abrirGestor('historial')">📜 HISTORIAL</button>
-            <button class="btn-nav btn-backup" onclick="descargarRespaldo()">⬇️ BACKUP</button>
+            <button class="btn-nav btn-backup" onclick="descargarRespaldo()">⬇️ RESPALDAR</button>
             <label for="inputImport" class="btn-nav btn-backup" style="cursor:pointer;">⬆️ RESTAURAR</label>
             <input type="file" id="inputImport" style="display:none" onchange="importarRespaldo(this)">
-            <button class="btn-nav" onclick="nuevaCotizacion()" style="background:#EF4444; border-color:#DC2626;">🔄 NUEVA</button>
+            <button class="btn-nav" onclick="nuevaCotizacion()" style="background:#C0392B;">🔄 LIMPIAR</button>
         </div>
     </div>
 
@@ -142,19 +139,19 @@
         <div class="brand-area">
             <div class="logo-placeholder" onclick="document.getElementById('logoInput').click()">
                 <img id="logoPreview" src="" alt="LOGO" style="display:none">
-                <span id="logoText" style="font-size:9px; text-align:center; color:#94A3B8;">+ LOGO</span>
+                <span id="logoText" style="font-size:9px; text-align:center; color:#999;">+ LOGO</span>
             </div>
             <input type="file" id="logoInput" style="display:none" accept="image/*" onchange="cargarLogo(this)">
             
             <div class="brand">
-                <h1>CUNDO SPA</h1>
+                <h1>INGENIERIA CUNTEL SPA</h1>
                 <p>SOLUCIONES INTEGRALES</p>
             </div>
         </div>
         <div class="quote-data">
-            <span style="font-size:10px; color:#64748B; font-weight:bold;">FOLIO COTIZACIÓN</span>
+            <span style="font-size:9px; color:#999;">FOLIO COTIZACIÓN</span>
             <span class="quote-number" id="lblCorrelativo">...</span>
-            <span style="font-size:11px; font-weight:bold; color:var(--primary); display:block; margin-top:5px;" id="lblFecha"></span>
+            <span style="font-size:11px; font-weight:bold; color:var(--primary); display:block;" id="lblFecha"></span>
         </div>
     </div>
 
@@ -163,9 +160,9 @@
         <div class="section-box">
             <span class="section-label">1. INFORMACIÓN DEL CLIENTE</span>
             
-            <div class="smart-search-wrapper" style="margin-bottom:15px;">
-                <input type="text" id="buscadorCliente" class="smart-search-input" placeholder="Escribe RUT o Nombre del Cliente..." onkeyup="buscarCliente(this)" autocomplete="off">
-                <div id="listaClientes" class="smart-results"></div>
+            <div class="input-group search-container">
+                <input type="text" id="buscadorCliente" placeholder="🔍 BUSCAR (Escribe 2 letras, RUT o Nombre)..." onkeyup="buscarCliente(this)" autocomplete="off" style="border: 2px solid var(--primary);">
+                <div id="listaClientes" class="search-results"></div>
             </div>
 
             <div class="grid-form">
@@ -183,38 +180,36 @@
         <div class="section-box">
             <span class="section-label">2. ÍTEMS Y COSTOS</span>
             
-            <div class="smart-search-wrapper">
-                <input type="text" id="smartProductSearch" class="smart-search-input" placeholder="✨ Buscador Inteligente: Escribe Código o Nombre del producto para añadir..." onkeyup="smartSearchProduct(this)" autocomplete="off">
-                <div id="smartProductResults" class="smart-results"></div>
-                <button class="btn-nav" style="background:#334155;" onclick="agregarFilaManual()">+ MANUAL</button>
-            </div>
-
-            <div class="table-container">
+            <div class="table-responsive">
                 <table id="tablaItems">
                     <thead>
                         <tr>
-                            <th style="width: 40px; text-align:center;"></th>
-                            <th>DESCRIPCIÓN / CÓDIGO</th>
-                            <th style="width: 70px; text-align:center;">CANT</th>
+                            <th style="width: 30px; text-align:center;">X</th>
+                            <th>CÓDIGO / DESCRIPCIÓN</th>
+                            <th style="width: 60px; text-align:center;">CANT</th>
                             
-                            <th style="width: 100px; background:#FEF2F2; color:#7F1D1D;">COSTO U.</th>
-                            <th style="width: 100px; background:#FEF2F2; color:#7F1D1D;">TOTAL COSTO</th>
+                            <th style="width: 90px; background:#EBEDEF; color:#555;">COSTO U.</th>
+                            <th style="width: 90px; background:#EBEDEF; color:#555;">T. COSTO</th>
                             
-                            <th style="width: 100px; background:#F0FDF4; color:#14532D;">PRECIO U.</th>
-                            <th style="width: 100px; background:#F0FDF4; color:#14532D;">TOTAL VENTA</th>
-                            <th style="width: 80px;">UTILIDAD</th>
-                        </tr>
+                            <th style="width: 90px;">PRECIO U.</th>
+                            <th style="width: 90px;">TOTAL</th>
+                            <th style="width: 70px;">% UTIL</th> </tr>
                     </thead>
                     <tbody></tbody>
                 </table>
             </div>
+            
+            <div style="margin-top: 15px; display:flex; justify-content:space-between; flex-wrap: wrap; gap: 10px;">
+                <button onclick="agregarFila()" class="btn-nav" style="background:#34495E;">+ AGREGAR LÍNEA</button>
+            </div>
         </div>
 
         <div class="bottom-area">
-            <div class="section-box" style="margin-bottom:0; border:none; padding:0; box-shadow:none;">
-                <div style="margin-bottom:20px;">
-                    <span style="font-size:10px; font-weight:bold; color:var(--primary); display:block; margin-bottom:5px;">MODALIDAD DE PAGO</span>
-                    <select id="cmbPago" style="width:100%; padding:10px; border:1px solid #CBD5E1; border-radius:6px; font-weight:bold;">
+            <div>
+                <div class="section-box" style="margin-bottom:20px; padding: 15px;">
+                    <span class="section-label">PAGO</span>
+                    <label style="font-size:9px; font-weight:bold; color:#777;">MODALIDAD DE PAGO:</label>
+                    <select id="cmbPago" style="width:100%; margin-top:5px; padding:5px;">
                         <option value="TRANSFERENCIA">TRANSFERENCIA</option>
                         <option value="WEBPAY">WEBPAY</option>
                         <option value="EFECTIVO">EFECTIVO</option>
@@ -223,47 +218,48 @@
                         <option value="OC 30 DÍAS">OC 30 DÍAS</option>
                     </select>
                 </div>
-                <div>
-                    <span style="font-size:10px; font-weight:bold; color:var(--primary); display:block; margin-bottom:5px;">OBSERVACIONES</span>
-                    <textarea id="txtObservaciones" placeholder="Indique condiciones especiales..."></textarea>
+
+                <div class="section-box notes-box" style="margin-bottom:0; padding:15px;">
+                    <span class="section-label">OBSERVACIONES</span>
+                    <textarea id="txtObservaciones" placeholder="Escriba aquí condiciones especiales... (Máx caracteres limitado visualmente)"></textarea>
                 </div>
             </div>
 
             <div class="totals-card">
                 <div class="t-row">
-                    <span>SUBTOTAL NETO</span>
+                    <span>SUBTOTAL NETO:</span>
                     <span id="txtNeto">$0</span>
                 </div>
                 <div class="t-row">
-                    <span>DESCUENTO (%)</span>
-                    <input type="number" id="txtDescPorc" value="0" min="0" max="100" style="width:60px; text-align:right; border:1px solid #ddd; border-radius:4px;" onchange="calcular()">
+                    <span>DESCUENTO (%):</span>
+                    <input type="number" id="txtDescPorc" value="0" min="0" max="100" style="width:50px; text-align:right;" onchange="calcular()">
                 </div>
                 <div class="t-row">
-                    <span>MONTO DESC.</span>
+                    <span>MONTO DESC.:</span>
                     <span id="txtDescMonto">$0</span>
                 </div>
-                <div class="t-row" style="border-top:1px dashed #E2E8F0; padding-top:8px; margin-top:8px;">
-                    <span>NETO FINAL</span>
+                <div class="t-row" style="border-top:1px dashed #ddd; padding-top:5px;">
+                    <span>NETO FINAL:</span>
                     <span id="txtNetoFinal">$0</span>
                 </div>
                 <div class="t-row">
-                    <span>IVA (19%)</span>
+                    <span>IVA (19%):</span>
                     <span id="txtIva">$0</span>
                 </div>
                 
-                <div class="final-total">
-                    <span class="label">TOTAL A PAGAR</span>
-                    <span class="value" id="txtTotal">$0</span>
-                </div>
-                <div style="text-align:right; margin-top:10px; font-size:10px; color:var(--green); font-weight:bold;">
-                    MARGEN UTILIDAD: <span id="txtUtilidad">$0</span>
+                <div class="final-row">
+                    <div style="text-align:right; width:100%;">
+                        <span style="font-size:9px; color:#777;">TOTAL A PAGAR</span>
+                        <div class="total-price" id="txtTotal">$0</div>
+                        <span class="util-label">UTILIDAD: <span id="txtUtilidad">$0</span></span>
+                    </div>
                 </div>
             </div>
         </div>
 
         <div class="action-area">
             <input type="hidden" id="editIndex" value="-1">
-            <button class="btn-main" onclick="guardarYGenerar()">📄 GENERAR COTIZACIÓN OFICIAL</button>
+            <button class="btn-main" onclick="guardarYGenerar()">💾 GUARDAR Y GENERAR PDF</button>
         </div>
 
     </div>
@@ -271,39 +267,39 @@
 
 <div id="modalGestor" class="modal">
     <div class="modal-box">
-        <span class="close-btn" onclick="document.getElementById('modalGestor').style.display='none'" style="float:right; cursor:pointer; font-size:24px; color:#94A3B8;">&times;</span>
-        <h3 id="modalTitle" style="color:var(--primary); margin-bottom:20px;">GESTIÓN</h3>
-        <div style="margin-bottom:15px; text-align:right;">
-             <button id="btnModalNew" class="btn-nav" style="background:var(--primary); float:right;">+ NUEVO REGISTRO</button>
+        <span class="close-btn" onclick="document.getElementById('modalGestor').style.display='none'" style="float:right; cursor:pointer; font-size:20px;">&times;</span>
+        <h3 id="modalTitle">GESTIÓN</h3>
+        <div style="margin-bottom:10px; text-align:right;">
+             <button id="btnModalNew" class="btn-nav" style="background:var(--primary); float:right;">+ NUEVO</button>
              <div style="clear:both;"></div>
         </div>
-        <table class="manage-table">
-            <thead id="modalHead"></thead>
-            <tbody id="modalBody"></tbody>
-        </table>
+        <div class="table-responsive">
+            <table class="manage-table">
+                <thead id="modalHead"></thead>
+                <tbody id="modalBody"></tbody>
+            </table>
+        </div>
     </div>
 </div>
 
 <div id="modalForm" class="modal" style="z-index:2100;">
     <div class="modal-box" style="max-width:500px;">
-        <h3 id="formTitle" style="color:var(--primary); border-bottom:2px solid var(--secondary); padding-bottom:10px; margin-bottom:20px;">...</h3>
+        <h3 id="formTitle">...</h3>
         <input type="hidden" id="formType">
         <input type="hidden" id="formIdx">
-        <div id="formContent" class="grid-form" style="grid-template-columns:1fr;"></div>
-        <div style="margin-top:25px; display:flex; gap:10px;">
-            <button onclick="guardarCRUD()" class="btn-main" style="width:100%; padding:10px;">GUARDAR</button>
-            <button onclick="document.getElementById('modalForm').style.display='none'" style="width:100%; background:#94A3B8; border:none; border-radius:50px; color:white; font-weight:bold; cursor:pointer;">CANCELAR</button>
-        </div>
+        <div id="formContent" class="grid-form" style="grid-template-columns:1fr; margin-top:15px;"></div>
+        <button onclick="guardarCRUD()" class="btn-main" style="width:100%; margin-top:15px;">GUARDAR</button>
+        <button onclick="document.getElementById('modalForm').style.display='none'" style="width:100%; margin-top:5px; background:#999; border:none; padding:10px; color:white; border-radius:4px; cursor:pointer;">CANCELAR</button>
     </div>
 </div>
 
 <script>
-    // --- CONFIGURACIÓN ---
+    // --- 1. CORE & CONFIG ---
     const DB_KEYS = { CLI: 'db_clients', PROD: 'db_products', HIST: 'db_history', SEQ: 'db_seq', LOGO: 'db_logo' };
     const formatMoney = n => new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP' }).format(n);
     const upper = e => e.value = e.value.toUpperCase();
     
-    // Auto-formato RUT
+    // Rut Formatter
     const formatRut = i => {
         let v = i.value.replace(/[^0-9kK]/g, '').toUpperCase();
         if(v.length > 1) i.value = v.slice(0,-1) + '-' + v.slice(-1);
@@ -323,9 +319,10 @@
              let s = localStorage.getItem(DB_KEYS.SEQ) || 50100;
              document.getElementById('lblCorrelativo').innerText = "CN" + s;
         }
+        agregarFila();
     };
 
-    // --- BUSCADOR CLIENTES ---
+    // --- 2. LOGIC: SEARCH & TABLE ---
     function buscarCliente(input) {
         upper(input);
         const term = input.value.trim();
@@ -338,8 +335,8 @@
         if(hits.length > 0) {
             hits.forEach(c => {
                 const d = document.createElement('div');
-                d.className = 'smart-item';
-                d.innerHTML = `<div><div class="main-text">${c.razon}</div><div class="sub-text">${c.rut}</div></div>`;
+                d.className = 'search-item';
+                d.innerHTML = `<strong>${c.rut}</strong> ${c.razon}`;
                 d.onclick = () => { 
                     ['Razon','Rut','Giro','Dir','Comuna','Region','Email','Contacto'].forEach(f => {
                          if(document.getElementById('cli'+f)) document.getElementById('cli'+f).value = c[f.toLowerCase()]||'';
@@ -350,138 +347,103 @@
             });
         }
         const create = document.createElement('div');
-        create.className = 'smart-item create-new';
-        create.innerHTML = `+ CREAR CLIENTE NUEVO`;
+        create.className = 'search-item create-new';
+        create.innerHTML = `+ CREAR NUEVO: "${term}"`;
         create.onclick = () => { list.style.display='none'; openForm('CLI', -1); };
         list.appendChild(create);
         list.style.display='block';
     }
 
-    // --- SMART PRODUCT SEARCH (TECH FEATURE) ---
-    function smartSearchProduct(input) {
-        upper(input);
-        const term = input.value.trim();
-        const list = document.getElementById('smartProductResults');
-        list.innerHTML = '';
-        
+    function agregarFila() {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td style="text-align:center"><button onclick="this.closest('tr').remove();calcular()" style="color:red;border:none;background:none;font-weight:bold;cursor:pointer">X</button></td>
+            <td style="position:relative">
+                <input type="text" class="cell-edit" placeholder="BUSCAR..." onkeyup="buscarProd(this)" oninput="upper(this)">
+                <div class="search-results"></div>
+            </td>
+            <td><input type="number" class="cell-edit cell-qty" value="1" min="1" oninput="calcular()"></td>
+            <td><input type="text" class="cell-edit cell-locked u-cost" readonly></td>
+            <td><input type="text" class="cell-edit cell-locked t-cost" readonly></td>
+            <td><input type="text" class="cell-edit cell-locked u-price" readonly></td>
+            <td><input type="text" class="cell-edit cell-locked t-price" readonly></td>
+            <td><input type="text" class="cell-edit cell-locked util-porc" readonly style="color:blue; font-weight:bold; text-align:right;"></td>
+            <input type="hidden" class="raw-cost" value="0">
+            <input type="hidden" class="raw-price" value="0">
+            <input type="hidden" class="raw-cod" value="">
+        `;
+        document.querySelector('#tablaItems tbody').appendChild(tr);
+    }
+
+    function buscarProd(input) {
+        const term = input.value.trim().toUpperCase();
+        const list = input.nextElementSibling;
+        list.innerHTML='';
         if(term.length === 0) { list.style.display='none'; return; }
 
         const hits = getDB(DB_KEYS.PROD).filter(p => p.cod.includes(term) || p.desc.includes(term));
         
-        if(hits.length > 0) {
+        if(hits.length>0) {
             hits.forEach(p => {
                 const d = document.createElement('div');
-                d.className = 'smart-item';
-                d.innerHTML = `
-                    <div>
-                        <span class="main-text">${p.cod}</span>
-                        <span class="sub-text">${p.desc}</span>
-                    </div>
-                    <div class="price-tag">${formatMoney(p.precio)}</div>
-                `;
-                d.onclick = () => {
-                    agregarFilaDirecta(p);
-                    input.value = ""; // Limpiar buscador
-                    list.style.display = 'none';
-                    input.focus(); // Mantener foco para seguir buscando
+                d.className='search-item';
+                d.innerHTML=`<strong>${p.cod}</strong> ${p.desc}`;
+                d.onclick=()=>{
+                    input.value=`${p.cod} - ${p.desc}`;
+                    const row = input.closest('tr');
+                    row.querySelector('.raw-cod').value=p.cod;
+                    row.querySelector('.raw-cost').value=p.costo;
+                    row.querySelector('.raw-price').value=p.precio;
+                    row.querySelector('.u-cost').value=formatMoney(p.costo);
+                    row.querySelector('.u-price').value=formatMoney(p.precio);
+                    list.style.display='none';
+                    calcular();
                 };
                 list.appendChild(d);
             });
         }
-        
         const create = document.createElement('div');
-        create.className = 'smart-item create-new';
-        create.innerHTML = `+ CREAR PRODUCTO: "${term}"`;
-        create.onclick = () => { list.style.display='none'; openForm('PROD', -1); };
+        create.className='search-item create-new';
+        create.innerHTML=`+ CREAR PROD: "${term}"`;
+        create.onclick=()=>{ list.style.display='none'; openForm('PROD', -1); };
         list.appendChild(create);
-        
-        list.style.display = 'block';
-    }
-
-    // Función para añadir fila directamente desde el buscador inteligente
-    function agregarFilaDirecta(p) {
-        const tbody = document.querySelector('#tablaItems tbody');
-        const tr = document.createElement('tr');
-        
-        tr.innerHTML = `
-            <td style="text-align:center"><button onclick="this.closest('tr').remove();calcular()" style="color:#EF4444;border:none;background:none;font-weight:bold;cursor:pointer;font-size:14px;">&times;</button></td>
-            <td>
-                <input type="text" class="cell-edit" value="${p.cod} - ${p.desc}" readonly>
-            </td>
-            <td><input type="number" class="cell-edit cell-qty" value="1" min="1" oninput="calcular()"></td>
-            
-            <td class="col-cost"><input type="text" class="cell-edit col-locked u-cost" value="${formatMoney(p.costo)}" readonly></td>
-            <td class="col-cost"><input type="text" class="cell-edit col-locked t-cost" readonly></td>
-            
-            <td class="col-price"><input type="text" class="cell-edit col-locked u-price" value="${formatMoney(p.precio)}" readonly></td>
-            <td class="col-price"><input type="text" class="cell-edit col-locked t-price" readonly></td>
-            
-            <td>
-                <div style="display:flex; align-items:center;">
-                    <span class="margin-dot"></span>
-                    <input type="text" class="cell-edit col-locked util" readonly style="font-size:10px">
-                </div>
-            </td>
-            
-            <input type="hidden" class="raw-cost" value="${p.costo}">
-            <input type="hidden" class="raw-price" value="${p.precio}">
-            <input type="hidden" class="raw-cod" value="${p.cod}">
-            <input type="hidden" class="raw-desc" value="${p.desc}">
-        `;
-        tbody.appendChild(tr);
-        calcular();
-    }
-
-    function agregarFilaManual() {
-        const tbody = document.querySelector('#tablaItems tbody');
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-            <td style="text-align:center"><button onclick="this.closest('tr').remove();calcular()" style="color:#EF4444;border:none;background:none;font-weight:bold;cursor:pointer;">&times;</button></td>
-            <td><input type="text" class="cell-edit" placeholder="Descripción Manual..." oninput="upper(this)"></td>
-            <td><input type="number" class="cell-edit cell-qty" value="1" min="1" oninput="calcular()"></td>
-            <td class="col-cost"><input type="number" class="cell-edit raw-cost-manual" value="0" oninput="calcularManual(this)"></td>
-            <td class="col-cost"><input type="text" class="cell-edit col-locked t-cost" readonly></td>
-            <td class="col-price"><input type="number" class="cell-edit raw-price-manual" value="0" oninput="calcularManual(this)"></td>
-            <td class="col-price"><input type="text" class="cell-edit col-locked t-price" readonly></td>
-            <td><div style="display:flex;align-items:center;"><span class="margin-dot"></span><input type="text" class="cell-edit col-locked util" readonly></div></td>
-            <input type="hidden" class="raw-cost" value="0">
-            <input type="hidden" class="raw-price" value="0">
-            <input type="hidden" class="raw-cod" value="MANUAL">
-        `;
-        tbody.appendChild(tr);
-    }
-
-    function calcularManual(input) {
-        const tr = input.closest('tr');
-        tr.querySelector('.raw-cost').value = tr.querySelector('.raw-cost-manual').value;
-        tr.querySelector('.raw-price').value = tr.querySelector('.raw-price-manual').value;
-        calcular();
+        list.style.display='block';
     }
 
     function calcular() {
         let neto = 0, util = 0;
+        const descPorc = parseFloat(document.getElementById('txtDescPorc').value)||0;
+        const factorDesc = (100 - descPorc) / 100;
+
         document.querySelectorAll('#tablaItems tbody tr').forEach(tr => {
             const q = parseFloat(tr.querySelector('.cell-qty').value)||0;
             const c = parseFloat(tr.querySelector('.raw-cost').value)||0;
             const p = parseFloat(tr.querySelector('.raw-price').value)||0;
             
-            const tc = q*c; const tp = q*p;
-            const margin = tp - tc;
+            const tc = q*c; 
+            const tp = q*p;
             
-            tr.querySelector('.t-cost').value = formatMoney(tc);
-            tr.querySelector('.t-price').value = formatMoney(tp);
-            tr.querySelector('.util').value = formatMoney(margin);
-            
-            // Visual Margin Indicator
-            const dot = tr.querySelector('.margin-dot');
-            if(dot) {
-                dot.className = 'margin-dot ' + (margin >= 0 ? 'dot-green' : 'dot-red');
+            // Calculo de Utilidad % en base al precio con descuento aplicado
+            const pConDescuento = p * factorDesc;
+            let margenPorc = 0;
+            if(pConDescuento > 0) {
+                margenPorc = ((pConDescuento - c) / pConDescuento) * 100;
             }
 
-            neto += tp; util += margin;
+            tr.querySelector('.t-cost').value=formatMoney(tc);
+            tr.querySelector('.t-price').value=formatMoney(tp);
+            
+            // Columna % Utilidad
+            const celdaUtil = tr.querySelector('.util-porc');
+            celdaUtil.value = margenPorc.toFixed(1) + '%';
+            
+            // Color visual para margen negativo
+            celdaUtil.style.color = margenPorc < 0 ? 'red' : 'blue';
+
+            neto += tp; 
+            util += ( (tp * factorDesc) - tc ); // Utilidad real considerando descuento
         });
 
-        const descPorc = parseFloat(document.getElementById('txtDescPorc').value)||0;
         const descMonto = neto * (descPorc/100);
         const netoFinal = neto - descMonto;
         const iva = netoFinal * 0.19;
@@ -491,10 +453,10 @@
         document.getElementById('txtNetoFinal').innerText = formatMoney(netoFinal);
         document.getElementById('txtIva').innerText = formatMoney(iva);
         document.getElementById('txtTotal').innerText = formatMoney(netoFinal + iva);
-        document.getElementById('txtUtilidad').innerText = formatMoney(util - descMonto);
+        document.getElementById('txtUtilidad').innerText = formatMoney(util);
     }
 
-    // --- GESTIÓN DATOS ---
+    // --- 3. MANAGERS (CRUD) ---
     function abrirGestor(type) {
         const modal = document.getElementById('modalGestor');
         const thead = document.getElementById('modalHead');
@@ -553,7 +515,6 @@
         if(idx!==-1) data = getDB(type==='CLI'?DB_KEYS.CLI:DB_KEYS.PROD)[idx];
 
         if(type==='CLI') {
-            document.getElementById('formTitle').innerText = idx===-1 ? "NUEVO CLIENTE" : "EDITAR CLIENTE";
             const fields = [
                 {id:'rut',l:'RUT'}, {id:'razon',l:'RAZÓN SOCIAL'},
                 {id:'giro',l:'GIRO'}, {id:'dir',l:'DIRECCIÓN'}, 
@@ -562,12 +523,11 @@
             ];
             fields.forEach(f => content.innerHTML+=`<div class="input-group"><label>${f.l}</label><input id="f_${f.id}" value="${data[f.id]||''}" oninput="upper(this)"></div>`);
         } else {
-            document.getElementById('formTitle').innerText = idx===-1 ? "NUEVO PRODUCTO" : "EDITAR PRODUCTO";
             content.innerHTML+=`
-            <div class="input-group"><label>CÓDIGO (SKU)</label><input id="f_cod" value="${data.cod||''}" oninput="upper(this)"></div>
+            <div class="input-group"><label>CÓDIGO</label><input id="f_cod" value="${data.cod||''}" oninput="upper(this)"></div>
             <div class="input-group"><label>DESCRIPCIÓN</label><input id="f_desc" value="${data.desc||''}" oninput="upper(this)"></div>
-            <div class="input-group"><label>COSTO NETO ($)</label><input type="number" id="f_costo" value="${data.costo||''}"></div>
-            <div class="input-group"><label>PRECIO VENTA NETO ($)</label><input type="number" id="f_precio" value="${data.precio||''}"></div>
+            <div class="input-group"><label>COSTO NETO</label><input type="number" id="f_costo" value="${data.costo||''}"></div>
+            <div class="input-group"><label>PRECIO VENTA NETO</label><input type="number" id="f_precio" value="${data.precio||''}"></div>
             `;
         }
     }
@@ -597,215 +557,6 @@
         if(document.getElementById('modalGestor').style.display!=='none') abrirGestor(type==='CLI'?'clientes':'productos');
     }
 
-    // --- PDF GENERATION ---
-    function guardarYGenerar() {
-        if(!document.getElementById('cliRazon').value) return alert("Falta Cliente");
-
-        const cli = {
-            razon: document.getElementById('cliRazon').value,
-            rut: document.getElementById('cliRut').value,
-            giro: document.getElementById('cliGiro').value,
-            dir: document.getElementById('cliDir').value,
-            comuna: document.getElementById('cliComuna').value,
-            region: document.getElementById('cliRegion').value,
-            email: document.getElementById('cliEmail').value,
-            contacto: document.getElementById('cliContacto').value
-        };
-
-        const items = [];
-        document.querySelectorAll('#tablaItems tbody tr').forEach(tr => {
-            // Manejo de filas manuales o automáticas
-            let cod = tr.querySelector('.raw-cod').value;
-            let desc = "";
-            
-            // Si es manual, obtener descripción del input
-            const inputDesc = tr.querySelector('td:nth-child(2) input');
-            if(inputDesc) desc = inputDesc.value;
-            
-            // Si viene de BD, limpiar el "COD - DESC"
-            if(cod !== "MANUAL" && desc.includes(" - ")) {
-                 desc = desc.split(" - ")[1]; 
-            }
-
-            if(desc) items.push({
-                d: desc,
-                cd: cod,
-                q: parseFloat(tr.querySelector('.cell-qty').value)||0,
-                c: parseFloat(tr.querySelector('.raw-cost').value)||0,
-                p: parseFloat(tr.querySelector('.raw-price').value)||0
-            });
-        });
-
-        if(items.length===0) return alert("Agregue Items");
-
-        const nCot = document.getElementById('lblCorrelativo').innerText;
-        const total = document.getElementById('txtTotal').innerText;
-        const pago = document.getElementById('cmbPago').value;
-        const obs = document.getElementById('txtObservaciones').value;
-        const descPorc = document.getElementById('txtDescPorc').value;
-        
-        const registro = { n: nCot, fecha: document.getElementById('lblFecha').innerText, cli, items, total, pago, obs, descPorc };
-        
-        const hist = getDB(DB_KEYS.HIST);
-        const editIdx = parseInt(document.getElementById('editIndex').value);
-
-        if(editIdx > -1) hist[editIdx] = registro;
-        else {
-            hist.push(registro);
-            let s = parseInt(nCot.replace('CN',''));
-            localStorage.setItem(DB_KEYS.SEQ, s+1);
-        }
-        
-        setDB(DB_KEYS.HIST, hist);
-        generarPDF(registro);
-    }
-
-    function generarPDF(data) {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
-        const azul = [31, 111, 139];
-        
-        const logo = localStorage.getItem(DB_KEYS.LOGO);
-        if(logo) doc.addImage(logo, 'PNG', 15, 15, 25, 25);
-        
-        doc.setFontSize(22); doc.setTextColor(...azul); doc.setFont("helvetica","bold");
-        doc.text("INGENIERIA CUNTEL SPA", 50, 25);
-        doc.setFontSize(9); doc.setTextColor(100); doc.setFont("helvetica","normal");
-        doc.text("SOLUCIONES INTEGRALES", 50, 30);
-        doc.text("WEB: WWW.CUNTEL.CL | CONTACTO@CUNTEL.CL", 50, 35);
-        
-        doc.setFillColor(245,245,245); doc.rect(140, 15, 55, 20, 'F');
-        doc.setFontSize(10); doc.setTextColor(242, 92, 5); doc.setFont("helvetica","bold");
-        doc.text("COTIZACIÓN", 167, 22, {align:"center"});
-        doc.setTextColor(0); doc.text(data.n, 167, 30, {align:"center"});
-
-        doc.setDrawColor(31, 111, 139); doc.setLineWidth(0.5);
-        doc.line(15, 45, 195, 45);
-        
-        doc.setFontSize(8); doc.setTextColor(...azul); doc.setFont("helvetica","bold");
-        doc.text("INFORMACIÓN DEL CLIENTE", 15, 50);
-        
-        doc.setTextColor(0); doc.setFontSize(8); doc.setFont("helvetica","normal");
-        const c = data.cli;
-        doc.text(`RAZÓN SOCIAL: ${c.razon}`, 15, 56); doc.text(`RUT: ${c.rut}`, 120, 56);
-        doc.text(`GIRO: ${c.giro}`, 15, 61); doc.text(`DIRECCIÓN: ${c.dir}`, 120, 61);
-        doc.text(`COMUNA: ${c.comuna}`, 15, 66); doc.text(`REGIÓN: ${c.region}`, 120, 66);
-        doc.text(`CONTACTO: ${c.contacto}`, 15, 71); doc.text(`EMAIL: ${c.email}`, 120, 71);
-
-        // CORRECCIÓN SOLICITADA: COLUMNAS ITEM, COD, DESC, P.UNIT, TOTAL
-        const rows = data.items.map((i, idx) => [
-            idx + 1,
-            i.cd === "MANUAL" ? "-" : i.cd,
-            i.d, 
-            formatMoney(i.p), 
-            formatMoney(i.q*i.p)
-        ]);
-
-        doc.autoTable({
-            startY: 80,
-            head: [['ITEM', 'CÓDIGO', 'DESCRIPCIÓN', 'P.UNITARIO', 'TOTAL']],
-            body: rows,
-            theme: 'plain',
-            styles: { fontSize: 8, cellPadding: 3 },
-            headStyles: { fillColor: azul, textColor: 255, fontStyle:'bold' },
-            columnStyles: { 0:{halign:'center', cellWidth:10}, 1:{cellWidth:25}, 3:{halign:'right'}, 4:{halign:'right', fontStyle:'bold'} },
-            didParseCell: d => { if(d.section==='body' && d.row.index%2===0) d.cell.styles.fillColor=[250,250,250]; }
-        });
-
-        const finalY = doc.lastAutoTable.finalY + 5;
-        
-        doc.setFontSize(8); doc.setTextColor(0); doc.setFont("helvetica","bold");
-        doc.text("MODALIDAD DE PAGO:", 15, finalY + 5);
-        doc.setFont("helvetica","normal");
-        doc.text(data.pago, 50, finalY + 5);
-        
-        if(data.obs) {
-             doc.setFont("helvetica","bold");
-             doc.text("OBSERVACIONES:", 15, finalY + 10);
-             doc.setFont("helvetica","normal");
-             doc.text(data.obs, 50, finalY + 10);
-        }
-
-        const boxX = 130;
-        let y = finalY + 5;
-        
-        const neto = data.items.reduce((a,b)=>a+(b.q*b.p),0);
-        const desc = neto * (data.descPorc/100);
-        const netoF = neto - desc;
-        const iva = netoF * 0.19;
-
-        doc.text("SUBTOTAL:", boxX, y); doc.text(formatMoney(neto), 195, y, {align:'right'}); y+=5;
-        if(desc > 0) {
-            doc.text(`DESCUENTO (${data.descPorc}%):`, boxX, y); doc.text("- "+formatMoney(desc), 195, y, {align:'right'}); y+=5;
-        }
-        doc.text("NETO:", boxX, y); doc.text(formatMoney(netoF), 195, y, {align:'right'}); y+=5;
-        doc.text("IVA (19%):", boxX, y); doc.text(formatMoney(iva), 195, y, {align:'right'}); y+=7;
-        
-        doc.setFillColor(...azul); doc.rect(boxX-5, y-4, 75, 12, 'F');
-        doc.setTextColor(255); doc.setFontSize(10); doc.setFont("helvetica","bold");
-        doc.text("TOTAL:", boxX, y+3); doc.text(formatMoney(netoF+iva), 195, y+3, {align:'right'});
-
-        const pageHeight = doc.internal.pageSize.height;
-        doc.setTextColor(150); doc.setFontSize(7); doc.setFont("helvetica","normal");
-        doc.text("Generado por INGENIERIA CUNTEL SPA", 105, pageHeight - 10, {align:"center"});
-
-        doc.save(`Cotizacion_${data.n}.pdf`);
-        setTimeout(() => location.reload(), 2000);
-    }
-    
-    // Funciones Auxiliares
-    function nuevaCotizacion() { if(confirm("¿Limpiar?")) location.reload(); }
-    function loadHistory(i) {
-        const h = getDB(DB_KEYS.HIST)[i];
-        document.getElementById('editIndex').value = i;
-        document.getElementById('bar-edicion').style.display='block';
-        document.getElementById('modalGestor').style.display='none';
-        
-        document.getElementById('lblCorrelativo').innerText = h.n;
-        document.getElementById('cmbPago').value = h.pago || "TRANSFERENCIA";
-        document.getElementById('txtDescPorc').value = h.descPorc || 0;
-        document.getElementById('txtObservaciones').value = h.obs || "";
-        
-        ['Razon','Rut','Giro','Dir','Comuna','Region','Email','Contacto'].forEach(f => {
-            if(document.getElementById('cli'+f)) document.getElementById('cli'+f).value = h.cli[f.toLowerCase()]||'';
-        });
-
-        const tbody = document.querySelector('#tablaItems tbody');
-        tbody.innerHTML='';
-        h.items.forEach(it => {
-            if(it.cd !== "MANUAL") {
-                // Reconstruir como item de BD
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                <td style="text-align:center"><button onclick="this.closest('tr').remove();calcular()" style="color:#EF4444;border:none;background:none;font-weight:bold;cursor:pointer;font-size:14px;">&times;</button></td>
-                <td><input type="text" class="cell-edit" value="${it.cd} - ${it.d}" readonly></td>
-                <td><input type="number" class="cell-edit cell-qty" value="${it.q}" min="1" oninput="calcular()"></td>
-                <td class="col-cost"><input type="text" class="cell-edit col-locked u-cost" value="${formatMoney(it.c)}" readonly></td>
-                <td class="col-cost"><input type="text" class="cell-edit col-locked t-cost" readonly></td>
-                <td class="col-price"><input type="text" class="cell-edit col-locked u-price" value="${formatMoney(it.p)}" readonly></td>
-                <td class="col-price"><input type="text" class="cell-edit col-locked t-price" readonly></td>
-                <td><div style="display:flex; align-items:center;"><span class="margin-dot"></span><input type="text" class="cell-edit col-locked util" readonly style="font-size:10px"></div></td>
-                <input type="hidden" class="raw-cost" value="${it.c}"><input type="hidden" class="raw-price" value="${it.p}"><input type="hidden" class="raw-cod" value="${it.cd}">`;
-                tbody.appendChild(tr);
-            } else {
-                // Reconstruir como manual
-                 const tr = document.createElement('tr');
-                 tr.innerHTML = `
-                    <td style="text-align:center"><button onclick="this.closest('tr').remove();calcular()" style="color:#EF4444;border:none;background:none;font-weight:bold;cursor:pointer;">&times;</button></td>
-                    <td><input type="text" class="cell-edit" value="${it.d}" oninput="upper(this)"></td>
-                    <td><input type="number" class="cell-edit cell-qty" value="${it.q}" min="1" oninput="calcular()"></td>
-                    <td class="col-cost"><input type="number" class="cell-edit raw-cost-manual" value="${it.c}" oninput="calcularManual(this)"></td>
-                    <td class="col-cost"><input type="text" class="cell-edit col-locked t-cost" readonly></td>
-                    <td class="col-price"><input type="number" class="cell-edit raw-price-manual" value="${it.p}" oninput="calcularManual(this)"></td>
-                    <td class="col-price"><input type="text" class="cell-edit col-locked t-price" readonly></td>
-                    <td><div style="display:flex;align-items:center;"><span class="margin-dot"></span><input type="text" class="cell-edit col-locked util" readonly></div></td>
-                    <input type="hidden" class="raw-cost" value="${it.c}"><input type="hidden" class="raw-price" value="${it.p}"><input type="hidden" class="raw-cod" value="MANUAL">`;
-                 tbody.appendChild(tr);
-            }
-        });
-        calcular();
-    }
-    
     function cargarLogo(input) {
         if(input.files && input.files[0]) {
             const reader = new FileReader();
@@ -840,6 +591,190 @@
             } catch(err) { alert("Error archivo"); }
         };
         reader.readAsText(file);
+    }
+
+    function loadHistory(i) {
+        const h = getDB(DB_KEYS.HIST)[i];
+        document.getElementById('editIndex').value = i;
+        document.getElementById('bar-edicion').style.display='block';
+        document.getElementById('modalGestor').style.display='none';
+        
+        document.getElementById('lblCorrelativo').innerText = h.n;
+        document.getElementById('cmbPago').value = h.pago || "TRANSFERENCIA";
+        document.getElementById('txtDescPorc').value = h.descPorc || 0;
+        document.getElementById('txtObservaciones').value = h.obs || "";
+        
+        ['Razon','Rut','Giro','Dir','Comuna','Region','Email','Contacto'].forEach(f => {
+            if(document.getElementById('cli'+f)) document.getElementById('cli'+f).value = h.cli[f.toLowerCase()]||'';
+        });
+
+        const tbody = document.querySelector('#tablaItems tbody');
+        tbody.innerHTML='';
+        h.items.forEach(it => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+            <td style="text-align:center"><button onclick="this.closest('tr').remove();calcular()" style="color:red;border:none;background:none;font-weight:bold">X</button></td>
+            <td><input type="text" class="cell-edit" value="${it.d}" onkeyup="buscarProd(this)" oninput="upper(this)"><div class="search-results"></div></td>
+            <td><input type="number" class="cell-edit cell-qty" value="${it.q}" min="1" oninput="calcular()"></td>
+            <td><input type="text" class="cell-edit cell-locked u-cost" readonly></td>
+            <td><input type="text" class="cell-edit cell-locked t-cost" readonly></td>
+            <td><input type="text" class="cell-edit cell-locked u-price" readonly></td>
+            <td><input type="text" class="cell-edit cell-locked t-price" readonly></td>
+            <td><input type="text" class="cell-edit cell-locked util-porc" readonly style="color:blue; font-weight:bold; text-align:right;"></td>
+            <input type="hidden" class="raw-cost" value="${it.c}"><input type="hidden" class="raw-price" value="${it.p}"><input type="hidden" class="raw-cod" value="${it.cd||''}">`;
+            tbody.appendChild(tr);
+            tr.querySelector('.u-cost').value=formatMoney(it.c);
+            tr.querySelector('.u-price').value=formatMoney(it.p);
+        });
+        calcular();
+    }
+    
+    function nuevaCotizacion() { if(confirm("¿Limpiar?")) location.reload(); }
+
+    function guardarYGenerar() {
+        if(!document.getElementById('cliRazon').value) return alert("Falta Cliente");
+
+        const cli = {
+            razon: document.getElementById('cliRazon').value,
+            rut: document.getElementById('cliRut').value,
+            giro: document.getElementById('cliGiro').value,
+            dir: document.getElementById('cliDir').value,
+            comuna: document.getElementById('cliComuna').value,
+            region: document.getElementById('cliRegion').value,
+            email: document.getElementById('cliEmail').value,
+            contacto: document.getElementById('cliContacto').value
+        };
+
+        const items = [];
+        document.querySelectorAll('#tablaItems tbody tr').forEach(tr => {
+            const desc = tr.querySelector('.cell-edit').value;
+            if(desc) items.push({
+                d: desc,
+                cd: tr.querySelector('.raw-cod').value || '',
+                q: parseFloat(tr.querySelector('.cell-qty').value)||0,
+                c: parseFloat(tr.querySelector('.raw-cost').value)||0,
+                p: parseFloat(tr.querySelector('.raw-price').value)||0
+            });
+        });
+
+        if(items.length===0) return alert("Agregue Items");
+
+        const nCot = document.getElementById('lblCorrelativo').innerText;
+        const total = document.getElementById('txtTotal').innerText;
+        const pago = document.getElementById('cmbPago').value;
+        const descPorc = document.getElementById('txtDescPorc').value;
+        const obs = document.getElementById('txtObservaciones').value;
+        
+        const registro = { n: nCot, fecha: document.getElementById('lblFecha').innerText, cli, items, total, pago, descPorc, obs };
+        
+        const hist = getDB(DB_KEYS.HIST);
+        const editIdx = parseInt(document.getElementById('editIndex').value);
+
+        if(editIdx > -1) hist[editIdx] = registro;
+        else {
+            hist.push(registro);
+            let s = parseInt(nCot.replace('CN',''));
+            localStorage.setItem(DB_KEYS.SEQ, s+1);
+        }
+        
+        setDB(DB_KEYS.HIST, hist);
+        generarPDF(registro);
+    }
+
+    function generarPDF(data) {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        const azul = [31, 111, 139];
+        
+        const logo = localStorage.getItem(DB_KEYS.LOGO);
+        if(logo) doc.addImage(logo, 'PNG', 15, 15, 25, 25);
+        
+        // CORRECCIÓN TAMAÑO TITULO
+        doc.setFontSize(16); doc.setTextColor(...azul); doc.setFont("helvetica","bold");
+        doc.text("INGENIERIA CUNTEL SPA", 50, 25);
+        doc.setFontSize(9); doc.setTextColor(100); doc.setFont("helvetica","normal");
+        doc.text("SOLUCIONES INTEGRALES", 50, 30);
+        doc.text("WEB: WWW.CUNTEL.CL | CONTACTO@CUNTEL.CL", 50, 35);
+        
+        doc.setFillColor(245,245,245); doc.rect(140, 15, 55, 20, 'F');
+        doc.setFontSize(10); doc.setTextColor(242, 92, 5); doc.setFont("helvetica","bold");
+        doc.text("COTIZACIÓN", 167, 22, {align:"center"});
+        doc.setTextColor(0); doc.text(data.n, 167, 30, {align:"center"});
+
+        doc.setDrawColor(31, 111, 139); doc.setLineWidth(0.5);
+        doc.line(15, 45, 195, 45);
+        
+        doc.setFontSize(8); doc.setTextColor(...azul); doc.setFont("helvetica","bold");
+        doc.text("INFORMACIÓN DEL CLIENTE", 15, 50);
+        
+        doc.setTextColor(0); doc.setFontSize(8); doc.setFont("helvetica","normal");
+        const c = data.cli;
+        doc.text(`RAZÓN SOCIAL: ${c.razon}`, 15, 56); doc.text(`RUT: ${c.rut}`, 120, 56);
+        doc.text(`GIRO: ${c.giro}`, 15, 61); doc.text(`DIRECCIÓN: ${c.dir}`, 120, 61);
+        doc.text(`COMUNA: ${c.comuna}`, 15, 66); doc.text(`REGIÓN: ${c.region}`, 120, 66);
+        doc.text(`CONTACTO: ${c.contacto}`, 15, 71); doc.text(`EMAIL: ${c.email}`, 120, 71);
+
+        const rows = data.items.map((i, idx) => [
+            idx + 1,
+            i.cd,
+            `(CANT: ${i.q}) ${i.d}`, 
+            formatMoney(i.p), 
+            formatMoney(i.q*i.p)
+        ]);
+
+        doc.autoTable({
+            startY: 80,
+            head: [['ITEM', 'CÓDIGO', 'DESCRIPCIÓN', 'P.UNITARIO', 'TOTAL']],
+            body: rows,
+            theme: 'plain',
+            styles: { fontSize: 8, cellPadding: 3 },
+            headStyles: { fillColor: azul, textColor: 255, fontStyle:'bold' },
+            columnStyles: { 0:{halign:'center', cellWidth:10}, 1:{cellWidth:25}, 3:{halign:'right'}, 4:{halign:'right', fontStyle:'bold'} },
+            didParseCell: d => { if(d.section==='body' && d.row.index%2===0) d.cell.styles.fillColor=[250,250,250]; }
+        });
+
+        const finalY = doc.lastAutoTable.finalY + 5;
+        
+        doc.setFontSize(8); doc.setTextColor(0); doc.setFont("helvetica","bold");
+        doc.text("MODALIDAD DE PAGO:", 15, finalY + 5);
+        doc.setFont("helvetica","normal");
+        doc.text(data.pago, 50, finalY + 5);
+
+        // CORRECCIÓN OBSERVACIONES PDF
+        if(data.obs) {
+             const obsY = finalY + 12;
+             doc.setFont("helvetica","bold");
+             doc.text("OBSERVACIONES:", 15, obsY);
+             doc.setFont("helvetica","normal");
+             const splitObs = doc.splitTextToSize(data.obs, 100);
+             doc.text(splitObs, 15, obsY + 5);
+        }
+
+        const boxX = 130;
+        let y = finalY + 5;
+        
+        const neto = data.items.reduce((a,b)=>a+(b.q*b.p),0);
+        const desc = neto * (data.descPorc/100);
+        const netoF = neto - desc;
+        const iva = netoF * 0.19;
+
+        doc.text("SUBTOTAL:", boxX, y); doc.text(formatMoney(neto), 195, y, {align:'right'}); y+=5;
+        if(desc > 0) {
+            doc.text(`DESCUENTO (${data.descPorc}%):`, boxX, y); doc.text("- "+formatMoney(desc), 195, y, {align:'right'}); y+=5;
+        }
+        doc.text("NETO:", boxX, y); doc.text(formatMoney(netoF), 195, y, {align:'right'}); y+=5;
+        doc.text("IVA (19%):", boxX, y); doc.text(formatMoney(iva), 195, y, {align:'right'}); y+=7;
+        
+        doc.setFillColor(...azul); doc.rect(boxX-5, y-4, 75, 12, 'F');
+        doc.setTextColor(255); doc.setFontSize(10); doc.setFont("helvetica","bold");
+        doc.text("TOTAL:", boxX, y+3); doc.text(formatMoney(netoF+iva), 195, y+3, {align:'right'});
+
+        const pageHeight = doc.internal.pageSize.height;
+        doc.setTextColor(150); doc.setFontSize(7); doc.setFont("helvetica","normal");
+        doc.text("Generado por INGENIERIA CUNTEL SPA", 105, pageHeight - 10, {align:"center"});
+
+        doc.save(`Cotizacion_${data.n}.pdf`);
+        setTimeout(() => location.reload(), 2000);
     }
 </script>
 </body>
