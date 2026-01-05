@@ -1,8 +1,9 @@
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SISTEMA PRO V16 - CUNTEL SPA</title>
+    <title>SISTEMA PRO V17 - CUNTEL SPA</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
@@ -16,12 +17,14 @@
             --text: #2C3E50;
             --dark: #17202A;
             --green: #27AE60;
+            --soft-blue: #2E86C1; /* COLOR NUEVO SUAVE */
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; text-transform: uppercase; }
         body { background: var(--bg); padding: 15px; color: var(--text); font-size: 11px; padding-bottom: 80px; }
         
-        .main-container { max-width: 1400px; margin: 0 auto; background: white; min-height: 100vh; box-shadow: 0 5px 30px rgba(0,0,0,0.15); border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; }
+        /* CORRECCIÓN 2: CONTENEDOR MÁS ANCHO PARA VER TODOS LOS DATOS */
+        .main-container { max-width: 98%; margin: 0 auto; background: white; min-height: 100vh; box-shadow: 0 5px 30px rgba(0,0,0,0.15); border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; }
 
         /* TOP BAR */
         .top-bar { background: var(--dark); color: white; padding: 10px 20px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; }
@@ -82,7 +85,9 @@
         .t-row { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 11px; font-weight: 600; color: #555; align-items: center; }
         .final-row { border-top: 2px solid var(--secondary); padding-top: 10px; margin-top: 10px; display: flex; justify-content: space-between; align-items: center; }
         .total-price { font-size: 20px; font-weight: 900; color: var(--primary); }
-        .util-label { font-size: 10px; color: var(--green); font-weight: bold; display: block; text-align: right; }
+        
+        /* CORRECCIÓN 3: COLOR UTILIDAD SUAVE */
+        .util-label { font-size: 10px; color: var(--soft-blue); font-weight: bold; display: block; text-align: right; }
 
         /* BOTONES */
         .action-area { text-align: center; margin-top: 30px; border-top: 1px dashed #BDC3C7; padding-top: 20px; }
@@ -188,7 +193,7 @@
                             <th style="width: 85px;" class="col-price">PRECIO U.</th>
                             <th style="width: 85px;" class="col-price">TOTAL</th>
                             <th style="width: 60px;">% UTIL</th>
-                            <th style="width: 80px; color:blue;">$ UTIL</th>
+                            <th style="width: 80px; color:var(--soft-blue);">$ UTIL</th>
                         </tr>
                     </thead>
                     <tbody></tbody>
@@ -365,8 +370,8 @@
             <td class="col-cost"><input type="text" class="cell-edit cell-locked t-cost" readonly></td>
             <td class="col-price"><input type="text" class="cell-edit cell-locked u-price" value="${formatMoney(p.precio)}" readonly></td>
             <td class="col-price"><input type="text" class="cell-edit cell-locked t-price" readonly></td>
-            <td><input type="text" class="cell-edit cell-locked util-porc" readonly style="color:blue; font-weight:bold; text-align:right;"></td>
-            <td><input type="text" class="cell-edit cell-locked util-value" readonly style="color:blue; font-weight:bold; text-align:right;"></td>
+            <td><input type="text" class="cell-edit cell-locked util-porc" readonly style="color:#2E86C1; font-weight:bold; text-align:right;"></td>
+            <td><input type="text" class="cell-edit cell-locked util-value" readonly style="color:#2E86C1; font-weight:bold; text-align:right;"></td>
             <input type="hidden" class="raw-cost" value="${p.costo}">
             <input type="hidden" class="raw-price" value="${p.precio}">
             <input type="hidden" class="raw-cod" value="${p.cod}">
@@ -387,8 +392,8 @@
             <td class="col-cost"><input type="text" class="cell-edit cell-locked t-cost" readonly></td>
             <td class="col-price"><input type="number" class="cell-edit raw-price-manual" value="0" oninput="calcularManual(this)"></td>
             <td class="col-price"><input type="text" class="cell-edit cell-locked t-price" readonly></td>
-            <td><input type="text" class="cell-edit cell-locked util-porc" readonly style="color:blue; font-weight:bold; text-align:right;"></td>
-            <td><input type="text" class="cell-edit cell-locked util-value" readonly style="color:blue; font-weight:bold; text-align:right;"></td>
+            <td><input type="text" class="cell-edit cell-locked util-porc" readonly style="color:#2E86C1; font-weight:bold; text-align:right;"></td>
+            <td><input type="text" class="cell-edit cell-locked util-value" readonly style="color:#2E86C1; font-weight:bold; text-align:right;"></td>
             <input type="hidden" class="raw-cost" value="0">
             <input type="hidden" class="raw-price" value="0">
             <input type="hidden" class="raw-cod" value="MANUAL">
@@ -426,11 +431,9 @@
             
             const celdaP = tr.querySelector('.util-porc');
             celdaP.value = margenPorc.toFixed(1) + '%';
-            celdaP.style.color = margenPorc < 0 ? 'red' : 'blue';
-
+            
             const celdaV = tr.querySelector('.util-value');
             celdaV.value = formatMoney(utilTotal);
-            celdaV.style.color = utilTotal < 0 ? 'red' : 'blue';
 
             neto += tp; util += utilTotal;
         });
@@ -615,44 +618,54 @@
     }
 
     // --- 5. PDF & GUARDADO ---
+    // CORRECCIÓN 1: VISUALIZACIÓN AL CARGAR HISTORIAL
     function loadHistory(i) {
         const h = getDB(DB_KEYS.HIST)[i];
         document.getElementById('editIndex').value = i;
         document.getElementById('bar-edicion').style.display='block';
         document.getElementById('modalGestor').style.display='none';
+        
         document.getElementById('lblCorrelativo').innerText = h.n;
         document.getElementById('cmbPago').value = h.pago || "TRANSFERENCIA";
         document.getElementById('txtDescPorc').value = h.descPorc || 0;
         document.getElementById('txtObservaciones').value = h.obs || "";
+        
         ['Razon','Rut','Giro','Dir','Comuna','Region','Email','Contacto'].forEach(f => {
             if(document.getElementById('cli'+f)) document.getElementById('cli'+f).value = h.cli[f.toLowerCase()]||'';
         });
+
         const tbody = document.querySelector('#tablaItems tbody');
         tbody.innerHTML='';
         h.items.forEach(it => {
-            const tr = document.createElement('tr');
-            let descVal = it.d;
-            if(it.cd !== "MANUAL") descVal = `${it.cd} - ${it.d}`;
-            
-            tr.innerHTML = `
-            <td style="text-align:center"><button onclick="this.closest('tr').remove();calcular()" style="color:red;border:none;background:none;font-weight:bold;cursor:pointer;">&times;</button></td>
-            <td><input type="text" class="cell-edit" value="${descVal}" ${it.cd!=="MANUAL"?"readonly":""}></td>
-            <td><input type="number" class="cell-edit cell-qty" value="${it.q}" min="1" oninput="calcular()"></td>
-            <td class="col-cost"><input type="text" class="cell-edit cell-locked u-cost" readonly></td>
-            <td class="col-cost"><input type="text" class="cell-edit cell-locked t-cost" readonly></td>
-            <td class="col-price"><input type="text" class="cell-edit cell-locked u-price" readonly></td>
-            <td class="col-price"><input type="text" class="cell-edit cell-locked t-price" readonly></td>
-            <td><input type="text" class="cell-edit cell-locked util-porc" readonly style="color:blue; font-weight:bold; text-align:right;"></td>
-            <td><input type="text" class="cell-edit cell-locked util-value" readonly style="color:blue; font-weight:bold; text-align:right;"></td>
-            <input type="hidden" class="raw-cost" value="${it.c}"><input type="hidden" class="raw-price" value="${it.p}"><input type="hidden" class="raw-cod" value="${it.cd}">`;
-            
-            if(it.cd === "MANUAL") {
-                // Reemplazar inputs readonly por editables si era manual
-                const tds = tr.querySelectorAll('td');
-                tds[3].innerHTML = `<input type="number" class="cell-edit raw-cost-manual" value="${it.c}" oninput="calcularManual(this)">`;
-                tds[5].innerHTML = `<input type="number" class="cell-edit raw-price-manual" value="${it.p}" oninput="calcularManual(this)">`;
+            if(it.cd !== "MANUAL") {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                <td style="text-align:center"><button onclick="this.closest('tr').remove();calcular()" style="color:red;border:none;background:none;font-weight:bold;cursor:pointer;">&times;</button></td>
+                <td><input type="text" class="cell-edit" value="${it.cd} - ${it.d}" readonly></td>
+                <td><input type="number" class="cell-edit cell-qty" value="${it.q}" min="1" oninput="calcular()"></td>
+                <td class="col-cost"><input type="text" class="cell-edit cell-locked u-cost" value="${formatMoney(it.c)}" readonly></td>
+                <td class="col-cost"><input type="text" class="cell-edit cell-locked t-cost" readonly></td>
+                <td class="col-price"><input type="text" class="cell-edit cell-locked u-price" value="${formatMoney(it.p)}" readonly></td>
+                <td class="col-price"><input type="text" class="cell-edit cell-locked t-price" readonly></td>
+                <td><input type="text" class="cell-edit cell-locked util-porc" readonly style="color:#2E86C1; font-weight:bold; text-align:right;"></td>
+                <td><input type="text" class="cell-edit cell-locked util-value" readonly style="color:#2E86C1; font-weight:bold; text-align:right;"></td>
+                <input type="hidden" class="raw-cost" value="${it.c}"><input type="hidden" class="raw-price" value="${it.p}"><input type="hidden" class="raw-cod" value="${it.cd}">`;
+                tbody.appendChild(tr);
+            } else {
+                 const tr = document.createElement('tr');
+                 tr.innerHTML = `
+                    <td style="text-align:center"><button onclick="this.closest('tr').remove();calcular()" style="color:red;border:none;background:none;font-weight:bold;cursor:pointer;">&times;</button></td>
+                    <td><input type="text" class="cell-edit" value="${it.d}" oninput="upper(this)"></td>
+                    <td><input type="number" class="cell-edit cell-qty" value="${it.q}" min="1" oninput="calcular()"></td>
+                    <td class="col-cost"><input type="number" class="cell-edit raw-cost-manual" value="${it.c}" oninput="calcularManual(this)"></td>
+                    <td class="col-cost"><input type="text" class="cell-edit cell-locked t-cost" readonly></td>
+                    <td class="col-price"><input type="number" class="cell-edit raw-price-manual" value="${it.p}" oninput="calcularManual(this)"></td>
+                    <td class="col-price"><input type="text" class="cell-edit cell-locked t-price" readonly></td>
+                    <td><input type="text" class="cell-edit cell-locked util-porc" readonly style="color:#2E86C1; font-weight:bold; text-align:right;"></td>
+                    <td><input type="text" class="cell-edit cell-locked util-value" readonly style="color:#2E86C1; font-weight:bold; text-align:right;"></td>
+                    <input type="hidden" class="raw-cost" value="${it.c}"><input type="hidden" class="raw-price" value="${it.p}"><input type="hidden" class="raw-cod" value="MANUAL">`;
+                 tbody.appendChild(tr);
             }
-            tbody.appendChild(tr);
         });
         calcular();
     }
@@ -674,10 +687,7 @@
         };
 
         const items = [];
-        const rows = document.querySelectorAll('#tablaItems tbody tr');
-        if(rows.length === 0) return alert("Agregue Items");
-
-        rows.forEach(tr => {
+        document.querySelectorAll('#tablaItems tbody tr').forEach(tr => {
             let cod = tr.querySelector('.raw-cod').value;
             let desc = "";
             const inputDesc = tr.querySelector('td:nth-child(2) input');
@@ -693,6 +703,8 @@
                 p: parseFloat(tr.querySelector('.raw-price').value)||0
             });
         });
+
+        if(items.length===0) return alert("Agregue Items");
 
         const nCot = document.getElementById('lblCorrelativo').innerText;
         const total = document.getElementById('txtTotal').innerText;
@@ -716,8 +728,9 @@
         generarPDF(registro);
     }
 
+    // CORRECCIÓN 4: PDF HEADER PEQUEÑO Y COLUMNAS AJUSTADAS
     function generarPDF(data) {
-        if(!window.jspdf) return alert("Error: Librería PDF no cargada.");
+        if(!window.jspdf) return alert("Error librería PDF");
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
         const azul = [31, 111, 139];
@@ -763,8 +776,8 @@
             head: [['Nº', 'CÓDIGO', 'DESCRIPCIÓN', 'CANTIDAD', 'P. UNITARIO', 'TOTAL']],
             body: rows,
             theme: 'plain',
-            styles: { fontSize: 8, cellPadding: 3 },
-            headStyles: { fillColor: azul, textColor: 255, fontStyle:'bold' },
+            styles: { fontSize: 7, cellPadding: 1.5 },
+            headStyles: { fillColor: azul, textColor: 255, fontStyle:'bold', fontSize: 7 },
             columnStyles: { 
                 0:{halign:'center', cellWidth:10}, 
                 1:{cellWidth:20}, 
