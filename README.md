@@ -1,9 +1,8 @@
-<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SISTEMA PRO V17 - CUNTEL SPA</title>
+    <title>SISTEMA PRO V18 - CUNTEL SPA</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
@@ -17,13 +16,12 @@
             --text: #2C3E50;
             --dark: #17202A;
             --green: #27AE60;
-            --soft-blue: #2E86C1; /* COLOR NUEVO SUAVE */
+            --soft-blue: #2E86C1;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; text-transform: uppercase; }
         body { background: var(--bg); padding: 15px; color: var(--text); font-size: 11px; padding-bottom: 80px; }
         
-        /* CORRECCIÓN 2: CONTENEDOR MÁS ANCHO PARA VER TODOS LOS DATOS */
         .main-container { max-width: 98%; margin: 0 auto; background: white; min-height: 100vh; box-shadow: 0 5px 30px rgba(0,0,0,0.15); border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; }
 
         /* TOP BAR */
@@ -85,8 +83,6 @@
         .t-row { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 11px; font-weight: 600; color: #555; align-items: center; }
         .final-row { border-top: 2px solid var(--secondary); padding-top: 10px; margin-top: 10px; display: flex; justify-content: space-between; align-items: center; }
         .total-price { font-size: 20px; font-weight: 900; color: var(--primary); }
-        
-        /* CORRECCIÓN 3: COLOR UTILIDAD SUAVE */
         .util-label { font-size: 10px; color: var(--soft-blue); font-weight: bold; display: block; text-align: right; }
 
         /* BOTONES */
@@ -370,12 +366,13 @@
             <td class="col-cost"><input type="text" class="cell-edit cell-locked t-cost" readonly></td>
             <td class="col-price"><input type="text" class="cell-edit cell-locked u-price" value="${formatMoney(p.precio)}" readonly></td>
             <td class="col-price"><input type="text" class="cell-edit cell-locked t-price" readonly></td>
-            <td><input type="text" class="cell-edit cell-locked util-porc" readonly style="color:#2E86C1; font-weight:bold; text-align:right;"></td>
-            <td><input type="text" class="cell-edit cell-locked util-value" readonly style="color:#2E86C1; font-weight:bold; text-align:right;"></td>
+            <td><input type="text" class="cell-edit cell-locked util-porc" readonly style="color:var(--soft-blue); font-weight:bold; text-align:right;"></td>
+            <td><input type="text" class="cell-edit cell-locked util-value" readonly style="color:var(--soft-blue); font-weight:bold; text-align:right;"></td>
             <input type="hidden" class="raw-cost" value="${p.costo}">
             <input type="hidden" class="raw-price" value="${p.precio}">
             <input type="hidden" class="raw-cod" value="${p.cod}">
             <input type="hidden" class="raw-desc" value="${p.desc}">
+            <input type="hidden" class="raw-dispo" value="${p.dispo||0}">
         `;
         tbody.appendChild(tr);
         calcular();
@@ -392,11 +389,12 @@
             <td class="col-cost"><input type="text" class="cell-edit cell-locked t-cost" readonly></td>
             <td class="col-price"><input type="number" class="cell-edit raw-price-manual" value="0" oninput="calcularManual(this)"></td>
             <td class="col-price"><input type="text" class="cell-edit cell-locked t-price" readonly></td>
-            <td><input type="text" class="cell-edit cell-locked util-porc" readonly style="color:#2E86C1; font-weight:bold; text-align:right;"></td>
-            <td><input type="text" class="cell-edit cell-locked util-value" readonly style="color:#2E86C1; font-weight:bold; text-align:right;"></td>
+            <td><input type="text" class="cell-edit cell-locked util-porc" readonly style="color:var(--soft-blue); font-weight:bold; text-align:right;"></td>
+            <td><input type="text" class="cell-edit cell-locked util-value" readonly style="color:var(--soft-blue); font-weight:bold; text-align:right;"></td>
             <input type="hidden" class="raw-cost" value="0">
             <input type="hidden" class="raw-price" value="0">
             <input type="hidden" class="raw-cod" value="MANUAL">
+            <input type="hidden" class="raw-dispo" value="0">
         `;
         tbody.appendChild(tr);
     }
@@ -618,7 +616,7 @@
     }
 
     // --- 5. PDF & GUARDADO ---
-    // CORRECCIÓN 1: VISUALIZACIÓN AL CARGAR HISTORIAL
+    // CORRECCIÓN 1: VISUALIZACIÓN AL CARGAR HISTORIAL (Reimpresión de valores)
     function loadHistory(i) {
         const h = getDB(DB_KEYS.HIST)[i];
         document.getElementById('editIndex').value = i;
@@ -640,16 +638,17 @@
             if(it.cd !== "MANUAL") {
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                <td style="text-align:center"><button onclick="this.closest('tr').remove();calcular()" style="color:red;border:none;background:none;font-weight:bold;cursor:pointer;">&times;</button></td>
+                <td style="text-align:center"><button onclick="this.closest('tr').remove();calcular()" style="color:red;border:none;background:none;font-weight:bold;cursor:pointer;font-size:14px;">&times;</button></td>
                 <td><input type="text" class="cell-edit" value="${it.cd} - ${it.d}" readonly></td>
                 <td><input type="number" class="cell-edit cell-qty" value="${it.q}" min="1" oninput="calcular()"></td>
                 <td class="col-cost"><input type="text" class="cell-edit cell-locked u-cost" value="${formatMoney(it.c)}" readonly></td>
                 <td class="col-cost"><input type="text" class="cell-edit cell-locked t-cost" readonly></td>
                 <td class="col-price"><input type="text" class="cell-edit cell-locked u-price" value="${formatMoney(it.p)}" readonly></td>
                 <td class="col-price"><input type="text" class="cell-edit cell-locked t-price" readonly></td>
-                <td><input type="text" class="cell-edit cell-locked util-porc" readonly style="color:#2E86C1; font-weight:bold; text-align:right;"></td>
-                <td><input type="text" class="cell-edit cell-locked util-value" readonly style="color:#2E86C1; font-weight:bold; text-align:right;"></td>
-                <input type="hidden" class="raw-cost" value="${it.c}"><input type="hidden" class="raw-price" value="${it.p}"><input type="hidden" class="raw-cod" value="${it.cd}">`;
+                <td><input type="text" class="cell-edit cell-locked util-porc" readonly style="color:var(--soft-blue); font-weight:bold; text-align:right;"></td>
+                <td><input type="text" class="cell-edit cell-locked util-value" readonly style="color:var(--soft-blue); font-weight:bold; text-align:right;"></td>
+                <input type="hidden" class="raw-cost" value="${it.c}"><input type="hidden" class="raw-price" value="${it.p}"><input type="hidden" class="raw-cod" value="${it.cd}">
+                <input type="hidden" class="raw-dispo" value="${it.dispo||0}">`;
                 tbody.appendChild(tr);
             } else {
                  const tr = document.createElement('tr');
@@ -661,9 +660,10 @@
                     <td class="col-cost"><input type="text" class="cell-edit cell-locked t-cost" readonly></td>
                     <td class="col-price"><input type="number" class="cell-edit raw-price-manual" value="${it.p}" oninput="calcularManual(this)"></td>
                     <td class="col-price"><input type="text" class="cell-edit cell-locked t-price" readonly></td>
-                    <td><input type="text" class="cell-edit cell-locked util-porc" readonly style="color:#2E86C1; font-weight:bold; text-align:right;"></td>
-                    <td><input type="text" class="cell-edit cell-locked util-value" readonly style="color:#2E86C1; font-weight:bold; text-align:right;"></td>
-                    <input type="hidden" class="raw-cost" value="${it.c}"><input type="hidden" class="raw-price" value="${it.p}"><input type="hidden" class="raw-cod" value="MANUAL">`;
+                    <td><input type="text" class="cell-edit cell-locked util-porc" readonly style="color:var(--soft-blue); font-weight:bold; text-align:right;"></td>
+                    <td><input type="text" class="cell-edit cell-locked util-value" readonly style="color:var(--soft-blue); font-weight:bold; text-align:right;"></td>
+                    <input type="hidden" class="raw-cost" value="${it.c}"><input type="hidden" class="raw-price" value="${it.p}"><input type="hidden" class="raw-cod" value="MANUAL">
+                    <input type="hidden" class="raw-dispo" value="0">`;
                  tbody.appendChild(tr);
             }
         });
@@ -687,7 +687,12 @@
         };
 
         const items = [];
-        document.querySelectorAll('#tablaItems tbody tr').forEach(tr => {
+        let maxDias = 0;
+        const rows = document.querySelectorAll('#tablaItems tbody tr');
+        
+        if(rows.length === 0) return alert("Agregue Items");
+
+        rows.forEach(tr => {
             let cod = tr.querySelector('.raw-cod').value;
             let desc = "";
             const inputDesc = tr.querySelector('td:nth-child(2) input');
@@ -695,16 +700,18 @@
                 desc = inputDesc.value;
                 if(cod !== "MANUAL" && desc.includes(" - ")) desc = desc.split(" - ")[1];
             }
+            
+            let d = parseInt(tr.querySelector('.raw-dispo')?.value) || 0;
+            if(d > maxDias) maxDias = d;
 
             if(desc) items.push({
                 d: desc, cd: cod,
                 q: parseFloat(tr.querySelector('.cell-qty').value)||0,
                 c: parseFloat(tr.querySelector('.raw-cost').value)||0,
-                p: parseFloat(tr.querySelector('.raw-price').value)||0
+                p: parseFloat(tr.querySelector('.raw-price').value)||0,
+                dispo: d
             });
         });
-
-        if(items.length===0) return alert("Agregue Items");
 
         const nCot = document.getElementById('lblCorrelativo').innerText;
         const total = document.getElementById('txtTotal').innerText;
@@ -712,13 +719,14 @@
         const descPorc = document.getElementById('txtDescPorc').value;
         const obs = document.getElementById('txtObservaciones').value;
         
-        const registro = { n: nCot, fecha: document.getElementById('lblFecha').innerText, cli, items, total, pago, descPorc, obs };
+        const registro = { n: nCot, fecha: document.getElementById('lblFecha').innerText, cli, items, total, pago, descPorc, obs, maxDias };
         
         const hist = getDB(DB_KEYS.HIST);
         const editIdx = parseInt(document.getElementById('editIndex').value);
 
-        if(editIdx > -1) hist[editIdx] = registro;
-        else {
+        if(editIdx > -1) {
+            hist[editIdx] = registro;
+        } else {
             hist.push(registro);
             let s = parseInt(nCot.replace('CN',''));
             localStorage.setItem(DB_KEYS.SEQ, s+1);
@@ -728,7 +736,6 @@
         generarPDF(registro);
     }
 
-    // CORRECCIÓN 4: PDF HEADER PEQUEÑO Y COLUMNAS AJUSTADAS
     function generarPDF(data) {
         if(!window.jspdf) return alert("Error librería PDF");
         const { jsPDF } = window.jspdf;
@@ -771,13 +778,14 @@
             formatMoney(i.q*i.p)
         ]);
 
+        // CORRECCIÓN 4: CABECERA PDF MÁS PEQUEÑA (fontSize: 7)
         doc.autoTable({
             startY: 80,
             head: [['Nº', 'CÓDIGO', 'DESCRIPCIÓN', 'CANTIDAD', 'P. UNITARIO', 'TOTAL']],
             body: rows,
             theme: 'plain',
             styles: { fontSize: 7, cellPadding: 1.5 },
-            headStyles: { fillColor: azul, textColor: 255, fontStyle:'bold', fontSize: 7 },
+            headStyles: { fillColor: azul, textColor: 255, fontStyle:'bold', fontSize: 7, halign: 'center' },
             columnStyles: { 
                 0:{halign:'center', cellWidth:10}, 
                 1:{cellWidth:20}, 
@@ -794,9 +802,16 @@
         doc.text("MODALIDAD DE PAGO:", 15, finalY + 5);
         doc.setFont("helvetica","normal");
         doc.text(data.pago, 50, finalY + 5);
+
+        if(data.maxDias > 0) {
+            doc.setFont("helvetica","bold");
+            doc.text("TIEMPO DE ENTREGA:", 15, finalY + 10);
+            doc.setFont("helvetica","normal");
+            doc.text(`${data.maxDias} días hábiles (aprox)`, 50, finalY + 10);
+        }
         
         if(data.obs) {
-             const obsY = finalY + 12;
+             const obsY = finalY + 15;
              doc.setFont("helvetica","bold");
              doc.text("OBSERVACIONES:", 15, obsY);
              doc.setFont("helvetica","normal");
@@ -819,9 +834,9 @@
         doc.text("NETO:", boxX, y); doc.text(formatMoney(netoF), 195, y, {align:'right'}); y+=5;
         doc.text("IVA (19%):", boxX, y); doc.text(formatMoney(iva), 195, y, {align:'right'}); y+=7;
         
-        doc.setFillColor(...azul); doc.rect(boxX-5, y-4, 75, 12, 'F');
+        doc.setFillColor(...azul); doc.rect(boxX-5, y-4, 75, 7, 'F'); // ALTURA REDUCIDA A 7
         doc.setTextColor(255); doc.setFontSize(10); doc.setFont("helvetica","bold");
-        doc.text("TOTAL:", boxX, y+3); doc.text(formatMoney(netoF+iva), 195, y+3, {align:'right'});
+        doc.text("TOTAL:", boxX, y+1); doc.text(formatMoney(netoF+iva), 195, y+1, {align:'right'});
 
         const pageHeight = doc.internal.pageSize.height;
         doc.setTextColor(150); doc.setFontSize(7); doc.setFont("helvetica","normal");
