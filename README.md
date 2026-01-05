@@ -1,8 +1,9 @@
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SISTEMA PRO V14 - CUNTEL SPA</title>
+    <title>SISTEMA PRO V15 - CUNTEL SPA</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
@@ -57,7 +58,7 @@
         .input-group input:focus, .input-group select:focus { border-color: var(--secondary); outline: none; background: #fff; }
         .input-group input[readonly] { background: #F2F4F4; color: #777; cursor: default; }
 
-        /* === SMART SEARCH BAR === */
+        /* SMART SEARCH BAR */
         .smart-search-wrapper { position: relative; margin-bottom: 15px; display: flex; gap: 10px; flex-wrap: wrap; }
         .smart-search-input { 
             flex: 1; padding: 10px 15px; font-size: 12px; 
@@ -78,9 +79,9 @@
         .smart-item .price-tag { background: #E8F8F5; color: var(--green); padding: 2px 6px; border-radius: 4px; font-weight: bold; font-size: 10px; }
         .create-new { background: #FDEDEC; color: #C0392B; font-weight: bold; }
 
-        /* TABLA RESPONSIVE */
+        /* TABLA */
         .table-responsive { overflow-x: auto; -webkit-overflow-scrolling: touch; margin-bottom: 15px; border: 1px solid #D5DBDB; border-radius: 4px; }
-        table { width: 100%; border-collapse: collapse; font-size: 10px; min-width: 800px; }
+        table { width: 100%; border-collapse: collapse; font-size: 10px; min-width: 900px; }
         th { background: var(--primary); color: white; padding: 10px; text-align: left; white-space: nowrap; }
         td { border: 1px solid #D5DBDB; padding: 0; height: 32px; }
         
@@ -196,7 +197,7 @@
             <span class="section-label">2. ÍTEMS Y COSTOS</span>
             
             <div class="smart-search-wrapper">
-                <input type="text" id="smartProductSearch" class="smart-search-input" placeholder="✨ BUSCAR CÓDIGO O PRODUCTO PARA AGREGAR..." onkeyup="smartSearchProduct(this)" autocomplete="off">
+                <input type="text" id="smartProductSearch" class="smart-search-input" placeholder="✨ BUSCAR CÓDIGO O PRODUCTO..." onkeyup="smartSearchProduct(this)" autocomplete="off">
                 <div id="smartProductResults" class="smart-results"></div>
                 <button class="btn-nav" style="background:#334155;" onclick="agregarFilaManual()">+ MANUAL</button>
             </div>
@@ -209,13 +210,13 @@
                             <th>CÓDIGO / DESCRIPCIÓN</th>
                             <th style="width: 60px; text-align:center;">CANT</th>
                             
-                            <th style="width: 90px;" class="col-cost">COSTO U.</th>
-                            <th style="width: 90px;" class="col-cost">T. COSTO</th>
+                            <th style="width: 85px;" class="col-cost">COSTO U.</th>
+                            <th style="width: 85px;" class="col-cost">T. COSTO</th>
                             
-                            <th style="width: 90px;" class="col-price">PRECIO U.</th>
-                            <th style="width: 90px;" class="col-price">TOTAL</th>
-                            <th style="width: 70px;">% UTIL</th>
-                        </tr>
+                            <th style="width: 85px;" class="col-price">PRECIO U.</th>
+                            <th style="width: 85px;" class="col-price">TOTAL</th>
+                            <th style="width: 60px;">% UTIL</th>
+                            <th style="width: 80px; color:blue;">$ UTIL</th> </tr>
                     </thead>
                     <tbody></tbody>
                 </table>
@@ -301,11 +302,11 @@
 </div>
 
 <div id="modalForm" class="modal" style="z-index:2100;">
-    <div class="modal-box" style="max-width:500px;">
+    <div class="modal-box" style="max-width:600px;">
         <h3 id="formTitle">...</h3>
         <input type="hidden" id="formType">
         <input type="hidden" id="formIdx">
-        <div id="formContent" class="grid-form" style="grid-template-columns:1fr; margin-top:15px;"></div>
+        <div id="formContent" class="grid-form" style="grid-template-columns:1fr 1fr; margin-top:15px;"></div>
         <button onclick="guardarCRUD()" class="btn-main" style="width:100%; margin-top:15px;">GUARDAR</button>
         <button onclick="document.getElementById('modalForm').style.display='none'" style="width:100%; margin-top:5px; background:#999; border:none; padding:10px; color:white; border-radius:4px; cursor:pointer;">CANCELAR</button>
     </div>
@@ -316,12 +317,10 @@
     const DB_KEYS = { CLI: 'db_clients', PROD: 'db_products', HIST: 'db_history', SEQ: 'db_seq', LOGO: 'db_logo' };
     const formatMoney = n => new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP' }).format(n);
     const upper = e => e.value = e.value.toUpperCase();
-    
     const formatRut = i => {
         let v = i.value.replace(/[^0-9kK]/g, '').toUpperCase();
         if(v.length > 1) i.value = v.slice(0,-1) + '-' + v.slice(-1);
     };
-
     const getDB = k => JSON.parse(localStorage.getItem(k) || "[]");
     const setDB = (k,v) => localStorage.setItem(k, JSON.stringify(v));
 
@@ -347,7 +346,6 @@
         if(term.length < 2) { list.style.display='none'; return; }
 
         const hits = getDB(DB_KEYS.CLI).filter(c => c.razon.includes(term) || c.rut.includes(term));
-        
         if(hits.length > 0) {
             hits.forEach(c => {
                 const d = document.createElement('div');
@@ -370,25 +368,19 @@
         list.style.display='block';
     }
 
-    // SMART SEARCH (Restaurado V11)
     function smartSearchProduct(input) {
         upper(input);
         const term = input.value.trim();
         const list = document.getElementById('smartProductResults');
         list.innerHTML = '';
-        
         if(term.length === 0) { list.style.display='none'; return; }
 
         const hits = getDB(DB_KEYS.PROD).filter(p => p.cod.includes(term) || p.desc.includes(term));
-        
         if(hits.length > 0) {
             hits.forEach(p => {
                 const d = document.createElement('div');
                 d.className = 'search-item';
-                d.innerHTML = `
-                    <div><span style="font-weight:bold">${p.cod}</span> - ${p.desc}</div>
-                    <div style="font-size:10px; font-weight:bold; color:green">${formatMoney(p.precio)}</div>
-                `;
+                d.innerHTML = `<div><span style="font-weight:bold">${p.cod}</span> - ${p.desc}</div><div style="font-size:10px; font-weight:bold; color:green">${formatMoney(p.precio)}</div>`;
                 d.onclick = () => {
                     agregarFilaDirecta(p);
                     input.value = "";
@@ -418,6 +410,7 @@
             <td class="col-price"><input type="text" class="cell-edit cell-locked u-price" value="${formatMoney(p.precio)}" readonly></td>
             <td class="col-price"><input type="text" class="cell-edit cell-locked t-price" readonly></td>
             <td><input type="text" class="cell-edit cell-locked util-porc" readonly style="color:blue; font-weight:bold; text-align:right;"></td>
+            <td><input type="text" class="cell-edit cell-locked util-value" readonly style="color:blue; font-weight:bold; text-align:right;"></td>
             <input type="hidden" class="raw-cost" value="${p.costo}">
             <input type="hidden" class="raw-price" value="${p.precio}">
             <input type="hidden" class="raw-cod" value="${p.cod}">
@@ -439,6 +432,7 @@
             <td class="col-price"><input type="number" class="cell-edit raw-price-manual" value="0" oninput="calcularManual(this)"></td>
             <td class="col-price"><input type="text" class="cell-edit cell-locked t-price" readonly></td>
             <td><input type="text" class="cell-edit cell-locked util-porc" readonly style="color:blue; font-weight:bold; text-align:right;"></td>
+            <td><input type="text" class="cell-edit cell-locked util-value" readonly style="color:blue; font-weight:bold; text-align:right;"></td>
             <input type="hidden" class="raw-cost" value="0">
             <input type="hidden" class="raw-price" value="0">
             <input type="hidden" class="raw-cod" value="MANUAL">
@@ -467,18 +461,25 @@
             const tp = q*p;
             
             const pConDescuento = p * factorDesc;
+            const utilUnitConDesc = pConDescuento - c;
+            const utilTotalLinea = utilUnitConDesc * q;
+
             let margenPorc = 0;
-            if(pConDescuento > 0) margenPorc = ((pConDescuento - c) / pConDescuento) * 100;
+            if(pConDescuento > 0) margenPorc = (utilUnitConDesc / pConDescuento) * 100;
 
             tr.querySelector('.t-cost').value = formatMoney(tc);
             tr.querySelector('.t-price').value = formatMoney(tp);
             
-            const celdaUtil = tr.querySelector('.util-porc');
-            celdaUtil.value = margenPorc.toFixed(1) + '%';
-            celdaUtil.style.color = margenPorc < 0 ? 'red' : 'blue';
+            const celdaUtilPorc = tr.querySelector('.util-porc');
+            celdaUtilPorc.value = margenPorc.toFixed(1) + '%';
+            celdaUtilPorc.style.color = margenPorc < 0 ? 'red' : 'blue';
+
+            const celdaUtilVal = tr.querySelector('.util-value');
+            celdaUtilVal.value = formatMoney(utilTotalLinea);
+            celdaUtilVal.style.color = utilTotalLinea < 0 ? 'red' : 'blue';
 
             neto += tp; 
-            util += ( (tp * factorDesc) - tc ); 
+            util += utilTotalLinea; 
         });
 
         const descMonto = neto * (descPorc/100);
@@ -540,6 +541,7 @@
         }
     }
 
+    // --- FORMULARIO PRODUCTOS MEJORADO ---
     function openForm(type, idx) {
         const modal = document.getElementById('modalForm');
         const content = document.getElementById('formContent');
@@ -561,14 +563,38 @@
             ];
             fields.forEach(f => content.innerHTML+=`<div class="input-group"><label>${f.l}</label><input id="f_${f.id}" value="${data[f.id]||''}" oninput="upper(this)"></div>`);
         } else {
+            // FORMULARIO DE PRODUCTOS CON CALCULADORA
             document.getElementById('formTitle').innerText = idx===-1 ? "NUEVO PRODUCTO" : "EDITAR PRODUCTO";
             content.innerHTML+=`
-            <div class="input-group"><label>CÓDIGO (SKU)</label><input id="f_cod" value="${data.cod||''}" oninput="upper(this)"></div>
-            <div class="input-group"><label>DESCRIPCIÓN</label><input id="f_desc" value="${data.desc||''}" oninput="upper(this)"></div>
-            <div class="input-group"><label>COSTO NETO ($)</label><input type="number" id="f_costo" value="${data.costo||''}"></div>
-            <div class="input-group"><label>PRECIO VENTA NETO ($)</label><input type="number" id="f_precio" value="${data.precio||''}"></div>
+            <div class="input-group" style="grid-column: span 2"><label>CÓDIGO (SKU)</label><input id="f_cod" value="${data.cod||''}" oninput="upper(this)"></div>
+            <div class="input-group" style="grid-column: span 2"><label>DESCRIPCIÓN</label><input id="f_desc" value="${data.desc||''}" oninput="upper(this)"></div>
+            
+            <div class="input-group"><label>COSTO NETO ($)</label><input type="number" id="f_costo" value="${data.costo||0}" oninput="calcProdForm()"></div>
+            <div class="input-group"><label>PRECIO VENTA NETO ($)</label><input type="number" id="f_precio" value="${data.precio||0}" oninput="calcProdForm()"></div>
+            
+            <div class="input-group"><label>PRECIO VENTA TOTAL (c/IVA)</label><input type="text" id="f_total_iva" readonly style="background:#e0f7fa; font-weight:bold;"></div>
+            <div class="input-group"><label>UTILIDAD ($)</label><input type="text" id="f_util_pesos" readonly style="background:#e8f5e9; font-weight:bold; color:green;"></div>
+            <div class="input-group"><label>% UTILIDAD</label><input type="text" id="f_util_porc" readonly style="background:#e8f5e9; font-weight:bold; color:blue;"></div>
+            
+            <div class="input-group" style="grid-column: span 2"><label>LINK PROVEEDOR</label><input id="f_link" value="${data.link||''}" placeholder="https://..."></div>
+            <div class="input-group" style="grid-column: span 2"><label>DISPONIBILIDAD (Días)</label><input id="f_dispo" value="${data.dispo||''}" oninput="upper(this)"></div>
             `;
+            setTimeout(calcProdForm, 100);
         }
+    }
+
+    function calcProdForm() {
+        const costo = parseFloat(document.getElementById('f_costo').value) || 0;
+        const venta = parseFloat(document.getElementById('f_precio').value) || 0;
+        
+        const totalIva = venta * 1.19;
+        const utilPesos = venta - costo;
+        let utilPorc = 0;
+        if(venta > 0) utilPorc = (utilPesos / venta) * 100;
+
+        document.getElementById('f_total_iva').value = formatMoney(totalIva);
+        document.getElementById('f_util_pesos').value = formatMoney(utilPesos);
+        document.getElementById('f_util_porc').value = utilPorc.toFixed(1) + '%';
     }
 
     function guardarCRUD() {
@@ -585,8 +611,14 @@
                     email:document.getElementById('f_email').value, contacto:document.getElementById('f_contacto').value };
             if(!obj.rut) return alert("RUT Obligatorio");
         } else {
-            obj = { cod:document.getElementById('f_cod').value, desc:document.getElementById('f_desc').value,
-                    costo:parseFloat(document.getElementById('f_costo').value)||0, precio:parseFloat(document.getElementById('f_precio').value)||0 };
+            obj = { 
+                cod:document.getElementById('f_cod').value, 
+                desc:document.getElementById('f_desc').value,
+                costo:parseFloat(document.getElementById('f_costo').value)||0, 
+                precio:parseFloat(document.getElementById('f_precio').value)||0,
+                link:document.getElementById('f_link').value,
+                dispo:document.getElementById('f_dispo').value
+            };
             if(!obj.cod) return alert("Código Obligatorio");
         }
 
@@ -633,7 +665,7 @@
         reader.readAsText(file);
     }
 
-    // --- 5. PDF & GUARDADO ---
+    // --- 5. PDF & GUARDADO (CORREGIDO PARA MODO EDICIÓN) ---
     function loadHistory(i) {
         const h = getDB(DB_KEYS.HIST)[i];
         document.getElementById('editIndex').value = i;
@@ -663,6 +695,7 @@
                 <td class="col-price"><input type="text" class="cell-edit cell-locked u-price" value="${formatMoney(it.p)}" readonly></td>
                 <td class="col-price"><input type="text" class="cell-edit cell-locked t-price" readonly></td>
                 <td><input type="text" class="cell-edit cell-locked util-porc" readonly style="color:blue; font-weight:bold; text-align:right;"></td>
+                <td><input type="text" class="cell-edit cell-locked util-value" readonly style="color:blue; font-weight:bold; text-align:right;"></td>
                 <input type="hidden" class="raw-cost" value="${it.c}"><input type="hidden" class="raw-price" value="${it.p}"><input type="hidden" class="raw-cod" value="${it.cd}">`;
                 tbody.appendChild(tr);
             } else {
@@ -676,6 +709,7 @@
                     <td class="col-price"><input type="number" class="cell-edit raw-price-manual" value="${it.p}" oninput="calcularManual(this)"></td>
                     <td class="col-price"><input type="text" class="cell-edit cell-locked t-price" readonly></td>
                     <td><input type="text" class="cell-edit cell-locked util-porc" readonly style="color:blue; font-weight:bold; text-align:right;"></td>
+                    <td><input type="text" class="cell-edit cell-locked util-value" readonly style="color:blue; font-weight:bold; text-align:right;"></td>
                     <input type="hidden" class="raw-cost" value="${it.c}"><input type="hidden" class="raw-price" value="${it.p}"><input type="hidden" class="raw-cod" value="MANUAL">`;
                  tbody.appendChild(tr);
             }
@@ -732,8 +766,11 @@
         const hist = getDB(DB_KEYS.HIST);
         const editIdx = parseInt(document.getElementById('editIndex').value);
 
-        if(editIdx > -1) hist[editIdx] = registro;
-        else {
+        if(editIdx > -1) {
+            // ACTUALIZAR EXISTENTE
+            hist[editIdx] = registro;
+        } else {
+            // NUEVO
             hist.push(registro);
             let s = parseInt(nCot.replace('CN',''));
             localStorage.setItem(DB_KEYS.SEQ, s+1);
@@ -775,7 +812,6 @@
         doc.text(`COMUNA: ${c.comuna}`, 15, 66); doc.text(`REGIÓN: ${c.region}`, 120, 66);
         doc.text(`CONTACTO: ${c.contacto}`, 15, 71); doc.text(`EMAIL: ${c.email}`, 120, 71);
 
-        // Columnas Solicitadas: Nº | CÓDIGO | DESCRIPCIÓN | CANTIDAD | P. UNITARIO | TOTAL
         const rows = data.items.map((i, idx) => [
             idx + 1,
             i.cd === "MANUAL" ? "-" : i.cd,
