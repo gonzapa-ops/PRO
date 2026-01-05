@@ -1,14 +1,15 @@
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SISTEMA PRO V18 - CUNTEL SPA</title>
+    <title>SISTEMA PRO V19 - CUNTEL SPA</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
 
     <style>
-        /* --- ESTILOS GENERALES --- */
+        /* --- ESTILOS GENERALES (BASE V18) --- */
         :root {
             --primary: #1F6F8B;
             --secondary: #F25C05;
@@ -17,15 +18,16 @@
             --dark: #17202A;
             --green: #27AE60;
             --soft-blue: #2E86C1;
+            --red-reject: #C0392B;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; text-transform: uppercase; }
         body { background: var(--bg); padding: 15px; color: var(--text); font-size: 11px; padding-bottom: 80px; }
         
-        .main-container { max-width: 98%; margin: 0 auto; background: white; min-height: 100vh; box-shadow: 0 5px 30px rgba(0,0,0,0.15); border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; }
+        .main-container { max-width: 98%; margin: 0 auto; background: white; min-height: 100vh; box-shadow: 0 5px 30px rgba(0,0,0,0.15); border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; position: relative; }
 
         /* TOP BAR */
-        .top-bar { background: var(--dark); color: white; padding: 10px 20px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; }
+        .top-bar { background: var(--dark); color: white; padding: 10px 20px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; z-index: 100; }
         .top-menu { display: flex; gap: 8px; flex-wrap: wrap; }
         .btn-nav { background: #34495E; border: 1px solid #566573; color: white; padding: 6px 12px; cursor: pointer; border-radius: 3px; font-size: 10px; font-weight: bold; transition: 0.2s; display: flex; align-items: center; gap: 5px; white-space: nowrap; }
         .btn-nav:hover { background: var(--secondary); border-color: var(--secondary); }
@@ -43,8 +45,28 @@
         #bar-edicion { display: none; background: #FFF3CD; color: #856404; text-align: center; padding: 8px; font-weight: bold; border-bottom: 1px solid #FFEEBA; }
 
         /* CONTENIDO */
-        .content { padding: 20px; }
-        .section-box { margin-bottom: 25px; border: 1px solid #D5DBDB; border-radius: 5px; padding: 15px; background: #FBFCFC; position: relative; }
+        .content { padding: 20px; position: relative; }
+        
+        /* SELLO DE AGUA (ESTADO BLOQUEADO) */
+        #sello-agua {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-30deg);
+            font-size: 80px;
+            font-weight: 900;
+            color: rgba(0,0,0,0.1);
+            border: 10px solid rgba(0,0,0,0.1);
+            padding: 20px 50px;
+            text-transform: uppercase;
+            z-index: 0;
+            pointer-events: none;
+        }
+        .sello-aceptada { color: rgba(39, 174, 96, 0.2) !important; border-color: rgba(39, 174, 96, 0.2) !important; }
+        .sello-rechazada { color: rgba(192, 57, 43, 0.2) !important; border-color: rgba(192, 57, 43, 0.2) !important; }
+
+        .section-box { margin-bottom: 25px; border: 1px solid #D5DBDB; border-radius: 5px; padding: 15px; background: #FBFCFC; position: relative; z-index: 1; }
         .section-label { position: absolute; top: -10px; left: 15px; background: var(--primary); color: white; padding: 3px 10px; font-size: 10px; font-weight: bold; border-radius: 3px; }
 
         /* INPUTS */
@@ -53,6 +75,7 @@
         .input-group input, .input-group select { width: 100%; padding: 6px 10px; border: 1px solid #D5DBDB; border-radius: 3px; font-size: 11px; font-weight: 600; color: var(--dark); height: 35px; }
         .input-group input:focus, .input-group select:focus { border-color: var(--secondary); outline: none; background: #fff; }
         .input-group input[readonly] { background: #F2F4F4; color: #777; cursor: default; }
+        .input-blocked { background: #EAECEE !important; color: #555 !important; cursor: not-allowed !important; pointer-events: none; border-color: #ddd !important; }
 
         /* SMART SEARCH */
         .smart-search-wrapper { position: relative; margin-bottom: 15px; display: flex; gap: 10px; flex-wrap: wrap; }
@@ -72,7 +95,6 @@
         input.cell-edit:focus { outline: 2px solid var(--secondary); background: white; z-index: 10; position: relative; }
         input.cell-locked { background: #F8F9F9; color: #777; text-align: right; cursor: not-allowed; }
         input.cell-qty { text-align: center; font-weight: bold; color: var(--primary); }
-        
         .col-cost { background: #FEF2F2; color: #922B21; }
         .col-price { background: #F4F6F7; color: #117A65; }
 
@@ -85,10 +107,19 @@
         .total-price { font-size: 20px; font-weight: 900; color: var(--primary); }
         .util-label { font-size: 10px; color: var(--soft-blue); font-weight: bold; display: block; text-align: right; }
 
-        /* BOTONES */
+        /* ACTION AREA Y BLOQUEO */
         .action-area { text-align: center; margin-top: 30px; border-top: 1px dashed #BDC3C7; padding-top: 20px; }
         .btn-main { background: var(--secondary); color: white; padding: 14px 40px; font-size: 14px; font-weight: 800; border: none; border-radius: 4px; cursor: pointer; box-shadow: 0 4px 15px rgba(242, 92, 5, 0.3); width: 100%; max-width: 400px; }
         .btn-main:hover { background: #D35400; transform: translateY(-1px); }
+
+        /* NUEVO: PANEL DE ESTADO */
+        .status-panel { margin-top: 20px; display: none; justify-content: center; gap: 15px; padding: 15px; background: #F8F9F9; border-radius: 6px; border: 1px solid #D5DBDB; }
+        .btn-status { padding: 12px 25px; border: none; border-radius: 4px; font-weight: 800; cursor: pointer; color: white; font-size: 12px; transition: 0.3s; display: flex; align-items: center; gap: 5px; }
+        .btn-accept { background: var(--green); }
+        .btn-accept:hover { background: #1E8449; box-shadow: 0 0 10px rgba(39, 174, 96, 0.4); }
+        .btn-reject { background: var(--red-reject); }
+        .btn-reject:hover { background: #922B21; box-shadow: 0 0 10px rgba(192, 57, 43, 0.4); }
+        .hidden-when-locked { /* Clase para ocultar elementos al bloquear */ }
 
         /* RESPONSIVE */
         @media (max-width: 768px) {
@@ -117,6 +148,8 @@
 <div class="main-container">
 
     <div id="bar-edicion">⚠️ MODO EDICIÓN ACTIVO</div>
+    
+    <div id="sello-agua"></div>
 
     <div class="top-bar">
         <div style="font-weight: 800; font-size: 12px; opacity: 0.8; margin-bottom: 5px;">PANEL DE CONTROL</div>
@@ -147,14 +180,15 @@
             <span style="font-size:9px; color:#999;">FOLIO COTIZACIÓN</span>
             <span class="quote-number" id="lblCorrelativo">...</span>
             <span style="font-size:11px; font-weight:bold; color:var(--primary); display:block;" id="lblFecha"></span>
+            <span id="lblEstado" style="display:none; font-size:10px; font-weight:bold; margin-top:5px; padding:2px 6px; border-radius:4px;"></span>
         </div>
     </div>
 
-    <div class="content">
+    <div class="content" id="editorContent">
 
         <div class="section-box">
             <span class="section-label">1. INFORMACIÓN DEL CLIENTE</span>
-            <div class="input-group search-container">
+            <div class="input-group search-container hidden-when-locked">
                 <input type="text" id="buscadorCliente" placeholder="🔍 BUSCAR CLIENTE..." onkeyup="buscarCliente(this)" autocomplete="off" style="border: 2px solid var(--primary);">
                 <div id="listaClientes" class="search-results"></div>
             </div>
@@ -172,7 +206,7 @@
 
         <div class="section-box">
             <span class="section-label">2. ÍTEMS Y COSTOS</span>
-            <div class="smart-search-wrapper">
+            <div class="smart-search-wrapper hidden-when-locked">
                 <input type="text" id="smartProductSearch" class="smart-search-input" placeholder="✨ BUSCAR CÓDIGO O PRODUCTO PARA AGREGAR..." onkeyup="smartSearchProduct(this)" autocomplete="off">
                 <div id="smartProductResults" class="smart-results"></div>
                 <button class="btn-nav" style="background:#334155;" onclick="agregarFilaManual()">+ MANUAL</button>
@@ -181,7 +215,7 @@
                 <table id="tablaItems">
                     <thead>
                         <tr>
-                            <th style="width: 30px; text-align:center;">X</th>
+                            <th class="hidden-when-locked" style="width: 30px; text-align:center;">X</th>
                             <th>CÓDIGO / DESCRIPCIÓN</th>
                             <th style="width: 60px; text-align:center;">CANT</th>
                             <th style="width: 85px;" class="col-cost">COSTO U.</th>
@@ -232,10 +266,17 @@
             </div>
         </div>
 
-        <div class="action-area">
+        <div class="action-area hidden-when-locked">
             <input type="hidden" id="editIndex" value="-1">
             <button class="btn-main" onclick="guardarYGenerar()">💾 GUARDAR Y GENERAR PDF</button>
         </div>
+
+        <div id="statusPanel" class="status-panel">
+            <span style="font-weight:bold; color:#555;">ACCIÓN REQUERIDA:</span>
+            <button class="btn-status btn-accept" onclick="cambiarEstado('ACEPTADA')">✅ ACEPTAR PRESUPUESTO</button>
+            <button class="btn-status btn-reject" onclick="cambiarEstado('RECHAZADA')">🚫 RECHAZAR</button>
+        </div>
+
     </div>
 </div>
 
@@ -294,7 +335,63 @@
         } catch(e) { console.error("Error init", e); }
     };
 
-    // --- 2. BUSCADOR Y TABLA ---
+    // --- 2. LOGICA DE BLOQUEO Y ESTADO ---
+    function desbloquearEditor() {
+        document.getElementById('sello-agua').style.display = 'none';
+        document.getElementById('statusPanel').style.display = 'none';
+        
+        // Habilitar controles
+        document.querySelectorAll('.hidden-when-locked').forEach(el => el.style.display = 'flex');
+        document.querySelectorAll('input, select, textarea').forEach(el => {
+            el.readOnly = false;
+            el.classList.remove('input-blocked');
+        });
+        
+        // Rehacer botones eliminar en tabla
+        document.querySelectorAll('#tablaItems button').forEach(b => b.style.display = 'inline-block');
+        
+        // Restaurar read-only naturales
+        document.querySelectorAll('.cell-locked').forEach(el => el.readOnly = true);
+        document.getElementById('cliRazon').readOnly = true; 
+        // ... (otros campos auto-llenados)
+    }
+
+    function bloquearEditor(estado) {
+        // 1. Mostrar Sello
+        const sello = document.getElementById('sello-agua');
+        sello.style.display = 'block';
+        sello.innerText = estado;
+        sello.className = ''; // Reset
+        sello.classList.add(estado === 'ACEPTADA' ? 'sello-aceptada' : 'sello-rechazada');
+
+        // 2. Ocultar botones de acción
+        document.querySelectorAll('.hidden-when-locked').forEach(el => el.style.display = 'none');
+        document.querySelectorAll('#tablaItems button').forEach(b => b.style.display = 'none'); // Ocultar X de borrar fila
+
+        // 3. Bloquear Inputs
+        document.querySelectorAll('input, select, textarea').forEach(el => {
+            el.readOnly = true;
+            el.classList.add('input-blocked');
+        });
+
+        // 4. Panel de Estado Off (Ya decidido)
+        document.getElementById('statusPanel').style.display = 'none';
+    }
+
+    function cambiarEstado(nuevoEstado) {
+        if(!confirm("¿Está seguro? Una vez " + nuevoEstado + ", la cotización se bloqueará y no podrá editarse.")) return;
+
+        const idx = parseInt(document.getElementById('editIndex').value);
+        if(idx === -1) return alert("Debe guardar la cotización primero.");
+
+        const h = getDB(DB_KEYS.HIST);
+        h[idx].status = nuevoEstado;
+        setDB(DB_KEYS.HIST, h);
+
+        bloquearEditor(nuevoEstado);
+    }
+
+    // --- 3. BUSCADOR Y TABLA ---
     function buscarCliente(input) {
         upper(input);
         const term = input.value.trim();
@@ -448,7 +545,7 @@
         document.getElementById('txtUtilidad').innerText = formatMoney(util);
     }
 
-    // --- 3. CRUD ---
+    // --- 4. CRUD ---
     function abrirGestor(type) {
         const modal = document.getElementById('modalGestor');
         const thead = document.getElementById('modalHead');
@@ -481,8 +578,14 @@
             btn.style.display='none';
             thead.innerHTML=`<tr><th>FOLIO</th><th>FECHA</th><th>CLIENTE</th><th>TOTAL</th><th>ACCIÓN</th></tr>`;
             getDB(DB_KEYS.HIST).forEach((h,i)=> {
-                tbody.innerHTML+=`<tr><td><b>${h.n}</b></td><td>${h.fecha}</td><td>${h.cli.razon}</td><td>${h.total}</td><td>
-                <button class="btn-small" style="background:#2980B9" onclick="loadHistory(${i})">EDITAR</button>
+                // Color status
+                let statusColor = '#555';
+                if(h.status === 'ACEPTADA') statusColor = 'green';
+                if(h.status === 'RECHAZADA') statusColor = 'red';
+
+                tbody.innerHTML+=`<tr><td><b>${h.n}</b></td><td>${h.fecha}</td><td>${h.cli.razon}</td>
+                <td>${h.total} <br><span style="font-size:9px;color:${statusColor}">[${h.status||'PENDIENTE'}]</span></td><td>
+                <button class="btn-small" style="background:#2980B9" onclick="loadHistory(${i})">ABRIR</button>
                 <button class="btn-small" style="background:#C0392B" onclick="delItem('${DB_KEYS.HIST}',${i},'historial')">DEL</button></td></tr>`;
             });
         }
@@ -578,7 +681,7 @@
         if(document.getElementById('modalGestor').style.display!=='none') abrirGestor(type==='CLI'?'clientes':'productos');
     }
 
-    // --- 4. BACKUP & LOGO ---
+    // --- 5. BACKUP & LOGO ---
     function cargarLogo(input) {
         if(input.files && input.files[0]) {
             const reader = new FileReader();
@@ -615,9 +718,11 @@
         reader.readAsText(file);
     }
 
-    // --- 5. PDF & GUARDADO ---
-    // CORRECCIÓN 1: VISUALIZACIÓN AL CARGAR HISTORIAL (Reimpresión de valores)
+    // --- 6. PDF, GUARDADO Y CARGA ---
     function loadHistory(i) {
+        // Reset primero
+        desbloquearEditor();
+
         const h = getDB(DB_KEYS.HIST)[i];
         document.getElementById('editIndex').value = i;
         document.getElementById('bar-edicion').style.display='block';
@@ -668,6 +773,14 @@
             }
         });
         calcular();
+
+        // 7. CHECK STATUS
+        if(h.status === 'ACEPTADA' || h.status === 'RECHAZADA') {
+            bloquearEditor(h.status);
+        } else {
+            // Mostrar botones de estado para aprobar/rechazar
+            document.getElementById('statusPanel').style.display = 'flex';
+        }
     }
     
     function nuevaCotizacion() { if(confirm("¿Limpiar?")) location.reload(); }
@@ -719,12 +832,17 @@
         const descPorc = document.getElementById('txtDescPorc').value;
         const obs = document.getElementById('txtObservaciones').value;
         
-        const registro = { n: nCot, fecha: document.getElementById('lblFecha').innerText, cli, items, total, pago, descPorc, obs, maxDias };
+        // Save current status or default to PENDIENTE
+        let currentStatus = 'PENDIENTE';
+        
+        const registro = { n: nCot, fecha: document.getElementById('lblFecha').innerText, cli, items, total, pago, descPorc, obs, maxDias, status: currentStatus };
         
         const hist = getDB(DB_KEYS.HIST);
         const editIdx = parseInt(document.getElementById('editIndex').value);
 
         if(editIdx > -1) {
+            // Keep previous status if exists
+            if(hist[editIdx].status) registro.status = hist[editIdx].status;
             hist[editIdx] = registro;
         } else {
             hist.push(registro);
@@ -733,6 +851,10 @@
         }
         
         setDB(DB_KEYS.HIST, hist);
+        
+        // Show status buttons now that it is saved
+        document.getElementById('statusPanel').style.display = 'flex';
+        
         generarPDF(registro);
     }
 
@@ -778,7 +900,6 @@
             formatMoney(i.q*i.p)
         ]);
 
-        // CORRECCIÓN 4: CABECERA PDF MÁS PEQUEÑA (fontSize: 7)
         doc.autoTable({
             startY: 80,
             head: [['Nº', 'CÓDIGO', 'DESCRIPCIÓN', 'CANTIDAD', 'P. UNITARIO', 'TOTAL']],
@@ -834,7 +955,7 @@
         doc.text("NETO:", boxX, y); doc.text(formatMoney(netoF), 195, y, {align:'right'}); y+=5;
         doc.text("IVA (19%):", boxX, y); doc.text(formatMoney(iva), 195, y, {align:'right'}); y+=7;
         
-        doc.setFillColor(...azul); doc.rect(boxX-5, y-4, 75, 7, 'F'); // ALTURA REDUCIDA A 7
+        doc.setFillColor(...azul); doc.rect(boxX-5, y-4, 75, 7, 'F');
         doc.setTextColor(255); doc.setFontSize(10); doc.setFont("helvetica","bold");
         doc.text("TOTAL:", boxX, y+1); doc.text(formatMoney(netoF+iva), 195, y+1, {align:'right'});
 
@@ -843,7 +964,7 @@
         doc.text("Generado por INGENIERIA CUNTEL SPA", 105, pageHeight - 10, {align:"center"});
 
         doc.save(`Cotizacion_${data.n}.pdf`);
-        setTimeout(() => location.reload(), 2000);
+        // No recargar automáticamente para que el usuario pueda aprobar/rechazar
     }
 </script>
 </body>
