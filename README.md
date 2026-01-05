@@ -1,9 +1,8 @@
-<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SISTEMA PRO V15 - CUNTEL SPA</title>
+    <title>SISTEMA PRO V16 - CUNTEL SPA</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
@@ -33,17 +32,13 @@
 
         /* HEADER */
         .header { padding: 20px; display: flex; flex-wrap: wrap; justify-content: space-between; border-bottom: 3px solid var(--secondary); background: white; align-items: center; gap: 20px; }
-        
         .brand-area { display: flex; align-items: center; gap: 15px; }
         .logo-placeholder { width: 60px; height: 60px; background: #eee; border: 2px dashed #ccc; display: flex; align-items: center; justify-content: center; cursor: pointer; overflow: hidden; border-radius: 4px; flex-shrink: 0; }
         .logo-placeholder img { width: 100%; height: 100%; object-fit: contain; }
-        
-        .brand h1 { color: var(--primary); font-size: 20px; font-weight: 900; margin: 0; word-break: break-word; }
+        .brand h1 { color: var(--primary); font-size: 20px; font-weight: 900; margin: 0; }
         .brand p { color: #7F8C8D; font-size: 10px; font-weight: 600; }
-
         .quote-data { text-align: right; }
         .quote-number { font-size: 18px; font-weight: bold; color: var(--secondary); white-space: nowrap; }
-        
         #bar-edicion { display: none; background: #FFF3CD; color: #856404; text-align: center; padding: 8px; font-weight: bold; border-bottom: 1px solid #FFEEBA; }
 
         /* CONTENIDO */
@@ -58,25 +53,13 @@
         .input-group input:focus, .input-group select:focus { border-color: var(--secondary); outline: none; background: #fff; }
         .input-group input[readonly] { background: #F2F4F4; color: #777; cursor: default; }
 
-        /* SMART SEARCH BAR */
+        /* SMART SEARCH */
         .smart-search-wrapper { position: relative; margin-bottom: 15px; display: flex; gap: 10px; flex-wrap: wrap; }
-        .smart-search-input { 
-            flex: 1; padding: 10px 15px; font-size: 12px; 
-            border: 2px solid #3498DB; border-radius: 4px; 
-            background: #fff; transition: 0.3s;
-        }
+        .smart-search-input { flex: 1; padding: 10px 15px; font-size: 12px; border: 2px solid #3498DB; border-radius: 4px; background: #fff; transition: 0.3s; }
         .smart-search-input:focus { border-color: var(--secondary); box-shadow: 0 0 0 3px rgba(31, 111, 139, 0.1); }
-        
-        .smart-results { 
-            position: absolute; top: 100%; left: 0; width: 100%; 
-            background: white; border-radius: 4px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); 
-            z-index: 100; max-height: 250px; overflow-y: auto; display: none; border: 1px solid #ddd;
-        }
+        .smart-results { position: absolute; top: 100%; left: 0; width: 100%; background: white; border-radius: 4px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); z-index: 100; max-height: 250px; overflow-y: auto; display: none; border: 1px solid #ddd; }
         .smart-item { padding: 10px; border-bottom: 1px solid #eee; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
         .smart-item:hover { background: #EBF5FB; }
-        .smart-item .main-text { font-weight: bold; color: var(--dark); font-size: 11px; }
-        .smart-item .sub-text { font-size: 10px; color: #7f8c8d; margin-left: 10px; }
-        .smart-item .price-tag { background: #E8F8F5; color: var(--green); padding: 2px 6px; border-radius: 4px; font-weight: bold; font-size: 10px; }
         .create-new { background: #FDEDEC; color: #C0392B; font-weight: bold; }
 
         /* TABLA */
@@ -84,7 +67,6 @@
         table { width: 100%; border-collapse: collapse; font-size: 10px; min-width: 900px; }
         th { background: var(--primary); color: white; padding: 10px; text-align: left; white-space: nowrap; }
         td { border: 1px solid #D5DBDB; padding: 0; height: 32px; }
-        
         input.cell-edit { width: 100%; height: 100%; border: none; padding: 0 8px; font-size: 11px; background: transparent; }
         input.cell-edit:focus { outline: 2px solid var(--secondary); background: white; z-index: 10; position: relative; }
         input.cell-locked { background: #F8F9F9; color: #777; text-align: right; cursor: not-allowed; }
@@ -92,15 +74,12 @@
         
         .col-cost { background: #FEF2F2; color: #922B21; }
         .col-price { background: #F4F6F7; color: #117A65; }
-        .col-util { text-align: right; padding-right: 5px; font-weight: bold; color: blue; }
 
-        /* BOTTOM AREA */
+        /* BOTTOM */
         .bottom-area { display: grid; grid-template-columns: 1fr 350px; gap: 20px; margin-top: 20px; }
         .notes-box textarea { width: 100%; height: 100px; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-family: inherit; resize: none; box-sizing: border-box; }
-
         .totals-card { background: white; border: 1px solid #D5DBDB; padding: 15px; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .t-row { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 11px; font-weight: 600; color: #555; align-items: center; }
-        
         .final-row { border-top: 2px solid var(--secondary); padding-top: 10px; margin-top: 10px; display: flex; justify-content: space-between; align-items: center; }
         .total-price { font-size: 20px; font-weight: 900; color: var(--primary); }
         .util-label { font-size: 10px; color: var(--green); font-weight: bold; display: block; text-align: right; }
@@ -110,7 +89,7 @@
         .btn-main { background: var(--secondary); color: white; padding: 14px 40px; font-size: 14px; font-weight: 800; border: none; border-radius: 4px; cursor: pointer; box-shadow: 0 4px 15px rgba(242, 92, 5, 0.3); width: 100%; max-width: 400px; }
         .btn-main:hover { background: #D35400; transform: translateY(-1px); }
 
-        /* MEDIA QUERIES */
+        /* RESPONSIVE */
         @media (max-width: 768px) {
             .header { flex-direction: column; text-align: center; }
             .brand-area { flex-direction: column; }
@@ -158,7 +137,6 @@
                 <span id="logoText" style="font-size:9px; text-align:center; color:#999;">+ LOGO</span>
             </div>
             <input type="file" id="logoInput" style="display:none" accept="image/*" onchange="cargarLogo(this)">
-            
             <div class="brand">
                 <h1>INGENIERIA CUNTEL SPA</h1>
                 <p>SOLUCIONES INTEGRALES</p>
@@ -175,12 +153,10 @@
 
         <div class="section-box">
             <span class="section-label">1. INFORMACIÓN DEL CLIENTE</span>
-            
             <div class="input-group search-container">
                 <input type="text" id="buscadorCliente" placeholder="🔍 BUSCAR CLIENTE..." onkeyup="buscarCliente(this)" autocomplete="off" style="border: 2px solid var(--primary);">
                 <div id="listaClientes" class="search-results"></div>
             </div>
-
             <div class="grid-form">
                 <div class="input-group"><label>RAZÓN SOCIAL</label><input type="text" id="cliRazon" readonly></div>
                 <div class="input-group"><label>RUT</label><input type="text" id="cliRut" readonly></div>
@@ -195,13 +171,11 @@
 
         <div class="section-box">
             <span class="section-label">2. ÍTEMS Y COSTOS</span>
-            
             <div class="smart-search-wrapper">
-                <input type="text" id="smartProductSearch" class="smart-search-input" placeholder="✨ BUSCAR CÓDIGO O PRODUCTO..." onkeyup="smartSearchProduct(this)" autocomplete="off">
+                <input type="text" id="smartProductSearch" class="smart-search-input" placeholder="✨ BUSCAR CÓDIGO O PRODUCTO PARA AGREGAR..." onkeyup="smartSearchProduct(this)" autocomplete="off">
                 <div id="smartProductResults" class="smart-results"></div>
                 <button class="btn-nav" style="background:#334155;" onclick="agregarFilaManual()">+ MANUAL</button>
             </div>
-
             <div class="table-responsive">
                 <table id="tablaItems">
                     <thead>
@@ -209,14 +183,13 @@
                             <th style="width: 30px; text-align:center;">X</th>
                             <th>CÓDIGO / DESCRIPCIÓN</th>
                             <th style="width: 60px; text-align:center;">CANT</th>
-                            
                             <th style="width: 85px;" class="col-cost">COSTO U.</th>
                             <th style="width: 85px;" class="col-cost">T. COSTO</th>
-                            
                             <th style="width: 85px;" class="col-price">PRECIO U.</th>
                             <th style="width: 85px;" class="col-price">TOTAL</th>
                             <th style="width: 60px;">% UTIL</th>
-                            <th style="width: 80px; color:blue;">$ UTIL</th> </tr>
+                            <th style="width: 80px; color:blue;">$ UTIL</th>
+                        </tr>
                     </thead>
                     <tbody></tbody>
                 </table>
@@ -237,35 +210,17 @@
                         <option value="OC 30 DÍAS">OC 30 DÍAS</option>
                     </select>
                 </div>
-
                 <div class="section-box notes-box" style="margin-bottom:0; padding:15px;">
                     <span class="section-label">OBSERVACIONES</span>
                     <textarea id="txtObservaciones" placeholder="Indique condiciones especiales..."></textarea>
                 </div>
             </div>
-
             <div class="totals-card">
-                <div class="t-row">
-                    <span>SUBTOTAL NETO:</span>
-                    <span id="txtNeto">$0</span>
-                </div>
-                <div class="t-row">
-                    <span>DESCUENTO (%):</span>
-                    <input type="number" id="txtDescPorc" value="0" min="0" max="100" style="width:50px; text-align:right;" onchange="calcular()">
-                </div>
-                <div class="t-row">
-                    <span>MONTO DESC.:</span>
-                    <span id="txtDescMonto">$0</span>
-                </div>
-                <div class="t-row" style="border-top:1px dashed #ddd; padding-top:5px;">
-                    <span>NETO FINAL:</span>
-                    <span id="txtNetoFinal">$0</span>
-                </div>
-                <div class="t-row">
-                    <span>IVA (19%):</span>
-                    <span id="txtIva">$0</span>
-                </div>
-                
+                <div class="t-row"><span>SUBTOTAL NETO:</span><span id="txtNeto">$0</span></div>
+                <div class="t-row"><span>DESCUENTO (%):</span><input type="number" id="txtDescPorc" value="0" min="0" max="100" style="width:50px; text-align:right;" onchange="calcular()"></div>
+                <div class="t-row"><span>MONTO DESC.:</span><span id="txtDescMonto">$0</span></div>
+                <div class="t-row" style="border-top:1px dashed #ddd; padding-top:5px;"><span>NETO FINAL:</span><span id="txtNetoFinal">$0</span></div>
+                <div class="t-row"><span>IVA (19%):</span><span id="txtIva">$0</span></div>
                 <div class="final-row">
                     <div style="text-align:right; width:100%;">
                         <span style="font-size:9px; color:#777;">TOTAL A PAGAR</span>
@@ -280,23 +235,19 @@
             <input type="hidden" id="editIndex" value="-1">
             <button class="btn-main" onclick="guardarYGenerar()">💾 GUARDAR Y GENERAR PDF</button>
         </div>
-
     </div>
 </div>
 
 <div id="modalGestor" class="modal">
     <div class="modal-box">
-        <span class="close-btn" onclick="document.getElementById('modalGestor').style.display='none'" style="float:right; cursor:pointer; font-size:20px;">&times;</span>
+        <span class="close-btn" onclick="document.getElementById('modalGestor').style.display='none'" style="float:right; cursor:pointer; font-size:24px;">&times;</span>
         <h3 id="modalTitle">GESTIÓN</h3>
         <div style="margin-bottom:10px; text-align:right;">
              <button id="btnModalNew" class="btn-nav" style="background:var(--primary); float:right;">+ NUEVO</button>
              <div style="clear:both;"></div>
         </div>
         <div class="table-responsive">
-            <table class="manage-table">
-                <thead id="modalHead"></thead>
-                <tbody id="modalBody"></tbody>
-            </table>
+            <table class="manage-table"><thead id="modalHead"></thead><tbody id="modalBody"></tbody></table>
         </div>
     </div>
 </div>
@@ -307,8 +258,10 @@
         <input type="hidden" id="formType">
         <input type="hidden" id="formIdx">
         <div id="formContent" class="grid-form" style="grid-template-columns:1fr 1fr; margin-top:15px;"></div>
-        <button onclick="guardarCRUD()" class="btn-main" style="width:100%; margin-top:15px;">GUARDAR</button>
-        <button onclick="document.getElementById('modalForm').style.display='none'" style="width:100%; margin-top:5px; background:#999; border:none; padding:10px; color:white; border-radius:4px; cursor:pointer;">CANCELAR</button>
+        <div style="margin-top:20px; display:flex; gap:10px;">
+            <button onclick="guardarCRUD()" class="btn-main" style="width:100%;">GUARDAR</button>
+            <button onclick="document.getElementById('modalForm').style.display='none'" style="width:100%; background:#999; border:none; padding:14px; border-radius:4px; color:white; font-weight:bold; cursor:pointer;">CANCELAR</button>
+        </div>
     </div>
 </div>
 
@@ -325,19 +278,22 @@
     const setDB = (k,v) => localStorage.setItem(k, JSON.stringify(v));
 
     window.onload = () => {
-        document.getElementById('lblFecha').innerText = new Date().toLocaleDateString('es-CL');
-        const savedLogo = localStorage.getItem(DB_KEYS.LOGO);
-        if(savedLogo) {
-            document.getElementById('logoPreview').src = savedLogo;
-            document.getElementById('logoPreview').style.display = 'block';
-        }
-        if(document.getElementById('editIndex').value === "-1") {
-             let s = localStorage.getItem(DB_KEYS.SEQ) || 50100;
-             document.getElementById('lblCorrelativo').innerText = "CN" + s;
-        }
+        try {
+            document.getElementById('lblFecha').innerText = new Date().toLocaleDateString('es-CL');
+            const savedLogo = localStorage.getItem(DB_KEYS.LOGO);
+            if(savedLogo) {
+                document.getElementById('logoPreview').src = savedLogo;
+                document.getElementById('logoPreview').style.display = 'block';
+            }
+            if(document.getElementById('editIndex').value === "-1") {
+                 let s = localStorage.getItem(DB_KEYS.SEQ) || 50100;
+                 document.getElementById('lblCorrelativo').innerText = "CN" + s;
+            }
+            agregarFila();
+        } catch(e) { console.error("Error init", e); }
     };
 
-    // --- 2. BUSCADORES Y TABLA ---
+    // --- 2. BUSCADOR Y TABLA ---
     function buscarCliente(input) {
         upper(input);
         const term = input.value.trim();
@@ -402,7 +358,7 @@
         const tbody = document.querySelector('#tablaItems tbody');
         const tr = document.createElement('tr');
         tr.innerHTML = `
-            <td style="text-align:center"><button onclick="this.closest('tr').remove();calcular()" style="color:red;border:none;background:none;font-weight:bold;cursor:pointer;font-size:14px;">&times;</button></td>
+            <td style="text-align:center"><button onclick="this.closest('tr').remove();calcular()" style="color:red;border:none;background:none;font-weight:bold;cursor:pointer;">&times;</button></td>
             <td><input type="text" class="cell-edit" value="${p.cod} - ${p.desc}" readonly></td>
             <td><input type="number" class="cell-edit cell-qty" value="1" min="1" oninput="calcular()"></td>
             <td class="col-cost"><input type="text" class="cell-edit cell-locked u-cost" value="${formatMoney(p.costo)}" readonly></td>
@@ -457,29 +413,26 @@
             const c = parseFloat(tr.querySelector('.raw-cost').value)||0;
             const p = parseFloat(tr.querySelector('.raw-price').value)||0;
             
-            const tc = q*c; 
-            const tp = q*p;
+            const tc = q*c; const tp = q*p;
+            const pConDesc = p * factorDesc;
+            const utilUnit = pConDesc - c;
+            const utilTotal = utilUnit * q;
             
-            const pConDescuento = p * factorDesc;
-            const utilUnitConDesc = pConDescuento - c;
-            const utilTotalLinea = utilUnitConDesc * q;
-
             let margenPorc = 0;
-            if(pConDescuento > 0) margenPorc = (utilUnitConDesc / pConDescuento) * 100;
+            if(pConDesc > 0) margenPorc = (utilUnit / pConDesc) * 100;
 
             tr.querySelector('.t-cost').value = formatMoney(tc);
             tr.querySelector('.t-price').value = formatMoney(tp);
             
-            const celdaUtilPorc = tr.querySelector('.util-porc');
-            celdaUtilPorc.value = margenPorc.toFixed(1) + '%';
-            celdaUtilPorc.style.color = margenPorc < 0 ? 'red' : 'blue';
+            const celdaP = tr.querySelector('.util-porc');
+            celdaP.value = margenPorc.toFixed(1) + '%';
+            celdaP.style.color = margenPorc < 0 ? 'red' : 'blue';
 
-            const celdaUtilVal = tr.querySelector('.util-value');
-            celdaUtilVal.value = formatMoney(utilTotalLinea);
-            celdaUtilVal.style.color = utilTotalLinea < 0 ? 'red' : 'blue';
+            const celdaV = tr.querySelector('.util-value');
+            celdaV.value = formatMoney(utilTotal);
+            celdaV.style.color = utilTotal < 0 ? 'red' : 'blue';
 
-            neto += tp; 
-            util += utilTotalLinea; 
+            neto += tp; util += utilTotal;
         });
 
         const descMonto = neto * (descPorc/100);
@@ -541,7 +494,6 @@
         }
     }
 
-    // --- FORMULARIO PRODUCTOS MEJORADO ---
     function openForm(type, idx) {
         const modal = document.getElementById('modalForm');
         const content = document.getElementById('formContent');
@@ -563,7 +515,6 @@
             ];
             fields.forEach(f => content.innerHTML+=`<div class="input-group"><label>${f.l}</label><input id="f_${f.id}" value="${data[f.id]||''}" oninput="upper(this)"></div>`);
         } else {
-            // FORMULARIO DE PRODUCTOS CON CALCULADORA
             document.getElementById('formTitle').innerText = idx===-1 ? "NUEVO PRODUCTO" : "EDITAR PRODUCTO";
             content.innerHTML+=`
             <div class="input-group" style="grid-column: span 2"><label>CÓDIGO (SKU)</label><input id="f_cod" value="${data.cod||''}" oninput="upper(this)"></div>
@@ -586,7 +537,6 @@
     function calcProdForm() {
         const costo = parseFloat(document.getElementById('f_costo').value) || 0;
         const venta = parseFloat(document.getElementById('f_precio').value) || 0;
-        
         const totalIva = venta * 1.19;
         const utilPesos = venta - costo;
         let utilPorc = 0;
@@ -605,19 +555,18 @@
         
         let obj = {};
         if(type==='CLI') {
-            obj = { rut:document.getElementById('f_rut').value, razon:document.getElementById('f_razon').value, 
-                    giro:document.getElementById('f_giro').value, dir:document.getElementById('f_dir').value,
-                    comuna:document.getElementById('f_comuna').value, region:document.getElementById('f_region').value,
-                    email:document.getElementById('f_email').value, contacto:document.getElementById('f_contacto').value };
+            obj = { 
+                rut:document.getElementById('f_rut').value, razon:document.getElementById('f_razon').value, 
+                giro:document.getElementById('f_giro').value, dir:document.getElementById('f_dir').value,
+                comuna:document.getElementById('f_comuna').value, region:document.getElementById('f_region').value,
+                email:document.getElementById('f_email').value, contacto:document.getElementById('f_contacto').value 
+            };
             if(!obj.rut) return alert("RUT Obligatorio");
         } else {
             obj = { 
-                cod:document.getElementById('f_cod').value, 
-                desc:document.getElementById('f_desc').value,
-                costo:parseFloat(document.getElementById('f_costo').value)||0, 
-                precio:parseFloat(document.getElementById('f_precio').value)||0,
-                link:document.getElementById('f_link').value,
-                dispo:document.getElementById('f_dispo').value
+                cod:document.getElementById('f_cod').value, desc:document.getElementById('f_desc').value,
+                costo:parseFloat(document.getElementById('f_costo').value)||0, precio:parseFloat(document.getElementById('f_precio').value)||0,
+                link:document.getElementById('f_link').value, dispo:document.getElementById('f_dispo').value
             };
             if(!obj.cod) return alert("Código Obligatorio");
         }
@@ -665,54 +614,45 @@
         reader.readAsText(file);
     }
 
-    // --- 5. PDF & GUARDADO (CORREGIDO PARA MODO EDICIÓN) ---
+    // --- 5. PDF & GUARDADO ---
     function loadHistory(i) {
         const h = getDB(DB_KEYS.HIST)[i];
         document.getElementById('editIndex').value = i;
         document.getElementById('bar-edicion').style.display='block';
         document.getElementById('modalGestor').style.display='none';
-        
         document.getElementById('lblCorrelativo').innerText = h.n;
         document.getElementById('cmbPago').value = h.pago || "TRANSFERENCIA";
         document.getElementById('txtDescPorc').value = h.descPorc || 0;
         document.getElementById('txtObservaciones').value = h.obs || "";
-        
         ['Razon','Rut','Giro','Dir','Comuna','Region','Email','Contacto'].forEach(f => {
             if(document.getElementById('cli'+f)) document.getElementById('cli'+f).value = h.cli[f.toLowerCase()]||'';
         });
-
         const tbody = document.querySelector('#tablaItems tbody');
         tbody.innerHTML='';
         h.items.forEach(it => {
-            if(it.cd !== "MANUAL") {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                <td style="text-align:center"><button onclick="this.closest('tr').remove();calcular()" style="color:#EF4444;border:none;background:none;font-weight:bold;cursor:pointer;font-size:14px;">&times;</button></td>
-                <td><input type="text" class="cell-edit" value="${it.cd} - ${it.d}" readonly></td>
-                <td><input type="number" class="cell-edit cell-qty" value="${it.q}" min="1" oninput="calcular()"></td>
-                <td class="col-cost"><input type="text" class="cell-edit cell-locked u-cost" value="${formatMoney(it.c)}" readonly></td>
-                <td class="col-cost"><input type="text" class="cell-edit cell-locked t-cost" readonly></td>
-                <td class="col-price"><input type="text" class="cell-edit cell-locked u-price" value="${formatMoney(it.p)}" readonly></td>
-                <td class="col-price"><input type="text" class="cell-edit cell-locked t-price" readonly></td>
-                <td><input type="text" class="cell-edit cell-locked util-porc" readonly style="color:blue; font-weight:bold; text-align:right;"></td>
-                <td><input type="text" class="cell-edit cell-locked util-value" readonly style="color:blue; font-weight:bold; text-align:right;"></td>
-                <input type="hidden" class="raw-cost" value="${it.c}"><input type="hidden" class="raw-price" value="${it.p}"><input type="hidden" class="raw-cod" value="${it.cd}">`;
-                tbody.appendChild(tr);
-            } else {
-                 const tr = document.createElement('tr');
-                 tr.innerHTML = `
-                    <td style="text-align:center"><button onclick="this.closest('tr').remove();calcular()" style="color:#EF4444;border:none;background:none;font-weight:bold;cursor:pointer;">&times;</button></td>
-                    <td><input type="text" class="cell-edit" value="${it.d}" oninput="upper(this)"></td>
-                    <td><input type="number" class="cell-edit cell-qty" value="${it.q}" min="1" oninput="calcular()"></td>
-                    <td class="col-cost"><input type="number" class="cell-edit raw-cost-manual" value="${it.c}" oninput="calcularManual(this)"></td>
-                    <td class="col-cost"><input type="text" class="cell-edit cell-locked t-cost" readonly></td>
-                    <td class="col-price"><input type="number" class="cell-edit raw-price-manual" value="${it.p}" oninput="calcularManual(this)"></td>
-                    <td class="col-price"><input type="text" class="cell-edit cell-locked t-price" readonly></td>
-                    <td><input type="text" class="cell-edit cell-locked util-porc" readonly style="color:blue; font-weight:bold; text-align:right;"></td>
-                    <td><input type="text" class="cell-edit cell-locked util-value" readonly style="color:blue; font-weight:bold; text-align:right;"></td>
-                    <input type="hidden" class="raw-cost" value="${it.c}"><input type="hidden" class="raw-price" value="${it.p}"><input type="hidden" class="raw-cod" value="MANUAL">`;
-                 tbody.appendChild(tr);
+            const tr = document.createElement('tr');
+            let descVal = it.d;
+            if(it.cd !== "MANUAL") descVal = `${it.cd} - ${it.d}`;
+            
+            tr.innerHTML = `
+            <td style="text-align:center"><button onclick="this.closest('tr').remove();calcular()" style="color:red;border:none;background:none;font-weight:bold;cursor:pointer;">&times;</button></td>
+            <td><input type="text" class="cell-edit" value="${descVal}" ${it.cd!=="MANUAL"?"readonly":""}></td>
+            <td><input type="number" class="cell-edit cell-qty" value="${it.q}" min="1" oninput="calcular()"></td>
+            <td class="col-cost"><input type="text" class="cell-edit cell-locked u-cost" readonly></td>
+            <td class="col-cost"><input type="text" class="cell-edit cell-locked t-cost" readonly></td>
+            <td class="col-price"><input type="text" class="cell-edit cell-locked u-price" readonly></td>
+            <td class="col-price"><input type="text" class="cell-edit cell-locked t-price" readonly></td>
+            <td><input type="text" class="cell-edit cell-locked util-porc" readonly style="color:blue; font-weight:bold; text-align:right;"></td>
+            <td><input type="text" class="cell-edit cell-locked util-value" readonly style="color:blue; font-weight:bold; text-align:right;"></td>
+            <input type="hidden" class="raw-cost" value="${it.c}"><input type="hidden" class="raw-price" value="${it.p}"><input type="hidden" class="raw-cod" value="${it.cd}">`;
+            
+            if(it.cd === "MANUAL") {
+                // Reemplazar inputs readonly por editables si era manual
+                const tds = tr.querySelectorAll('td');
+                tds[3].innerHTML = `<input type="number" class="cell-edit raw-cost-manual" value="${it.c}" oninput="calcularManual(this)">`;
+                tds[5].innerHTML = `<input type="number" class="cell-edit raw-price-manual" value="${it.p}" oninput="calcularManual(this)">`;
             }
+            tbody.appendChild(tr);
         });
         calcular();
     }
@@ -734,26 +674,25 @@
         };
 
         const items = [];
-        document.querySelectorAll('#tablaItems tbody tr').forEach(tr => {
+        const rows = document.querySelectorAll('#tablaItems tbody tr');
+        if(rows.length === 0) return alert("Agregue Items");
+
+        rows.forEach(tr => {
             let cod = tr.querySelector('.raw-cod').value;
             let desc = "";
             const inputDesc = tr.querySelector('td:nth-child(2) input');
-            if(inputDesc) desc = inputDesc.value;
-            
-            if(cod !== "MANUAL" && desc.includes(" - ")) {
-                 desc = desc.split(" - ")[1]; 
+            if(inputDesc) {
+                desc = inputDesc.value;
+                if(cod !== "MANUAL" && desc.includes(" - ")) desc = desc.split(" - ")[1];
             }
 
             if(desc) items.push({
-                d: desc,
-                cd: cod,
+                d: desc, cd: cod,
                 q: parseFloat(tr.querySelector('.cell-qty').value)||0,
                 c: parseFloat(tr.querySelector('.raw-cost').value)||0,
                 p: parseFloat(tr.querySelector('.raw-price').value)||0
             });
         });
-
-        if(items.length===0) return alert("Agregue Items");
 
         const nCot = document.getElementById('lblCorrelativo').innerText;
         const total = document.getElementById('txtTotal').innerText;
@@ -766,11 +705,8 @@
         const hist = getDB(DB_KEYS.HIST);
         const editIdx = parseInt(document.getElementById('editIndex').value);
 
-        if(editIdx > -1) {
-            // ACTUALIZAR EXISTENTE
-            hist[editIdx] = registro;
-        } else {
-            // NUEVO
+        if(editIdx > -1) hist[editIdx] = registro;
+        else {
             hist.push(registro);
             let s = parseInt(nCot.replace('CN',''));
             localStorage.setItem(DB_KEYS.SEQ, s+1);
@@ -781,6 +717,7 @@
     }
 
     function generarPDF(data) {
+        if(!window.jspdf) return alert("Error: Librería PDF no cargada.");
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
         const azul = [31, 111, 139];
