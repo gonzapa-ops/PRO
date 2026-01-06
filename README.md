@@ -1,8 +1,9 @@
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SISTEMA PRO V20 - CUNTEL SPA</title>
+    <title>PROSYS V21 - CUNTEL SPA</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
@@ -17,7 +18,7 @@
             --dark: #17202A;
             --green: #27AE60;
             --soft-blue: #2E86C1;
-            --purple-util: #8E44AD; /* NUEVO COLOR UTILIDAD */
+            --light-green-util: #28B463; /* NUEVO COLOR UTILIDAD VERDE CLARO */
             --red-reject: #C0392B;
         }
 
@@ -26,7 +27,7 @@
         
         .main-container { max-width: 98%; margin: 0 auto; background: white; min-height: 100vh; box-shadow: 0 5px 30px rgba(0,0,0,0.15); border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; position: relative; }
 
-        /* TOP BAR */
+        /* TOP BAR MODIFICADO */
         .top-bar { background: var(--dark); color: white; padding: 10px 20px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; z-index: 100; }
         .top-menu { display: flex; gap: 8px; flex-wrap: wrap; }
         .btn-nav { background: #34495E; border: 1px solid #566573; color: white; padding: 6px 12px; cursor: pointer; border-radius: 3px; font-size: 10px; font-weight: bold; transition: 0.2s; display: flex; align-items: center; gap: 5px; white-space: nowrap; }
@@ -76,20 +77,20 @@
         .smart-item:hover { background: #EBF5FB; }
         .create-new { background: #FDEDEC; color: #C0392B; font-weight: bold; }
 
-        /* TABLA (CORRECCIÓN ANCHO) */
+        /* TABLA MÁS ANCHA */
         .table-responsive { overflow-x: auto; -webkit-overflow-scrolling: touch; margin-bottom: 15px; border: 1px solid #D5DBDB; border-radius: 4px; }
-        table { width: 100%; border-collapse: collapse; font-size: 10px; min-width: 1100px; } /* Aumentado min-width para cajoneras anchas */
+        table { width: 100%; border-collapse: collapse; font-size: 10px; min-width: 1400px; } /* AUMENTADO PARA ANCHO */
         th { background: var(--primary); color: white; padding: 10px; text-align: left; white-space: nowrap; }
-        td { border: 1px solid #D5DBDB; padding: 0; height: 35px; } /* Altura aumentada */
+        td { border: 1px solid #D5DBDB; padding: 0; height: 35px; }
         
         input.cell-edit { width: 100%; height: 100%; border: none; padding: 0 8px; font-size: 11px; background: transparent; }
         input.cell-edit:focus { outline: 2px solid var(--secondary); background: white; z-index: 10; position: relative; }
         input.cell-locked { background: #F8F9F9; color: #777; text-align: right; cursor: not-allowed; }
         input.cell-qty { text-align: center; font-weight: bold; color: var(--primary); }
         
-        .col-cost { background: #FEF2F2; color: #922B21; width: 100px; } /* Más ancho */
-        .col-price { background: #F4F6F7; color: #117A65; width: 100px; } /* Más ancho */
-
+        .col-cost { background: #FEF2F2; color: #922B21; width: 110px; }
+        .col-price { background: #F4F6F7; color: #117A65; width: 110px; }
+        
         /* BOTTOM */
         .bottom-area { display: grid; grid-template-columns: 1fr 350px; gap: 20px; margin-top: 20px; }
         .notes-box textarea { width: 100%; height: 100px; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-family: inherit; resize: none; box-sizing: border-box; }
@@ -98,9 +99,9 @@
         .final-row { border-top: 2px solid var(--secondary); padding-top: 10px; margin-top: 10px; display: flex; justify-content: space-between; align-items: center; }
         .total-price { font-size: 20px; font-weight: 900; color: var(--primary); }
         
-        /* CORRECCIÓN UTILIDAD VISIBLE */
-        .util-label { font-size: 13px; color: var(--purple-util); font-weight: 900; display: block; text-align: right; margin-top: 5px; }
-        .util-value-text { color: var(--purple-util); font-size: 14px; }
+        /* UTILIDAD VERDE CLARO */
+        .util-label { font-size: 13px; color: var(--light-green-util); font-weight: 900; display: block; text-align: right; margin-top: 5px; }
+        .util-value-text { color: var(--light-green-util); font-size: 14px; }
 
         /* ACTION AREA */
         .action-area { text-align: center; margin-top: 30px; border-top: 1px dashed #BDC3C7; padding-top: 20px; }
@@ -143,8 +144,9 @@
     <div id="sello-agua"></div>
 
     <div class="top-bar">
-        <div style="font-weight: 800; font-size: 12px; opacity: 0.8; margin-bottom: 5px;">PANEL DE CONTROL</div>
+        <div id="sysTitle" style="font-weight: 800; font-size: 12px; opacity: 0.9; margin-bottom: 5px;">PROSYS [v1.00035]</div>
         <div class="top-menu">
+            <div style="color: #ccc; font-weight: bold; font-size: 10px; margin-right: 10px; align-self: center;">PANEL DE CONTROL</div>
             <button class="btn-nav" onclick="abrirGestor('clientes')">👥 CLIENTES</button>
             <button class="btn-nav" onclick="abrirGestor('productos')">📦 PRODUCTOS</button>
             <button class="btn-nav" onclick="abrirGestor('historial')">📜 HISTORIAL</button>
@@ -189,6 +191,7 @@
                 <div class="input-group"><label>DIRECCIÓN</label><input type="text" id="cliDir" readonly></div>
                 <div class="input-group"><label>COMUNA</label><input type="text" id="cliComuna" readonly></div>
                 <div class="input-group"><label>REGIÓN</label><input type="text" id="cliRegion" readonly></div>
+                <div class="input-group"><label>TELÉFONO</label><input type="text" id="cliFono" readonly></div>
                 <div class="input-group"><label>CONTACTO</label><input type="text" id="cliContacto" readonly></div>
                 <div class="input-group"><label>EMAIL</label><input type="text" id="cliEmail" readonly></div>
             </div>
@@ -206,14 +209,14 @@
                     <thead>
                         <tr>
                             <th class="hidden-when-locked" style="width: 30px; text-align:center;">X</th>
-                            <th style="min-width: 250px;">CÓDIGO / DESCRIPCIÓN</th>
+                            <th style="width: 150px;">PROVEEDOR</th> <th style="min-width: 250px;">CÓDIGO / DESCRIPCIÓN</th>
                             <th style="width: 60px; text-align:center;">CANT</th>
                             <th class="col-cost">COSTO U.</th>
                             <th class="col-cost">T. COSTO</th>
                             <th class="col-price">PRECIO U.</th>
                             <th class="col-price">TOTAL</th>
                             <th style="width: 60px;">% UTIL</th>
-                            <th style="width: 100px; color:var(--purple-util); font-weight:bold;">$ UTIL</th>
+                            <th style="width: 100px; color:var(--light-green-util); font-weight:bold;">$ UTIL</th>
                         </tr>
                     </thead>
                     <tbody></tbody>
@@ -321,8 +324,11 @@
                  let s = localStorage.getItem(DB_KEYS.SEQ) || 50100;
                  document.getElementById('lblCorrelativo').innerText = "CN" + s;
             }
-            // Init System Version if not exists
-            if(!localStorage.getItem(DB_KEYS.VER)) localStorage.setItem(DB_KEYS.VER, 34); // Start at 34
+            
+            // VERSIÓN PROSYS
+            let ver = localStorage.getItem(DB_KEYS.VER) || 35;
+            let verStr = "v1." + String(ver).padStart(5, '0');
+            document.getElementById('sysTitle').innerText = `PROSYS [${verStr}]`;
             
             agregarFila();
         } catch(e) { console.error("Error init", e); }
@@ -340,9 +346,8 @@
         });
         document.querySelectorAll('#tablaItems button').forEach(b => b.style.display = 'inline-block');
         
-        // Reset Locked fields
         document.querySelectorAll('.cell-locked').forEach(el => el.readOnly = true);
-        ['cliRazon','cliRut','cliGiro','cliDir','cliComuna','cliRegion','cliContacto','cliEmail'].forEach(id => {
+        ['cliRazon','cliRut','cliGiro','cliDir','cliComuna','cliRegion','cliContacto','cliEmail','cliFono'].forEach(id => {
             document.getElementById(id).readOnly = true;
             document.getElementById(id).classList.add('input-blocked');
         });
@@ -388,7 +393,7 @@
                 d.className = 'search-item';
                 d.innerHTML = `<div><strong>${c.rut}</strong> ${c.razon}</div>`;
                 d.onclick = () => { 
-                    ['Razon','Rut','Giro','Dir','Comuna','Region','Email','Contacto'].forEach(f => {
+                    ['Razon','Rut','Giro','Dir','Comuna','Region','Email','Contacto','Fono'].forEach(f => {
                          if(document.getElementById('cli'+f)) document.getElementById('cli'+f).value = c[f.toLowerCase()]||'';
                     });
                     list.style.display='none'; 
@@ -439,6 +444,7 @@
         const tr = document.createElement('tr');
         tr.innerHTML = `
             <td style="text-align:center"><button onclick="this.closest('tr').remove();calcular()" style="color:red;border:none;background:none;font-weight:bold;cursor:pointer;">&times;</button></td>
+            <td><input type="text" class="cell-edit" value="${p.prov || ''}" placeholder="PROVEEDOR" oninput="upper(this)"></td>
             <td><input type="text" class="cell-edit" value="${p.cod} - ${p.desc}" readonly></td>
             <td><input type="number" class="cell-edit cell-qty" value="1" min="1" oninput="calcular()"></td>
             <td class="col-cost"><input type="text" class="cell-edit cell-locked u-cost" value="${formatMoney(p.costo)}" readonly></td>
@@ -446,7 +452,7 @@
             <td class="col-price"><input type="text" class="cell-edit cell-locked u-price" value="${formatMoney(p.precio)}" readonly></td>
             <td class="col-price"><input type="text" class="cell-edit cell-locked t-price" readonly></td>
             <td><input type="text" class="cell-edit cell-locked util-porc" readonly style="color:var(--soft-blue); font-weight:bold; text-align:right;"></td>
-            <td><input type="text" class="cell-edit cell-locked util-value" readonly style="color:var(--purple-util); font-weight:bold; text-align:right;"></td>
+            <td><input type="text" class="cell-edit cell-locked util-value" readonly style="color:var(--light-green-util); font-weight:bold; text-align:right;"></td>
             <input type="hidden" class="raw-cost" value="${p.costo}">
             <input type="hidden" class="raw-price" value="${p.precio}">
             <input type="hidden" class="raw-cod" value="${p.cod}">
@@ -462,6 +468,7 @@
         const tr = document.createElement('tr');
         tr.innerHTML = `
             <td style="text-align:center"><button onclick="this.closest('tr').remove();calcular()" style="color:red;border:none;background:none;font-weight:bold;cursor:pointer;">&times;</button></td>
+            <td><input type="text" class="cell-edit" placeholder="PROVEEDOR" oninput="upper(this)"></td>
             <td><input type="text" class="cell-edit" placeholder="DESCRIPCIÓN MANUAL..." oninput="upper(this)"></td>
             <td><input type="number" class="cell-edit cell-qty" value="1" min="1" oninput="calcular()"></td>
             <td class="col-cost"><input type="number" class="cell-edit raw-cost-manual" value="0" oninput="calcularManual(this)"></td>
@@ -469,7 +476,7 @@
             <td class="col-price"><input type="number" class="cell-edit raw-price-manual" value="0" oninput="calcularManual(this)"></td>
             <td class="col-price"><input type="text" class="cell-edit cell-locked t-price" readonly></td>
             <td><input type="text" class="cell-edit cell-locked util-porc" readonly style="color:var(--soft-blue); font-weight:bold; text-align:right;"></td>
-            <td><input type="text" class="cell-edit cell-locked util-value" readonly style="color:var(--purple-util); font-weight:bold; text-align:right;"></td>
+            <td><input type="text" class="cell-edit cell-locked util-value" readonly style="color:var(--light-green-util); font-weight:bold; text-align:right;"></td>
             <input type="hidden" class="raw-cost" value="0">
             <input type="hidden" class="raw-price" value="0">
             <input type="hidden" class="raw-cod" value="MANUAL">
@@ -582,11 +589,11 @@
 
         if(type==='CLI') {
             document.getElementById('formTitle').innerText = idx===-1 ? "NUEVO CLIENTE" : "EDITAR CLIENTE";
-            const fields = [{id:'rut',l:'RUT'}, {id:'razon',l:'RAZÓN SOCIAL'}, {id:'giro',l:'GIRO'}, {id:'dir',l:'DIRECCIÓN'}, {id:'comuna',l:'COMUNA'}, {id:'region',l:'REGIÓN'}, {id:'email',l:'EMAIL'}, {id:'contacto',l:'CONTACTO'}];
+            const fields = [{id:'rut',l:'RUT'}, {id:'razon',l:'RAZÓN SOCIAL'}, {id:'giro',l:'GIRO'}, {id:'dir',l:'DIRECCIÓN'}, {id:'comuna',l:'COMUNA'}, {id:'region',l:'REGIÓN'}, {id:'email',l:'EMAIL'}, {id:'contacto',l:'CONTACTO'}, {id:'fono',l:'TELÉFONO'}];
             fields.forEach(f => content.innerHTML+=`<div class="input-group"><label>${f.l}</label><input id="f_${f.id}" value="${data[f.id]||''}" oninput="upper(this)"></div>`);
         } else {
             document.getElementById('formTitle').innerText = idx===-1 ? "NUEVO PRODUCTO" : "EDITAR PRODUCTO";
-            content.innerHTML+=`<div class="input-group" style="grid-column: span 2"><label>CÓDIGO (SKU)</label><input id="f_cod" value="${data.cod||''}" oninput="upper(this)"></div><div class="input-group" style="grid-column: span 2"><label>DESCRIPCIÓN</label><input id="f_desc" value="${data.desc||''}" oninput="upper(this)"></div><div class="input-group"><label>COSTO NETO ($)</label><input type="number" id="f_costo" value="${data.costo||0}" oninput="calcProdForm()"></div><div class="input-group"><label>PRECIO VENTA NETO ($)</label><input type="number" id="f_precio" value="${data.precio||0}" oninput="calcProdForm()"></div><div class="input-group"><label>PRECIO VENTA TOTAL (c/IVA)</label><input type="text" id="f_total_iva" readonly style="background:#e0f7fa; font-weight:bold;"></div><div class="input-group"><label>UTILIDAD ($)</label><input type="text" id="f_util_pesos" readonly style="background:#e8f5e9; font-weight:bold; color:green;"></div><div class="input-group"><label>% UTILIDAD</label><input type="text" id="f_util_porc" readonly style="background:#e8f5e9; font-weight:bold; color:blue;"></div><div class="input-group" style="grid-column: span 2"><label>LINK PROVEEDOR</label><input id="f_link" value="${data.link||''}" placeholder="https://..."></div><div class="input-group" style="grid-column: span 2"><label>DISPONIBILIDAD (Días)</label><input id="f_dispo" value="${data.dispo||''}" oninput="upper(this)"></div>`;
+            content.innerHTML+=`<div class="input-group" style="grid-column: span 2"><label>CÓDIGO (SKU)</label><input id="f_cod" value="${data.cod||''}" oninput="upper(this)"></div><div class="input-group" style="grid-column: span 2"><label>DESCRIPCIÓN</label><input id="f_desc" value="${data.desc||''}" oninput="upper(this)"></div><div class="input-group"><label>COSTO NETO ($)</label><input type="number" id="f_costo" value="${data.costo||0}" oninput="calcProdForm()"></div><div class="input-group"><label>PRECIO VENTA NETO ($)</label><input type="number" id="f_precio" value="${data.precio||0}" oninput="calcProdForm()"></div><div class="input-group"><label>PRECIO VENTA TOTAL (c/IVA)</label><input type="text" id="f_total_iva" readonly style="background:#e0f7fa; font-weight:bold;"></div><div class="input-group"><label>UTILIDAD ($)</label><input type="text" id="f_util_pesos" readonly style="background:#e8f5e9; font-weight:bold; color:green;"></div><div class="input-group"><label>% UTILIDAD</label><input type="text" id="f_util_porc" readonly style="background:#e8f5e9; font-weight:bold; color:blue;"></div><div class="input-group" style="grid-column: span 2"><label>LINK PROVEEDOR</label><input id="f_link" value="${data.link||''}" placeholder="https://..."></div><div class="input-group" style="grid-column: span 2"><label>DISPONIBILIDAD (Días)</label><input id="f_dispo" value="${data.dispo||''}" oninput="upper(this)"></div><div class="input-group" style="grid-column: span 2"><label>PROVEEDOR</label><input id="f_prov" value="${data.prov||''}" oninput="upper(this)"></div>`;
             setTimeout(calcProdForm, 100);
         }
     }
@@ -610,10 +617,10 @@
         const db = getDB(key);
         let obj = {};
         if(type==='CLI') {
-            obj = { rut:document.getElementById('f_rut').value, razon:document.getElementById('f_razon').value, giro:document.getElementById('f_giro').value, dir:document.getElementById('f_dir').value, comuna:document.getElementById('f_comuna').value, region:document.getElementById('f_region').value, email:document.getElementById('f_email').value, contacto:document.getElementById('f_contacto').value };
+            obj = { rut:document.getElementById('f_rut').value, razon:document.getElementById('f_razon').value, giro:document.getElementById('f_giro').value, dir:document.getElementById('f_dir').value, comuna:document.getElementById('f_comuna').value, region:document.getElementById('f_region').value, email:document.getElementById('f_email').value, contacto:document.getElementById('f_contacto').value, fono:document.getElementById('f_fono').value };
             if(!obj.rut) return alert("RUT Obligatorio");
         } else {
-            obj = { cod:document.getElementById('f_cod').value, desc:document.getElementById('f_desc').value, costo:parseFloat(document.getElementById('f_costo').value)||0, precio:parseFloat(document.getElementById('f_precio').value)||0, link:document.getElementById('f_link').value, dispo:document.getElementById('f_dispo').value };
+            obj = { cod:document.getElementById('f_cod').value, desc:document.getElementById('f_desc').value, costo:parseFloat(document.getElementById('f_costo').value)||0, precio:parseFloat(document.getElementById('f_precio').value)||0, link:document.getElementById('f_link').value, dispo:document.getElementById('f_dispo').value, prov:document.getElementById('f_prov').value };
             if(!obj.cod) return alert("Código Obligatorio");
         }
         if(idx===-1) db.push(obj); else db[idx]=obj;
@@ -639,7 +646,7 @@
         const blob = new Blob([data], {type: "application/json"});
         const a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
-        a.download = `CUNTEL_BACKUP_${new Date().toISOString().slice(0,10)}.json`;
+        a.download = `PROSYS_BACKUP_${new Date().toISOString().slice(0,10)}.json`;
         a.click();
     }
 
@@ -658,21 +665,19 @@
         reader.readAsText(file);
     }
 
-    // --- 5. PDF & GUARDADO (CORRECCIÓN MODO EDICIÓN + BLOQUEO CLIENTES) ---
+    // --- 5. PDF & GUARDADO ---
     function loadHistory(i) {
         desbloquearEditor();
         const h = getDB(DB_KEYS.HIST)[i];
         document.getElementById('editIndex').value = i;
         document.getElementById('bar-edicion').style.display='block';
         document.getElementById('modalGestor').style.display='none';
-        
         document.getElementById('lblCorrelativo').innerText = h.n;
         document.getElementById('cmbPago').value = h.pago || "TRANSFERENCIA";
         document.getElementById('txtDescPorc').value = h.descPorc || 0;
         document.getElementById('txtObservaciones').value = h.obs || "";
         
-        // BLOQUEO DE CLIENTE AL EDITAR
-        ['Razon','Rut','Giro','Dir','Comuna','Region','Email','Contacto'].forEach(f => {
+        ['Razon','Rut','Giro','Dir','Comuna','Region','Email','Contacto','Fono'].forEach(f => {
             const el = document.getElementById('cli'+f);
             if(el) {
                 el.value = h.cli[f.toLowerCase()]||'';
@@ -684,10 +689,11 @@
         const tbody = document.querySelector('#tablaItems tbody');
         tbody.innerHTML='';
         h.items.forEach(it => {
+            const tr = document.createElement('tr');
             if(it.cd !== "MANUAL") {
-                const tr = document.createElement('tr');
                 tr.innerHTML = `
                 <td style="text-align:center"><button onclick="this.closest('tr').remove();calcular()" style="color:red;border:none;background:none;font-weight:bold;cursor:pointer;font-size:14px;">&times;</button></td>
+                <td><input type="text" class="cell-edit" value="${it.pv||''}" placeholder="PROVEEDOR" oninput="upper(this)"></td>
                 <td><input type="text" class="cell-edit" value="${it.cd} - ${it.d}" readonly></td>
                 <td><input type="number" class="cell-edit cell-qty" value="${it.q}" min="1" oninput="calcular()"></td>
                 <td class="col-cost"><input type="text" class="cell-edit cell-locked u-cost" value="${formatMoney(it.c)}" readonly></td>
@@ -695,13 +701,12 @@
                 <td class="col-price"><input type="text" class="cell-edit cell-locked u-price" value="${formatMoney(it.p)}" readonly></td>
                 <td class="col-price"><input type="text" class="cell-edit cell-locked t-price" readonly></td>
                 <td><input type="text" class="cell-edit cell-locked util-porc" readonly style="color:var(--soft-blue); font-weight:bold; text-align:right;"></td>
-                <td><input type="text" class="cell-edit cell-locked util-value" readonly style="color:var(--purple-util); font-weight:bold; text-align:right;"></td>
+                <td><input type="text" class="cell-edit cell-locked util-value" readonly style="color:var(--light-green-util); font-weight:bold; text-align:right;"></td>
                 <input type="hidden" class="raw-cost" value="${it.c}"><input type="hidden" class="raw-price" value="${it.p}"><input type="hidden" class="raw-cod" value="${it.cd}"><input type="hidden" class="raw-dispo" value="${it.dispo||0}">`;
-                tbody.appendChild(tr);
             } else {
-                 const tr = document.createElement('tr');
                  tr.innerHTML = `
                     <td style="text-align:center"><button onclick="this.closest('tr').remove();calcular()" style="color:red;border:none;background:none;font-weight:bold;cursor:pointer;">&times;</button></td>
+                    <td><input type="text" class="cell-edit" value="${it.pv||''}" placeholder="PROVEEDOR" oninput="upper(this)"></td>
                     <td><input type="text" class="cell-edit" value="${it.d}" oninput="upper(this)"></td>
                     <td><input type="number" class="cell-edit cell-qty" value="${it.q}" min="1" oninput="calcular()"></td>
                     <td class="col-cost"><input type="number" class="cell-edit raw-cost-manual" value="${it.c}" oninput="calcularManual(this)"></td>
@@ -709,10 +714,10 @@
                     <td class="col-price"><input type="number" class="cell-edit raw-price-manual" value="${it.p}" oninput="calcularManual(this)"></td>
                     <td class="col-price"><input type="text" class="cell-edit cell-locked t-price" readonly></td>
                     <td><input type="text" class="cell-edit cell-locked util-porc" readonly style="color:var(--soft-blue); font-weight:bold; text-align:right;"></td>
-                    <td><input type="text" class="cell-edit cell-locked util-value" readonly style="color:var(--purple-util); font-weight:bold; text-align:right;"></td>
+                    <td><input type="text" class="cell-edit cell-locked util-value" readonly style="color:var(--light-green-util); font-weight:bold; text-align:right;"></td>
                     <input type="hidden" class="raw-cost" value="${it.c}"><input type="hidden" class="raw-price" value="${it.p}"><input type="hidden" class="raw-cod" value="MANUAL"><input type="hidden" class="raw-dispo" value="0">`;
-                 tbody.appendChild(tr);
             }
+            tbody.appendChild(tr);
         });
         calcular();
 
@@ -736,7 +741,8 @@
             comuna: document.getElementById('cliComuna').value,
             region: document.getElementById('cliRegion').value,
             email: document.getElementById('cliEmail').value,
-            contacto: document.getElementById('cliContacto').value
+            contacto: document.getElementById('cliContacto').value,
+            fono: document.getElementById('cliFono').value
         };
 
         const items = [];
@@ -748,7 +754,13 @@
         rows.forEach(tr => {
             let cod = tr.querySelector('.raw-cod').value;
             let desc = "";
-            const inputDesc = tr.querySelector('td:nth-child(2) input');
+            
+            // Get Provider Value
+            const provInput = tr.querySelector('td:nth-child(2) input');
+            let prov = provInput ? provInput.value : '';
+
+            // Get Description
+            const inputDesc = tr.querySelector('td:nth-child(3) input');
             if(inputDesc) {
                 desc = inputDesc.value;
                 if(cod !== "MANUAL" && desc.includes(" - ")) desc = desc.split(" - ")[1];
@@ -758,7 +770,7 @@
             if(d > maxDias) maxDias = d;
 
             if(desc) items.push({
-                d: desc, cd: cod,
+                d: desc, cd: cod, pv: prov,
                 q: parseFloat(tr.querySelector('.cell-qty').value)||0,
                 c: parseFloat(tr.querySelector('.raw-cost').value)||0,
                 p: parseFloat(tr.querySelector('.raw-price').value)||0,
@@ -798,10 +810,11 @@
         const doc = new jsPDF();
         const azul = [31, 111, 139];
         
-        // INCREMENTAR VERSIÓN SISTEMA
-        let sysVer = parseInt(localStorage.getItem(DB_KEYS.VER) || 34) + 1;
-        localStorage.setItem(DB_KEYS.VER, sysVer);
+        // UPDATE VERSION ON GENERATE
+        let sysVer = parseInt(localStorage.getItem(DB_KEYS.VER)) || 35;
         let verStr = "v1." + String(sysVer).padStart(5, '0');
+        // Increment for next time
+        localStorage.setItem(DB_KEYS.VER, sysVer + 1);
 
         const logo = localStorage.getItem(DB_KEYS.LOGO);
         if(logo) doc.addImage(logo, 'PNG', 15, 15, 25, 25);
@@ -829,6 +842,7 @@
         doc.text(`GIRO: ${c.giro}`, 15, 61); doc.text(`DIRECCIÓN: ${c.dir}`, 120, 61);
         doc.text(`COMUNA: ${c.comuna}`, 15, 66); doc.text(`REGIÓN: ${c.region}`, 120, 66);
         doc.text(`CONTACTO: ${c.contacto}`, 15, 71); doc.text(`EMAIL: ${c.email}`, 120, 71);
+        doc.text(`TELÉFONO: ${c.fono || ''}`, 15, 76);
 
         const rows = data.items.map((i, idx) => [
             idx + 1,
@@ -840,7 +854,7 @@
         ]);
 
         doc.autoTable({
-            startY: 80,
+            startY: 85,
             head: [['Nº', 'CÓDIGO', 'DESCRIPCIÓN', 'CANTIDAD', 'P. UNITARIO', 'TOTAL']],
             body: rows,
             theme: 'plain',
@@ -900,9 +914,11 @@
 
         const pageHeight = doc.internal.pageSize.height;
         doc.setTextColor(150); doc.setFontSize(7); doc.setFont("helvetica","normal");
-        doc.text(`Generado por INGENIERIA CUNTEL SPA [${verStr}]`, 105, pageHeight - 10, {align:"center"});
+        doc.text(`Generado por PROSYS [${verStr}]`, 105, pageHeight - 10, {align:"center"});
 
         doc.save(`Cotizacion_${data.n}.pdf`);
+        // Recargar para actualizar version en pantalla
+        setTimeout(() => location.reload(), 2000);
     }
 </script>
 </body>
