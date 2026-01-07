@@ -1,8 +1,9 @@
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>PROSYS V23 - CUNTEL SPA</title>
+    <title>PROSYS V24 - CUNTEL SPA</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
@@ -211,8 +212,7 @@
                             <th class="hidden-when-locked" style="width: 30px; text-align:center;">X</th>
                             <th style="width: 150px;">PROVEEDOR</th>
                             <th style="min-width: 250px;">CÓDIGO / DESCRIPCIÓN</th>
-                            <th style="width: 60px; text-align:center;">CANT</th>
-                            <th class="col-cost">COSTO U.</th>
+                            <th style="width: 90px; text-align:center;">CANT</th> <th class="col-cost">COSTO U.</th>
                             <th class="col-cost">T. COSTO</th>
                             <th class="col-price">PRECIO U.</th>
                             <th class="col-price">TOTAL</th>
@@ -556,22 +556,28 @@
             btn.onclick = () => openForm('CLI', -1);
         } else if(type==='productos') {
             document.getElementById('modalTitle').innerText="BASE DE PRODUCTOS";
-            thead.innerHTML=`<tr><th>COD</th><th>DESC</th><th>COSTO</th><th>VENTA</th><th>ACCIÓN</th></tr>`;
+            thead.innerHTML=`<tr><th>COD</th><th>DESC</th><th>COSTO</th><th>VENTA</th><th>UTIL $</th><th>UTIL %</th><th>DÍAS</th><th>PROV</th><th>ACCIÓN</th></tr>`;
             getDB(DB_KEYS.PROD).forEach((p,i)=> {
-                tbody.innerHTML+=`<tr><td>${p.cod}</td><td>${p.desc}</td><td>${formatMoney(p.costo)}</td><td>${formatMoney(p.precio)}</td><td><button class="btn-small" style="background:#F39C12" onclick="openForm('PROD',${i})">EDIT</button><button class="btn-small" style="background:#C0392B" onclick="delItem('${DB_KEYS.PROD}',${i},'productos')">DEL</button></td></tr>`;
+                let u = p.precio - p.costo;
+                let up = p.precio > 0 ? (u/p.precio)*100 : 0;
+                tbody.innerHTML+=`<tr><td>${p.cod}</td><td>${p.desc}</td><td>${formatMoney(p.costo)}</td><td>${formatMoney(p.precio)}</td><td>${formatMoney(u)}</td><td>${up.toFixed(1)}%</td><td>${p.dispo||'-'}</td><td>${p.prov||'-'}</td><td><button class="btn-small" style="background:#F39C12" onclick="openForm('PROD',${i})">EDIT</button><button class="btn-small" style="background:#C0392B" onclick="delItem('${DB_KEYS.PROD}',${i},'productos')">DEL</button></td></tr>`;
             });
             btn.onclick = () => openForm('PROD', -1);
         } else {
             document.getElementById('modalTitle').innerText="HISTORIAL";
             btn.style.display='none';
-            thead.innerHTML=`<tr><th>FOLIO</th><th>FECHA</th><th>CLIENTE</th><th>TOTAL</th><th>UTIL $</th><th>UTIL %</th><th>ACCIÓN</th></tr>`;
+            thead.innerHTML=`<tr><th>FOLIO</th><th>FECHA</th><th>CLIENTE</th><th>TOTAL</th><th>ESTADO</th><th>UTIL $</th><th>UTIL %</th><th>ACCIÓN</th></tr>`;
             getDB(DB_KEYS.HIST).forEach((h,i)=> {
                 let statusColor = '#555';
                 if(h.status === 'ACEPTADA') statusColor = 'green';
                 if(h.status === 'RECHAZADA') statusColor = 'red';
                 let utilShow = h.utilTotal ? formatMoney(h.utilTotal) : '$0';
                 let utilPorcShow = h.utilPorcTotal ? h.utilPorcTotal.toFixed(1) + '%' : '0%';
-                tbody.innerHTML+=`<tr><td><b>${h.n}</b></td><td>${h.fecha}</td><td>${h.cli.razon}</td><td>${h.total} <br><span style="font-size:9px;color:${statusColor}">[${h.status||'PENDIENTE'}]</span></td><td style="color:var(--light-green-util);font-weight:bold;">${utilShow}</td><td style="color:var(--soft-blue);font-weight:bold;">${utilPorcShow}</td><td><button class="btn-small" style="background:#2980B9" onclick="loadHistory(${i})">ABRIR</button><button class="btn-small" style="background:#C0392B" onclick="delItem('${DB_KEYS.HIST}',${i},'historial')">DEL</button></td></tr>`;
+                tbody.innerHTML+=`<tr><td><b>${h.n}</b></td><td>${h.fecha}</td><td>${h.cli.razon}</td>
+                <td>${h.total}</td><td style="font-weight:bold;color:${statusColor}">${h.status||'PENDIENTE'}</td>
+                <td style="color:var(--light-green-util);font-weight:bold;">${utilShow}</td>
+                <td style="color:var(--soft-blue);font-weight:bold;">${utilPorcShow}</td>
+                <td><button class="btn-small" style="background:#2980B9" onclick="loadHistory(${i})">ABRIR</button><button class="btn-small" style="background:#C0392B" onclick="delItem('${DB_KEYS.HIST}',${i},'historial')">DEL</button></td></tr>`;
             });
         }
     }
