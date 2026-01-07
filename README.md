@@ -1,9 +1,8 @@
-<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>PROSYS V21 - CUNTEL SPA</title>
+    <title>PROSYS V22 - CUNTEL SPA</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
@@ -18,7 +17,7 @@
             --dark: #17202A;
             --green: #27AE60;
             --soft-blue: #2E86C1;
-            --light-green-util: #28B463; /* NUEVO COLOR UTILIDAD VERDE CLARO */
+            --light-green-util: #28B463; 
             --red-reject: #C0392B;
         }
 
@@ -27,7 +26,7 @@
         
         .main-container { max-width: 98%; margin: 0 auto; background: white; min-height: 100vh; box-shadow: 0 5px 30px rgba(0,0,0,0.15); border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; position: relative; }
 
-        /* TOP BAR MODIFICADO */
+        /* TOP BAR */
         .top-bar { background: var(--dark); color: white; padding: 10px 20px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; z-index: 100; }
         .top-menu { display: flex; gap: 8px; flex-wrap: wrap; }
         .btn-nav { background: #34495E; border: 1px solid #566573; color: white; padding: 6px 12px; cursor: pointer; border-radius: 3px; font-size: 10px; font-weight: bold; transition: 0.2s; display: flex; align-items: center; gap: 5px; white-space: nowrap; }
@@ -77,19 +76,20 @@
         .smart-item:hover { background: #EBF5FB; }
         .create-new { background: #FDEDEC; color: #C0392B; font-weight: bold; }
 
-        /* TABLA MÁS ANCHA */
+        /* TABLA (ESTILOS MEJORADOS V22) */
         .table-responsive { overflow-x: auto; -webkit-overflow-scrolling: touch; margin-bottom: 15px; border: 1px solid #D5DBDB; border-radius: 4px; }
-        table { width: 100%; border-collapse: collapse; font-size: 10px; min-width: 1400px; } /* AUMENTADO PARA ANCHO */
+        table { width: 100%; border-collapse: collapse; font-size: 10px; min-width: 1400px; }
         th { background: var(--primary); color: white; padding: 10px; text-align: left; white-space: nowrap; }
         td { border: 1px solid #D5DBDB; padding: 0; height: 35px; }
         
         input.cell-edit { width: 100%; height: 100%; border: none; padding: 0 8px; font-size: 11px; background: transparent; }
         input.cell-edit:focus { outline: 2px solid var(--secondary); background: white; z-index: 10; position: relative; }
-        input.cell-locked { background: #F8F9F9; color: #777; text-align: right; cursor: not-allowed; }
+        input.cell-locked { background: transparent; color: #555; text-align: right; cursor: not-allowed; }
         input.cell-qty { text-align: center; font-weight: bold; color: var(--primary); }
         
-        .col-cost { background: #FEF2F2; color: #922B21; width: 110px; }
-        .col-price { background: #F4F6F7; color: #117A65; width: 110px; }
+        /* COLORES CLAROS Y VISIBLES (V22) */
+        .col-cost { background: #F8F9FA; color: #555; width: 110px; } /* Gris muy claro */
+        .col-price { background: #F0FDF4; color: #166534; width: 110px; font-weight: bold; } /* Verde claro */
         
         /* BOTTOM */
         .bottom-area { display: grid; grid-template-columns: 1fr 350px; gap: 20px; margin-top: 20px; }
@@ -99,7 +99,6 @@
         .final-row { border-top: 2px solid var(--secondary); padding-top: 10px; margin-top: 10px; display: flex; justify-content: space-between; align-items: center; }
         .total-price { font-size: 20px; font-weight: 900; color: var(--primary); }
         
-        /* UTILIDAD VERDE CLARO */
         .util-label { font-size: 13px; color: var(--light-green-util); font-weight: 900; display: block; text-align: right; margin-top: 5px; }
         .util-value-text { color: var(--light-green-util); font-size: 14px; }
 
@@ -209,14 +208,14 @@
                     <thead>
                         <tr>
                             <th class="hidden-when-locked" style="width: 30px; text-align:center;">X</th>
-                            <th style="width: 150px;">PROVEEDOR</th> <th style="min-width: 250px;">CÓDIGO / DESCRIPCIÓN</th>
+                            <th style="width: 150px;">PROVEEDOR</th>
+                            <th style="min-width: 250px;">CÓDIGO / DESCRIPCIÓN</th>
                             <th style="width: 60px; text-align:center;">CANT</th>
                             <th class="col-cost">COSTO U.</th>
                             <th class="col-cost">T. COSTO</th>
                             <th class="col-price">PRECIO U.</th>
                             <th class="col-price">TOTAL</th>
-                            <th style="width: 60px;">% UTIL</th>
-                            <th style="width: 100px; color:var(--light-green-util); font-weight:bold;">$ UTIL</th>
+                            <th style="width: 80px;">% UTIL</th> <th style="width: 100px; color:var(--light-green-util); font-weight:bold;">$ UTIL</th>
                         </tr>
                     </thead>
                     <tbody></tbody>
@@ -324,12 +323,9 @@
                  let s = localStorage.getItem(DB_KEYS.SEQ) || 50100;
                  document.getElementById('lblCorrelativo').innerText = "CN" + s;
             }
-            
-            // VERSIÓN PROSYS
             let ver = localStorage.getItem(DB_KEYS.VER) || 35;
             let verStr = "v1." + String(ver).padStart(5, '0');
             document.getElementById('sysTitle').innerText = `PROSYS [${verStr}]`;
-            
             agregarFila();
         } catch(e) { console.error("Error init", e); }
     };
@@ -560,12 +556,22 @@
         } else {
             document.getElementById('modalTitle').innerText="HISTORIAL";
             btn.style.display='none';
-            thead.innerHTML=`<tr><th>FOLIO</th><th>FECHA</th><th>CLIENTE</th><th>TOTAL</th><th>ACCIÓN</th></tr>`;
+            // COLUMNAS NUEVAS EN HISTORIAL: UTIL $ y UTIL %
+            thead.innerHTML=`<tr><th>FOLIO</th><th>FECHA</th><th>CLIENTE</th><th>TOTAL</th><th>UTIL $</th><th>UTIL %</th><th>ACCIÓN</th></tr>`;
             getDB(DB_KEYS.HIST).forEach((h,i)=> {
                 let statusColor = '#555';
                 if(h.status === 'ACEPTADA') statusColor = 'green';
                 if(h.status === 'RECHAZADA') statusColor = 'red';
-                tbody.innerHTML+=`<tr><td><b>${h.n}</b></td><td>${h.fecha}</td><td>${h.cli.razon}</td><td>${h.total} <br><span style="font-size:9px;color:${statusColor}">[${h.status||'PENDIENTE'}]</span></td><td><button class="btn-small" style="background:#2980B9" onclick="loadHistory(${i})">ABRIR</button><button class="btn-small" style="background:#C0392B" onclick="delItem('${DB_KEYS.HIST}',${i},'historial')">DEL</button></td></tr>`;
+                
+                // Calcular % utilidad para el historial si no existe
+                let utilShow = h.utilTotal ? formatMoney(h.utilTotal) : '$0';
+                let utilPorcShow = h.utilPorcTotal ? h.utilPorcTotal.toFixed(1) + '%' : '0%';
+
+                tbody.innerHTML+=`<tr><td><b>${h.n}</b></td><td>${h.fecha}</td><td>${h.cli.razon}</td>
+                <td>${h.total} <br><span style="font-size:9px;color:${statusColor}">[${h.status||'PENDIENTE'}]</span></td>
+                <td style="color:var(--light-green-util);font-weight:bold;">${utilShow}</td>
+                <td style="color:var(--soft-blue);font-weight:bold;">${utilPorcShow}</td>
+                <td><button class="btn-small" style="background:#2980B9" onclick="loadHistory(${i})">ABRIR</button><button class="btn-small" style="background:#C0392B" onclick="delItem('${DB_KEYS.HIST}',${i},'historial')">DEL</button></td></tr>`;
             });
         }
     }
@@ -676,16 +682,10 @@
         document.getElementById('cmbPago').value = h.pago || "TRANSFERENCIA";
         document.getElementById('txtDescPorc').value = h.descPorc || 0;
         document.getElementById('txtObservaciones').value = h.obs || "";
-        
         ['Razon','Rut','Giro','Dir','Comuna','Region','Email','Contacto','Fono'].forEach(f => {
             const el = document.getElementById('cli'+f);
-            if(el) {
-                el.value = h.cli[f.toLowerCase()]||'';
-                el.readOnly = true; 
-                el.classList.add('input-blocked');
-            }
+            if(el) { el.value = h.cli[f.toLowerCase()]||''; el.readOnly = true; el.classList.add('input-blocked'); }
         });
-
         const tbody = document.querySelector('#tablaItems tbody');
         tbody.innerHTML='';
         h.items.forEach(it => {
@@ -720,12 +720,7 @@
             tbody.appendChild(tr);
         });
         calcular();
-
-        if(h.status === 'ACEPTADA' || h.status === 'RECHAZADA') {
-            bloquearEditor(h.status);
-        } else {
-            document.getElementById('statusPanel').style.display = 'flex';
-        }
+        if(h.status === 'ACEPTADA' || h.status === 'RECHAZADA') { bloquearEditor(h.status); } else { document.getElementById('statusPanel').style.display = 'flex'; }
     }
     
     function nuevaCotizacion() { if(confirm("¿Limpiar?")) location.reload(); }
@@ -748,34 +743,21 @@
         const items = [];
         let maxDias = 0;
         const rows = document.querySelectorAll('#tablaItems tbody tr');
-        
         if(rows.length === 0) return alert("Agregue Items");
 
         rows.forEach(tr => {
             let cod = tr.querySelector('.raw-cod').value;
             let desc = "";
-            
-            // Get Provider Value
             const provInput = tr.querySelector('td:nth-child(2) input');
             let prov = provInput ? provInput.value : '';
-
-            // Get Description
             const inputDesc = tr.querySelector('td:nth-child(3) input');
             if(inputDesc) {
                 desc = inputDesc.value;
                 if(cod !== "MANUAL" && desc.includes(" - ")) desc = desc.split(" - ")[1];
             }
-            
             let d = parseInt(tr.querySelector('.raw-dispo')?.value) || 0;
             if(d > maxDias) maxDias = d;
-
-            if(desc) items.push({
-                d: desc, cd: cod, pv: prov,
-                q: parseFloat(tr.querySelector('.cell-qty').value)||0,
-                c: parseFloat(tr.querySelector('.raw-cost').value)||0,
-                p: parseFloat(tr.querySelector('.raw-price').value)||0,
-                dispo: d
-            });
+            if(desc) items.push({ d: desc, cd: cod, pv: prov, q: parseFloat(tr.querySelector('.cell-qty').value)||0, c: parseFloat(tr.querySelector('.raw-cost').value)||0, p: parseFloat(tr.querySelector('.raw-price').value)||0, dispo: d });
         });
 
         const nCot = document.getElementById('lblCorrelativo').innerText;
@@ -783,9 +765,26 @@
         const pago = document.getElementById('cmbPago').value;
         const descPorc = document.getElementById('txtDescPorc').value;
         const obs = document.getElementById('txtObservaciones').value;
-        let currentStatus = 'PENDIENTE';
         
-        const registro = { n: nCot, fecha: document.getElementById('lblFecha').innerText, cli, items, total, pago, descPorc, obs, maxDias, status: currentStatus };
+        // CALCULAR UTILIDAD TOTAL PARA GUARDAR EN HISTORIAL
+        let utilTotal = 0;
+        let netoTotal = 0;
+        const factorDesc = (100 - parseFloat(descPorc||0)) / 100;
+        
+        items.forEach(i => {
+            const netoItem = i.q * i.p;
+            netoTotal += netoItem;
+            const netoConDesc = netoItem * factorDesc;
+            const costoTotal = i.q * i.c;
+            utilTotal += (netoConDesc - costoTotal);
+        });
+        
+        const netoFinal = netoTotal * factorDesc;
+        let utilPorcTotal = 0;
+        if(netoFinal > 0) utilPorcTotal = (utilTotal / netoFinal) * 100;
+
+        let currentStatus = 'PENDIENTE';
+        const registro = { n: nCot, fecha: document.getElementById('lblFecha').innerText, cli, items, total, pago, descPorc, obs, maxDias, status: currentStatus, utilTotal, utilPorcTotal };
         
         const hist = getDB(DB_KEYS.HIST);
         const editIdx = parseInt(document.getElementById('editIndex').value);
@@ -810,10 +809,8 @@
         const doc = new jsPDF();
         const azul = [31, 111, 139];
         
-        // UPDATE VERSION ON GENERATE
         let sysVer = parseInt(localStorage.getItem(DB_KEYS.VER)) || 35;
         let verStr = "v1." + String(sysVer).padStart(5, '0');
-        // Increment for next time
         localStorage.setItem(DB_KEYS.VER, sysVer + 1);
 
         const logo = localStorage.getItem(DB_KEYS.LOGO);
@@ -844,14 +841,7 @@
         doc.text(`CONTACTO: ${c.contacto}`, 15, 71); doc.text(`EMAIL: ${c.email}`, 120, 71);
         doc.text(`TELÉFONO: ${c.fono || ''}`, 15, 76);
 
-        const rows = data.items.map((i, idx) => [
-            idx + 1,
-            i.cd === "MANUAL" ? "-" : i.cd,
-            i.d,
-            i.q, 
-            formatMoney(i.p), 
-            formatMoney(i.q*i.p)
-        ]);
+        const rows = data.items.map((i, idx) => [idx + 1, i.cd === "MANUAL" ? "-" : i.cd, i.d, i.q, formatMoney(i.p), formatMoney(i.q*i.p)]);
 
         doc.autoTable({
             startY: 85,
@@ -860,18 +850,11 @@
             theme: 'plain',
             styles: { fontSize: 7, cellPadding: 1.5 },
             headStyles: { fillColor: azul, textColor: 255, fontStyle:'bold', fontSize: 7, halign: 'center' },
-            columnStyles: { 
-                0:{halign:'center', cellWidth:10}, 
-                1:{cellWidth:20}, 
-                3:{halign:'center', cellWidth:20}, 
-                4:{halign:'right'}, 
-                5:{halign:'right', fontStyle:'bold'} 
-            },
+            columnStyles: { 0:{halign:'center', cellWidth:10}, 1:{cellWidth:20}, 3:{halign:'center', cellWidth:20}, 4:{halign:'right'}, 5:{halign:'right', fontStyle:'bold'} },
             didParseCell: d => { if(d.section==='body' && d.row.index%2===0) d.cell.styles.fillColor=[250,250,250]; }
         });
 
         const finalY = doc.lastAutoTable.finalY + 5;
-        
         doc.setFontSize(8); doc.setTextColor(0); doc.setFont("helvetica","bold");
         doc.text("MODALIDAD DE PAGO:", 15, finalY + 5);
         doc.setFont("helvetica","normal");
@@ -895,16 +878,13 @@
 
         const boxX = 130;
         let y = finalY + 5;
-        
         const neto = data.items.reduce((a,b)=>a+(b.q*b.p),0);
         const desc = neto * (data.descPorc/100);
         const netoF = neto - desc;
         const iva = netoF * 0.19;
 
         doc.text("SUBTOTAL:", boxX, y); doc.text(formatMoney(neto), 195, y, {align:'right'}); y+=5;
-        if(desc > 0) {
-            doc.text(`DESCUENTO (${data.descPorc}%):`, boxX, y); doc.text("- "+formatMoney(desc), 195, y, {align:'right'}); y+=5;
-        }
+        if(desc > 0) { doc.text(`DESCUENTO (${data.descPorc}%):`, boxX, y); doc.text("- "+formatMoney(desc), 195, y, {align:'right'}); y+=5; }
         doc.text("NETO:", boxX, y); doc.text(formatMoney(netoF), 195, y, {align:'right'}); y+=5;
         doc.text("IVA (19%):", boxX, y); doc.text(formatMoney(iva), 195, y, {align:'right'}); y+=7;
         
@@ -917,7 +897,6 @@
         doc.text(`Generado por PROSYS [${verStr}]`, 105, pageHeight - 10, {align:"center"});
 
         doc.save(`Cotizacion_${data.n}.pdf`);
-        // Recargar para actualizar version en pantalla
         setTimeout(() => location.reload(), 2000);
     }
 </script>
