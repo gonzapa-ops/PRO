@@ -2,7 +2,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>PROSYS V22 - CUNTEL SPA</title>
+    <title>PROSYS V23 - CUNTEL SPA</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
@@ -27,7 +27,7 @@
         .main-container { max-width: 98%; margin: 0 auto; background: white; min-height: 100vh; box-shadow: 0 5px 30px rgba(0,0,0,0.15); border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; position: relative; }
 
         /* TOP BAR */
-        .top-bar { background: var(--dark); color: white; padding: 10px 20px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; z-index: 100; }
+        .top-bar { background: var(--dark); color: white; padding: 10px 20px; display: flex; flex-wrap: wrap; justify-content: flex-end; align-items: center; gap: 10px; z-index: 100; }
         .top-menu { display: flex; gap: 8px; flex-wrap: wrap; }
         .btn-nav { background: #34495E; border: 1px solid #566573; color: white; padding: 6px 12px; cursor: pointer; border-radius: 3px; font-size: 10px; font-weight: bold; transition: 0.2s; display: flex; align-items: center; gap: 5px; white-space: nowrap; }
         .btn-nav:hover { background: var(--secondary); border-color: var(--secondary); }
@@ -45,7 +45,7 @@
         #bar-edicion { display: none; background: #FFF3CD; color: #856404; text-align: center; padding: 8px; font-weight: bold; border-bottom: 1px solid #FFEEBA; }
 
         /* CONTENIDO */
-        .content { padding: 20px; position: relative; }
+        .content { padding: 20px; position: relative; flex: 1; }
         
         /* SELLO DE AGUA */
         #sello-agua {
@@ -76,7 +76,7 @@
         .smart-item:hover { background: #EBF5FB; }
         .create-new { background: #FDEDEC; color: #C0392B; font-weight: bold; }
 
-        /* TABLA (ESTILOS MEJORADOS V22) */
+        /* TABLA */
         .table-responsive { overflow-x: auto; -webkit-overflow-scrolling: touch; margin-bottom: 15px; border: 1px solid #D5DBDB; border-radius: 4px; }
         table { width: 100%; border-collapse: collapse; font-size: 10px; min-width: 1400px; }
         th { background: var(--primary); color: white; padding: 10px; text-align: left; white-space: nowrap; }
@@ -87,9 +87,8 @@
         input.cell-locked { background: transparent; color: #555; text-align: right; cursor: not-allowed; }
         input.cell-qty { text-align: center; font-weight: bold; color: var(--primary); }
         
-        /* COLORES CLAROS Y VISIBLES (V22) */
-        .col-cost { background: #F8F9FA; color: #555; width: 110px; } /* Gris muy claro */
-        .col-price { background: #F0FDF4; color: #166534; width: 110px; font-weight: bold; } /* Verde claro */
+        .col-cost { background: #F8F9FA; color: #555; width: 110px; }
+        .col-price { background: #F0FDF4; color: #166534; width: 110px; font-weight: bold; }
         
         /* BOTTOM */
         .bottom-area { display: grid; grid-template-columns: 1fr 350px; gap: 20px; margin-top: 20px; }
@@ -112,6 +111,9 @@
         .btn-status { padding: 12px 25px; border: none; border-radius: 4px; font-weight: 800; cursor: pointer; color: white; font-size: 12px; transition: 0.3s; display: flex; align-items: center; gap: 5px; }
         .btn-accept { background: var(--green); }
         .btn-reject { background: var(--red-reject); }
+
+        /* FOOTER DISCRETO */
+        .system-footer { text-align: center; color: #D5DBDB; font-size: 9px; padding: 10px; margin-top: auto; border-top: 1px solid #f2f2f2; }
 
         /* RESPONSIVE */
         @media (max-width: 768px) {
@@ -143,7 +145,6 @@
     <div id="sello-agua"></div>
 
     <div class="top-bar">
-        <div id="sysTitle" style="font-weight: 800; font-size: 12px; opacity: 0.9; margin-bottom: 5px;">PROSYS [v1.00035]</div>
         <div class="top-menu">
             <div style="color: #ccc; font-weight: bold; font-size: 10px; margin-right: 10px; align-self: center;">PANEL DE CONTROL</div>
             <button class="btn-nav" onclick="abrirGestor('clientes')">👥 CLIENTES</button>
@@ -215,7 +216,8 @@
                             <th class="col-cost">T. COSTO</th>
                             <th class="col-price">PRECIO U.</th>
                             <th class="col-price">TOTAL</th>
-                            <th style="width: 80px;">% UTIL</th> <th style="width: 100px; color:var(--light-green-util); font-weight:bold;">$ UTIL</th>
+                            <th style="width: 80px;">% UTIL</th> 
+                            <th style="width: 100px; color:var(--light-green-util); font-weight:bold;">$ UTIL</th>
                         </tr>
                     </thead>
                     <tbody></tbody>
@@ -270,6 +272,9 @@
         </div>
 
     </div>
+
+    <div id="sysFooter" class="system-footer"></div>
+
 </div>
 
 <div id="modalGestor" class="modal">
@@ -323,9 +328,12 @@
                  let s = localStorage.getItem(DB_KEYS.SEQ) || 50100;
                  document.getElementById('lblCorrelativo').innerText = "CN" + s;
             }
+            
+            // VERSION EN FOOTER
             let ver = localStorage.getItem(DB_KEYS.VER) || 35;
             let verStr = "v1." + String(ver).padStart(5, '0');
-            document.getElementById('sysTitle').innerText = `PROSYS [${verStr}]`;
+            document.getElementById('sysFooter').innerText = `PROSYS [${verStr}]`;
+            
             agregarFila();
         } catch(e) { console.error("Error init", e); }
     };
@@ -556,22 +564,14 @@
         } else {
             document.getElementById('modalTitle').innerText="HISTORIAL";
             btn.style.display='none';
-            // COLUMNAS NUEVAS EN HISTORIAL: UTIL $ y UTIL %
             thead.innerHTML=`<tr><th>FOLIO</th><th>FECHA</th><th>CLIENTE</th><th>TOTAL</th><th>UTIL $</th><th>UTIL %</th><th>ACCIÓN</th></tr>`;
             getDB(DB_KEYS.HIST).forEach((h,i)=> {
                 let statusColor = '#555';
                 if(h.status === 'ACEPTADA') statusColor = 'green';
                 if(h.status === 'RECHAZADA') statusColor = 'red';
-                
-                // Calcular % utilidad para el historial si no existe
                 let utilShow = h.utilTotal ? formatMoney(h.utilTotal) : '$0';
                 let utilPorcShow = h.utilPorcTotal ? h.utilPorcTotal.toFixed(1) + '%' : '0%';
-
-                tbody.innerHTML+=`<tr><td><b>${h.n}</b></td><td>${h.fecha}</td><td>${h.cli.razon}</td>
-                <td>${h.total} <br><span style="font-size:9px;color:${statusColor}">[${h.status||'PENDIENTE'}]</span></td>
-                <td style="color:var(--light-green-util);font-weight:bold;">${utilShow}</td>
-                <td style="color:var(--soft-blue);font-weight:bold;">${utilPorcShow}</td>
-                <td><button class="btn-small" style="background:#2980B9" onclick="loadHistory(${i})">ABRIR</button><button class="btn-small" style="background:#C0392B" onclick="delItem('${DB_KEYS.HIST}',${i},'historial')">DEL</button></td></tr>`;
+                tbody.innerHTML+=`<tr><td><b>${h.n}</b></td><td>${h.fecha}</td><td>${h.cli.razon}</td><td>${h.total} <br><span style="font-size:9px;color:${statusColor}">[${h.status||'PENDIENTE'}]</span></td><td style="color:var(--light-green-util);font-weight:bold;">${utilShow}</td><td style="color:var(--soft-blue);font-weight:bold;">${utilPorcShow}</td><td><button class="btn-small" style="background:#2980B9" onclick="loadHistory(${i})">ABRIR</button><button class="btn-small" style="background:#C0392B" onclick="delItem('${DB_KEYS.HIST}',${i},'historial')">DEL</button></td></tr>`;
             });
         }
     }
@@ -766,7 +766,6 @@
         const descPorc = document.getElementById('txtDescPorc').value;
         const obs = document.getElementById('txtObservaciones').value;
         
-        // CALCULAR UTILIDAD TOTAL PARA GUARDAR EN HISTORIAL
         let utilTotal = 0;
         let netoTotal = 0;
         const factorDesc = (100 - parseFloat(descPorc||0)) / 100;
@@ -812,6 +811,7 @@
         let sysVer = parseInt(localStorage.getItem(DB_KEYS.VER)) || 35;
         let verStr = "v1." + String(sysVer).padStart(5, '0');
         localStorage.setItem(DB_KEYS.VER, sysVer + 1);
+        document.getElementById('sysFooter').innerText = `PROSYS [${verStr}]`;
 
         const logo = localStorage.getItem(DB_KEYS.LOGO);
         if(logo) doc.addImage(logo, 'PNG', 15, 15, 25, 25);
