@@ -1,9 +1,8 @@
-<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>PROSYS V24 - CUNTEL SPA</title>
+    <title>PROSYS V25 - CUNTEL SPA</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
@@ -20,6 +19,7 @@
             --soft-blue: #2E86C1;
             --light-green-util: #28B463; 
             --red-reject: #C0392B;
+            --orange-desc: #E67E22; /* Color para descuento */
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; text-transform: uppercase; }
@@ -79,7 +79,7 @@
 
         /* TABLA */
         .table-responsive { overflow-x: auto; -webkit-overflow-scrolling: touch; margin-bottom: 15px; border: 1px solid #D5DBDB; border-radius: 4px; }
-        table { width: 100%; border-collapse: collapse; font-size: 10px; min-width: 1400px; }
+        table { width: 100%; border-collapse: collapse; font-size: 10px; min-width: 1500px; } /* Aumentado para nuevas columnas */
         th { background: var(--primary); color: white; padding: 10px; text-align: left; white-space: nowrap; }
         td { border: 1px solid #D5DBDB; padding: 0; height: 35px; }
         
@@ -88,8 +88,9 @@
         input.cell-locked { background: transparent; color: #555; text-align: right; cursor: not-allowed; }
         input.cell-qty { text-align: center; font-weight: bold; color: var(--primary); }
         
-        .col-cost { background: #F8F9FA; color: #555; width: 110px; }
-        .col-price { background: #F0FDF4; color: #166534; width: 110px; font-weight: bold; }
+        .col-cost { background: #F8F9FA; color: #555; width: 100px; }
+        .col-price { background: #F0FDF4; color: #166534; width: 100px; font-weight: bold; }
+        .col-desc { background: #FFF3E0; color: #E67E22; width: 80px; font-weight: bold; }
         
         /* BOTTOM */
         .bottom-area { display: grid; grid-template-columns: 1fr 350px; gap: 20px; margin-top: 20px; }
@@ -210,12 +211,15 @@
                     <thead>
                         <tr>
                             <th class="hidden-when-locked" style="width: 30px; text-align:center;">X</th>
-                            <th style="width: 150px;">PROVEEDOR</th>
-                            <th style="min-width: 250px;">CÓDIGO / DESCRIPCIÓN</th>
-                            <th style="width: 90px; text-align:center;">CANT</th> <th class="col-cost">COSTO U.</th>
+                            <th style="width: 120px;">PROVEEDOR</th>
+                            <th style="min-width: 200px;">CÓDIGO / DESCRIPCIÓN</th>
+                            <th style="width: 90px; text-align:center;">CANT</th>
+                            <th class="col-cost">COSTO U.</th>
                             <th class="col-cost">T. COSTO</th>
                             <th class="col-price">PRECIO U.</th>
                             <th class="col-price">TOTAL</th>
+                            <th class="col-desc">DESC $</th>
+                            <th class="col-desc" style="width:60px;">DESC %</th>
                             <th style="width: 80px;">% UTIL</th> 
                             <th style="width: 100px; color:var(--light-green-util); font-weight:bold;">$ UTIL</th>
                         </tr>
@@ -246,8 +250,7 @@
             </div>
             <div class="totals-card">
                 <div class="t-row"><span>SUBTOTAL NETO:</span><span id="txtNeto">$0</span></div>
-                <div class="t-row"><span>DESCUENTO (%):</span><input type="number" id="txtDescPorc" value="0" min="0" max="100" style="width:50px; text-align:right;" onchange="calcular()"></div>
-                <div class="t-row"><span>MONTO DESC.:</span><span id="txtDescMonto">$0</span></div>
+                <div class="t-row" style="color:var(--secondary);"><span>TOTAL DESCUENTOS:</span><span id="txtDescMonto">$0</span></div>
                 <div class="t-row" style="border-top:1px dashed #ddd; padding-top:5px;"><span>NETO FINAL:</span><span id="txtNetoFinal">$0</span></div>
                 <div class="t-row"><span>IVA (19%):</span><span id="txtIva">$0</span></div>
                 <div class="final-row">
@@ -455,6 +458,8 @@
             <td class="col-cost"><input type="text" class="cell-edit cell-locked t-cost" readonly></td>
             <td class="col-price"><input type="text" class="cell-edit cell-locked u-price" value="${formatMoney(p.precio)}" readonly></td>
             <td class="col-price"><input type="text" class="cell-edit cell-locked t-price" readonly></td>
+            <td class="col-desc"><input type="number" class="cell-edit cell-desc-val" value="0" oninput="calcular()"></td>
+            <td class="col-desc"><input type="text" class="cell-edit cell-locked cell-desc-porc" readonly></td>
             <td><input type="text" class="cell-edit cell-locked util-porc" readonly style="color:var(--soft-blue); font-weight:bold; text-align:right;"></td>
             <td><input type="text" class="cell-edit cell-locked util-value" readonly style="color:var(--light-green-util); font-weight:bold; text-align:right;"></td>
             <input type="hidden" class="raw-cost" value="${p.costo}">
@@ -479,6 +484,8 @@
             <td class="col-cost"><input type="text" class="cell-edit cell-locked t-cost" readonly></td>
             <td class="col-price"><input type="number" class="cell-edit raw-price-manual" value="0" oninput="calcularManual(this)"></td>
             <td class="col-price"><input type="text" class="cell-edit cell-locked t-price" readonly></td>
+            <td class="col-desc"><input type="number" class="cell-edit cell-desc-val" value="0" oninput="calcular()"></td>
+            <td class="col-desc"><input type="text" class="cell-edit cell-locked cell-desc-porc" readonly></td>
             <td><input type="text" class="cell-edit cell-locked util-porc" readonly style="color:var(--soft-blue); font-weight:bold; text-align:right;"></td>
             <td><input type="text" class="cell-edit cell-locked util-value" readonly style="color:var(--light-green-util); font-weight:bold; text-align:right;"></td>
             <input type="hidden" class="raw-cost" value="0">
@@ -497,22 +504,28 @@
     }
 
     function calcular() {
-        let neto = 0, util = 0;
-        const descPorc = parseFloat(document.getElementById('txtDescPorc').value)||0;
-        const factorDesc = (100 - descPorc) / 100;
+        let neto = 0, util = 0, descTotal = 0;
 
         document.querySelectorAll('#tablaItems tbody tr').forEach(tr => {
             const q = parseFloat(tr.querySelector('.cell-qty').value)||0;
             const c = parseFloat(tr.querySelector('.raw-cost').value)||0;
             const p = parseFloat(tr.querySelector('.raw-price').value)||0;
+            const dVal = parseFloat(tr.querySelector('.cell-desc-val').value)||0;
             
-            const tc = q*c; const tp = q*p;
-            const pConDesc = p * factorDesc;
-            const utilUnit = pConDesc - c;
+            // Calculo Descuento %
+            let dPorc = 0;
+            if(p > 0) dPorc = (dVal / p) * 100;
+            tr.querySelector('.cell-desc-porc').value = dPorc.toFixed(1) + '%';
+
+            const precioFinal = p - dVal;
+            const tc = q*c; 
+            const tp = q*precioFinal;
+            
+            const utilUnit = precioFinal - c;
             const utilTotal = utilUnit * q;
             
             let margenPorc = 0;
-            if(pConDesc > 0) margenPorc = (utilUnit / pConDesc) * 100;
+            if(precioFinal > 0) margenPorc = (utilUnit / precioFinal) * 100;
 
             tr.querySelector('.t-cost').value = formatMoney(tc);
             tr.querySelector('.t-price').value = formatMoney(tp);
@@ -523,18 +536,18 @@
             const celdaV = tr.querySelector('.util-value');
             celdaV.value = formatMoney(utilTotal);
 
-            neto += tp; util += utilTotal;
+            neto += tp; 
+            util += utilTotal;
+            descTotal += (dVal * q);
         });
 
-        const descMonto = neto * (descPorc/100);
-        const netoFinal = neto - descMonto;
-        const iva = netoFinal * 0.19;
+        const iva = neto * 0.19;
         
         document.getElementById('txtNeto').innerText = formatMoney(neto);
-        document.getElementById('txtDescMonto').innerText = formatMoney(descMonto);
-        document.getElementById('txtNetoFinal').innerText = formatMoney(netoFinal);
+        document.getElementById('txtDescMonto').innerText = formatMoney(descTotal);
+        document.getElementById('txtNetoFinal').innerText = formatMoney(neto); // Neto ya incluye descuento por linea
         document.getElementById('txtIva').innerText = formatMoney(iva);
-        document.getElementById('txtTotal').innerText = formatMoney(netoFinal + iva);
+        document.getElementById('txtTotal').innerText = formatMoney(neto + iva);
         document.getElementById('txtUtilidad').innerText = formatMoney(util);
     }
 
@@ -686,7 +699,6 @@
         document.getElementById('modalGestor').style.display='none';
         document.getElementById('lblCorrelativo').innerText = h.n;
         document.getElementById('cmbPago').value = h.pago || "TRANSFERENCIA";
-        document.getElementById('txtDescPorc').value = h.descPorc || 0;
         document.getElementById('txtObservaciones').value = h.obs || "";
         ['Razon','Rut','Giro','Dir','Comuna','Region','Email','Contacto','Fono'].forEach(f => {
             const el = document.getElementById('cli'+f);
@@ -706,6 +718,8 @@
                 <td class="col-cost"><input type="text" class="cell-edit cell-locked t-cost" readonly></td>
                 <td class="col-price"><input type="text" class="cell-edit cell-locked u-price" value="${formatMoney(it.p)}" readonly></td>
                 <td class="col-price"><input type="text" class="cell-edit cell-locked t-price" readonly></td>
+                <td class="col-desc"><input type="number" class="cell-edit cell-desc-val" value="${it.descVal||0}" oninput="calcular()"></td>
+                <td class="col-desc"><input type="text" class="cell-edit cell-locked cell-desc-porc" readonly></td>
                 <td><input type="text" class="cell-edit cell-locked util-porc" readonly style="color:var(--soft-blue); font-weight:bold; text-align:right;"></td>
                 <td><input type="text" class="cell-edit cell-locked util-value" readonly style="color:var(--light-green-util); font-weight:bold; text-align:right;"></td>
                 <input type="hidden" class="raw-cost" value="${it.c}"><input type="hidden" class="raw-price" value="${it.p}"><input type="hidden" class="raw-cod" value="${it.cd}"><input type="hidden" class="raw-dispo" value="${it.dispo||0}">`;
@@ -719,6 +733,8 @@
                     <td class="col-cost"><input type="text" class="cell-edit cell-locked t-cost" readonly></td>
                     <td class="col-price"><input type="number" class="cell-edit raw-price-manual" value="${it.p}" oninput="calcularManual(this)"></td>
                     <td class="col-price"><input type="text" class="cell-edit cell-locked t-price" readonly></td>
+                    <td class="col-desc"><input type="number" class="cell-edit cell-desc-val" value="${it.descVal||0}" oninput="calcular()"></td>
+                    <td class="col-desc"><input type="text" class="cell-edit cell-locked cell-desc-porc" readonly></td>
                     <td><input type="text" class="cell-edit cell-locked util-porc" readonly style="color:var(--soft-blue); font-weight:bold; text-align:right;"></td>
                     <td><input type="text" class="cell-edit cell-locked util-value" readonly style="color:var(--light-green-util); font-weight:bold; text-align:right;"></td>
                     <input type="hidden" class="raw-cost" value="${it.c}"><input type="hidden" class="raw-price" value="${it.p}"><input type="hidden" class="raw-cod" value="MANUAL"><input type="hidden" class="raw-dispo" value="0">`;
@@ -763,33 +779,40 @@
             }
             let d = parseInt(tr.querySelector('.raw-dispo')?.value) || 0;
             if(d > maxDias) maxDias = d;
-            if(desc) items.push({ d: desc, cd: cod, pv: prov, q: parseFloat(tr.querySelector('.cell-qty').value)||0, c: parseFloat(tr.querySelector('.raw-cost').value)||0, p: parseFloat(tr.querySelector('.raw-price').value)||0, dispo: d });
+            
+            const descVal = parseFloat(tr.querySelector('.cell-desc-val').value)||0;
+
+            if(desc) items.push({ 
+                d: desc, cd: cod, pv: prov, 
+                q: parseFloat(tr.querySelector('.cell-qty').value)||0, 
+                c: parseFloat(tr.querySelector('.raw-cost').value)||0, 
+                p: parseFloat(tr.querySelector('.raw-price').value)||0, 
+                dispo: d,
+                descVal: descVal
+            });
         });
 
         const nCot = document.getElementById('lblCorrelativo').innerText;
         const total = document.getElementById('txtTotal').innerText;
         const pago = document.getElementById('cmbPago').value;
-        const descPorc = document.getElementById('txtDescPorc').value;
         const obs = document.getElementById('txtObservaciones').value;
         
         let utilTotal = 0;
         let netoTotal = 0;
-        const factorDesc = (100 - parseFloat(descPorc||0)) / 100;
         
         items.forEach(i => {
-            const netoItem = i.q * i.p;
-            netoTotal += netoItem;
-            const netoConDesc = netoItem * factorDesc;
-            const costoTotal = i.q * i.c;
-            utilTotal += (netoConDesc - costoTotal);
+            const precioFinal = i.p - i.descVal;
+            const netoLinea = i.q * precioFinal;
+            const costoLinea = i.q * i.c;
+            netoTotal += netoLinea;
+            utilTotal += (netoLinea - costoLinea);
         });
         
-        const netoFinal = netoTotal * factorDesc;
         let utilPorcTotal = 0;
-        if(netoFinal > 0) utilPorcTotal = (utilTotal / netoFinal) * 100;
+        if(netoTotal > 0) utilPorcTotal = (utilTotal / netoTotal) * 100;
 
         let currentStatus = 'PENDIENTE';
-        const registro = { n: nCot, fecha: document.getElementById('lblFecha').innerText, cli, items, total, pago, descPorc, obs, maxDias, status: currentStatus, utilTotal, utilPorcTotal };
+        const registro = { n: nCot, fecha: document.getElementById('lblFecha').innerText, cli, items, total, pago, obs, maxDias, status: currentStatus, utilTotal, utilPorcTotal };
         
         const hist = getDB(DB_KEYS.HIST);
         const editIdx = parseInt(document.getElementById('editIndex').value);
@@ -847,7 +870,14 @@
         doc.text(`CONTACTO: ${c.contacto}`, 15, 71); doc.text(`EMAIL: ${c.email}`, 120, 71);
         doc.text(`TELÉFONO: ${c.fono || ''}`, 15, 76);
 
-        const rows = data.items.map((i, idx) => [idx + 1, i.cd === "MANUAL" ? "-" : i.cd, i.d, i.q, formatMoney(i.p), formatMoney(i.q*i.p)]);
+        const rows = data.items.map((i, idx) => [
+            idx + 1,
+            i.cd === "MANUAL" ? "-" : i.cd,
+            i.d,
+            i.q, 
+            formatMoney(i.p), 
+            formatMoney(i.q * (i.p - (i.descVal||0))) 
+        ]);
 
         doc.autoTable({
             startY: 85,
@@ -884,19 +914,26 @@
 
         const boxX = 130;
         let y = finalY + 5;
-        const neto = data.items.reduce((a,b)=>a+(b.q*b.p),0);
-        const desc = neto * (data.descPorc/100);
-        const netoF = neto - desc;
-        const iva = netoF * 0.19;
+        
+        let neto = 0;
+        let descTotal = 0;
+        
+        data.items.forEach(it => {
+            neto += (it.q * it.p);
+            descTotal += (it.q * (it.descVal||0));
+        });
+        
+        const netoFinal = neto - descTotal;
+        const iva = netoFinal * 0.19;
 
         doc.text("SUBTOTAL:", boxX, y); doc.text(formatMoney(neto), 195, y, {align:'right'}); y+=5;
-        if(desc > 0) { doc.text(`DESCUENTO (${data.descPorc}%):`, boxX, y); doc.text("- "+formatMoney(desc), 195, y, {align:'right'}); y+=5; }
-        doc.text("NETO:", boxX, y); doc.text(formatMoney(netoF), 195, y, {align:'right'}); y+=5;
+        if(descTotal > 0) { doc.text(`DESCUENTOS:`, boxX, y); doc.text("- "+formatMoney(descTotal), 195, y, {align:'right'}); y+=5; }
+        doc.text("NETO:", boxX, y); doc.text(formatMoney(netoFinal), 195, y, {align:'right'}); y+=5;
         doc.text("IVA (19%):", boxX, y); doc.text(formatMoney(iva), 195, y, {align:'right'}); y+=7;
         
         doc.setFillColor(...azul); doc.rect(boxX-5, y-4, 75, 7, 'F');
         doc.setTextColor(255); doc.setFontSize(10); doc.setFont("helvetica","bold");
-        doc.text("TOTAL:", boxX, y+1); doc.text(formatMoney(netoF+iva), 195, y+1, {align:'right'});
+        doc.text("TOTAL:", boxX, y+1); doc.text(formatMoney(netoFinal+iva), 195, y+1, {align:'right'});
 
         const pageHeight = doc.internal.pageSize.height;
         doc.setTextColor(150); doc.setFontSize(7); doc.setFont("helvetica","normal");
