@@ -1,8 +1,9 @@
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>PROSYS V25 - CUNTEL SPA</title>
+    <title>PROSYS V26 - GESTIÓN TOTAL</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
@@ -19,7 +20,7 @@
             --soft-blue: #2E86C1;
             --light-green-util: #28B463; 
             --red-reject: #C0392B;
-            --orange-desc: #E67E22; /* Color para descuento */
+            --orange-desc: #E67E22;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; text-transform: uppercase; }
@@ -34,13 +35,24 @@
         .btn-nav:hover { background: var(--secondary); border-color: var(--secondary); }
         .btn-backup { background: #27AE60; border-color: #1E8449; }
 
-        /* HEADER */
-        .header { padding: 20px; display: flex; flex-wrap: wrap; justify-content: space-between; border-bottom: 3px solid var(--secondary); background: white; align-items: center; gap: 20px; }
+        /* HEADER & COMPANY EDITOR */
+        .header { padding: 20px; display: flex; flex-wrap: wrap; justify-content: space-between; border-bottom: 3px solid var(--secondary); background: white; align-items: center; gap: 20px; position: relative; }
+        
         .brand-area { display: flex; align-items: center; gap: 15px; }
         .logo-placeholder { width: 60px; height: 60px; background: #eee; border: 2px dashed #ccc; display: flex; align-items: center; justify-content: center; cursor: pointer; overflow: hidden; border-radius: 4px; flex-shrink: 0; }
         .logo-placeholder img { width: 100%; height: 100%; object-fit: contain; }
+        
         .brand h1 { color: var(--primary); font-size: 20px; font-weight: 900; margin: 0; }
         .brand p { color: #7F8C8D; font-size: 10px; font-weight: 600; }
+        
+        /* Botón Editar Empresa */
+        .btn-edit-company { background: none; border: none; cursor: pointer; font-size: 14px; color: #999; margin-left: 5px; }
+        .btn-edit-company:hover { color: var(--secondary); }
+
+        /* Formulario Empresa (Oculto por defecto) */
+        #companyEditor { display: none; background: #F8F9F9; padding: 15px; border-bottom: 1px solid #ddd; width: 100%; }
+        .company-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 10px; }
+
         .quote-data { text-align: right; }
         .quote-number { font-size: 18px; font-weight: bold; color: var(--secondary); white-space: nowrap; }
         #bar-edicion { display: none; background: #FFF3CD; color: #856404; text-align: center; padding: 8px; font-weight: bold; border-bottom: 1px solid #FFEEBA; }
@@ -79,7 +91,7 @@
 
         /* TABLA */
         .table-responsive { overflow-x: auto; -webkit-overflow-scrolling: touch; margin-bottom: 15px; border: 1px solid #D5DBDB; border-radius: 4px; }
-        table { width: 100%; border-collapse: collapse; font-size: 10px; min-width: 1500px; } /* Aumentado para nuevas columnas */
+        table { width: 100%; border-collapse: collapse; font-size: 10px; min-width: 1500px; }
         th { background: var(--primary); color: white; padding: 10px; text-align: left; white-space: nowrap; }
         td { border: 1px solid #D5DBDB; padding: 0; height: 35px; }
         
@@ -159,6 +171,21 @@
         </div>
     </div>
 
+    <div id="companyEditor">
+        <h4 style="margin-bottom:10px; color:var(--primary);">EDITAR DATOS DE MI EMPRESA <button onclick="toggleCompanyEditor()" style="float:right; cursor:pointer;">❌ Cerrar</button></h4>
+        <div class="company-grid">
+            <div class="input-group"><label>RAZÓN SOCIAL</label><input type="text" id="empRazon"></div>
+            <div class="input-group"><label>RUT</label><input type="text" id="empRut"></div>
+            <div class="input-group"><label>GIRO</label><input type="text" id="empGiro"></div>
+            <div class="input-group"><label>DIRECCIÓN</label><input type="text" id="empDir"></div>
+            <div class="input-group"><label>COMUNA</label><input type="text" id="empComuna"></div>
+            <div class="input-group"><label>CONTACTO</label><input type="text" id="empContacto"></div>
+            <div class="input-group"><label>CELULAR</label><input type="text" id="empCel"></div>
+            <div class="input-group"><label>EMAIL</label><input type="text" id="empEmail"></div>
+        </div>
+        <button onclick="guardarEmpresa()" class="btn-nav" style="margin-top:10px; background:var(--green);">GUARDAR DATOS EMPRESA</button>
+    </div>
+
     <div class="header">
         <div class="brand-area">
             <div class="logo-placeholder" onclick="document.getElementById('logoInput').click()">
@@ -166,9 +193,13 @@
                 <span id="logoText" style="font-size:9px; text-align:center; color:#999;">+ LOGO</span>
             </div>
             <input type="file" id="logoInput" style="display:none" accept="image/*" onchange="cargarLogo(this)">
+            
             <div class="brand">
-                <h1>INGENIERIA CUNTEL SPA</h1>
-                <p>SOLUCIONES INTEGRALES</p>
+                <div style="display:flex; align-items:center;">
+                    <h1 id="lblEmpRazon">INGENIERIA CUNTEL SPA</h1>
+                    <button class="btn-edit-company" onclick="toggleCompanyEditor()">⚙️</button>
+                </div>
+                <p id="lblEmpGiro">SOLUCIONES INTEGRALES</p>
             </div>
         </div>
         <div class="quote-data">
@@ -309,7 +340,7 @@
 
 <script>
     // --- 1. CORE ---
-    const DB_KEYS = { CLI: 'db_clients', PROD: 'db_products', HIST: 'db_history', SEQ: 'db_seq', LOGO: 'db_logo', VER: 'sys_ver_count' };
+    const DB_KEYS = { CLI: 'db_clients', PROD: 'db_products', HIST: 'db_history', SEQ: 'db_seq', LOGO: 'db_logo', VER: 'sys_ver_count', EMP: 'db_company' };
     const formatMoney = n => new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP' }).format(n);
     const upper = e => e.value = e.value.toUpperCase();
     const formatRut = i => {
@@ -331,17 +362,49 @@
                  let s = localStorage.getItem(DB_KEYS.SEQ) || 50100;
                  document.getElementById('lblCorrelativo').innerText = "CN" + s;
             }
-            
-            // VERSION EN FOOTER
             let ver = localStorage.getItem(DB_KEYS.VER) || 35;
             let verStr = "v1." + String(ver).padStart(5, '0');
             document.getElementById('sysFooter').innerText = `PROSYS [${verStr}]`;
+            
+            // Cargar Empresa
+            cargarEmpresa();
             
             agregarFila();
         } catch(e) { console.error("Error init", e); }
     };
 
-    // --- 2. LOGICA DE BLOQUEO Y ESTADO ---
+    // --- 2. GESTION EMPRESA (NUEVO) ---
+    function toggleCompanyEditor() {
+        const el = document.getElementById('companyEditor');
+        el.style.display = el.style.display === 'block' ? 'none' : 'block';
+        if(el.style.display === 'block') {
+            const emp = JSON.parse(localStorage.getItem(DB_KEYS.EMP) || "{}");
+            ['Razon','Rut','Giro','Dir','Comuna','Contacto','Cel','Email'].forEach(k => {
+                document.getElementById('emp'+k).value = emp[k] || '';
+            });
+        }
+    }
+
+    function guardarEmpresa() {
+        const emp = {};
+        ['Razon','Rut','Giro','Dir','Comuna','Contacto','Cel','Email'].forEach(k => {
+            emp[k] = document.getElementById('emp'+k).value;
+        });
+        localStorage.setItem(DB_KEYS.EMP, JSON.stringify(emp));
+        cargarEmpresa();
+        toggleCompanyEditor();
+        alert("Datos de empresa actualizados.");
+    }
+
+    function cargarEmpresa() {
+        const emp = JSON.parse(localStorage.getItem(DB_KEYS.EMP));
+        if(emp && emp.Razon) {
+            document.getElementById('lblEmpRazon').innerText = emp.Razon;
+            document.getElementById('lblEmpGiro').innerText = emp.Giro;
+        }
+    }
+
+    // --- 3. LOGICA DE BLOQUEO Y ESTADO ---
     function desbloquearEditor() {
         document.getElementById('sello-agua').style.display = 'none';
         document.getElementById('statusPanel').style.display = 'none';
@@ -385,7 +448,7 @@
         bloquearEditor(nuevoEstado);
     }
 
-    // --- 3. BUSCADOR Y TABLA ---
+    // --- 4. BUSCADOR Y TABLA ---
     function buscarCliente(input) {
         upper(input);
         const term = input.value.trim();
@@ -503,6 +566,7 @@
         calcular();
     }
 
+    // --- MATH AUDITED AND VERIFIED ---
     function calcular() {
         let neto = 0, util = 0, descTotal = 0;
 
@@ -517,27 +581,29 @@
             if(p > 0) dPorc = (dVal / p) * 100;
             tr.querySelector('.cell-desc-porc').value = dPorc.toFixed(1) + '%';
 
-            const precioFinal = p - dVal;
-            const tc = q*c; 
-            const tp = q*precioFinal;
+            // Matemáticas de línea
+            const precioUnitFinal = p - dVal; // Precio venta unitario real
+            const totalCostoLinea = q * c; 
+            const totalVentaLinea = q * precioUnitFinal;
             
-            const utilUnit = precioFinal - c;
-            const utilTotal = utilUnit * q;
+            const utilUnit = precioUnitFinal - c;
+            const utilTotalLinea = utilUnit * q; // Ganancia real de la línea
             
             let margenPorc = 0;
-            if(precioFinal > 0) margenPorc = (utilUnit / precioFinal) * 100;
+            if(precioUnitFinal > 0) margenPorc = (utilUnit / precioUnitFinal) * 100;
 
-            tr.querySelector('.t-cost').value = formatMoney(tc);
-            tr.querySelector('.t-price').value = formatMoney(tp);
+            tr.querySelector('.t-cost').value = formatMoney(totalCostoLinea);
+            tr.querySelector('.t-price').value = formatMoney(totalVentaLinea);
             
             const celdaP = tr.querySelector('.util-porc');
             celdaP.value = margenPorc.toFixed(1) + '%';
             
             const celdaV = tr.querySelector('.util-value');
-            celdaV.value = formatMoney(utilTotal);
+            celdaV.value = formatMoney(utilTotalLinea);
 
-            neto += tp; 
-            util += utilTotal;
+            // Acumuladores Globales
+            neto += totalVentaLinea; // Suma de precios ya descontados
+            util += utilTotalLinea;
             descTotal += (dVal * q);
         });
 
@@ -545,13 +611,13 @@
         
         document.getElementById('txtNeto').innerText = formatMoney(neto);
         document.getElementById('txtDescMonto').innerText = formatMoney(descTotal);
-        document.getElementById('txtNetoFinal').innerText = formatMoney(neto); // Neto ya incluye descuento por linea
+        document.getElementById('txtNetoFinal').innerText = formatMoney(neto);
         document.getElementById('txtIva').innerText = formatMoney(iva);
         document.getElementById('txtTotal').innerText = formatMoney(neto + iva);
         document.getElementById('txtUtilidad').innerText = formatMoney(util);
     }
 
-    // --- 4. CRUD ---
+    // --- 5. CRUD ---
     function abrirGestor(type) {
         const modal = document.getElementById('modalGestor');
         const thead = document.getElementById('modalHead');
@@ -690,7 +756,7 @@
         reader.readAsText(file);
     }
 
-    // --- 5. PDF & GUARDADO ---
+    // --- 6. PDF & GUARDADO ---
     function loadHistory(i) {
         desbloquearEditor();
         const h = getDB(DB_KEYS.HIST)[i];
@@ -842,14 +908,20 @@
         localStorage.setItem(DB_KEYS.VER, sysVer + 1);
         document.getElementById('sysFooter').innerText = `PROSYS [${verStr}]`;
 
+        // USAR DATOS EMPRESA
+        const emp = JSON.parse(localStorage.getItem(DB_KEYS.EMP) || "{}");
+        const empRazon = emp.Razon || "INGENIERIA CUNTEL SPA";
+        const empGiro = emp.Giro || "SOLUCIONES INTEGRALES";
+        const empEmail = emp.Email || "CONTACTO@CUNTEL.CL";
+
         const logo = localStorage.getItem(DB_KEYS.LOGO);
         if(logo) doc.addImage(logo, 'PNG', 15, 15, 25, 25);
         
         doc.setFontSize(16); doc.setTextColor(...azul); doc.setFont("helvetica","bold");
-        doc.text("INGENIERIA CUNTEL SPA", 50, 25);
+        doc.text(empRazon, 50, 25);
         doc.setFontSize(9); doc.setTextColor(100); doc.setFont("helvetica","normal");
-        doc.text("SOLUCIONES INTEGRALES", 50, 30);
-        doc.text("WEB: WWW.CUNTEL.CL | CONTACTO@CUNTEL.CL", 50, 35);
+        doc.text(empGiro, 50, 30);
+        doc.text(`WEB: WWW.CUNTEL.CL | ${empEmail}`, 50, 35);
         
         doc.setFillColor(245,245,245); doc.rect(140, 15, 55, 20, 'F');
         doc.setFontSize(10); doc.setTextColor(242, 92, 5); doc.setFont("helvetica","bold");
