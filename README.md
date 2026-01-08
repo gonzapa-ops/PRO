@@ -1,9 +1,8 @@
-<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>PROSYS V26 - GESTIÓN TOTAL</title>
+    <title>PROSYS V27 - CUNTEL SPA</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
@@ -45,11 +44,9 @@
         .brand h1 { color: var(--primary); font-size: 20px; font-weight: 900; margin: 0; }
         .brand p { color: #7F8C8D; font-size: 10px; font-weight: 600; }
         
-        /* Botón Editar Empresa */
         .btn-edit-company { background: none; border: none; cursor: pointer; font-size: 14px; color: #999; margin-left: 5px; }
         .btn-edit-company:hover { color: var(--secondary); }
 
-        /* Formulario Empresa (Oculto por defecto) */
         #companyEditor { display: none; background: #F8F9F9; padding: 15px; border-bottom: 1px solid #ddd; width: 100%; }
         .company-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 10px; }
 
@@ -311,6 +308,30 @@
 
 </div>
 
+<div id="modalAprobacion" class="modal">
+    <div class="modal-box" style="max-width:500px;">
+        <h3 style="color:var(--green); border-bottom:2px solid var(--green); padding-bottom:10px;">CONFIRMAR APROBACIÓN</h3>
+        <p style="font-size:11px; margin-bottom:15px; color:#555;">Complete los datos de despacho para generar la Orden de Compra.</p>
+        
+        <div class="input-group" style="margin-bottom:15px;">
+            <label>TIPO DE DESPACHO</label>
+            <select id="cmbDespacho" onchange="renderDispatchFields()">
+                <option value="RETIRA">RETIRA</option>
+                <option value="DESPACHO">DESPACHO</option>
+                <option value="DESPACHO REGION">DESPACHO REGIÓN</option>
+                <option value="OTRO">OTRO</option>
+            </select>
+        </div>
+        
+        <div id="dynamicFields" class="grid-form" style="grid-template-columns:1fr; gap:10px;"></div>
+        
+        <div style="margin-top:20px; display:flex; gap:10px;">
+            <button onclick="confirmarAprobacion()" class="btn-main" style="width:100%; background:var(--green);">CONFIRMAR Y GENERAR ORDEN</button>
+            <button onclick="document.getElementById('modalAprobacion').style.display='none'" style="width:100%; background:#999; border:none; padding:10px; color:white; border-radius:4px; cursor:pointer;">CANCELAR</button>
+        </div>
+    </div>
+</div>
+
 <div id="modalGestor" class="modal">
     <div class="modal-box">
         <span class="close-btn" onclick="document.getElementById('modalGestor').style.display='none'" style="float:right; cursor:pointer; font-size:24px;">&times;</span>
@@ -362,6 +383,8 @@
                  let s = localStorage.getItem(DB_KEYS.SEQ) || 50100;
                  document.getElementById('lblCorrelativo').innerText = "CN" + s;
             }
+            
+            // VERSION EN FOOTER
             let ver = localStorage.getItem(DB_KEYS.VER) || 35;
             let verStr = "v1." + String(ver).padStart(5, '0');
             document.getElementById('sysFooter').innerText = `PROSYS [${verStr}]`;
@@ -373,7 +396,7 @@
         } catch(e) { console.error("Error init", e); }
     };
 
-    // --- 2. GESTION EMPRESA (NUEVO) ---
+    // --- 2. GESTION EMPRESA ---
     function toggleCompanyEditor() {
         const el = document.getElementById('companyEditor');
         el.style.display = el.style.display === 'block' ? 'none' : 'block';
@@ -404,23 +427,84 @@
         }
     }
 
-    // --- 3. LOGICA DE BLOQUEO Y ESTADO ---
-    function desbloquearEditor() {
-        document.getElementById('sello-agua').style.display = 'none';
-        document.getElementById('statusPanel').style.display = 'none';
-        document.getElementById('bar-edicion').style.display = 'none';
-        document.querySelectorAll('.hidden-when-locked').forEach(el => el.style.display = 'flex');
-        document.querySelectorAll('input, select, textarea').forEach(el => {
-            el.readOnly = false;
-            el.classList.remove('input-blocked');
-        });
-        document.querySelectorAll('#tablaItems button').forEach(b => b.style.display = 'inline-block');
+    // --- 3. LOGICA DE APROBACIÓN Y DESPACHO (NUEVO) ---
+    function cambiarEstado(nuevoEstado) {
+        if(nuevoEstado === 'ACEPTADA') {
+            // Abrir Modal de Despacho
+            document.getElementById('modalAprobacion').style.display = 'flex';
+            renderDispatchFields();
+        } else {
+            if(!confirm("¿Rechazar cotización? Se bloqueará.")) return;
+            procesarEstadoFinal('RECHAZADA', null);
+        }
+    }
+
+    function renderDispatchFields() {
+        const tipo = document.getElementById('cmbDespacho').value;
+        const container = document.getElementById('dynamicFields');
+        container.innerHTML = '';
         
-        document.querySelectorAll('.cell-locked').forEach(el => el.readOnly = true);
-        ['cliRazon','cliRut','cliGiro','cliDir','cliComuna','cliRegion','cliContacto','cliEmail','cliFono'].forEach(id => {
-            document.getElementById(id).readOnly = true;
-            document.getElementById(id).classList.add('input-blocked');
+        if(tipo === 'RETIRA') {
+            container.innerHTML = `
+                <div class="input-group"><label>NOMBRE QUIEN RETIRA</label><input type="text" id="d_nombre" oninput="upper(this)"></div>
+                <div class="input-group"><label>RUT RETIRA</label><input type="text" id="d_rut" oninput="formatRut(this)"></div>
+                <div class="input-group"><label>FECHA RETIRO</label><input type="date" id="d_fecha"></div>
+            `;
+        } else if(tipo === 'DESPACHO') {
+            container.innerHTML = `
+                <div class="input-group"><label>DIRECCIÓN DESPACHO</label><input type="text" id="d_dir" oninput="upper(this)"></div>
+                <div class="input-group"><label>COMUNA</label><input type="text" id="d_comuna" oninput="upper(this)"></div>
+                <div class="input-group"><label>NOMBRE CONTACTO</label><input type="text" id="d_nombre" oninput="upper(this)"></div>
+                <div class="input-group"><label>CELULAR</label><input type="text" id="d_cel"></div>
+                <div class="input-group"><label>FECHA DESPACHO</label><input type="date" id="d_fecha"></div>
+            `;
+        } else if(tipo === 'DESPACHO REGION') {
+            container.innerHTML = `
+                <div class="input-group"><label>TRANSPORTISTA</label><input type="text" id="d_trans" oninput="upper(this)"></div>
+                <div class="input-group"><label>DIRECCIÓN DESPACHO</label><input type="text" id="d_dir" oninput="upper(this)"></div>
+                <div class="input-group"><label>COMUNA</label><input type="text" id="d_comuna" oninput="upper(this)"></div>
+                <div class="input-group"><label>NOMBRE CONTACTO</label><input type="text" id="d_nombre" oninput="upper(this)"></div>
+                <div class="input-group"><label>CELULAR</label><input type="text" id="d_cel"></div>
+                <div class="input-group"><label>FECHA DESPACHO</label><input type="date" id="d_fecha"></div>
+            `;
+        } else {
+            container.innerHTML = `<div class="input-group"><label>DETALLES</label><input type="text" id="d_otro" oninput="upper(this)"></div>`;
+        }
+    }
+
+    function confirmarAprobacion() {
+        const tipo = document.getElementById('cmbDespacho').value;
+        const dispatchData = { tipo: tipo };
+        
+        // Recolectar datos
+        const inputs = document.getElementById('dynamicFields').querySelectorAll('input');
+        let valid = true;
+        inputs.forEach(i => {
+            if(i.value.trim() === '') valid = false;
+            dispatchData[i.id] = i.value;
         });
+
+        if(!valid) return alert("Complete todos los campos de despacho.");
+
+        document.getElementById('modalAprobacion').style.display = 'none';
+        procesarEstadoFinal('ACEPTADA', dispatchData);
+    }
+
+    function procesarEstadoFinal(estado, dispatchData) {
+        const idx = parseInt(document.getElementById('editIndex').value);
+        const h = getDB(DB_KEYS.HIST);
+        
+        if(idx > -1 && h[idx]) {
+            h[idx].status = estado;
+            h[idx].dispatch = dispatchData; // Guardar datos despacho
+            setDB(DB_KEYS.HIST, h);
+            
+            bloquearEditor(estado);
+            
+            if(estado === 'ACEPTADA') {
+                generarInformeCompra(h[idx]); // GENERAR INFORME DE COMPRA
+            }
+        }
     }
 
     function bloquearEditor(estado) {
@@ -438,17 +522,69 @@
         document.getElementById('statusPanel').style.display = 'none';
     }
 
-    function cambiarEstado(nuevoEstado) {
-        if(!confirm("¿Está seguro? Una vez " + nuevoEstado + ", la cotización se bloqueará.")) return;
-        const idx = parseInt(document.getElementById('editIndex').value);
-        if(idx === -1) return alert("Debe guardar la cotización primero.");
-        const h = getDB(DB_KEYS.HIST);
-        h[idx].status = nuevoEstado;
-        setDB(DB_KEYS.HIST, h);
-        bloquearEditor(nuevoEstado);
+    function desbloquearEditor() {
+        document.getElementById('sello-agua').style.display = 'none';
+        document.getElementById('statusPanel').style.display = 'none';
+        document.getElementById('bar-edicion').style.display = 'none';
+        document.querySelectorAll('.hidden-when-locked').forEach(el => el.style.display = 'flex');
+        document.querySelectorAll('input, select, textarea').forEach(el => {
+            el.readOnly = false;
+            el.classList.remove('input-blocked');
+        });
+        document.querySelectorAll('#tablaItems button').forEach(b => b.style.display = 'inline-block');
+        document.querySelectorAll('.cell-locked').forEach(el => el.readOnly = true);
     }
 
-    // --- 4. BUSCADOR Y TABLA ---
+    // --- 4. GENERAR INFORME DE COMPRA (NUEVO PDF) ---
+    function generarInformeCompra(data) {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        const azul = [31, 111, 139];
+
+        doc.setFontSize(18); doc.setTextColor(...azul); doc.setFont("helvetica","bold");
+        doc.text("ORDEN DE COMPRA INTERNA", 105, 20, {align:"center"});
+        doc.setFontSize(10); doc.setTextColor(0);
+        doc.text(`REF COTIZACIÓN: ${data.n}`, 105, 28, {align:"center"});
+        doc.text(`FECHA: ${new Date().toLocaleDateString()}`, 105, 33, {align:"center"});
+
+        // DATOS DESPACHO
+        if(data.dispatch) {
+            doc.setFillColor(240,240,240); doc.rect(15, 40, 180, 25, 'F');
+            doc.setFontSize(10); doc.setFont("helvetica","bold");
+            doc.text(`DATOS DE DESPACHO: ${data.dispatch.tipo}`, 20, 48);
+            doc.setFontSize(9); doc.setFont("helvetica","normal");
+            
+            let dInfo = "";
+            if(data.dispatch.tipo === 'RETIRA') dInfo = `Retira: ${data.dispatch.d_nombre} | Rut: ${data.dispatch.d_rut} | Fecha: ${data.dispatch.d_fecha}`;
+            else dInfo = `Dir: ${data.dispatch.d_dir}, ${data.dispatch.d_comuna} | Contacto: ${data.dispatch.d_nombre} (${data.dispatch.d_cel}) | Fecha: ${data.dispatch.d_fecha}`;
+            
+            doc.text(dInfo, 20, 55);
+        }
+
+        // TABLA DE COMPRA (COSTOS)
+        const rows = data.items.map(i => [
+            i.pv || '---', // PROVEEDOR
+            i.cd || '-', 
+            i.d, 
+            i.q, 
+            formatMoney(i.c), // NETO (COSTO)
+            formatMoney(i.c * 0.19), // IVA
+            formatMoney(i.c * 1.19) // TOTAL
+        ]);
+
+        doc.autoTable({
+            startY: 70,
+            head: [['PROVEEDOR', 'COD', 'DESCRIPCIÓN', 'CANT', 'NETO (COSTO)', 'IVA', 'TOTAL']],
+            body: rows,
+            theme: 'grid',
+            styles: { fontSize: 8 },
+            headStyles: { fillColor: [40, 180, 99] } // Verde para compra
+        });
+
+        doc.save(`ORDEN_DE_COMPRA_${data.n}.pdf`);
+    }
+
+    // --- 5. BUSCADOR Y TABLA ---
     function buscarCliente(input) {
         upper(input);
         const term = input.value.trim();
@@ -566,7 +702,6 @@
         calcular();
     }
 
-    // --- MATH AUDITED AND VERIFIED ---
     function calcular() {
         let neto = 0, util = 0, descTotal = 0;
 
@@ -576,24 +711,22 @@
             const p = parseFloat(tr.querySelector('.raw-price').value)||0;
             const dVal = parseFloat(tr.querySelector('.cell-desc-val').value)||0;
             
-            // Calculo Descuento %
             let dPorc = 0;
             if(p > 0) dPorc = (dVal / p) * 100;
             tr.querySelector('.cell-desc-porc').value = dPorc.toFixed(1) + '%';
 
-            // Matemáticas de línea
-            const precioUnitFinal = p - dVal; // Precio venta unitario real
-            const totalCostoLinea = q * c; 
-            const totalVentaLinea = q * precioUnitFinal;
+            const precioFinal = p - dVal;
+            const tc = q*c; 
+            const tp = q*precioFinal;
             
-            const utilUnit = precioUnitFinal - c;
-            const utilTotalLinea = utilUnit * q; // Ganancia real de la línea
+            const utilUnit = precioFinal - c;
+            const utilTotalLinea = utilUnit * q;
             
             let margenPorc = 0;
-            if(precioUnitFinal > 0) margenPorc = (utilUnit / precioUnitFinal) * 100;
+            if(precioFinal > 0) margenPorc = (utilUnit / precioFinal) * 100;
 
-            tr.querySelector('.t-cost').value = formatMoney(totalCostoLinea);
-            tr.querySelector('.t-price').value = formatMoney(totalVentaLinea);
+            tr.querySelector('.t-cost').value = formatMoney(tc);
+            tr.querySelector('.t-price').value = formatMoney(tp);
             
             const celdaP = tr.querySelector('.util-porc');
             celdaP.value = margenPorc.toFixed(1) + '%';
@@ -601,8 +734,7 @@
             const celdaV = tr.querySelector('.util-value');
             celdaV.value = formatMoney(utilTotalLinea);
 
-            // Acumuladores Globales
-            neto += totalVentaLinea; // Suma de precios ya descontados
+            neto += tp; 
             util += utilTotalLinea;
             descTotal += (dVal * q);
         });
@@ -617,7 +749,7 @@
         document.getElementById('txtUtilidad').innerText = formatMoney(util);
     }
 
-    // --- 5. CRUD ---
+    // --- 6. CRUD ---
     function abrirGestor(type) {
         const modal = document.getElementById('modalGestor');
         const thead = document.getElementById('modalHead');
@@ -756,7 +888,7 @@
         reader.readAsText(file);
     }
 
-    // --- 6. PDF & GUARDADO ---
+    // --- 7. PDF & GUARDADO & CARGA ---
     function loadHistory(i) {
         desbloquearEditor();
         const h = getDB(DB_KEYS.HIST)[i];
@@ -908,15 +1040,15 @@
         localStorage.setItem(DB_KEYS.VER, sysVer + 1);
         document.getElementById('sysFooter').innerText = `PROSYS [${verStr}]`;
 
-        // USAR DATOS EMPRESA
+        const logo = localStorage.getItem(DB_KEYS.LOGO);
+        if(logo) doc.addImage(logo, 'PNG', 15, 15, 25, 25);
+        
+        // EMPRESA
         const emp = JSON.parse(localStorage.getItem(DB_KEYS.EMP) || "{}");
         const empRazon = emp.Razon || "INGENIERIA CUNTEL SPA";
         const empGiro = emp.Giro || "SOLUCIONES INTEGRALES";
         const empEmail = emp.Email || "CONTACTO@CUNTEL.CL";
 
-        const logo = localStorage.getItem(DB_KEYS.LOGO);
-        if(logo) doc.addImage(logo, 'PNG', 15, 15, 25, 25);
-        
         doc.setFontSize(16); doc.setTextColor(...azul); doc.setFont("helvetica","bold");
         doc.text(empRazon, 50, 25);
         doc.setFontSize(9); doc.setTextColor(100); doc.setFont("helvetica","normal");
